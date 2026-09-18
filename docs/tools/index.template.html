@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back Of House Backend Map</title>
+<meta name="description" content="Architecture reference for the Back Of House backend: domains, modules, database, auth, workflows, API and delivery plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Tokens mirror BackOfHouse-frontend lib/app/theme/app_colors.dart */
+  :root {
+    --ground: #F7F8FB;
+    --ground-2: #EFF1F6;
+    --surface: #FFFFFF;
+    --surface-2: #F3F4F8;
+    --ink: #0F1A33;
+    --ink-2: #5A6478;
+    --ink-3: #667085;
+    --line: #E1E4EC;
+    --line-soft: #ECEEF3;
+    --accent: #5B4BD1;
+    --accent-strong: #6C5CE0;
+    --accent-tint: #EFEDFC;
+    --accent-wash: #F6F5FE;
+    --gold: #8A6315;
+    --gold-tint: #F8EFDC;
+    --ok: #157A52;
+    --warn: #9A5B06;
+    --bad: #C23142;
+    --code-bg: #F3F4F8;
+    --focus: #6C5CE0;
+    --shadow: 0 1px 2px rgba(15, 26, 51, .06), 0 8px 24px rgba(15, 26, 51, .06);
+    --font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, "Noto Sans Arabic", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #04080D;
+      --ground-2: #080F17;
+      --surface: #0B1420;
+      --surface-2: #101B29;
+      --ink: #F7F7F8;
+      --ink-2: #B8C0CE;
+      --ink-3: #8C96A8;
+      --line: #26344A;
+      --line-soft: #182536;
+      --accent: #9B6BFF;
+      --accent-strong: #7B3FFF;
+      --accent-tint: rgba(108, 53, 252, .18);
+      --accent-wash: rgba(108, 53, 252, .08);
+      --gold: #D6A84F;
+      --gold-tint: rgba(214, 168, 79, .12);
+      --ok: #35C98A;
+      --warn: #FFB547;
+      --bad: #FF5C6C;
+      --code-bg: #101B29;
+      --focus: #9B6BFF;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #04080D;
+    --ground-2: #080F17;
+    --surface: #0B1420;
+    --surface-2: #101B29;
+    --ink: #F7F7F8;
+    --ink-2: #B8C0CE;
+    --ink-3: #8C96A8;
+    --line: #26344A;
+    --line-soft: #182536;
+    --accent: #9B6BFF;
+    --accent-strong: #7B3FFF;
+    --accent-tint: rgba(108, 53, 252, .18);
+    --accent-wash: rgba(108, 53, 252, .08);
+    --gold: #D6A84F;
+    --gold-tint: rgba(214, 168, 79, .12);
+    --ok: #35C98A;
+    --warn: #FFB547;
+    --bad: #FF5C6C;
+    --code-bg: #101B29;
+    --focus: #9B6BFF;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 15px/1.65 var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---------- shell ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 288px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+  .rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    background: var(--ground-2);
+    padding: 28px 18px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .brand { display: grid; gap: 6px; padding-inline: 8px; }
+  .brand-mark {
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .brand-mark span { color: var(--accent); }
+  .brand-sub { font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+  .source {
+    font: 500 11.5px/1.5 var(--mono);
+    color: var(--ink-3);
+    padding-inline: 8px;
+  }
+
+  .filter { padding-inline: 4px; }
+  .filter input {
+    width: 100%;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .filter input::placeholder { color: var(--ink-3); }
+
+  nav.index { display: grid; gap: 18px; }
+  .group { display: grid; gap: 2px; }
+  .group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 0 8px 6px;
+  }
+  .doc-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .doc-link:hover { background: var(--surface); color: var(--ink); }
+  .doc-link[aria-current="page"] {
+    background: var(--accent-tint);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .doc-link .file {
+    font: 400 10.5px var(--mono);
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .doc-link.start {
+    border: 1px solid var(--gold);
+    background: var(--gold-tint);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .doc-link.start .file { color: var(--gold); font-weight: 500; }
+  .doc-link[hidden] { display: none; }
+
+  .theme-row {
+    margin-top: auto;
+    display: flex;
+    gap: 6px;
+    padding-inline: 4px;
+  }
+  .theme-row button {
+    flex: 1;
+    font: 500 12px var(--font);
+    color: var(--ink-2);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 0;
+    cursor: pointer;
+  }
+  .theme-row button[aria-pressed="true"] { color: var(--ink); background: var(--surface); border-color: var(--accent); }
+
+  /* ---------- mobile picker ---------- */
+  .picker { display: none; }
+
+  /* ---------- reading column ---------- */
+  main {
+    padding: 40px clamp(16px, 5vw, 64px) 96px;
+    min-width: 0;
+  }
+  .doc-head {
+    max-width: 880px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-bottom: 8px;
+    font: 500 12px var(--mono);
+    color: var(--ink-3);
+  }
+  .doc-head a { color: var(--ink-3); }
+  article {
+    max-width: 880px;
+  }
+  article > * { max-width: 72ch; }
+  article > .table-wrap,
+  article > .diagram,
+  article > pre { max-width: 100%; }
+
+  article h1 {
+    font-size: clamp(28px, 3.4vw, 38px);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  article h2 {
+    font-size: 23px;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    margin: 52px 0 14px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    text-wrap: balance;
+  }
+  article h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 34px 0 10px;
+    text-wrap: balance;
+  }
+  article h4 { font-size: 15px; font-weight: 700; margin: 24px 0 8px; }
+  article h1 + h2, article hr + h2, article hr + h1 { border-top: 0; padding-top: 0; }
+  article p, article ul, article ol { margin: 0 0 14px; }
+  article li { margin: 3px 0; }
+  article li > ul, article li > ol { margin: 4px 0 4px; }
+  article strong { font-weight: 700; }
+  article hr { border: 0; height: 0; margin: 28px 0 0; }
+  article hr + h2, article hr + h1 { margin-top: 20px; }
+
+  article blockquote {
+    margin: 0 0 22px;
+    padding: 14px 18px;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent-tint);
+    border-radius: 10px;
+    color: var(--ink-2);
+    font-size: 14px;
+  }
+  article blockquote p:last-child { margin-bottom: 0; }
+  article blockquote .table-wrap { margin-bottom: 0; }
+
+  article code {
+    font: 0.86em/1.4 var(--mono);
+    background: var(--code-bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 0.08em 0.35em;
+    overflow-wrap: anywhere;
+  }
+  article pre {
+    margin: 0 0 20px;
+    padding: 16px 18px;
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow-x: auto;
+    font: 12.5px/1.55 var(--mono);
+    tab-size: 2;
+  }
+  article pre code { background: none; border: 0; padding: 0; font-size: inherit; overflow-wrap: normal; white-space: pre; }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0 0 22px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); }
+  th {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: var(--surface-2);
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: 0; }
+  td code { white-space: nowrap; }
+  td:first-child { font-weight: 500; }
+
+  .diagram {
+    margin: 0 0 24px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .diagram svg { max-width: none; height: auto; }
+  .diagram.pending { color: var(--ink-3); font: 12px var(--mono); text-align: left; white-space: pre; }
+  .diagram.failed { text-align: left; }
+  .diagram.failed pre { margin: 8px 0 0; }
+
+  /* requirement / question ids get a quiet chip treatment */
+  .ref {
+    font: 500 0.82em var(--mono);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .empty { color: var(--ink-3); }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .rail { display: none; }
+    .picker {
+      display: grid;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 12px 16px;
+      background: var(--ground-2);
+      border-bottom: 1px solid var(--line);
+    }
+    .picker .brand-mark { font-size: 12px; }
+    .picker select {
+      font: 500 14px var(--font);
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      width: 100%;
+    }
+    main { padding-top: 24px; }
+    article h2 { margin-top: 40px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .doc-link { transition: background-color .15s ease, color .15s ease; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail" aria-label="Documents">
+    <div class="brand">
+      <div class="brand-mark">Back Of House <span>/</span> Backend</div>
+      <div class="brand-sub">Architecture reference for the NestJS, Supabase and Prisma backend.</div>
+    </div>
+    <div class="source" id="source-line"></div>
+    <div class="filter">
+      <label for="doc-filter" class="group-label" style="display:block;padding-inline:4px">Find a document</label>
+      <input id="doc-filter" type="search" placeholder="auth, points, ERD…" autocomplete="off">
+    </div>
+    <nav class="index" id="doc-index"></nav>
+    <div class="theme-row" role="group" aria-label="Theme">
+      <button type="button" id="theme-system" data-theme-choice="system">System</button>
+      <button type="button" id="theme-light" data-theme-choice="light">Light</button>
+      <button type="button" id="theme-dark" data-theme-choice="dark">Dark</button>
+    </div>
+  </aside>
+
+  <div class="picker">
+    <div class="brand-mark">Back Of House <span>/</span> Backend</div>
+    <label for="doc-picker" class="group-label" style="padding:0">Document</label>
+    <select id="doc-picker"></select>
+  </div>
+
+  <main>
+    <div class="doc-head">
+      <span id="doc-file"></span>
+      <a id="doc-raw" href="#">Open Markdown file</a>
+    </div>
+    <article id="doc"><p class="empty">Loading documentation…</p></article>
+  </main>
+</div>
+
+<script id="docs-data" type="application/json">/*__DOCS__*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.6.0/mermaid.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var DATA = JSON.parse(document.getElementById("docs-data").textContent);
+  var DOCS = DATA.docs;
+  var BY_NAME = {};
+  DOCS.forEach(function (d) { BY_NAME[d.name] = d; });
+  var HOME = DATA.home;
+  var current = null;
+
+  document.getElementById("source-line").textContent = DATA.source;
+
+  // ---------- theme ----------
+  var THEME_KEY = "boh-docs-theme";
+  function readTheme() { try { return localStorage.getItem(THEME_KEY) || "system"; } catch (e) { return "system"; } }
+  function writeTheme(v) { try { localStorage.setItem(THEME_KEY, v); } catch (e) { /* ignore */ } }
+  function applyTheme(choice) {
+    if (choice === "system") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", choice);
+    document.querySelectorAll("[data-theme-choice]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-choice") === choice));
+    });
+  }
+  function isDark() {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  applyTheme(readTheme());
+  document.querySelectorAll("[data-theme-choice]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var c = b.getAttribute("data-theme-choice");
+      writeTheme(c); applyTheme(c); rerenderDiagrams();
+    });
+  });
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var onChange = function () { if (!document.documentElement.getAttribute("data-theme")) rerenderDiagrams(); };
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+  }
+  // the host viewer may stamp data-theme itself
+  new MutationObserver(function () { rerenderDiagrams(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  // ---------- navigation ----------
+  var index = document.getElementById("doc-index");
+  var picker = document.getElementById("doc-picker");
+  DATA.groups.forEach(function (g) {
+    var wrap = document.createElement("div");
+    wrap.className = "group";
+    var label = document.createElement("div");
+    label.className = "group-label";
+    label.textContent = g.label;
+    wrap.appendChild(label);
+    var og = document.createElement("optgroup");
+    og.label = g.label;
+    g.docs.forEach(function (name) {
+      var d = BY_NAME[name];
+      if (!d) return;
+      var a = document.createElement("a");
+      a.className = "doc-link" + (name === HOME ? " start" : "");
+      a.href = "#" + name;
+      a.setAttribute("data-doc", name);
+      a.setAttribute("data-search", (d.title + " " + d.name + " " + d.keywords).toLowerCase());
+      var t = document.createElement("span");
+      t.textContent = d.title;
+      a.appendChild(t);
+      if (name === HOME) {
+        var f = document.createElement("span");
+        f.className = "file";
+        f.textContent = "start here";
+        a.appendChild(f);
+      }
+      wrap.appendChild(a);
+      var o = document.createElement("option");
+      o.value = name; o.textContent = d.title;
+      og.appendChild(o);
+    });
+    index.appendChild(wrap);
+    picker.appendChild(og);
+  });
+  picker.addEventListener("change", function () { location.hash = picker.value; });
+
+  document.getElementById("doc-filter").addEventListener("input", function (e) {
+    var q = e.target.value.trim().toLowerCase();
+    index.querySelectorAll(".doc-link").forEach(function (a) {
+      a.hidden = q && a.getAttribute("data-search").indexOf(q) === -1;
+    });
+    index.querySelectorAll(".group").forEach(function (g) {
+      var any = Array.prototype.some.call(g.querySelectorAll(".doc-link"), function (a) { return !a.hidden; });
+      g.hidden = !any;
+    });
+  });
+
+  // ---------- markdown ----------
+  function slug(text) {
+    return text.toLowerCase().trim()
+      .replace(/<[^>]+>/g, "")
+      .replace(/[^\p{L}\p{N}\s_-]/gu, "")
+      .replace(/\s/g, "-");
+  }
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function decodeEntities(s) {
+    var ta = document.createElement("textarea"); ta.innerHTML = s; return ta.value;
+  }
+
+  var renderer = new marked.Renderer();
+  var slugCounts = {};
+  renderer.heading = function (text, level, raw) {
+    var base = slug(decodeEntities(raw));
+    var id = base;
+    if (slugCounts[base] != null) { slugCounts[base] += 1; id = base + "-" + slugCounts[base]; }
+    else slugCounts[base] = 0;
+    return "<h" + level + ' id="' + escapeHtml(current + ":" + id) + '">' + text + "</h" + level + ">\n";
+  };
+  renderer.code = function (code, lang) {
+    if ((lang || "").trim() === "mermaid") {
+      return '<div class="diagram pending" data-source="' + escapeHtml(code) + '">Rendering diagram…</div>\n';
+    }
+    return "<pre><code>" + escapeHtml(code) + "</code></pre>\n";
+  };
+  renderer.table = function (header, body) {
+    return '<div class="table-wrap"><table><thead>' + header + "</thead><tbody>" + body + "</tbody></table></div>\n";
+  };
+  renderer.link = function (href, title, text) {
+    var h = href || "";
+    var m = h.match(/^([A-Za-z0-9_-]+)\.md(?:#(.*))?$/);
+    if (m && BY_NAME[m[1]]) h = "#" + m[1] + (m[2] ? ":" + m[2] : "");
+    else if (h === "index.html") h = "#" + HOME;
+    else if (h.charAt(0) === "#") h = "#" + current + ":" + h.slice(1);
+    var t = title ? ' title="' + escapeHtml(title) + '"' : "";
+    return '<a href="' + escapeHtml(h) + '"' + t + ">" + text + "</a>";
+  };
+  marked.setOptions({ renderer: renderer, gfm: true, mangle: false, headerIds: false });
+
+  var REF_RE = /\b((?:BQ|TQ|RG|ADR|T|AUTH|ORG)-\d{2,3})\b/g;
+  function decorateRefs(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentNode;
+        if (!p || p.closest("pre, code, a, .diagram, h1, h2, h3, h4, th")) return NodeFilter.FILTER_REJECT;
+        REF_RE.lastIndex = 0;
+        return REF_RE.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (n) {
+      var frag = document.createDocumentFragment();
+      var s = n.nodeValue, last = 0, m;
+      REF_RE.lastIndex = 0;
+      while ((m = REF_RE.exec(s))) {
+        frag.appendChild(document.createTextNode(s.slice(last, m.index)));
+        var span = document.createElement("span");
+        span.className = "ref";
+        span.textContent = m[1];
+        frag.appendChild(span);
+        last = m.index + m[1].length;
+      }
+      frag.appendChild(document.createTextNode(s.slice(last)));
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+
+  // ---------- diagrams ----------
+  var renderSeq = 0;
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function initMermaid() {
+    var dark = isDark();
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      fontFamily: cssVar("--font"),
+      themeVariables: {
+        darkMode: dark,
+        background: cssVar("--surface"),
+        fontSize: "14px",
+        primaryColor: dark ? "#16213A" : "#EFEDFC",
+        primaryBorderColor: cssVar("--accent"),
+        primaryTextColor: cssVar("--ink"),
+        secondaryColor: dark ? "#101B29" : "#F3F4F8",
+        tertiaryColor: dark ? "#0B1420" : "#FFFFFF",
+        lineColor: cssVar("--ink-3"),
+        textColor: cssVar("--ink"),
+        mainBkg: dark ? "#16213A" : "#EFEDFC",
+        nodeBorder: cssVar("--accent"),
+        clusterBkg: dark ? "#080F17" : "#F7F8FB",
+        clusterBorder: cssVar("--line"),
+        titleColor: cssVar("--ink"),
+        edgeLabelBackground: cssVar("--surface"),
+        noteBkgColor: cssVar("--gold-tint"),
+        noteTextColor: cssVar("--ink"),
+        noteBorderColor: cssVar("--gold"),
+        actorBkg: dark ? "#16213A" : "#EFEDFC",
+        actorBorder: cssVar("--accent"),
+        actorTextColor: cssVar("--ink"),
+        signalColor: cssVar("--ink-2"),
+        signalTextColor: cssVar("--ink"),
+        labelBoxBkgColor: cssVar("--surface-2"),
+        labelTextColor: cssVar("--ink"),
+        loopTextColor: cssVar("--ink"),
+        attributeBackgroundColorOdd: cssVar("--surface"),
+        attributeBackgroundColorEven: cssVar("--surface-2")
+      },
+      flowchart: { useMaxWidth: false, htmlLabels: true, subGraphTitleMargin: { top: 6, bottom: 14 }, padding: 12 },
+      er: { useMaxWidth: false },
+      sequence: { useMaxWidth: false },
+      state: { useMaxWidth: false },
+      gantt: { useMaxWidth: false }
+    });
+  }
+  function renderDiagrams(root) {
+    if (typeof mermaid === "undefined") {
+      root.querySelectorAll(".diagram.pending").forEach(function (el) {
+        el.textContent = el.getAttribute("data-source");
+      });
+      return;
+    }
+    initMermaid();
+    var seq = ++renderSeq;
+    var els = Array.prototype.slice.call(root.querySelectorAll(".diagram"));
+    (function next(i) {
+      if (i >= els.length || seq !== renderSeq) return;
+      var el = els[i];
+      var src = el.getAttribute("data-source");
+      mermaid.render("mmd-" + seq + "-" + i, src).then(function (res) {
+        if (seq !== renderSeq) return;
+        el.className = "diagram";
+        el.innerHTML = res.svg;
+        next(i + 1);
+      }).catch(function (err) {
+        el.className = "diagram failed";
+        el.innerHTML = "<strong>Diagram could not be rendered.</strong> Source shown below.<pre><code>" + escapeHtml(src) + "</code></pre>";
+        var orphan = document.getElementById("dmmd-" + seq + "-" + i);
+        if (orphan) orphan.remove();
+        next(i + 1);
+      });
+    })(0);
+  }
+  function rerenderDiagrams() {
+    var root = document.getElementById("doc");
+    root.querySelectorAll(".diagram").forEach(function (el) { el.className = "diagram pending"; el.textContent = "Rendering diagram…"; });
+    renderDiagrams(root);
+  }
+
+  // ---------- routing ----------
+  function route() {
+    var hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+    var parts = hash.split(":");
+    var name = BY_NAME[parts[0]] ? parts[0] : HOME;
+    var anchor = parts.length > 1 ? parts.slice(1).join(":") : null;
+
+    if (name !== current) {
+      current = name;
+      slugCounts = {};
+      var d = BY_NAME[name];
+      var article = document.getElementById("doc");
+      article.innerHTML = marked.parse(d.markdown);
+      decorateRefs(article);
+      document.getElementById("doc-file").textContent = "docs/" + d.name + ".md";
+      document.getElementById("doc-raw").href = d.name + ".md";
+      document.title = (name === HOME ? "" : d.title + " · ") + "Back Of House Backend Map";
+      index.querySelectorAll(".doc-link").forEach(function (a) {
+        if (a.getAttribute("data-doc") === name) a.setAttribute("aria-current", "page");
+        else a.removeAttribute("aria-current");
+      });
+      picker.value = name;
+      renderDiagrams(article);
+      if (!anchor) window.scrollTo(0, 0);
+    }
+    if (anchor) {
+      var target = document.getElementById(name + ":" + anchor);
+      if (target) target.scrollIntoView();
+    }
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+</body>
+</html>

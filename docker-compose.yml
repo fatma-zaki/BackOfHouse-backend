@@ -1,0 +1,28 @@
+# Runs the api and the worker from the same image against the Supabase
+# project configured in .env. Migrations are applied separately
+# (npm run db:migrate:deploy) before starting a new version.
+services:
+  api:
+    build: .
+    image: back-of-house-backend:local
+    env_file: .env
+    environment:
+      JOBS_ENABLED: 'false'
+    ports:
+      - '${PORT:-3000}:${PORT:-3000}'
+    read_only: true
+    security_opt: ['no-new-privileges:true']
+    restart: unless-stopped
+
+  worker:
+    image: back-of-house-backend:local
+    depends_on: [api]
+    env_file: .env
+    environment:
+      JOBS_ENABLED: 'true'
+    command: ['node', 'dist/worker.js']
+    healthcheck:
+      disable: true
+    read_only: true
+    security_opt: ['no-new-privileges:true']
+    restart: unless-stopped

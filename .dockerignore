@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+legacy
+docs
+test
+src/generated
+.env
+.env.*
+!.env.example
+**/*.spec.ts
+*.log
+.git

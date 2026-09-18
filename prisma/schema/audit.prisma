@@ -1,0 +1,39 @@
+// Module: audit (database-entities.md §12, ADR-016). Append-only.
+
+enum AuditActorType {
+  USER
+  STAFF
+  SYSTEM
+
+  @@map("audit_actor_type")
+  @@schema("app")
+}
+
+/// Immutable record of security-relevant and business-critical actions.
+/// INSERT and SELECT only for the app role; a trigger raises on UPDATE/DELETE.
+/// actor_user_id and organization_id get their foreign keys when the
+/// identity (Stage 4) and organizations (Stage 8) tables are created.
+model AuditLog {
+  id                 String         @id @default(uuid(7)) @db.Uuid
+  occurredAt         DateTime       @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  actorType          AuditActorType @map("actor_type")
+  actorUserId        String?        @map("actor_user_id") @db.Uuid
+  actorPlatformRoles String[]       @default([]) @map("actor_platform_roles")
+  organizationId     String?        @map("organization_id") @db.Uuid
+  action             String
+  entityType         String         @map("entity_type")
+  entityId           String         @map("entity_id") @db.Uuid
+  changes            Json?
+  reason             String?
+  requestId          String         @map("request_id")
+  ipAddress          String?        @map("ip_address") @db.Inet
+  userAgent          String?        @map("user_agent")
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([entityType, entityId, occurredAt(sort: Desc)], map: "ix_audit_logs__entity_type_entity_id_occurred_at")
+  @@index([actorUserId, occurredAt(sort: Desc)], map: "ix_audit_logs__actor_user_id_occurred_at")
+  @@index([organizationId, occurredAt(sort: Desc)], map: "ix_audit_logs__organization_id_occurred_at")
+  @@index([action, occurredAt(sort: Desc)], map: "ix_audit_logs__action_occurred_at")
+  @@map("audit_logs")
+  @@schema("app")
+}

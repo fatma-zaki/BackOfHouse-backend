@@ -1,0 +1,6 @@
+dist
+coverage
+legacy
+docs
+src/generated
+prisma/migrations

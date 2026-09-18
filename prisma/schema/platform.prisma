@@ -1,0 +1,33 @@
+// Platform: transactional outbox (database-entities.md §12, ADR-011).
+
+enum OutboxStatus {
+  PENDING
+  PROCESSED
+  FAILED
+
+  @@map("outbox_status")
+  @@schema("app")
+}
+
+/// Domain events written in the same transaction as the state change and
+/// delivered at least once by the worker. `aggregate_id` is intentionally
+/// unconstrained (database-design-rules.md §6).
+model OutboxEvent {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  eventName     String       @map("event_name")
+  aggregateType String       @map("aggregate_type")
+  aggregateId   String       @map("aggregate_id") @db.Uuid
+  payload       Json
+  occurredAt    DateTime     @default(now()) @map("occurred_at") @db.Timestamptz(6)
+  status        OutboxStatus @default(PENDING)
+  attempts      Int          @default(0)
+  availableAt   DateTime     @default(now()) @map("available_at") @db.Timestamptz(6)
+  processedAt   DateTime?    @map("processed_at") @db.Timestamptz(6)
+  lastError     String?      @map("last_error")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status, availableAt], map: "ix_outbox_events__status_available_at")
+  @@map("outbox_events")
+  @@schema("app")
+}

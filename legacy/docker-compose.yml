@@ -1,0 +1,20 @@
+# Runs the API container against a Supabase project (hosted, or a local stack
+# started with `supabase start`). Secrets come from .env, which is never
+# committed and never copied into the image.
+services:
+  api:
+    build:
+      context: .
+      target: runtime
+    image: back-of-house-api:local
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

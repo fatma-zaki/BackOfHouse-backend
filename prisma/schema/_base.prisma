@@ -1,0 +1,18 @@
+// Generator, datasource and shared enums (nest-module-map.md §2).
+// One file per module lives next to this one; Prisma reads the whole folder.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+// Connection URLs are not declared here (Prisma 7): the CLI reads the
+// migration URL from prisma.config.ts and the app passes the runtime URL to
+// the pg driver adapter in PrismaService.
+datasource db {
+  provider = "postgresql"
+  // Every Back Of House table lives in the private `app` schema, which the
+  // Supabase Data API does not expose (ADR-007, supabase-architecture.md §3.1).
+  schemas  = ["app"]
+}
