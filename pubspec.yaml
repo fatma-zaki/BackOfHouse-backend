@@ -1,0 +1,65 @@
+name: backofhouse
+description: "Saudi Arabia's professional events community."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management & DI
+  flutter_riverpod: ^3.0.3
+
+  # Routing
+  go_router: ^17.2.1
+
+  # Networking
+  dio: ^5.9.0
+
+  # Secure token storage
+  flutter_secure_storage: ^10.0.0
+
+  # UI
+  cached_network_image: ^3.4.1
+  lucide_icons_flutter: ^3.1.19
+
+  # Platform / utilities
+  intl: ^0.20.3
+  url_launcher: ^6.3.2
+  package_info_plus: ^9.0.0
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/images/
+    - assets/images/content/
+    - assets/icons/
+
+  # Plus Jakarta Sans (SIL OFL 1.1 — see assets/fonts/OFL.txt). Bundled rather
+  # than fetched at runtime so first launch renders offline with the brand face.
+  # It has no Arabic glyphs; Arabic falls back to the platform font.
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
