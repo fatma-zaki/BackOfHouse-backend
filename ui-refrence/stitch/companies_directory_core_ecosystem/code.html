@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><title>Back Of House</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-bright": "#fbf8ff", "surface-dim": "#dad9e3", "tertiary-fixed": "#ffdbcd", "surface-tint": "#5d39eb", "inverse-surface": "#2f3038", "tertiary-container": "#9d3900", "tertiary": "#762900", "on-primary": "#ffffff", "secondary-fixed-dim": "#f6be39", "on-primary-fixed-variant": "#440bd4", "on-tertiary": "#ffffff", "on-tertiary-fixed-variant": "#7e2c00", "surface-container-low": "#f4f2fd", "on-error": "#ffffff", "on-tertiary-fixed": "#360f00", "surface": "#fbf8ff", "primary-container": "#5832e6", "secondary": "#795900", "surface-container-highest": "#e3e1ec", "on-tertiary-container": "#ffc4ad", "primary-fixed-dim": "#c9bfff", "on-error-container": "#93000a", "secondary-container": "#ffc641", "error": "#ba1a1a", "outline": "#797587", "on-primary-container": "#d3caff", "primary-fixed": "#e5deff", "tertiary-fixed-dim": "#ffb598", "primary": "#4000cc", "inverse-primary": "#c9bfff", "error-container": "#ffdad6", "on-secondary": "#ffffff", "on-secondary-fixed-variant": "#5c4300", "on-background": "#1a1b22", "on-surface-variant": "#484556", "on-primary-fixed": "#1a0063", "on-secondary-fixed": "#261a00", "surface-container-high": "#e8e7f1", "on-surface": "#1a1b22", "on-secondary-container": "#715300", "outline-variant": "#c9c4d8", "surface-container": "#eeedf7", "inverse-on-surface": "#f1effa", "background": "#fbf8ff", "secondary-fixed": "#ffdfa0", "surface-container-lowest": "#ffffff", "surface-variant": "#e3e1ec" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" }, spacing: { margin: "1rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "margin-desktop": "3rem", gutter: "1rem", "gutter-desktop": "2rem", "gutter-tablet": "1.5rem", "space-xl": "2rem", "margin-tablet": "2rem", "space-xs": "0.25rem", "space-md": "1rem" }, fontFamily: { "body-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], display: ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, fontSize: { "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.03em", fontWeight: "600" }], "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }], "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }], "headline-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }], "title-md": ["16px", { lineHeight: "22px", fontWeight: "600" }], "headline-lg-mobile": ["26px", { lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "700" }], "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }], display: ["36px", { lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700" }], "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }] } } } };</script><style>@layer base { html, body { width: 100vw; min-height: 100vh; margin: 0; padding: 0; } body { overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-margin flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><img alt="Logo.png" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UfXuHpEi92EbqbSL0o17XPBVmX2dYE7HxjkPWH4yJfCofEPlelbWemhYkKzsjSCAFrFSwS2JLJs4yGIsCvH6RcTRFffknObdX_crVWLNWkEfiRHVC7XLRtrdoTy5T0j-IjzemKX5HfIcUFkqJj59Ao6nKDR404WOf5bRxhIq2MW8cdcBmbXbzKBUgqlFkA4ITb7GfXoIYF6GlnMqPw9OAHXbsYkfGHNEEqBkccMXLmEl7zyzqqmO6t94L4LK9jp_53N_srpOFLcHM"/><div class="flex flex-col min-w-0"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider truncate">Back Of House</span><span class="font-title-md text-title-md text-on-surface font-bold truncate">Discover</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors focus:outline-none"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary-container ring-2 ring-surface"></span></button><div class="p-0.5 rounded-full bg-surface-container-high flex items-center justify-center"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VJW_ELHC-obbSxrPsamh23A59DPJxzCpLUn9BYVWk-hypgYoiuU92gAIVAMb9N5XHlzAfWZ8aOjOKIiq39JELLNq67joE6L6EFabPqzMoR4fervuAFOBLOI6nEMqFxH3oxCWR-Edr6knVuob69m7eN4Hctw-aTUbuYHOjX7tgoRuF-pMALTyaL0ahO4sUQ9PQQLWJiZ8JMCoDSsaMgNr-zszafhzmk_w7o7vjzDniglDVudE8HEE9QQEg"/></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-28 bg-surface"><div class="flex flex-col w-full">
+<!-- Directory Intro & Search Hub -->
+<section class="px-margin pt-space-md pb-space-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between gap-space-sm">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary-container font-semibold">Institutional Registry</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight mt-0.5">Companies</h1>
+</div>
+<button aria-label="Saved Companies" class="flex items-center gap-space-xs px-3 py-2 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-all active:scale-95 shadow-sm" id="savedToggleBtn">
+<span class="material-symbols-outlined text-[18px] text-primary-container" id="savedToggleIcon">bookmark_border</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Saved (<span id="savedCount">2</span>)</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+      Trusted ecosystem of certified event production, staging, and technical contractors across Saudi Arabia.
+    </p>
+<!-- Search Box -->
+<div class="relative w-full mt-1">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-11 pl-10 pr-10 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline font-body-md text-body-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-container/20 transition-all" id="directorySearch" placeholder="Search companies by name (Arabic / English) or service..." type="text"/>
+<button aria-label="Clear Search" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-outline hover:text-on-surface" id="clearSearchBtn">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</section>
+<!-- Filter & Control Bar -->
+<section class="w-full flex flex-col gap-space-xs pt-space-xs pb-space-sm overflow-hidden">
+<!-- Primary Category Scroller -->
+<div class="flex items-center gap-space-xs overflow-x-auto px-margin scrollbar-none py-1" id="categoryScroll">
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-primary-container text-on-primary shadow-sm" data-cat="all">
+        All Categories
+      </button>
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-cat="staging">
+        Staging &amp; Rigging
+      </button>
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-cat="lighting">
+        Lighting &amp; Visuals
+      </button>
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-cat="audio">
+        Audio Engineering
+      </button>
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-cat="turnkey">
+        Turnkey Production
+      </button>
+<button class="category-chip shrink-0 px-3.5 py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-container-low text-on-surface-variant hover:text-on-surface hover:bg-surface-container" data-cat="compliance">
+        Permits &amp; Compliance
+      </button>
+</div>
+<!-- Secondary Meta Controls: Location, Verified, Sort -->
+<div class="px-margin flex items-center justify-between gap-space-xs overflow-x-auto scrollbar-none py-1">
+<div class="flex items-center gap-space-xs shrink-0">
+<!-- Location Pill Cycle -->
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm shadow-sm active:scale-95 transition-all" id="locationFilterBtn">
+<span class="material-symbols-outlined text-[15px] text-primary-container">location_on</span>
+<span id="locationLabel">Riyadh</span>
+<span class="material-symbols-outlined text-[14px] text-outline">expand_more</span>
+</button>
+<!-- Verified Toggle -->
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest text-primary-container shadow-sm active:scale-95 transition-all" data-active="true" id="verifiedFilterBtn">
+<span class="material-symbols-outlined text-[15px] text-primary-container" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-semibold">Verified Only</span>
+</button>
+</div>
+<!-- Sort Dropdown trigger -->
+<div class="relative shrink-0">
+<button class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm" id="sortToggleBtn">
+<span class="material-symbols-outlined text-[16px] text-outline">swap_vert</span>
+<span id="sortLabel">Relevance</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</button>
+<!-- Mini popup sort menu -->
+<div class="hidden absolute right-0 top-full mt-1 w-44 rounded-xl bg-surface-container-lowest shadow-xl z-30 p-1 flex flex-col gap-0.5" id="sortMenu">
+<button class="sort-option text-left px-3 py-1.5 rounded-lg font-label-sm text-label-sm bg-surface-container-low text-primary-container font-semibold" data-sort="relevance">Relevance</button>
+<button class="sort-option text-left px-3 py-1.5 rounded-lg font-label-sm text-label-sm text-on-surface hover:bg-surface-container-low" data-sort="updated">Recently Updated</button>
+<button class="sort-option text-left px-3 py-1.5 rounded-lg font-label-sm text-label-sm text-on-surface hover:bg-surface-container-low" data-sort="completeness">Profile Completeness</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Live Directory Cards Container -->
+<section class="px-margin flex flex-col gap-space-sm mt-1" id="directoryList">
+<!-- Card 1: NEXA Production -->
+<article class="company-card w-full rounded-2xl bg-surface-container-lowest p-space-md shadow-[0_4px_20px_-2px_rgba(20,16,45,0.05)] transition-all hover:shadow-[0_10px_28px_-4px_rgba(20,16,45,0.08)] flex flex-col gap-space-sm relative" data-name="nexa production" data-saved="true" data-tags="staging rigging turnkey">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center font-title-md text-title-md font-bold shrink-0 shadow-sm">
+            NX
+          </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<h2 class="font-title-md text-title-md font-bold text-on-surface tracking-tight truncate">NEXA Production</h2>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-surface-container-high text-primary-container" title="BOH Verified Contractor">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-semibold">Verified</span>
+</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate mt-0.5">
+              Event Production &amp; Technical Services · Riyadh, Saudi Arabia
+            </span>
+</div>
+</div>
+<button aria-label="Bookmark NEXA Production" class="bookmark-btn p-2 rounded-full text-primary-container hover:bg-surface-container-low transition-colors shrink-0" data-id="nexa">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<!-- Overview excerpt -->
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Specialized in large-scale entertainment infrastructure, multi-axis staging, and safety compliance for major cultural seasons.
+      </p>
+<!-- Services Badges -->
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Turnkey Staging</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Rigging &amp; Trussing</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">LED Systems</span>
+</div>
+<!-- Trust Indicators & CTA Strip -->
+<div class="flex items-center justify-between pt-1 gap-space-xs flex-wrap">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+<span>MOC Registered</span>
+</div>
+<span class="text-outline-variant font-label-sm">•</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Certified Contractor</span>
+<span class="text-outline-variant font-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-primary-container font-semibold">3 Open Gigs</span>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 ml-auto">
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-md text-label-md font-semibold active:scale-95 shadow-sm">
+            View Profile
+          </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Midan Events -->
+<article class="company-card w-full rounded-2xl bg-surface-container-lowest p-space-md shadow-[0_4px_20px_-2px_rgba(20,16,45,0.05)] transition-all hover:shadow-[0_10px_28px_-4px_rgba(20,16,45,0.08)] flex flex-col gap-space-sm relative" data-name="midan events" data-saved="true" data-tags="turnkey lighting audio">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary-container flex items-center justify-center font-title-md text-title-md font-bold shrink-0 shadow-sm">
+            MD
+          </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<h2 class="font-title-md text-title-md font-bold text-on-surface tracking-tight truncate">Midan Events</h2>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-surface-container-high text-primary-container" title="BOH Verified Contractor">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-semibold">Verified</span>
+</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate mt-0.5">
+              Live Entertainment &amp; Festival Management · Riyadh
+            </span>
+</div>
+</div>
+<button aria-label="Bookmark Midan Events" class="bookmark-btn p-2 rounded-full text-primary-container hover:bg-surface-container-low transition-colors shrink-0" data-id="midan">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Tier-1 production management partner delivering multi-venue arena execution and technical logistics.
+      </p>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Technical Direction</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Stage Management</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Broadcast Coordination</span>
+</div>
+<div class="flex items-center justify-between pt-1 gap-space-xs flex-wrap">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px] text-outline">verified_user</span>
+<span>Verified Commercial Registry</span>
+</div>
+<span class="text-outline-variant font-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-primary-container font-semibold">2 Active Opportunities</span>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 ml-auto">
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-md text-label-md font-semibold active:scale-95 shadow-sm">
+            View Profile
+          </button>
+</div>
+</div>
+</article>
+<!-- Card 3: Sela Experience -->
+<article class="company-card w-full rounded-2xl bg-surface-container-lowest p-space-md shadow-[0_4px_20px_-2px_rgba(20,16,45,0.05)] transition-all hover:shadow-[0_10px_28px_-4px_rgba(20,16,45,0.08)] flex flex-col gap-space-sm relative" data-name="sela experience" data-saved="false" data-tags="turnkey staging lighting">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-12 h-12 rounded-xl bg-inverse-surface text-inverse-on-surface flex items-center justify-center font-title-md text-title-md font-bold shrink-0 shadow-sm">
+            SL
+          </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<h2 class="font-title-md text-title-md font-bold text-on-surface tracking-tight truncate">Sela Experience</h2>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-surface-container-high text-primary-container" title="BOH Verified Contractor">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-semibold">Verified</span>
+</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate mt-0.5">
+              Mega-Event &amp; Destination Entertainment · Jeddah &amp; Riyadh
+            </span>
+</div>
+</div>
+<button aria-label="Bookmark Sela Experience" class="bookmark-btn p-2 rounded-full text-outline hover:text-primary-container hover:bg-surface-container-low transition-colors shrink-0" data-id="sela">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Pioneering monumental destination experiences, temporary structures, and world-class live entertainment.
+      </p>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Experiential Staging</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Architectural Lighting</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Soundscapes</span>
+</div>
+<div class="flex items-center justify-between pt-1 gap-space-xs flex-wrap">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px] text-secondary">workspace_premium</span>
+<span class="font-semibold text-secondary">Vision 2030 Partner</span>
+</div>
+<span class="text-outline-variant font-label-sm">•</span>
+<span class="font-label-sm text-label-sm text-primary-container font-semibold">Active RFPs</span>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 ml-auto">
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-md text-label-md font-semibold active:scale-95 shadow-sm">
+            View Profile
+          </button>
+</div>
+</div>
+</article>
+<!-- Card 4: Benchmark Arts & Production -->
+<article class="company-card w-full rounded-2xl bg-surface-container-lowest p-space-md shadow-[0_4px_20px_-2px_rgba(20,16,45,0.05)] transition-all hover:shadow-[0_10px_28px_-4px_rgba(20,16,45,0.08)] flex flex-col gap-space-sm relative" data-name="benchmark arts production" data-saved="false" data-tags="lighting compliance audio">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-start gap-space-sm min-w-0">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-on-surface flex items-center justify-center font-title-md text-title-md font-bold shrink-0 shadow-sm">
+            BM
+          </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<h2 class="font-title-md text-title-md font-bold text-on-surface tracking-tight truncate">Benchmark Arts &amp; Production</h2>
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-surface-container-high text-primary-container" title="BOH Verified Contractor">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-semibold">Verified</span>
+</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate mt-0.5">
+              Technical Stage Production &amp; Protocol · Jeddah
+            </span>
+</div>
+</div>
+<button aria-label="Bookmark Benchmark Arts" class="bookmark-btn p-2 rounded-full text-outline hover:text-primary-container hover:bg-surface-container-low transition-colors shrink-0" data-id="benchmark">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Premier live stage production agency executing high-security summits, concerts, and cultural ceremonies.
+      </p>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Stage Lighting</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">VIP Protocol Structures</span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">Audio Design</span>
+</div>
+<div class="flex items-center justify-between pt-1 gap-space-xs flex-wrap">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px] text-primary-container">shield</span>
+<span>Certified Organization</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs shrink-0 ml-auto">
+<button class="px-3.5 py-1.5 rounded-lg bg-surface-container text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors font-label-md text-label-md font-semibold active:scale-95 shadow-sm">
+            View Profile
+          </button>
+</div>
+</div>
+</article>
+</section>
+<!-- Empty State View (Toggled via simulation or search misfire) -->
+<section class="hidden px-margin py-space-xl flex-col items-center justify-center text-center" id="emptyStateSection">
+<div class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center text-outline mb-space-sm">
+<span class="material-symbols-outlined text-[32px]">domain_disabled</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">No companies match your filters</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs mt-1">
+      Try loosening your category selection, widening your location scope, or clearing the search text.
+    </p>
+<button class="mt-space-md px-4 py-2 rounded-xl bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold shadow-sm hover:opacity-95 active:scale-95 transition-all" id="resetFiltersBtn">
+      Reset All Filters
+    </button>
+</section>
+<!-- Footer Pagination & State Controls -->
+<section class="px-margin pt-space-lg pb-space-md flex flex-col items-center gap-space-sm">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span id="counterText">Showing 4 of 48 Verified Companies</span>
+</div>
+<button class="w-full h-12 rounded-xl bg-surface-container-lowest text-primary-container font-label-lg text-label-lg font-semibold shadow-sm hover:bg-surface-container-low transition-all active:scale-[0.99] flex items-center justify-center gap-space-xs" id="loadMoreBtn">
+<span>Load More Companies</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<!-- Dev / UX Inspection State Switcher -->
+<div class="pt-space-xs flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded-md text-outline hover:text-on-surface-variant font-label-sm text-label-sm transition-colors" id="previewEmptyBtn">
+        Toggle Empty State View
+      </button>
+</div>
+</section>
+</div>
+<script>
+  (function() {
+    const searchInput = document.getElementById('directorySearch');
+    const clearBtn = document.getElementById('clearSearchBtn');
+    const cards = Array.from(document.querySelectorAll('.company-card'));
+    const emptyState = document.getElementById('emptyStateSection');
+    const directoryList = document.getElementById('directoryList');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+    const previewEmptyBtn = document.getElementById('previewEmptyBtn');
+    const categoryChips = document.querySelectorAll('.category-chip');
+    const locationFilterBtn = document.getElementById('locationFilterBtn');
+    const locationLabel = document.getElementById('locationLabel');
+    const verifiedFilterBtn = document.getElementById('verifiedFilterBtn');
+    const sortToggleBtn = document.getElementById('sortToggleBtn');
+    const sortMenu = document.getElementById('sortMenu');
+    const sortLabel = document.getElementById('sortLabel');
+    const sortOptions = document.querySelectorAll('.sort-option');
+    const savedToggleBtn = document.getElementById('savedToggleBtn');
+    const savedToggleIcon = document.getElementById('savedToggleIcon');
+    const savedCountEl = document.getElementById('savedCount');
+    const counterText = document.getElementById('counterText');
+
+    let isSavedView = false;
+    let currentLocationIndex = 0;
+    const locations = ['Riyadh', 'Jeddah', 'Kingdom-wide'];
+
+    // Search input handler
+    function filterCards() {
+      const query = (searchInput.value || '').trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const tags = card.getAttribute('data-tags') || '';
+        const isSaved = card.getAttribute('data-saved') === 'true';
+
+        let matchesSearch = !query || name.includes(query) || tags.includes(query);
+        let matchesSaved = !isSavedView || isSaved;
+
+        if (matchesSearch && matchesSaved) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (visibleCount === 0) {
+        directoryList.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        counterText.textContent = 'Showing 0 of 48 Verified Companies';
+      } else {
+        directoryList.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        emptyState.classList.remove('flex');
+        counterText.textContent = `Showing ${visibleCount} of 48 Verified Companies`;
+      }
+
+      if (query.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+
+    searchInput.addEventListener('input', filterCards);
+
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearBtn.classList.add('hidden');
+      filterCards();
+      searchInput.focus();
+    });
+
+    // Reset filters
+    resetFiltersBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      isSavedView = false;
+      savedToggleIcon.textContent = 'bookmark_border';
+      categoryChips.forEach((chip, i) => {
+        if (i === 0) {
+          chip.classList.add('bg-primary-container', 'text-on-primary');
+          chip.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        } else {
+          chip.classList.remove('bg-primary-container', 'text-on-primary');
+          chip.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        }
+      });
+      filterCards();
+    });
+
+    // Category chips interactive toggle
+    categoryChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        categoryChips.forEach(c => {
+          c.classList.remove('bg-primary-container', 'text-on-primary');
+          c.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        });
+        chip.classList.add('bg-primary-container', 'text-on-primary');
+        chip.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        
+        const cat = chip.getAttribute('data-cat');
+        if (cat === 'all') {
+          searchInput.value = '';
+        } else {
+          searchInput.value = cat;
+        }
+        filterCards();
+      });
+    });
+
+    // Location toggle cycle
+    locationFilterBtn.addEventListener('click', () => {
+      currentLocationIndex = (currentLocationIndex + 1) % locations.length;
+      locationLabel.textContent = locations[currentLocationIndex];
+    });
+
+    // Verified button toggle
+    verifiedFilterBtn.addEventListener('click', () => {
+      const isActive = verifiedFilterBtn.getAttribute('data-active') === 'true';
+      if (isActive) {
+        verifiedFilterBtn.setAttribute('data-active', 'false');
+        verifiedFilterBtn.classList.remove('bg-surface-container-lowest', 'text-primary-container');
+        verifiedFilterBtn.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+      } else {
+        verifiedFilterBtn.setAttribute('data-active', 'true');
+        verifiedFilterBtn.classList.add('bg-surface-container-lowest', 'text-primary-container');
+        verifiedFilterBtn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      }
+    });
+
+    // Sort Dropdown
+    sortToggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sortMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!sortMenu.contains(e.target) && !sortToggleBtn.contains(e.target)) {
+        sortMenu.classList.add('hidden');
+      }
+    });
+
+    sortOptions.forEach(opt => {
+      opt.addEventListener('click', () => {
+        sortLabel.textContent = opt.textContent;
+        sortOptions.forEach(o => o.classList.remove('bg-surface-container-low', 'text-primary-container', 'font-semibold'));
+        opt.classList.add('bg-surface-container-low', 'text-primary-container', 'font-semibold');
+        sortMenu.classList.add('hidden');
+      });
+    });
+
+    // Saved list toggle
+    savedToggleBtn.addEventListener('click', () => {
+      isSavedView = !isSavedView;
+      if (isSavedView) {
+        savedToggleBtn.classList.add('bg-primary-container', 'text-on-primary');
+        savedToggleBtn.classList.remove('bg-surface-container-low', 'text-on-surface');
+        savedToggleIcon.textContent = 'bookmark';
+        savedToggleIcon.classList.remove('text-primary-container');
+        savedToggleIcon.classList.add('text-on-primary');
+      } else {
+        savedToggleBtn.classList.remove('bg-primary-container', 'text-on-primary');
+        savedToggleBtn.classList.add('bg-surface-container-low', 'text-on-surface');
+        savedToggleIcon.textContent = 'bookmark_border';
+        savedToggleIcon.classList.add('text-primary-container');
+        savedToggleIcon.classList.remove('text-on-primary');
+      }
+      filterCards();
+    });
+
+    // Card Bookmark toggle
+    document.querySelectorAll('.bookmark-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = btn.closest('.company-card');
+        const icon = btn.querySelector('.material-symbols-outlined');
+        const isSaved = card.getAttribute('data-saved') === 'true';
+
+        if (isSaved) {
+          card.setAttribute('data-saved', 'false');
+          icon.textContent = 'bookmark_border';
+          icon.style.fontVariationSettings = "'FILL' 0";
+          btn.classList.add('text-outline');
+          btn.classList.remove('text-primary-container');
+        } else {
+          card.setAttribute('data-saved', 'true');
+          icon.textContent = 'bookmark';
+          icon.style.fontVariationSettings = "'FILL' 1";
+          btn.classList.remove('text-outline');
+          btn.classList.add('text-primary-container');
+        }
+
+        // recalculate saved count
+        const totalSaved = document.querySelectorAll('.company-card[data-saved="true"]').length;
+        savedCountEl.textContent = totalSaved;
+        if (isSavedView) filterCards();
+      });
+    });
+
+    // Preview empty state toggle for design review
+    previewEmptyBtn.addEventListener('click', () => {
+      const isHidden = emptyState.classList.contains('hidden');
+      if (isHidden) {
+        directoryList.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        counterText.textContent = 'Showing 0 of 48 Verified Companies';
+      } else {
+        directoryList.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        emptyState.classList.remove('flex');
+        counterText.textContent = 'Showing 4 of 48 Verified Companies';
+      }
+    });
+
+    // Load More feedback
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    loadMoreBtn.addEventListener('click', () => {
+      loadMoreBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+        <span>Querying Registry...</span>
+      `;
+      setTimeout(() => {
+        loadMoreBtn.innerHTML = `
+          <span>All 48 Verified Companies Loaded</span>
+          <span class="material-symbols-outlined text-[18px]">check</span>
+        `;
+        loadMoreBtn.classList.add('opacity-75', 'pointer-events-none');
+      }, 700);
+    });
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_10px_28px_-4px_rgba(20,16,45,0.08)]" data-active-classes="text-primary-container [&amp;_span.icon-box]:bg-primary-container [&amp;_span.icon-box]:text-on-primary [&amp;_span.icon-box]:shadow-[0_4px_16px_-2px_rgba(88,50,230,0.4)] [&amp;_span.icon-box]:-translate-y-1 [&amp;_span.label-text]:text-primary-container [&amp;_span.label-text]:font-semibold"><div class="h-16 px-space-xs grid grid-cols-5 items-center justify-items-center max-w-md mx-auto"><a class="group flex flex-col items-center justify-center min-w-[44px] min-h-[44px] w-full py-1 text-on-surface-variant transition-all" data-path="home" href="#"><span class="icon-box flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"><span class="material-symbols-outlined text-[22px]">home</span></span><span class="label-text font-label-sm text-label-sm tracking-tight transition-colors">Home</span></a><a aria-current="page" class="group flex flex-col items-center justify-center min-w-[44px] min-h-[44px] w-full py-1 transition-all text-primary-container [&amp;_span.icon-box]:bg-primary-container [&amp;_span.icon-box]:text-on-primary [&amp;_span.icon-box]:shadow-[0_4px_16px_-2px_rgba(88,50,230,0.4)] [&amp;_span.icon-box]:-translate-y-1 [&amp;_span.label-text]:text-primary-container [&amp;_span.label-text]:font-semibold" data-path="discover" href="#"><span class="icon-box flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"><span class="material-symbols-outlined text-[22px]">explore</span></span><span class="label-text font-label-sm text-label-sm tracking-tight transition-colors">Discover</span></a><a class="group flex flex-col items-center justify-center min-w-[44px] min-h-[44px] w-full py-1 text-on-surface-variant transition-all" data-path="news" href="#"><span class="icon-box flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"><span class="material-symbols-outlined text-[22px]">newspaper</span></span><span class="label-text font-label-sm text-label-sm tracking-tight transition-colors">News</span></a><a class="group flex flex-col items-center justify-center min-w-[44px] min-h-[44px] w-full py-1 text-on-surface-variant transition-all" data-path="rewards" href="#"><span class="icon-box flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"><span class="material-symbols-outlined text-[22px]">workspace_premium</span></span><span class="label-text font-label-sm text-label-sm tracking-tight transition-colors">Rewards</span></a><a class="group flex flex-col items-center justify-center min-w-[44px] min-h-[44px] w-full py-1 text-on-surface-variant transition-all" data-path="profile" href="#"><span class="icon-box flex items-center justify-center w-10 h-7 rounded-full transition-all duration-200"><span class="material-symbols-outlined text-[22px]">person</span></span><span class="label-text font-label-sm text-label-sm tracking-tight transition-colors">Profile</span></a></div></nav></body></html>
