@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
-/// Type scale — Plus Jakarta Sans, falling back to Inter, then the system face.
+/// Type scale — Poppins for Latin text and every number, Cairo for Arabic.
 ///
-/// Derived from the Stitch design system (`ui-refrence/stitch/back_of_house/
-/// DESIGN.md`), stepped down one notch so compact phones (360dp) fit
-/// titles and metadata on one line. These are metrics only; colour is applied per
-/// mode by [AppTextStyles] through `context.text`.
+/// Metrics follow the design hand-off (`docs/design/design-tokens.json`).
+/// Poppins comes first in the stack, so digits stay Western and in Poppins in
+/// both languages; Arabic glyphs fall through to Cairo. These are metrics
+/// only; colour (and Arabic letter-spacing) is applied by [AppTextStyles]
+/// through `context.text`.
 abstract final class AppTypography {
-  static const String fontFamily = 'PlusJakartaSans';
-  static const List<String> fontFamilyFallback = ['Inter'];
+  static const String fontFamily = 'Poppins';
+  static const String arabicFontFamily = 'Cairo';
+  static const List<String> fontFamilyFallback = [arabicFontFamily];
 
   static const TextStyle _base = TextStyle(
     fontFamily: fontFamily,
@@ -18,140 +20,141 @@ abstract final class AppTypography {
     leadingDistribution: TextLeadingDistribution.even,
   );
 
-  /// 26 / 32 Bold — headline-lg. Hero statements.
-  static final TextStyle display = _base.copyWith(
-    fontSize: 26,
-    height: 32 / 26,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.39,
+  static TextStyle _style(
+    double size,
+    double lineHeight,
+    FontWeight weight, [
+    double letterSpacing = 0,
+  ]) => _base.copyWith(
+    fontSize: size,
+    height: lineHeight / size,
+    fontWeight: weight,
+    letterSpacing: letterSpacing,
   );
 
-  /// 22 / 28 Bold — Page titles.
-  static final TextStyle h1 = _base.copyWith(
-    fontSize: 22,
-    height: 28 / 22,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.33,
-  );
+  /// 30 / 38 Bold — Welcome and sign-in statements.
+  static final TextStyle display = _style(30, 38, FontWeight.w700, -0.6);
 
-  /// 19 / 24 SemiBold — Greetings, stat values.
-  static final TextStyle h2 = _base.copyWith(
-    fontSize: 19,
-    height: 24 / 19,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.19,
-  );
+  /// 26 / 32 Bold — Sign-up and confirmation titles.
+  static final TextStyle titleXL = _style(26, 32, FontWeight.w700, -0.5);
 
-  /// 16 / 22 SemiBold — Section titles.
-  static final TextStyle h3 = _base.copyWith(
-    fontSize: 16,
-    height: 22 / 16,
-    fontWeight: FontWeight.w600,
-  );
+  /// 24 / 30 Bold — Tab screen titles and greetings.
+  static final TextStyle h1 = _style(24, 30, FontWeight.w700, -0.4);
 
-  /// 15 / 20 SemiBold — Card titles, primary button labels.
-  static final TextStyle cardTitle = _base.copyWith(
-    fontSize: 15,
-    height: 20 / 15,
-    fontWeight: FontWeight.w600,
-  );
+  /// 22 / 28 Bold — Dashboard greeting, notifications title.
+  static final TextStyle title = _style(22, 28, FontWeight.w700, -0.5);
 
-  /// 15 / 22 Regular — Long-form reading.
-  static final TextStyle bodyLarge = _base.copyWith(
-    fontSize: 15,
-    height: 22 / 15,
-    fontWeight: FontWeight.w400,
-  );
+  /// 20 / 26 Bold — Back-button app bar titles, detail headings.
+  static final TextStyle appBarTitle = _style(20, 26, FontWeight.w700, -0.5);
 
-  /// 13 / 19 Regular — Default reading text.
-  static final TextStyle body = _base.copyWith(
-    fontSize: 13,
-    height: 19 / 13,
-    fontWeight: FontWeight.w400,
-  );
+  /// 18 / 24 Bold — Section headings next to the skew bar.
+  static final TextStyle h2 = _style(18, 24, FontWeight.w700, -0.4);
 
-  /// 12 / 16 Regular — Secondary lines.
-  static final TextStyle bodySmall = _base.copyWith(
-    fontSize: 12,
-    height: 16 / 12,
-    fontWeight: FontWeight.w400,
-  );
+  /// 16 / 21 Bold — Large card titles, sub-sections.
+  static final TextStyle h3 = _style(16, 21, FontWeight.w700);
 
-  /// 13 / 18 SemiBold — Field labels, compact buttons, chips.
-  static final TextStyle label = _base.copyWith(
-    fontSize: 13,
-    height: 18 / 13,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.13,
-  );
+  /// 15 / 20 Bold — Card titles, primary button labels.
+  static final TextStyle cardTitle = _style(15, 20, FontWeight.w700);
 
-  /// 11.5 / 15 SemiBold — Links in section headers, tags.
-  static final TextStyle labelMedium = _base.copyWith(
-    fontSize: 11.5,
-    height: 15 / 11.5,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.23,
-  );
+  /// 14 / 19 Bold — List card titles.
+  static final TextStyle itemTitle = _style(14, 19, FontWeight.w700);
 
-  /// 10.5 / 13 SemiBold — Metadata, timestamps, nav labels.
-  static final TextStyle caption = _base.copyWith(
-    fontSize: 10.5,
-    height: 13 / 10.5,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 0.3,
-  );
+  /// 15 / 25 Regular — Long-form reading (articles).
+  static final TextStyle article = _style(15, 25, FontWeight.w400);
+
+  /// 14 / 21 Regular — Field values, lead paragraphs.
+  static final TextStyle bodyLarge = _style(14, 21, FontWeight.w400);
+
+  /// 13 / 20 Regular — Default reading text.
+  static final TextStyle body = _style(13, 20, FontWeight.w400);
+
+  /// 12 / 16 Regular — Secondary lines and metadata.
+  static final TextStyle bodySmall = _style(12, 16, FontWeight.w400);
+
+  /// 13 / 18 Bold — Row titles, compact buttons, links.
+  static final TextStyle label = _style(13, 18, FontWeight.w700);
+
+  /// 12 / 16 Bold — Field labels, chips, small buttons.
+  static final TextStyle labelMedium = _style(12, 16, FontWeight.w700);
+
+  /// 11 / 15 Regular — Timestamps, helper text.
+  static final TextStyle caption = _style(11, 15, FontWeight.w400);
+
+  /// 10.5 / 14 ExtraBold — Status badges.
+  static final TextStyle badge = _style(10.5, 14, FontWeight.w800);
+
+  /// 11 / 14 — Bottom navigation labels (weight set per state).
+  static final TextStyle nav = _style(11, 14, FontWeight.w600);
 
   // ── Roles derived from the scale ─────────────────────────────────────────
 
   /// Button labels — same metrics as [cardTitle].
   static final TextStyle button = cardTitle;
 
-  /// Uppercase overline, e.g. "ECOSYSTEM DIRECTORY". Tracking is dropped for
-  /// Arabic by `BOHEyebrow`, since spacing breaks cursive joining.
-  static final TextStyle eyebrow = caption.copyWith(letterSpacing: 1.1);
+  /// Uppercase overline, e.g. "TODAY", "DATE". Tracking and uppercasing are
+  /// dropped for Arabic, since both break cursive joining.
+  static final TextStyle eyebrow = _style(10, 14, FontWeight.w800, 1);
 
-  /// Tag text, e.g. "Verified".
-  static final TextStyle tag = labelMedium;
+  /// Category tag text, e.g. "CONFERENCE".
+  static final TextStyle tag = _style(9.5, 13, FontWeight.w800, 1);
+
+  /// Stats, points, dates and codes. Always Poppins (Western digits), in
+  /// both languages; pick the size per use.
+  static TextStyle number(double size, {double? lineHeight}) =>
+      _style(size, lineHeight ?? size * 1.2, FontWeight.w700);
 }
 
 /// The type scale coloured for the active mode. Use via `context.text`.
 ///
 /// Default ink per role: headings and titles in [AppColors.textPrimary],
-/// reading text in [AppColors.textSecondary], small print in
-/// [AppColors.textMuted].
+/// reading text and small print in [AppColors.textSecondary] (the design's
+/// single muted ink). With [arabic], letter-spacing is removed everywhere.
 @immutable
 class AppTextStyles {
-  const AppTextStyles(this.c);
+  const AppTextStyles(this.c, {this.arabic = false});
 
   final AppColors c;
+  final bool arabic;
 
-  TextStyle get display => AppTypography.display.copyWith(color: c.textPrimary);
-  TextStyle get h1 => AppTypography.h1.copyWith(color: c.textPrimary);
-  TextStyle get h2 => AppTypography.h2.copyWith(color: c.textPrimary);
-  TextStyle get h3 => AppTypography.h3.copyWith(color: c.textPrimary);
-  TextStyle get cardTitle =>
-      AppTypography.cardTitle.copyWith(color: c.textPrimary);
-  TextStyle get bodyLarge =>
-      AppTypography.bodyLarge.copyWith(color: c.textSecondary);
-  TextStyle get body => AppTypography.body.copyWith(color: c.textSecondary);
-  TextStyle get bodySmall =>
-      AppTypography.bodySmall.copyWith(color: c.textSecondary);
-  TextStyle get label => AppTypography.label.copyWith(color: c.textPrimary);
-  TextStyle get labelMedium =>
-      AppTypography.labelMedium.copyWith(color: c.textSecondary);
-  TextStyle get caption => AppTypography.caption.copyWith(color: c.textMuted);
-  TextStyle get eyebrow =>
-      AppTypography.eyebrow.copyWith(color: c.textSecondary);
-  TextStyle get tag => AppTypography.tag.copyWith(color: c.primaryText);
+  TextStyle _ink(TextStyle style, Color color) => arabic
+      ? style.copyWith(color: color, letterSpacing: 0)
+      : style.copyWith(color: color);
+
+  TextStyle get display => _ink(AppTypography.display, c.textPrimary);
+  TextStyle get titleXL => _ink(AppTypography.titleXL, c.textPrimary);
+  TextStyle get h1 => _ink(AppTypography.h1, c.textPrimary);
+  TextStyle get title => _ink(AppTypography.title, c.textPrimary);
+  TextStyle get appBarTitle => _ink(AppTypography.appBarTitle, c.textPrimary);
+  TextStyle get h2 => _ink(AppTypography.h2, c.textPrimary);
+  TextStyle get h3 => _ink(AppTypography.h3, c.textPrimary);
+  TextStyle get cardTitle => _ink(AppTypography.cardTitle, c.textPrimary);
+  TextStyle get itemTitle => _ink(AppTypography.itemTitle, c.textPrimary);
+  TextStyle get article => _ink(AppTypography.article, c.textPrimary);
+  TextStyle get bodyLarge => _ink(AppTypography.bodyLarge, c.textPrimary);
+  TextStyle get body => _ink(AppTypography.body, c.textSecondary);
+  TextStyle get bodySmall => _ink(AppTypography.bodySmall, c.textSecondary);
+  TextStyle get label => _ink(AppTypography.label, c.textPrimary);
+  TextStyle get labelMedium => _ink(AppTypography.labelMedium, c.textPrimary);
+  TextStyle get caption => _ink(AppTypography.caption, c.textSecondary);
+  TextStyle get badge => _ink(AppTypography.badge, c.textSecondary);
+  TextStyle get eyebrow => _ink(AppTypography.eyebrow, c.textSecondary);
+  TextStyle get tag => _ink(AppTypography.tag, c.primaryText);
+
+  /// Numbers keep Poppins and their tracking in both languages.
+  TextStyle number(double size, {double? lineHeight, Color? color}) =>
+      AppTypography.number(
+        size,
+        lineHeight: lineHeight,
+      ).copyWith(color: color ?? c.textPrimary);
 
   /// Material text theme mapped onto the scale, for framework widgets.
   TextTheme get material => TextTheme(
     displayLarge: display,
-    displayMedium: display,
+    displayMedium: titleXL,
     displaySmall: h1,
     headlineLarge: h1,
-    headlineMedium: h2,
-    headlineSmall: h3,
+    headlineMedium: title,
+    headlineSmall: appBarTitle,
     titleLarge: h2,
     titleMedium: h3,
     titleSmall: cardTitle,

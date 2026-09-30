@@ -47,6 +47,24 @@ class AppUser {
 
   bool get isIndividual => accountType == AccountType.individual;
 
+  /// The same account with edited profile fields (individuals).
+  AppUser copyWith({
+    String? fullName,
+    String? headline,
+    ProfileStatus? profileStatus,
+  }) => AppUser(
+    id: id,
+    fullName: fullName ?? this.fullName,
+    email: email,
+    accountType: accountType,
+    profileStatus: profileStatus ?? this.profileStatus,
+    membership: membership,
+    phone: phone,
+    avatar: avatar,
+    headline: headline ?? this.headline,
+    isVerified: isVerified,
+  );
+
   factory AppUser.fromJson(Map<String, dynamic> json) {
     // `member_type` is the pre-2026-09 field name; its values were
     // professional / company / student / other.

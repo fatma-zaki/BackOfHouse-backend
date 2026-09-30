@@ -4,6 +4,7 @@ import '../../../core/constants/app_assets.dart';
 import '../../../core/data/mock_support.dart';
 import '../../../core/l10n/content_language.dart';
 import '../../../core/media/app_image.dart';
+import '../../../core/network/api_exception.dart';
 import '../../auth/domain/app_user.dart';
 import '../../auth/presentation/controllers/auth_controller.dart';
 import '../domain/profile.dart';
@@ -11,6 +12,7 @@ import '../domain/profile_status.dart';
 
 abstract interface class ProfileDataSource {
   Future<Profile> getMyProfile();
+  Future<Profile> updateProfile(ProfileDraft draft);
 }
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -20,7 +22,21 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Profile> getMyProfile() => _source.getMyProfile();
+
+  @override
+  Future<Profile> updateProfile(ProfileDraft draft) =>
+      _source.updateProfile(draft);
 }
+
+/// Profile edits made this session. Outlives the mock data source, which is
+/// rebuilt whenever the signed-in user changes (saving changes it).
+class ProfileEditsStore {
+  ProfileDraft? draft;
+}
+
+final profileEditsStoreProvider = Provider<ProfileEditsStore>(
+  (ref) => ProfileEditsStore(),
+);
 
 /// Builds the signed-in member's profile around their real name and
 /// headline, filling the rest with sample content.
@@ -29,15 +45,59 @@ class ProfileMockDataSource implements ProfileDataSource {
     required this.user,
     required this.language,
     required this.latency,
+    required this.edits,
   });
 
   final AppUser? user;
+  final ProfileEditsStore edits;
   final String Function() language;
   final Duration latency;
 
   @override
+  Future<Profile> updateProfile(ProfileDraft draft) async {
+    await Future<void>.delayed(latency);
+    if (draft.validate().isNotEmpty) {
+      throw const ApiException(type: ApiErrorType.validation, statusCode: 422);
+    }
+    edits.draft = draft;
+    return _withEdits(await _base());
+  }
+
+  @override
   Future<Profile> getMyProfile() async {
     await Future<void>.delayed(latency);
+    return _withEdits(await _base());
+  }
+
+  Profile _withEdits(Profile p) {
+    final d = edits.draft;
+    if (d == null) return p;
+    return Profile(
+      name: d.name.trim(),
+      headline: d.headline.trim(),
+      company: p.company,
+      city: d.city.trim(),
+      industry: p.industry,
+      about: d.about.trim(),
+      experience: p.experience,
+      skills: p.skills,
+      visibilityScore: p.visibilityScore,
+      verificationLevel: p.verificationLevel,
+      availability: p.availability,
+      projects: p.projects,
+      badges: p.badges,
+      yearsExperience: p.yearsExperience,
+      attendancePoints: p.attendancePoints,
+      eventsAttended: p.eventsAttended,
+      status: d.status,
+      avatar: p.avatar,
+      verified: p.verified,
+      interests: d.interests,
+      contactPrivacy: d.contactPrivacy,
+    );
+  }
+
+  Future<Profile> _base() async {
     final lang = language();
     String t(String en, String ar) => MockText(en, ar).of(lang);
 
@@ -139,6 +199,7 @@ final profileDataSourceProvider = Provider<ProfileDataSource>((ref) {
     user: ref.watch(authControllerProvider.select((s) => s.value)),
     language: () => ref.read(contentLanguageProvider),
     latency: ref.watch(mockLatencyProvider),
+    edits: ref.watch(profileEditsStoreProvider),
   );
 });
 

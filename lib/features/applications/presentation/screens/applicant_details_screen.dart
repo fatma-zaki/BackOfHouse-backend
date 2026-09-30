@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
-import '../../../../core/utils/date_formats.dart';
+import '../../../../core/l10n/l10n_messages.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../companies/presentation/controllers/company_workspace_providers.dart';
 import '../../../companies/presentation/widgets/company_widgets.dart';
-import '../../data/applicants_data.dart';
 import '../../domain/application.dart';
+import '../widgets/applicant_actions.dart';
 import '../widgets/application_widgets.dart';
 
-/// What a company may see of one application — public profile, selected
-/// experience and projects, message — and the status steps it may take.
-/// Contact details appear only as the data layer releases them.
+/// What a company may see of one application — public profile, message,
+/// selected experience and projects — and the single next step it may
+/// take. Contact details appear only as the data layer releases them (from
+/// the Contact stage, and only what the applicant shares).
 class ApplicantDetailsScreen extends ConsumerWidget {
   const ApplicantDetailsScreen({super.key, required this.applicationId});
 
@@ -26,7 +28,10 @@ class ApplicantDetailsScreen extends ConsumerWidget {
     final value = ref.watch(applicantProvider(applicationId));
 
     return BOHScaffold(
-      appBar: BOHAppBar(title: l10n.companyApplicant),
+      appBar: BOHAppBar(
+        overline: l10n.companyApplicationFor,
+        title: value.value?.opportunityTitle ?? l10n.companyApplicant,
+      ),
       bottomNavigationBar: switch (value) {
         AsyncData(value: final a) when a.status.isActive => _StatusActions(
           applicant: a,
@@ -50,9 +55,15 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final c = context.colors;
     final a = applicant;
     final p = a.applicant;
-    final monthYear = AppDateFormats.monthYear(context);
+    const gap = SizedBox(height: AppSpacing.s16);
+
+    Widget subhead(String text) => Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+      child: Text(text, style: context.text.itemTitle),
+    );
 
     return ListView(
       padding: BOHScaffold.screenPadding.add(
@@ -60,134 +71,137 @@ class _Body extends StatelessWidget {
       ),
       children: [
         BOHCard(
+          borderRadius: AppRadii.heroAll,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Row(
                 children: [
                   BOHAvatar(
                     name: p.name,
                     image: p.avatar,
-                    size: BOHAvatarSize.large,
+                    dimension: 60,
+                    ring: true,
+                    ringGap: c.surface,
                     verified: p.verified,
                   ),
-                  const SizedBox(width: AppSpacing.s12),
+                  const SizedBox(width: AppSpacing.s14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Semantics(
                           header: true,
-                          child: Text(p.name, style: context.text.h2),
+                          child: Text(p.name, style: context.text.h3),
                         ),
-                        Text(p.headline, style: context.text.bodySmall),
-                        if (p.city.isNotEmpty)
-                          Text(p.city, style: context.text.caption),
+                        Text(
+                          [
+                            p.headline,
+                            if (p.city.isNotEmpty) p.city,
+                          ].join(' · '),
+                          style: context.text.bodySmall,
+                        ),
+                        const SizedBox(height: AppSpacing.s6),
+                        BOHStatusBadge(
+                          l10n.applicantStatusApplied(
+                            a.status.label(l10n),
+                            l10n.relativeTime(a.submittedAt),
+                          ),
+                          tone: a.status.tone,
+                        ),
                       ],
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: AppSpacing.s12),
-              Wrap(
-                spacing: AppSpacing.s8,
-                runSpacing: AppSpacing.s8,
-                children: [
-                  ApplicationStatusTag(a.status),
-                  if (p.verified)
-                    BOHTag(
-                      l10n.verificationLevel(p.verificationLevel),
-                      variant: BOHTagVariant.verified,
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.s12),
-              Text(
-                '${a.opportunityTitle} · ${l10n.applicationReference(a.reference)}',
-                style: context.text.caption,
-              ),
-              Text(
-                l10n.applicationAppliedOn(
-                  AppDateFormats.mediumDate(context).format(a.submittedAt),
-                ),
-                style: context.text.caption,
               ),
               const SizedBox(height: AppSpacing.s16),
               ApplicationPipeline(status: a.status),
             ],
           ),
         ),
-        const SizedBox(height: AppSpacing.s12),
-        _ContactCard(applicant: a),
         if (a.statement case final message?) ...[
-          const SizedBox(height: AppSpacing.s12),
-          SectionCard(
-            icon: AppIcons.comment,
-            title: l10n.applyStatementTitle,
-            child: Text(message, style: context.text.body),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.s12),
-        SectionCard(
-          icon: AppIcons.job,
-          title: l10n.applyExperienceTitle,
-          child: a.experience.isEmpty
-              ? Text(l10n.companyNoneIncluded, style: context.text.bodySmall)
-              : Column(
-                  children: [
-                    for (final e in a.experience)
-                      BOHListTile(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.s8,
-                        ),
-                        title: e.role,
-                        subtitle: e.company,
-                        caption: [
-                          monthYear.format(e.start),
-                          if (e.end case final end?)
-                            monthYear.format(end)
-                          else
-                            l10n.profilePresent,
-                        ].join(' – '),
-                      ),
-                  ],
-                ),
-        ),
-        const SizedBox(height: AppSpacing.s12),
-        SectionCard(
-          icon: AppIcons.workshop,
-          title: l10n.applyProjectsTitle,
-          child: a.projects.isEmpty
-              ? Text(l10n.companyNoneIncluded, style: context.text.bodySmall)
-              : Column(
-                  children: [
-                    for (final project in a.projects)
-                      BOHListTile(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.s8,
-                        ),
-                        title: project.title,
-                        subtitle: project.role,
-                        caption: '${project.year} · ${project.category}',
-                      ),
-                  ],
-                ),
-        ),
-        if (p.skills.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s12),
-          SectionCard(
-            icon: AppIcons.technology,
-            title: l10n.opportunitySkills,
-            child: Wrap(
-              spacing: AppSpacing.s8,
-              runSpacing: AppSpacing.s8,
-              children: [
-                for (final s in p.skills)
-                  BOHTag(s, variant: BOHTagVariant.outline),
-              ],
+          gap,
+          subhead(l10n.companyMessageTitle),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s14,
+              vertical: AppSpacing.s12,
+            ),
+            decoration: BoxDecoration(
+              color: c.primaryTint,
+              borderRadius: AppRadii.mediumAll,
+            ),
+            child: Text(
+              message,
+              style: context.text.body.copyWith(color: c.textPrimary),
             ),
           ),
         ],
+        gap,
+        subhead(l10n.companyExperienceShared),
+        if (a.experience.isEmpty)
+          Text(l10n.companyNoneIncluded, style: context.text.bodySmall)
+        else
+          BOHGroupedList(
+            flat: true,
+            children: [
+              for (final e in a.experience)
+                BOHListTile(
+                  leading: const BOHIconCircle(
+                    icon: AppIcons.job,
+                    size: AppSizes.iconTile,
+                    rounded: true,
+                  ),
+                  title: e.role,
+                  subtitle: [
+                    '${e.start.year} – ${e.end?.year ?? l10n.profilePresent}',
+                    e.company,
+                  ].join(' · '),
+                ),
+            ],
+          ),
+        gap,
+        subhead(l10n.companyProjectsShared),
+        if (a.projects.isEmpty)
+          Text(l10n.companyNoneIncluded, style: context.text.bodySmall)
+        else
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final (i, project) in a.projects.take(2).indexed) ...[
+                if (i > 0) const SizedBox(width: AppSpacing.gridGap),
+                Expanded(
+                  child: BOHMediaTile(
+                    image: project.image,
+                    imageHeight: 64,
+                    borderRadius: AppRadii.inputAll,
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 8),
+                    child: Text(
+                      project.title,
+                      style: context.text.labelMedium.copyWith(fontSize: 11),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
+              if (a.projects.length == 1) ...[
+                const SizedBox(width: AppSpacing.gridGap),
+                const Expanded(child: SizedBox.shrink()),
+              ],
+            ],
+          ),
+        if (p.skills.isNotEmpty) ...[
+          gap,
+          subhead(l10n.opportunitySkills),
+          Wrap(
+            spacing: AppSpacing.s8,
+            runSpacing: AppSpacing.s8,
+            children: [for (final s in p.skills) BOHMetaChip(s, large: true)],
+          ),
+        ],
+        gap,
+        _Contact(applicant: a),
         const SizedBox(height: AppSpacing.s12),
         BOHInfoNote(l10n.companyDecisionNote, icon: AppIcons.shield),
       ],
@@ -197,8 +211,8 @@ class _Body extends StatelessWidget {
 
 /// Contact details stay hidden until the contact stage, and then show only
 /// what the applicant shares. There is no in-app messaging.
-class _ContactCard extends StatelessWidget {
-  const _ContactCard({required this.applicant});
+class _Contact extends StatelessWidget {
+  const _Contact({required this.applicant});
 
   final ApplicantView applicant;
 
@@ -208,116 +222,61 @@ class _ContactCard extends StatelessWidget {
     final contact = applicant.contact;
     final unlocked = ApplicantPrivacy.contactUnlocked(applicant.status);
 
+    if (contact == null) {
+      return BOHBanner(
+        unlocked ? l10n.companyContactNotShared : l10n.companyContactHidden,
+        icon: AppIcons.password,
+      );
+    }
     return SectionCard(
-      icon: unlocked ? AppIcons.email : AppIcons.hidden,
+      icon: AppIcons.email,
       title: l10n.companyApplicantContact,
-      child: contact != null
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DetailLine(icon: AppIcons.email, value: contact.email),
-                DetailLine(icon: AppIcons.phone, value: contact.phone),
-                Text(
-                  l10n.companyContactOutsideApp,
-                  style: context.text.caption,
-                ),
-              ],
-            )
-          : Text(
-              unlocked
-                  ? l10n.companyContactNotShared
-                  : l10n.companyContactHidden,
-              style: context.text.bodySmall,
-            ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DetailLine(icon: AppIcons.email, value: contact.email),
+          DetailLine(icon: AppIcons.phone, value: contact.phone),
+          Text(l10n.companyContactOutsideApp, style: context.text.caption),
+        ],
+      ),
     );
   }
 }
 
-/// The company's allowed next steps, straight from [ApplicationRules].
+/// "Not selected" beside the single next step, from [ApplicationRules].
 class _StatusActions extends ConsumerWidget {
   const _StatusActions({required this.applicant});
 
   final ApplicantView applicant;
 
-  Future<void> _move(
-    BuildContext context,
-    WidgetRef ref,
-    ApplicationStatus to,
-  ) async {
-    final l10n = context.l10n;
-    final a = applicant;
-    if (to == ApplicationStatus.accepted || to == ApplicationStatus.rejected) {
-      final confirmed = await confirmCompanyAction(
-        context,
-        title: to == ApplicationStatus.accepted
-            ? l10n.companyAcceptTitle
-            : l10n.companyRejectTitle,
-        message: l10n.companyDecisionFinal(a.applicant.name),
-        action: to == ApplicationStatus.accepted
-            ? l10n.companyAcceptApplicant
-            : l10n.companyRejectApplicant,
-      );
-      if (!confirmed || !context.mounted) return;
-    }
-    final ok = await runCompanyAction(
-      context,
-      () => ref
-          .read(applicantsRepositoryProvider)
-          .updateStatus(a.applicationId, to),
-      success: l10n.companyStatusUpdated(to.label(l10n)),
-    );
-    if (ok) {
-      ref
-        ..invalidate(applicantProvider(a.applicationId))
-        ..invalidate(applicantsProvider(a.opportunityId));
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final next = ApplicationRules.nextStatuses(
-      applicant.status,
-      ApplicationActor.company,
-    );
-    final advance = next
-        .where((s) => s != ApplicationStatus.rejected)
-        .firstOrNull;
-
-    String advanceLabel(ApplicationStatus s) => switch (s) {
-      ApplicationStatus.reviewed => l10n.companyMarkReviewed,
-      ApplicationStatus.shortlisted => l10n.companyShortlist,
-      ApplicationStatus.contact => l10n.companyMoveToContact,
-      ApplicationStatus.accepted => l10n.companyAcceptApplicant,
-      _ => s.label(l10n),
-    };
-
-    return BOHActionBar(
-      child: Row(
-        children: [
-          if (next.contains(ApplicationStatus.rejected))
-            Expanded(
-              child: BOHButton(
-                label: l10n.companyRejectApplicant,
-                variant: BOHButtonVariant.ghost,
-                trailingIcon: null,
-                onPressed: () =>
-                    _move(context, ref, ApplicationStatus.rejected),
-              ),
+    final advance = nextApplicantStep(applicant.status);
+    final reject = canRejectApplicant(applicant.status)
+        ? BOHButton(
+            label: l10n.companyRejectApplicant,
+            variant: BOHButtonVariant.danger,
+            trailingIcon: null,
+            onPressed: () => moveApplicant(
+              context,
+              ref,
+              applicant,
+              ApplicationStatus.rejected,
             ),
-          if (advance != null) ...[
-            const SizedBox(width: AppSpacing.s8),
-            Expanded(
-              flex: 2,
-              child: BOHButton(
-                label: advanceLabel(advance),
-                trailingIcon: null,
-                onPressed: () => _move(context, ref, advance),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
+          )
+        : null;
+    final forward = advance == null
+        ? null
+        : BOHButton(
+            label: applicantStepLabel(l10n, advance),
+            trailingIcon: null,
+            onPressed: () => moveApplicant(context, ref, applicant, advance),
+          );
+
+    if (reject != null && forward != null) {
+      return BOHActionBar.pair(secondary: reject, primary: forward);
+    }
+    return BOHActionBar(child: forward ?? reject ?? const SizedBox.shrink());
   }
 }

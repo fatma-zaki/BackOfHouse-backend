@@ -71,6 +71,7 @@ class Company {
     this.verified = false,
     this.capabilities = const {},
     this.followed = false,
+    this.followers = 0,
   });
 
   final String id;
@@ -96,6 +97,9 @@ class Company {
   final Set<CompanyCapability> capabilities;
   final bool followed;
 
+  /// Members following the company (a backend count).
+  final int followers;
+
   String get initials => companyInitials(name);
 
   CompanySummary get summary => CompanySummary(
@@ -106,24 +110,58 @@ class Company {
     capabilities: capabilities,
   );
 
-  Company copyWith({bool? followed}) => Company(
-    id: id,
-    name: name,
-    type: type,
-    specialization: specialization,
-    city: city,
-    description: description,
-    services: services,
-    industries: industries,
-    contactEmail: contactEmail,
-    contactPhone: contactPhone,
-    website: website,
-    openOpportunities: openOpportunities,
-    completedProjects: completedProjects,
-    verified: verified,
-    capabilities: capabilities,
-    followed: followed ?? this.followed,
-  );
+  Company copyWith({bool? followed}) {
+    final changed = followed != null && followed != this.followed;
+    return Company(
+      id: id,
+      name: name,
+      type: type,
+      specialization: specialization,
+      city: city,
+      description: description,
+      services: services,
+      industries: industries,
+      contactEmail: contactEmail,
+      contactPhone: contactPhone,
+      website: website,
+      openOpportunities: openOpportunities,
+      completedProjects: completedProjects,
+      verified: verified,
+      capabilities: capabilities,
+      followed: followed ?? this.followed,
+      followers: changed ? followers + (followed ? 1 : -1) : followers,
+    );
+  }
+}
+
+/// Basic workspace counts for the company dashboard, provided by the
+/// backend. Not advanced analytics: no funnels, no audience breakdowns.
+@immutable
+class CompanyStats {
+  const CompanyStats({
+    required this.liveListings,
+    required this.newApplicants,
+    required this.newApplicantsThisWeek,
+    required this.supplierInvites,
+    required this.profileViews,
+    this.profileViewsChangePercent,
+  });
+
+  /// Published listings.
+  final int liveListings;
+
+  /// Applications not yet reviewed, across all listings.
+  final int newApplicants;
+  final int newApplicantsThisWeek;
+
+  /// Supplier requests open to this company's type, not yet answered.
+  final int supplierInvites;
+
+  /// Company profile views over the last 30 days.
+  final int profileViews;
+
+  /// Change against the previous 30 days, when known.
+  final int? profileViewsChangePercent;
 }
 
 /// Editable profile fields. Name and type are the company's registered
@@ -175,8 +213,15 @@ class CompanyProfileDraft {
 enum CompanyProfileIssue { descriptionTooLong, invalidEmail }
 
 /// The public company directory.
+typedef CompaniesQuery = ({CompanyType? type, String query});
+
 abstract interface class CompaniesRepository {
-  Future<Paginated<Company>> getCompanies(PageRequest request);
+  /// The directory, filtered by company type and free text (name,
+  /// specialization, services, city).
+  Future<Paginated<Company>> getCompanies(
+    PageRequest request, {
+    CompaniesQuery query = (type: null, query: ''),
+  });
 
   /// One company's public profile.
   Future<Company> getCompany(String id);
@@ -194,6 +239,9 @@ abstract interface class CompaniesRepository {
 /// of the current membership and needs the matching permission.
 abstract interface class MyCompanyRepository {
   Future<Company> getMyCompany();
+
+  /// Dashboard counts.
+  Future<CompanyStats> getStats();
 
   Future<Company> updateProfile(CompanyProfileDraft draft);
 

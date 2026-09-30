@@ -72,6 +72,12 @@ class OpportunitiesMockDataSource implements OpportunitiesDataSource {
       summary: m.summary.of(lang),
       postedAt: now.subtract(m.age),
       closesAt: m.closesIn == null ? null : now.add(m.closesIn!),
+      // Sample data: jobs and co-op run on site, projects are hybrid.
+      workSetup: switch (m.type) {
+        OpportunityType.job || OpportunityType.coOp => WorkSetup.onSite,
+        OpportunityType.project => WorkSetup.hybrid,
+        _ => null,
+      },
       applicants: m.applicants,
       employment: m.employment,
       compensation: m.compensation?.of(lang),

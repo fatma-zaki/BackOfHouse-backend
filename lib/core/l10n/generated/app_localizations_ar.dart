@@ -31,6 +31,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionRetry => 'حاول مجددًا';
 
   @override
+  String get appTagline => 'مجتمع الفعاليات\nفي السعودية';
+
+  @override
+  String get actionClose => 'إغلاق';
+
+  @override
   String get actionBack => 'رجوع';
 
   @override
@@ -168,7 +174,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get languageArabic => 'العربية';
 
   @override
-  String get welcomeHaveAccount => 'لدي حساب بالفعل';
+  String get welcomeHaveAccount => 'تسجيل الدخول';
 
   @override
   String get forgotPassword => 'نسيت كلمة المرور؟';
@@ -177,7 +183,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signInCta => 'تسجيل الدخول';
 
   @override
-  String get noAccountPrompt => 'ليس لديك حساب؟';
+  String get noAccountPrompt => 'جديد في باك أوف هاوس؟';
 
   @override
   String get agreePrefix => 'أوافق على ';
@@ -192,7 +198,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacyPolicy => 'سياسة الخصوصية';
 
   @override
-  String get signUpCta => 'إنشاء الحساب';
+  String get signUpCta => 'متابعة';
 
   @override
   String get haveAccountPrompt => 'لديك حساب بالفعل؟';
@@ -295,26 +301,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get themeDark => 'داكن';
 
   @override
-  String get welcomeEyebrow => 'مرحبًا بك في';
+  String get welcomeEyebrow => 'مجتمع الفعاليات في السعودية';
 
   @override
-  String get welcomeTitleLead => 'مجتمع\n';
+  String get welcomeTitleLead => 'نبني المجتمع خلف ';
 
   @override
-  String get welcomeTitleAccent => 'باك أوف هاوس.';
+  String get welcomeTitleAccent => 'كل تجربة.';
 
   @override
-  String get welcomeSubtitle => 'تواصل مع قطاع الفعاليات في السعودية.';
+  String get welcomeSubtitle =>
+      'تواصل مع المحترفين والشركات والمواهب الصاعدة التي تصنع قطاع الفعاليات.';
 
   @override
-  String get welcomeGetStarted => 'ابدأ الآن';
+  String get welcomeGetStarted => 'إنشاء حساب';
 
   @override
-  String get signInTitle => 'مرحبًا بعودتك';
+  String get signInTitle => 'أهلًا ';
 
   @override
-  String get signInSubtitle =>
-      'سجّل الدخول إلى حسابك في باك أوف هاوس وابقَ على تواصل مع مجتمع الفعاليات.';
+  String get signInSubtitle => 'سجّل الدخول لتكمل من حيث توقفت.';
 
   @override
   String get fieldEmailLabel => 'البريد الإلكتروني';
@@ -338,7 +344,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fieldPhoneLabel => 'رقم الجوال';
 
   @override
-  String get fieldPhoneHint => '+966 50 123 4567';
+  String get fieldPhoneHint => '+966 5X XXX XXXX';
 
   @override
   String get fieldNewPasswordHint => 'أنشئ كلمة مرور قوية';
@@ -356,14 +362,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueWithGoogle => 'المتابعة باستخدام Google';
 
   @override
-  String get createAccountLink => 'أنشئ حسابًا';
+  String get createAccountLink => 'إنشاء حساب';
 
   @override
-  String get signUpTitle => 'إنشاء حساب';
+  String get signUpTitle => 'أنشئ حسابك';
 
   @override
   String get signUpSubtitle =>
-      'انضم إلى باك أوف هاوس وتواصل مع المحترفين والشركات والفرص في قطاع الفعاليات.';
+      'انضم إلى مجتمع الفعاليات في السعودية خلال دقيقة.';
 
   @override
   String get navDiscover => 'استكشف';
@@ -478,7 +484,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get levelLeader => 'رائد في القطاع';
 
   @override
-  String get myPointsTitle => 'نقاطي';
+  String get myPointsTitle => 'سجل النقاط';
 
   @override
   String get filterAll => 'الكل';
@@ -487,7 +493,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get filterEarned => 'المكتسبة';
 
   @override
-  String get filterRedeemed => 'المستبدلة';
+  String get filterRedeemed => 'المستخدمة';
 
   @override
   String get pointsHistoryTitle => 'كيف جمعت نقاطك';
@@ -500,16 +506,19 @@ class AppLocalizationsAr extends AppLocalizations {
       'احضر الفعاليات وأكمل ملفك لتبدأ بجمع النقاط.';
 
   @override
-  String get activityAttendedWorkshop => 'حضور ورشة';
+  String get activityAttendedWorkshop => 'حضور ورشة عمل';
 
   @override
-  String get activityProfileCompletion => 'إكمال الملف الشخصي';
+  String get activityProfileCompletion => 'اكتمال الملف الشخصي';
 
   @override
   String get activityVerifiedIdentity => 'توثيق الهوية';
 
   @override
-  String get activityJoinedEvent => 'الانضمام لفعالية';
+  String get activityAttendanceVerified => 'تم التحقق من الحضور';
+
+  @override
+  String get activityVolunteerShift => 'إتمام نوبة تطوع';
 
   @override
   String get activityFollowedCompany => 'متابعة الشركات';
@@ -519,6 +528,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get rewardsTitle => 'المكافآت';
+
+  @override
+  String get rewardsHistory => 'السجل';
+
+  @override
+  String get pointsToSpend => 'نقاط متاحة للاستبدال';
+
+  @override
+  String get rewardsHighlightTag => 'إبراز الملف';
+
+  @override
+  String get rewardsHighlightNote => 'الإبراز لا يغيّر حالة التحقق من حسابك.';
+
+  @override
+  String get rewardsCatalog => 'الكتالوج';
+
+  @override
+  String get pointsShortUnit => 'نقطة';
 
   @override
   String get rewardsHeroTitle => 'استخدم نقاطك لفتح مزايا حصرية';
@@ -568,10 +595,10 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'استبدل مقابل $count نقطة',
-      few: 'استبدل مقابل $count نقاط',
-      two: 'استبدل مقابل نقطتين',
-      one: 'استبدل مقابل نقطة واحدة',
+      other: 'استبدل بـ $count نقطة',
+      few: 'استبدل بـ $count نقاط',
+      two: 'استبدل بنقطتين',
+      one: 'استبدل بنقطة واحدة',
     );
     return '$_temp0';
   }
@@ -625,22 +652,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get eventsSearchHint => 'ابحث عن فعاليات';
 
   @override
-  String get eventsEmptyTitle => 'لا توجد فعاليات';
+  String get eventsEmptyTitle => 'لا توجد فعاليات تطابق بحثك';
 
   @override
-  String get eventsEmptyMessage => 'جرّب بحثًا أو فئة مختلفة.';
+  String get eventsEmptyMessage =>
+      'جرّب تصفية أقل أو كلمة أعم. إليك بعض عمليات البحث الشائعة:';
 
   @override
-  String get eventFilterConferences => 'المؤتمرات';
+  String get eventFilterConferences => 'مؤتمرات';
 
   @override
-  String get eventFilterWorkshops => 'الورش';
+  String get eventFilterWorkshops => 'ورش عمل';
 
   @override
-  String get eventFilterNetworking => 'التواصل';
+  String get eventFilterNetworking => 'تواصل';
 
   @override
-  String get eventFilterExpos => 'المعارض';
+  String get eventFilterExpos => 'معارض';
+
+  @override
+  String get eventTypeConference => 'مؤتمر';
+
+  @override
+  String get eventTypeWorkshop => 'ورشة عمل';
+
+  @override
+  String get eventTypeNetworking => 'تواصل مهني';
+
+  @override
+  String get eventTypeExpo => 'معرض';
+
+  @override
+  String get eventFlagshipTag => 'رئيسية';
 
   @override
   String eventAttending(int count) {
@@ -672,7 +715,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionShare => 'مشاركة';
 
   @override
-  String get notificationsMarkAllRead => 'تحديد الكل كمقروء';
+  String get notificationsMarkAllRead => 'تعليم الكل كمقروء';
 
   @override
   String get notificationsEmptyTitle => 'لا جديد حاليًا';
@@ -745,7 +788,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionFollowing => 'تتابعها';
 
   @override
-  String get actionViewDetails => 'التفاصيل';
+  String get actionViewDetails => 'عرض التفاصيل';
 
   @override
   String get actionConnect => 'تواصل';
@@ -798,7 +841,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String verificationLevel(int count) {
-    return 'المستوى $count';
+    return 'مستوى التوثيق $count';
   }
 
   @override
@@ -871,7 +914,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get discoverLiveFeed => 'مباشر';
 
   @override
-  String get discoverSearchHint => 'ابحث في المنظومة';
+  String get discoverSearchHint => 'ابحث عن فعاليات أو مواضيع أو أماكن';
 
   @override
   String get actionFilters => 'التصفية';
@@ -949,10 +992,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get eventViewPass => 'البطاقة الرقمية';
+  String get eventViewPass => 'عرض التذكرة';
 
   @override
-  String get eventAddToCalendar => 'أضف للتقويم';
+  String get eventAddToCalendar => 'أضف إلى التقويم';
 
   @override
   String eventPointsNote(int count) {
@@ -1092,7 +1135,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get notificationCategoryOpportunities => 'الفرص';
+  String get notificationCategoryOpportunities => 'الطلبات';
 
   @override
   String get notificationCategoryEvents => 'الفعاليات';
@@ -1104,7 +1147,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsToday => 'اليوم';
 
   @override
-  String get notificationsEarlier => 'في وقت سابق';
+  String get notificationsEarlier => 'سابقًا';
 
   @override
   String get notificationsTimezone => 'الرياض (GMT+3)';
@@ -1191,6 +1234,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newsFilterForYou => 'لك';
 
   @override
+  String get newsAllDesks => 'كل المكاتب';
+
+  @override
+  String get newsDeskTechnical => 'التقني';
+
+  @override
+  String get newsDeskRegulatory => 'التنظيمي';
+
+  @override
+  String get newsDeskMarket => 'السوق';
+
+  @override
+  String get newsBriefings => 'الموجزات';
+
+  @override
+  String get newsLatestEyebrow => 'آخر الأخبار';
+
+  @override
+  String get newsOrderLabel => 'الترتيب';
+
+  @override
+  String get newsSavedArticles => 'المقالات المحفوظة';
+
+  @override
   String get newsFilterLatest => 'الأحدث';
 
   @override
@@ -1251,7 +1318,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationCategoryNews => 'الأخبار';
 
   @override
-  String get accountTypeLabel => 'أنا';
+  String get accountTypeLabel => 'نوع الحساب';
 
   @override
   String get accountIndividual => 'فرد';
@@ -1341,7 +1408,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get opportunityTypeProject => 'مشروع';
 
   @override
-  String get opportunityTypeCoOp => 'تدريب تعاوني';
+  String get opportunityTypeCoOp => 'تعاوني';
 
   @override
   String get opportunityTypeVolunteering => 'تطوع';
@@ -1403,13 +1470,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get opportunityWhyMatch => 'سبب التوافق';
 
   @override
-  String get opportunityOverview => 'نظرة عامة';
+  String get opportunityOverview => 'عن الدور';
 
   @override
   String get opportunityResponsibilities => 'المسؤوليات';
 
   @override
-  String get opportunityRequirements => 'المتطلبات';
+  String get opportunityRequirements => 'ما نبحث عنه';
 
   @override
   String get opportunitySkills => 'المهارات';
@@ -1447,7 +1514,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get applyStepReview => 'المراجعة والإرسال';
 
   @override
-  String get applyExperienceTitle => 'الخبرات ذات الصلة';
+  String get applyExperienceTitle => 'الخبرات التي ستشاركها';
 
   @override
   String get applyExperienceSubtitle =>
@@ -1502,7 +1569,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String applyPrivacyNote(String company) {
-    return 'تطّلع $company على ملفك المهني، ولا تتم مشاركة رقم هويتك أبدًا.';
+    return 'يبقى بريدك ورقم جوالك خاصَّين. لا ترى $company إلا بيانات التواصل التي تختار مشاركتها، وذلك عند وصول طلبك إلى مرحلة التواصل.';
   }
 
   @override
@@ -1534,12 +1601,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String applicationsActive(int count) {
-    return 'النشطة ($count)';
+    return 'النشطة · $count';
   }
 
   @override
   String applicationsPast(int count) {
-    return 'السابقة ($count)';
+    return 'المغلقة · $count';
   }
 
   @override
@@ -1620,10 +1687,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'تربطك باك أوف هاوس بالشركات، وتتخذ كل شركة قرارات التوظيف بنفسها.';
 
   @override
+  String get companyNavListings => 'الفرص';
+
+  @override
+  String get companyNavSuppliers => 'التوريد';
+
+  @override
   String get companyNavDashboard => 'لوحة التحكم';
 
   @override
-  String get companyNavPortfolio => 'سجل الأعمال';
+  String get companyNavPortfolio => 'المشاريع السابقة';
 
   @override
   String get companyWorkspace => 'مساحة عملك';
@@ -1668,7 +1741,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'التدريب التعاوني متاح للأفراد الذين لديهم صفة طالب.';
 
   @override
-  String get applyProjectsTitle => 'مشاريع سجل الأعمال';
+  String get applyProjectsTitle => 'المشاريع';
 
   @override
   String get applyProjectsSubtitle =>
@@ -1903,8 +1976,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'المسودات والفرص قيد المراجعة والمنشورة.';
 
   @override
-  String get companyReviewNote =>
-      'تراجع باك أوف هاوس كل فرصة قبل نشرها، سواء كانت شركتك موثقة أم لا.';
+  String get companyReviewNote => 'تراجع باك أوف هاوس كل فرصة قبل نشرها.';
 
   @override
   String get companyOpportunitiesEmptyTitle => 'لا يوجد شيء هنا بعد';
@@ -2073,7 +2145,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get companyAcceptApplicant => 'قبول';
 
   @override
-  String get companyRejectApplicant => 'رفض';
+  String get companyRejectApplicant => 'لم يتم الاختيار';
 
   @override
   String get companyAcceptTitle => 'هل تريد قبول هذا المتقدم؟';
@@ -2375,4 +2447,689 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get companyDetailsProjectsStat => 'مشاريع';
+
+  @override
+  String get welcomeTermsLead => 'بالمتابعة فإنك توافق على ';
+
+  @override
+  String get welcomeTermsLink => 'الشروط والخصوصية';
+
+  @override
+  String get signInTitleAccent => 'بعودتك.';
+
+  @override
+  String get continueWithPhone => 'المتابعة برمز الجوال';
+
+  @override
+  String get validationCodeInvalid => 'أدخل الرمز المكوّن من 6 أرقام.';
+
+  @override
+  String get errorInvalidCode =>
+      'الرمز غير صحيح أو انتهت صلاحيته. حاول مجددًا أو اطلب رمزًا جديدًا.';
+
+  @override
+  String get phoneSignInTitle => 'سجّل الدخول ';
+
+  @override
+  String get phoneSignInTitleAccent => 'برقم جوالك.';
+
+  @override
+  String get phoneSignInSubtitle =>
+      'سنرسل لك رمزًا من 6 أرقام. دون الحاجة إلى كلمة مرور.';
+
+  @override
+  String get phoneSendCode => 'إرسال الرمز';
+
+  @override
+  String get phoneCodeTitle => 'أدخل الرمز';
+
+  @override
+  String phoneCodeSubtitle(String phone) {
+    return 'أرسلنا رمزًا من 6 أرقام إلى $phone.';
+  }
+
+  @override
+  String get phoneCodeLabel => 'الرمز';
+
+  @override
+  String get phoneVerifyCta => 'تحقّق وسجّل الدخول';
+
+  @override
+  String get phoneResendCode => 'إرسال رمز جديد';
+
+  @override
+  String get phoneChangeNumber => 'تغيير الرقم';
+
+  @override
+  String get phoneCodeSent => 'تم إرسال رمز جديد.';
+
+  @override
+  String pointsLevel(int level) {
+    return 'المستوى $level';
+  }
+
+  @override
+  String pointsToLevel(int count, int level) {
+    return '$count نقطة للمستوى $level';
+  }
+
+  @override
+  String get pointsTopLevel => 'وصلت إلى أعلى مستوى';
+
+  @override
+  String get homeGreetingMorning => 'صباح الخير، ';
+
+  @override
+  String get homeGreetingAfternoon => 'مساء الخير، ';
+
+  @override
+  String get homeGreetingEvening => 'مساء الخير، ';
+
+  @override
+  String get homeFlagshipEvent => 'فعالية رئيسية';
+
+  @override
+  String get homeOpportunitiesForYou => 'فرص لك';
+
+  @override
+  String get actionOpenRewards => 'فتح المكافآت';
+
+  @override
+  String get accountIndividualHint => 'محترفون ومستقلون وطلاب';
+
+  @override
+  String get accountCompanyHint => 'منظمون ووكالات وقاعات وموردون';
+
+  @override
+  String get signUpStudentTitle => 'أنا طالب حاليًا';
+
+  @override
+  String get signUpStudentHint => 'يتيح لك فرص التدريب التعاوني.';
+
+  @override
+  String get discoverSections => 'أقسام اكتشف';
+
+  @override
+  String get discoverUpcomingEvents => 'الفعاليات القادمة';
+
+  @override
+  String get discoverCalendar => 'التقويم';
+
+  @override
+  String get actionClearFilters => 'مسح التصفية';
+
+  @override
+  String actionRemoveFilter(String name) {
+    return 'إزالة التصفية $name';
+  }
+
+  @override
+  String get searchSuggestionLightShows => 'عروض ضوئية';
+
+  @override
+  String get searchSuggestionConcerts => 'حفلات';
+
+  @override
+  String get searchSuggestionRiyadh => 'الرياض';
+
+  @override
+  String get pointsBalanceLabel => 'الرصيد';
+
+  @override
+  String get profileGetVerified => 'احصل على التوثيق';
+
+  @override
+  String get profileNotVerified => 'غير موثّق';
+
+  @override
+  String get profileStatusProfessional => 'محترف';
+
+  @override
+  String get profileEventsAttended => 'فعاليات حضرتها';
+
+  @override
+  String get profileVisibilityShort => 'الظهور';
+
+  @override
+  String get profileYearsShort => 'سنوات الخبرة';
+
+  @override
+  String get profileMyApplications => 'طلباتي';
+
+  @override
+  String get profileAddPhoto => 'تغيير الصورة';
+
+  @override
+  String get eventAboutTab => 'نبذة';
+
+  @override
+  String get eventAgendaTab => 'البرنامج';
+
+  @override
+  String get eventSpeakersTab => 'المتحدثون';
+
+  @override
+  String get eventSections => 'أقسام الفعالية';
+
+  @override
+  String eventAttendingLabel(String count) {
+    return '+$count مشارك';
+  }
+
+  @override
+  String eventPeopleYouKnow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count شخصًا تعرفهم',
+      few: '$count أشخاص تعرفهم',
+      two: 'شخصان تعرفهما',
+      one: 'شخص واحد تعرفه',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get eventEntry => 'الدخول';
+
+  @override
+  String get eventMap => 'الخريطة';
+
+  @override
+  String get eventSaveLabel => 'حفظ الفعالية';
+
+  @override
+  String eventAgendaDay(int day, String date) {
+    return 'اليوم $day · $date';
+  }
+
+  @override
+  String get eventRegisteredTitle => 'تم تسجيلك!';
+
+  @override
+  String get eventRegisteredBody =>
+      'حجزنا مكانك، وسيصلك تذكير قبل بدء الفعالية.';
+
+  @override
+  String get eventDateLabel => 'التاريخ';
+
+  @override
+  String get eventVenueLabel => 'المكان';
+
+  @override
+  String get eventPassHeading => 'تذكرة الفعالية';
+
+  @override
+  String get eventPassHint => 'اعرض هذا الرمز عند المدخل لتسجيل حضورك.';
+
+  @override
+  String get eventPointsOnAttendance =>
+      'تحصل على النقاط عند التحقق من حضورك في الفعالية.';
+
+  @override
+  String get eventExploreMore => 'استكشف فعاليات أخرى';
+
+  @override
+  String get opportunityDetailTitle => 'الفرصة';
+
+  @override
+  String get opportunityEligible => 'يمكنك التقديم';
+
+  @override
+  String get opportunityApplyHint => 'ستشارك خبراتك ومشاريعك ورسالة قصيرة.';
+
+  @override
+  String get applyExperienceRequired => 'اختر واحدة على الأقل';
+
+  @override
+  String get applyExperienceMissing => 'اختر خبرة واحدة على الأقل لمشاركتها.';
+
+  @override
+  String get companyWorkspaceSubtitle => 'مساحة عمل الشركة';
+
+  @override
+  String get companyWelcomeBack => 'مرحبًا بعودتك';
+
+  @override
+  String get companyNewListing => 'فرصة جديدة';
+
+  @override
+  String get companyStatLiveListings => 'فرص منشورة';
+
+  @override
+  String get companyStatNewApplicants => 'متقدمون جدد';
+
+  @override
+  String companyStatThisWeek(int count) {
+    return '+$count هذا الأسبوع';
+  }
+
+  @override
+  String get companyStatSupplierInvites => 'دعوات توريد';
+
+  @override
+  String get companyStatProfileViews => 'مشاهدات الملف';
+
+  @override
+  String companyStatChange(String sign, int count) {
+    return '$sign$count%';
+  }
+
+  @override
+  String companyChangesRequestedTitle(String title) {
+    return 'مطلوب تعديل على «$title»';
+  }
+
+  @override
+  String get companyEditListing => 'تعديل الفرصة';
+
+  @override
+  String get companyRecentApplicants => 'أحدث المتقدمين';
+
+  @override
+  String get companyNoApplicantsYet =>
+      'لا يوجد متقدمون بعد. تظهر الطلبات هنا بعد نشر الفرصة.';
+
+  @override
+  String get companyListingsTitle => 'الفرص';
+
+  @override
+  String filterAllCount(int count) {
+    return 'الكل · $count';
+  }
+
+  @override
+  String get companyFilterChanges => 'تعديلات';
+
+  @override
+  String get companyFilterDrafts => 'مسودات';
+
+  @override
+  String get companyListingNotLive => 'لم تُنشر بعد';
+
+  @override
+  String get companyListingApplicants => 'المتقدمون';
+
+  @override
+  String get companyListingEdit => 'تعديل';
+
+  @override
+  String get companyListingView => 'عرض';
+
+  @override
+  String get companyListingContinue => 'متابعة';
+
+  @override
+  String get companyListingType => 'نوع الفرصة';
+
+  @override
+  String get companyClosesOn => 'تُغلق في';
+
+  @override
+  String get companyClosesOnPick => 'اختياري — اختر تاريخًا';
+
+  @override
+  String get companyClosesInPast => 'اختر تاريخًا بعد اليوم.';
+
+  @override
+  String get companyClearDate => 'مسح التاريخ';
+
+  @override
+  String get companyWorkSetup => 'طبيعة العمل';
+
+  @override
+  String get workSetupOnSite => 'حضوري';
+
+  @override
+  String get workSetupHybrid => 'مرن';
+
+  @override
+  String get workSetupRemote => 'عن بُعد';
+
+  @override
+  String get companyReviewInfo =>
+      'يراجع فريق باك أوف هاوس كل فرصة قبل نشرها، وسيصلك إشعار عند الموافقة أو طلب تعديلات.';
+
+  @override
+  String companyApplicantsSubtitle(int count, String status) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count متقدمًا',
+      few: '$count متقدمين',
+      two: 'متقدمان',
+      one: 'متقدم واحد',
+    );
+    return '$_temp0 · $status';
+  }
+
+  @override
+  String stageFilterCount(String label, int count) {
+    return '$label · $count';
+  }
+
+  @override
+  String applicantExperienceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count خبرة',
+      few: '$count خبرات',
+      two: 'خبرتان',
+      one: 'خبرة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String applicantProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مشروعًا',
+      few: '$count مشاريع',
+      two: 'مشروعان',
+      one: 'مشروع واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get applicantContactShared => 'بيانات التواصل متاحة';
+
+  @override
+  String get companyViewApplication => 'عرض الطلب';
+
+  @override
+  String get companyApplicationFor => 'طلب لـ';
+
+  @override
+  String get companyMessageTitle => 'الرسالة';
+
+  @override
+  String get companyExperienceShared => 'الخبرات المشاركة';
+
+  @override
+  String get companyProjectsShared => 'المشاريع المشاركة';
+
+  @override
+  String applicantStatusApplied(String status, String time) {
+    return '$status · قدّم $time';
+  }
+
+  @override
+  String get supplierYourResponse => 'ردّك';
+
+  @override
+  String supplierRespondBy(String date) {
+    return 'الرد قبل $date';
+  }
+
+  @override
+  String get supplierBudget => 'الميزانية';
+
+  @override
+  String get supplierRespondByLabel => 'الرد قبل';
+
+  @override
+  String get supplierYourPrice => 'سعرك';
+
+  @override
+  String get supplierSetupTime => 'مدة التجهيز';
+
+  @override
+  String get supplierSetupTimeHint => 'مثال: يومان';
+
+  @override
+  String get supplierAttachProjects => 'إرفاق مشاريع';
+
+  @override
+  String supplierSelectedCount(int count) {
+    return 'تم اختيار $count';
+  }
+
+  @override
+  String supplierPrivateNote(String buyer) {
+    return 'لا يرى ردّك وسعرك إلا $buyer.';
+  }
+
+  @override
+  String get supplierRequestsTitle => 'طلبات التوريد';
+
+  @override
+  String supplierTabInvitedCount(int count) {
+    return 'المدعوّة · $count';
+  }
+
+  @override
+  String supplierTabResponsesCount(int count) {
+    return 'ردودي · $count';
+  }
+
+  @override
+  String get supplierTabMyRequests => 'طلباتي';
+
+  @override
+  String supplierOpenToYourType(String time) {
+    return 'متاح لنوع شركتك · $time';
+  }
+
+  @override
+  String supplierYouResponded(String date) {
+    return 'رددت · $date';
+  }
+
+  @override
+  String get supplierBadgeOpen => 'مفتوح';
+
+  @override
+  String get supplierMyRequestsEmpty => 'تظهر طلبات التوريد الخاصة بك هنا.';
+
+  @override
+  String get companyVerifiedByBoh => 'موثّقة من باك أوف هاوس';
+
+  @override
+  String get companyStatProjects => 'مشاريع';
+
+  @override
+  String get companyStatFollowers => 'متابعون';
+
+  @override
+  String get companiesSearchHint => 'ابحث عن شركات أو خدمات أو مدن';
+
+  @override
+  String get companiesFilterOrganizers => 'منظمون';
+
+  @override
+  String get companiesFilterVenues => 'قاعات';
+
+  @override
+  String get companiesFilterSuppliers => 'موردون';
+
+  @override
+  String get companiesFilterAgencies => 'وكالات';
+
+  @override
+  String get companiesEditorsPick => 'اختيار المحرر';
+
+  @override
+  String get companiesEmpty => 'لا توجد شركات تطابق بحثك';
+
+  @override
+  String get professionalsSearchHint => 'ابحث بالاسم أو المهارة أو المدينة';
+
+  @override
+  String get professionalsFilterProducers => 'منتجون';
+
+  @override
+  String get professionalsFilterDesigners => 'مصممون';
+
+  @override
+  String get professionalsFilterTechnical => 'تقنيون';
+
+  @override
+  String get professionalsFilterStudents => 'طلاب';
+
+  @override
+  String get professionalsHighlighted => 'مُبرز';
+
+  @override
+  String get professionalsEmpty => 'لا يوجد محترفون يطابقون بحثك';
+
+  @override
+  String get actionConnected => 'متصل';
+
+  @override
+  String get editProfileIAm => 'أنا';
+
+  @override
+  String get editProfileHeadline => 'النبذة المختصرة';
+
+  @override
+  String get editProfileAbout => 'نبذة';
+
+  @override
+  String get editProfileInterests => 'الاهتمامات';
+
+  @override
+  String get editProfilePrivacy => 'خصوصية التواصل';
+
+  @override
+  String get editProfilePrivacyHint =>
+      'اختر ما تراه الشركات عند وصول طلبك إلى مرحلة التواصل. مغلق افتراضيًا.';
+
+  @override
+  String get editProfileShareEmail => 'مشاركة بريدي';
+
+  @override
+  String get editProfileSharePhone => 'مشاركة جوالي';
+
+  @override
+  String get editProfileSaved => 'تم حفظ الملف';
+
+  @override
+  String get editProfileNameRequired => 'أدخل اسمك';
+
+  @override
+  String get editProfileAboutTooLong => 'النبذة حتى 600 حرف.';
+
+  @override
+  String get interestTechInnovation => 'التقنية والابتكار';
+
+  @override
+  String get interestMarketing => 'التسويق';
+
+  @override
+  String get interestDesign => 'التصميم';
+
+  @override
+  String get interestBusiness => 'الأعمال';
+
+  @override
+  String get interestNetworking => 'التواصل المهني';
+
+  @override
+  String get interestProduction => 'الإنتاج';
+
+  @override
+  String get verifyHeadline => 'أثبت للشركات أنك أنت';
+
+  @override
+  String get verifyIntro =>
+      'تخبر شارة التوثيق الشركات بأن فريق باك أوف هاوس تحقق من هويتك وخبرتك.';
+
+  @override
+  String get verifyIdentityTitle => 'وثيقة الهوية';
+
+  @override
+  String get verifyIdentityHint => 'الهوية الوطنية أو الإقامة';
+
+  @override
+  String get verifyExperienceTitle => 'إثبات الخبرة';
+
+  @override
+  String get verifyExperienceHint => 'شهادة أو عقد أو خطاب توصية';
+
+  @override
+  String verifyUploaded(String hint) {
+    return '$hint · تم الرفع';
+  }
+
+  @override
+  String get verifyReviewTitle => 'مراجعة باك أوف هاوس';
+
+  @override
+  String get verifyReviewHint => 'سنبلغك عند اكتمالها';
+
+  @override
+  String get verifyInReview => 'قيد المراجعة — سنبلغك عند اكتمالها';
+
+  @override
+  String get verifyNote =>
+      'لا يُمنح التوثيق أبدًا مقابل النقاط أو الدفع أو النشاط. تُستخدم مستنداتك لهذه المراجعة فقط.';
+
+  @override
+  String get verifyUpload => 'رفع';
+
+  @override
+  String get verifySubmit => 'إرسال للمراجعة';
+
+  @override
+  String get verifySubmitted => 'تم الإرسال للمراجعة';
+
+  @override
+  String get redeemedTitle => 'مكافأتك';
+
+  @override
+  String get redeemedBadge => 'تم الاستبدال';
+
+  @override
+  String redeemedFor(String points) {
+    return 'استُبدلت مقابل $points نقطة';
+  }
+
+  @override
+  String get redeemedYourCode => 'رمزك';
+
+  @override
+  String get redeemedHowToUse => 'طريقة الاستخدام';
+
+  @override
+  String get redeemedBalance => 'رصيد النقاط';
+
+  @override
+  String get redeemedPts => 'نقطة';
+
+  @override
+  String get actionCopy => 'نسخ';
+
+  @override
+  String get companyProjectStartLabel => 'تاريخ البدء';
+
+  @override
+  String get companyProjectEndLabel => 'تاريخ الانتهاء';
+
+  @override
+  String get companyProjectOngoing => 'مستمر';
+
+  @override
+  String get resetTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetSubtitle =>
+      'أدخل بريد حسابك وسنرسل لك رابطًا لتعيين كلمة مرور جديدة.';
+
+  @override
+  String get resetCta => 'إرسال رابط إعادة التعيين';
+
+  @override
+  String get resetSentTitle => 'تحقق من بريدك';
+
+  @override
+  String resetSentBody(String email) {
+    return 'إن كان هناك حساب مرتبط بـ $email، فرابط إعادة التعيين في الطريق إليك.';
+  }
+
+  @override
+  String get resetBackToSignIn => 'العودة لتسجيل الدخول';
 }

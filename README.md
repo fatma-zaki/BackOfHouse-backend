@@ -37,7 +37,7 @@ override, create `config/local.json` (git-ignored).
 ```
 lib/
   app/
-    theme/      Design tokens: colors, typography, spacing, radii, shadows, motion, ThemeData
+    theme/      Design tokens: colors & tones, typography, spacing, radii, shadows, motion, ThemeData
     router/     Routes, auth guard (pure, unit-tested), shell, route placeholders
   core/
     constants/  AppIcons (Lucide, the only icon set), AppAssets, AppConstants
@@ -55,34 +55,39 @@ lib/
 Data flows **UI → Riverpod provider → Repository (domain interface) → Data source**.
 Each feature's data source provider picks the mock or remote implementation from
 `AppConfig.useMockData`; nothing above the repository knows which one it got.
+The backend contract the remote sources implement is
+[docs/api/](docs/api/) (`openapi.yaml` plus conventions and server-side rules).
 
 ### Routes (individual member)
 
 | Tab | Routes |
 |---|---|
 | Home | `/` · `/notifications` |
-| Discover | `/discover` · `/events` · `/events/:id` · `/opportunities` · `/opportunities/:id` · `/opportunities/:id/apply` · `/professionals` · `/companies` · `/companies/:id` · `/courses` |
+| Discover | `/discover` · `/events` · `/events/:id` · `/events/:id/registered` · `/opportunities` · `/opportunities/:id` · `/opportunities/:id/apply` · `/professionals` · `/companies` · `/companies/:id` · `/courses` |
 | News | `/news` · `/news/:id` (likes and comments) |
-| Rewards | `/rewards` · `/rewards/points` · `/rewards/:id` |
-| Profile | `/profile` (settings sheet: appearance, language, sign out) · `/applications` |
+| Rewards | `/rewards` · `/rewards/points` · `/rewards/:id` · `/rewards/:id/redeemed` |
+| Profile | `/profile` (settings sheet: appearance, language, sign out) · `/profile/edit` · `/profile/verify` · `/applications` |
+
+Signed out: `/auth` (welcome) · `/login` · `/login/phone` · `/register` · `/reset-password`.
 
 ### Routes (company account)
 
 Both account types share one shell and one bottom bar (`AppShell`). Companies
-get Dashboard · Discover · News · Profile; `AuthGuard` keeps them out of every
-other individual screen, and resolves `/` and `/profile` to the company's own
-Dashboard and Profile.
+get Dashboard · Listings · Suppliers · News · Profile; `AuthGuard` keeps them out
+of every individual screen (including Discover), and resolves `/` and `/profile`
+to the company's own Dashboard and Profile.
 
 | Tab | Routes |
 |---|---|
 | Dashboard | `/company` |
-| ↳ My Opportunities | `/company/opportunities` · `/new` · `/:id` · `/:id/edit` · `/:id/applicants` |
-| ↳ Supplier Requests | `/company/supplier-requests` · `/:id` · `/:id/respond` |
-| ↳ Portfolio | `/company/portfolio` · `/new` · `/:id/edit` |
-| Discover · News | shared with individuals (opportunities excluded; Discover links to Supplier Requests instead) |
-| Profile | `/company/profile` · `/company/profile/edit` |
+| Listings | `/company/opportunities` · `/new` · `/:id` · `/:id/edit` · `/:id/applicants` |
+| Suppliers | `/company/supplier-requests` · `/:id` · `/:id/respond` |
+| News | shared with individuals |
+| Profile | `/company/profile` (portfolio grid inside) · `/company/profile/edit` |
 
-Above the shell: `/company/applicants/:id` · `/company/responses/:id`.
+Above the shell: `/company/applicants/:id` · `/company/responses/:id` ·
+portfolio forms `/company/portfolio/new` · `/company/portfolio/:id/edit`
+(`/company/portfolio` itself redirects to the profile).
 
 Company mock data (`CompanyWorkspaceMock`) seeds sample listings, applicants
 and supplier responses so every workflow can be tried. A listing in review
@@ -117,18 +122,30 @@ in a widget.
 
 ## Design system rules
 
-- Colors, sizes, radii, durations come from `app/theme/*` only. The type scale in
-  `AppTypography` is the complete list of font sizes.
-- Purple is an accent, not a ground. Small purple text uses `primaryText`
-  (≥ 4.5:1 in both modes, enforced by a test); gold appears at most once per view.
-- Icons come from `AppIcons`. Directional icons use Lucide `Dir` variants and mirror in RTL.
+The visual reference is [docs/design/](docs/design/) (open `index.html`; 31 screens
+in light/dark × English/Arabic, plus `design-tokens.json`).
+
+- Colors, sizes, radii, shadows and durations come from `app/theme/*` only. Tag and
+  status colours are `AppTone` pairs on `AppColors` (`tagViolet`, `statusSuccess`, …).
+  The type scale in `AppTypography` is the complete list of font sizes; numbers use
+  `context.text.number()` (Poppins, Western digits, in both languages).
+- Fonts: Poppins for Latin and numbers, Cairo for Arabic. Letter-spacing is removed
+  automatically in Arabic (`context.text`).
+- Electric violet (`primary`) is for primary buttons, the active tab, progress and the
+  section skew bar (`BOHSkewBar`, never mirrored). Small violet text uses `primaryText`
+  (≥ 4.5:1 in both modes, enforced by a test).
+- The logo is always the supplied artwork via `BOHLogo` — never retyped.
+- Icons come from `AppIcons` (Lucide weight 400); the few filled marks (star,
+  verified, saved, quote) are `BOHGlyph`. Directional icons mirror in RTL.
 - Use `EdgeInsetsDirectional` / `AlignmentDirectional`. Never uppercase or letter-space
-  Arabic (`BOHEyebrow` and `BOHTag` handle this).
+  Arabic (`BOHTag`, `BOHEyebrow` handle this).
 - Every tap target is ≥ 44×44; state is never conveyed by colour alone.
 - Motion is 200–350ms, eased, and disabled under the OS reduce-motion setting.
+- Screens are built only from `core/widgets` components. If a screen needs a new
+  visual pattern, add it to the library (and the gallery) first.
 
-Browse every component in both languages at `/design-system` (Profile tab → Design
-system in dev builds).
+Browse every component in both languages and modes at `/design-system` (Profile tab →
+Design system in dev builds).
 
 ## Localization
 

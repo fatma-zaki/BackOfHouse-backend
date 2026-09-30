@@ -5,8 +5,6 @@ import '../../../../core/utils/paginated.dart';
 import '../../../companies/data/companies_data.dart';
 import '../../../companies/domain/company.dart';
 import '../../../events/data/events_data.dart';
-import '../../../news/data/news_data.dart';
-import '../../../news/domain/article.dart';
 import '../../../opportunities/data/opportunities_data.dart';
 import '../../../opportunities/domain/opportunity.dart';
 import '../../../professionals/data/professionals_data.dart';
@@ -35,18 +33,6 @@ final directoryCountsProvider = FutureProvider.autoDispose<DirectoryCounts>((
     events: events,
     opportunities: opportunities,
   );
-});
-
-/// Lead editorial briefing for the Home hero.
-final latestArticlesProvider = FutureProvider.autoDispose<List<Article>>((
-  ref,
-) async {
-  ref.watch(contentLanguageProvider);
-  final page = await ref.watch(newsRepositoryProvider).getArticles((
-    filter: NewsFilter.forYou,
-    query: '',
-  ), const PageRequest(pageSize: 4));
-  return page.items;
 });
 
 final recommendedOpportunitiesProvider =

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../../../core/constants/app_assets.dart';
 import '../../../core/data/mock_support.dart';
 import '../../../core/media/app_image.dart';
 import '../../../core/network/api_exception.dart';
@@ -27,12 +28,8 @@ class RewardsMockDataSource implements RewardsDataSource {
   @override
   Future<PointsSummary> getSummary() async {
     await _wait();
-    final (level, target) = switch (_balance) {
-      < 100 => (MemberLevel.newcomer, 100),
-      < 500 => (MemberLevel.active, 500),
-      < 1500 => (MemberLevel.contributor, 1500),
-      _ => (MemberLevel.leader, _balance),
-    };
+    final level = MemberLevel.forPoints(_balance);
+    final target = level.next?.floor ?? _balance;
     final nextBenefit = _catalogue
         .where((r) => r.available && r.cost > _balance)
         .map((r) => r.cost)
@@ -41,6 +38,12 @@ class RewardsMockDataSource implements RewardsDataSource {
     return PointsSummary(
       balance: _balance,
       earnedThisMonth: 45,
+      totalEarned: _ledger
+          .where((e) => e.points > 0)
+          .fold(0, (sum, e) => sum + e.points),
+      totalSpent: _ledger
+          .where((e) => e.points < 0)
+          .fold(0, (sum, e) => sum - e.points),
       level: level,
       levelTarget: target,
       nextBenefitAt: nextBenefit ?? _balance,
@@ -169,7 +172,13 @@ class _MockReward {
     benefits: [for (final b in benefits) b.of(lang)],
     steps: [for (final s in steps) s.of(lang)],
     note: note.of(lang),
-    image: AppImage.placeholder,
+    image: AppImage.asset(switch (id) {
+      'course-10' => AppAssets.event2,
+      'event-ticket' => AppAssets.summit,
+      'profile-highlight' => AppAssets.avatarMember,
+      'industry-report' => AppAssets.riyadhSkyline,
+      _ => AppAssets.event4,
+    }),
     available: available,
   );
 }
@@ -208,7 +217,7 @@ final _seedLedger = [
   ),
   _Entry(
     't5',
-    PointsActivity.joinedEvent,
+    PointsActivity.attendanceVerified,
     const MockText('Industry Networking Event', 'لقاء التواصل المهني'),
     DateTime(2026, 8, 28),
     10,
@@ -229,15 +238,18 @@ final _seedLedger = [
   ),
   _Entry(
     't8',
-    PointsActivity.joinedEvent,
+    PointsActivity.attendanceVerified,
     const MockText('Rigging Safety Briefing', 'جلسة سلامة التعليق'),
     DateTime(2026, 8, 16),
     8,
   ),
   _Entry(
     't9',
-    PointsActivity.joinedEvent,
-    const MockText('Riyadh Season Crew Meetup', 'لقاء فريق موسم الرياض'),
+    PointsActivity.volunteerShiftCompleted,
+    const MockText(
+      'Riyadh Season guest services',
+      'خدمة الزوار في موسم الرياض',
+    ),
     DateTime(2026, 8, 9),
     10,
   ),

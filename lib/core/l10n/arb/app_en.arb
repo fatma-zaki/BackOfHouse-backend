@@ -4,9 +4,11 @@
   "brandMotto": "Backstage people. Real events.",
   "navHome": "Home",
   "navMenu": "Menu",
-  "actionViewAll": "See all",
+  "actionViewAll": "View All",
   "actionReadMore": "Read More",
   "actionRetry": "Try again",
+  "appTagline": "SAUDI ARABIA’S\nEVENTS COMMUNITY",
+  "actionClose": "Close",
   "actionBack": "Back",
   "actionSearch": "Search",
   "actionClearSearch": "Clear search",
@@ -79,17 +81,17 @@
   "languageLabel": "Language",
   "languageEnglish": "English",
   "languageArabic": "العربية",
-  "welcomeHaveAccount": "I already have an account",
+  "welcomeHaveAccount": "Sign in",
   "forgotPassword": "Forgot password?",
-  "signInCta": "Sign In",
-  "noAccountPrompt": "Don't have an account?",
+  "signInCta": "Sign in",
+  "noAccountPrompt": "New to Back of House?",
   "agreePrefix": "I agree to the ",
   "termsOfService": "Terms of Service",
   "agreeConjunction": " and ",
   "privacyPolicy": "Privacy Policy",
-  "signUpCta": "Create Account",
+  "signUpCta": "Continue",
   "haveAccountPrompt": "Already have an account?",
-  "logInLink": "Sign In",
+  "logInLink": "Sign in",
   "mustAcceptTerms": "Please accept the Terms of Service and Privacy Policy.",
   "validationRequired": "This field is required",
   "validationEmailRequired": "Email address is required",
@@ -120,29 +122,29 @@
   "themeLabel": "Appearance",
   "themeLight": "Light",
   "themeDark": "Dark",
-  "welcomeEyebrow": "Welcome to",
-  "welcomeTitleLead": "Back of House\n",
-  "welcomeTitleAccent": "Community.",
-  "welcomeSubtitle": "Connect with Saudi Arabia's events industry.",
-  "welcomeGetStarted": "Get Started",
-  "signInTitle": "Welcome Back",
-  "signInSubtitle": "Sign in to your Back of House account and stay connected with the events community.",
-  "fieldEmailLabel": "Email address",
+  "welcomeEyebrow": "Saudi Arabia’s events community",
+  "welcomeTitleLead": "We build the community behind ",
+  "welcomeTitleAccent": "every experience.",
+  "welcomeSubtitle": "Connect with the professionals, companies and emerging talent shaping the events industry.",
+  "welcomeGetStarted": "Create account",
+  "signInTitle": "Welcome ",
+  "signInSubtitle": "Sign in to pick up where you left off.",
+  "fieldEmailLabel": "Email",
   "fieldEmailHint": "you@example.com",
   "fieldPasswordLabel": "Password",
   "fieldPasswordHint": "Enter your password",
   "fieldFullNameLabel": "Full name",
   "fieldFullNameHint": "Enter your full name",
-  "fieldPhoneLabel": "Phone number",
-  "fieldPhoneHint": "+966 50 123 4567",
+  "fieldPhoneLabel": "Phone",
+  "fieldPhoneHint": "+966 5X XXX XXXX",
   "fieldNewPasswordHint": "Create a strong password",
   "fieldConfirmPasswordLabel": "Confirm password",
   "fieldConfirmPasswordHint": "Re-enter your password",
   "orDivider": "or",
   "continueWithGoogle": "Continue with Google",
-  "createAccountLink": "Create one",
-  "signUpTitle": "Create Account",
-  "signUpSubtitle": "Join Back of House and connect with professionals, companies, and opportunities in the events industry.",
+  "createAccountLink": "Create account",
+  "signUpTitle": "Create your account",
+  "signUpSubtitle": "Join Saudi Arabia’s events community in under a minute.",
   "navDiscover": "Discover",
   "navRewards": "Rewards",
   "upcomingEvents": "Upcoming Events",
@@ -213,20 +215,27 @@
   "levelActive": "Active Member",
   "levelContributor": "Contributor",
   "levelLeader": "Industry Leader",
-  "myPointsTitle": "My Points",
+  "myPointsTitle": "Points history",
   "filterAll": "All",
   "filterEarned": "Earned",
-  "filterRedeemed": "Redeemed",
+  "filterRedeemed": "Spent",
   "pointsHistoryTitle": "How you earned points",
   "pointsHistoryEmptyTitle": "No points activity yet",
   "pointsHistoryEmptyMessage": "Attend events and complete your profile to start earning.",
-  "activityAttendedWorkshop": "Attended workshop",
-  "activityProfileCompletion": "Profile completion",
+  "activityAttendedWorkshop": "Workshop attended",
+  "activityProfileCompletion": "Profile completed",
   "activityVerifiedIdentity": "Verified identity",
-  "activityJoinedEvent": "Joined event",
+  "activityAttendanceVerified": "Attendance verified",
+  "activityVolunteerShift": "Volunteer shift completed",
   "activityFollowedCompany": "Followed companies",
-  "activityRedeemedReward": "Redeemed reward",
+  "activityRedeemedReward": "Reward redeemed",
   "rewardsTitle": "Rewards",
+  "rewardsHistory": "History",
+  "pointsToSpend": "Points to spend",
+  "rewardsHighlightTag": "Profile Highlight",
+  "rewardsHighlightNote": "Highlight doesn’t change your verification status.",
+  "rewardsCatalog": "Catalog",
+  "pointsShortUnit": "pts",
   "rewardsHeroTitle": "Use your points to unlock exclusive benefits",
   "rewardsHeroBody": "Get discounts, access special events, and more, just for being part of our community.",
   "rewardsSearchHint": "Search rewards",
@@ -241,7 +250,7 @@
   "rewardDetailsTitle": "Reward Details",
   "rewardWhatYouGet": "What you'll get",
   "rewardHowToRedeem": "How to redeem",
-  "rewardRedeemFor": "{count, plural, =1{Redeem for 1 point} other{Redeem for {count} points}}",
+  "rewardRedeemFor": "{count, plural, =1{Redeem for 1 pt} other{Redeem for {count} pts}}",
   "@rewardRedeemFor": {
     "placeholders": {
       "count": {
@@ -268,12 +277,17 @@
   "eventsTitle": "Events",
   "eventsSubtitle": "Discover what's happening across the Kingdom's live event and technical production industry.",
   "eventsSearchHint": "Search events",
-  "eventsEmptyTitle": "No events found",
-  "eventsEmptyMessage": "Try a different search or category.",
+  "eventsEmptyTitle": "No events match your search",
+  "eventsEmptyMessage": "Try fewer filters or a broader word. Here are a few popular searches:",
   "eventFilterConferences": "Conferences",
   "eventFilterWorkshops": "Workshops",
   "eventFilterNetworking": "Networking",
-  "eventFilterExpos": "Expos",
+  "eventFilterExpos": "Exhibitions",
+  "eventTypeConference": "Conference",
+  "eventTypeWorkshop": "Workshop",
+  "eventTypeNetworking": "Networking",
+  "eventTypeExpo": "Exhibition",
+  "eventFlagshipTag": "Flagship",
   "eventAttending": "{count}+ attending",
   "@eventAttending": {
     "placeholders": {
@@ -290,13 +304,13 @@
   "eventCancelRegistration": "Cancel registration",
   "eventRegisteredMessage": "You're registered. We'll remind you before it starts.",
   "actionShare": "Share",
-  "notificationsMarkAllRead": "Mark all as read",
+  "notificationsMarkAllRead": "Mark all read",
   "notificationsEmptyTitle": "You're all caught up",
   "notificationsEmptyMessage": "New updates about events, connections and rewards will appear here.",
   "notificationUnread": "New",
   "discoverTitle": "Discover",
   "settingsTitle": "Settings",
-  "profileEditProfile": "Edit Profile",
+  "profileEditProfile": "Edit profile",
   "profileMyPointsHint": "Balance, history and rewards",
   "profileAbout": "About",
   "profileExperience": "Experience",
@@ -324,7 +338,7 @@
   },
   "actionFollow": "Follow",
   "actionFollowing": "Following",
-  "actionViewDetails": "View Details",
+  "actionViewDetails": "View details",
   "actionConnect": "Connect",
   "actionRequested": "Requested",
   "yearsExperience": "{count, plural, =1{1 yr exp} other{{count} yrs exp}}",
@@ -364,7 +378,7 @@
       }
     }
   },
-  "verificationLevel": "Level {count}",
+  "verificationLevel": "Verification level {count}",
   "@verificationLevel": {
     "placeholders": {
       "count": {
@@ -411,7 +425,7 @@
   "standingAction": "View My Activity & Passes",
   "discoverEyebrow": "Ecosystem Directory",
   "discoverLiveFeed": "Live Feed",
-  "discoverSearchHint": "Search the ecosystem",
+  "discoverSearchHint": "Search events, topics, or locations",
   "actionFilters": "Filters",
   "directoryCompaniesCount": "{count}+ verified agencies",
   "@directoryCompaniesCount": {
@@ -450,7 +464,7 @@
   "discoverRecommended": "Recommended for you",
   "discoverRecommendedSubtitle": "Tailored to your credentials & network activity",
   "actionRsvp": "RSVP",
-  "actionApplyNow": "Apply Now",
+  "actionApplyNow": "Apply now",
   "discoverLatestBriefings": "Latest Briefings",
   "eventsEyebrow": "Industry Calendar & Conferences",
   "eventsVisionChip": "Vision 2030 Calendar",
@@ -475,8 +489,8 @@
       }
     }
   },
-  "eventViewPass": "View Digital Pass",
-  "eventAddToCalendar": "Add to Calendar",
+  "eventViewPass": "View pass",
+  "eventAddToCalendar": "Add to calendar",
   "eventPointsNote": "+{count} points and an official attendance record unlock when your credential is scanned at the entry gate.",
   "@eventPointsNote": {
     "placeholders": {
@@ -587,11 +601,11 @@
       }
     }
   },
-  "notificationCategoryOpportunities": "Opportunities",
+  "notificationCategoryOpportunities": "Applications",
   "notificationCategoryEvents": "Events",
   "notificationCategoryCredentials": "Credentials",
   "notificationsToday": "Today",
-  "notificationsEarlier": "Earlier This Week",
+  "notificationsEarlier": "Earlier",
   "notificationsTimezone": "Riyadh (GMT+3)",
   "notificationActionApplication": "View Application Status",
   "notificationActionEvent": "Access Delegate Pass",
@@ -637,7 +651,15 @@
   "newsTitle": "News & Insights",
   "newsSubtitle": "Authoritative technical briefings, regulatory updates, and market intelligence published by Back Of House.",
   "newsSearchHint": "Search articles, reports, briefings…",
-  "newsFilterForYou": "For You",
+  "newsFilterForYou": "For you",
+  "newsAllDesks": "All desks",
+  "newsDeskTechnical": "Technical",
+  "newsDeskRegulatory": "Regulatory",
+  "newsDeskMarket": "Market",
+  "newsBriefings": "Briefings",
+  "newsLatestEyebrow": "Latest news",
+  "newsOrderLabel": "Order",
+  "newsSavedArticles": "Saved articles",
   "newsFilterLatest": "Latest",
   "newsTopicTechnical": "Technical Briefings",
   "newsTopicRegulatory": "Regulatory & Safety",
@@ -664,7 +686,7 @@
   "articleSavedMessage": "Briefing saved",
   "articleRemovedMessage": "Removed from saved",
   "notificationCategoryNews": "News",
-  "accountTypeLabel": "I am",
+  "accountTypeLabel": "Account type",
   "accountIndividual": "Individual",
   "accountCompany": "Company",
   "fieldCompanyNameLabel": "Company name",
@@ -701,8 +723,8 @@
   },
   "opportunityTypeJob": "Job",
   "opportunityTypeProject": "Project",
-  "opportunityTypeCoOp": "Co-op Training",
-  "opportunityTypeVolunteering": "Volunteering",
+  "opportunityTypeCoOp": "Co-op",
+  "opportunityTypeVolunteering": "Volunteer",
   "opportunityTypeSupplierRequest": "Supplier Request",
   "employmentFullTime": "Full-time",
   "employmentPartTime": "Part-time",
@@ -731,9 +753,9 @@
     }
   },
   "opportunityWhyMatch": "Why it matches",
-  "opportunityOverview": "Overview",
+  "opportunityOverview": "About the role",
   "opportunityResponsibilities": "Responsibilities",
-  "opportunityRequirements": "Requirements",
+  "opportunityRequirements": "What we’re looking for",
   "opportunitySkills": "Skills",
   "opportunityPostedBy": "Posted by",
   "actionViewCompany": "View Company Profile",
@@ -755,7 +777,7 @@
   },
   "applyStepProfile": "Profile & Experience",
   "applyStepReview": "Review & Submit",
-  "applyExperienceTitle": "Relevant Experience",
+  "applyExperienceTitle": "Experience to share",
   "applyExperienceSubtitle": "Choose the roles to include with this application.",
   "applySelectedCount": "{count} selected",
   "@applySelectedCount": {
@@ -789,7 +811,7 @@
       }
     }
   },
-  "applyPrivacyNote": "{company} sees your professional profile. Your ID number is never shared.",
+  "applyPrivacyNote": "Your email and phone stay private. {company} only sees the contact details you choose to share, once your application reaches Contact.",
   "@applyPrivacyNote": {
     "placeholders": {
       "company": {
@@ -805,14 +827,14 @@
       }
     }
   },
-  "actionSubmitApplication": "Submit Application",
+  "actionSubmitApplication": "Submit application",
   "applySubmittedMessage": "Application submitted",
   "applyNotAvailable": "You can't apply to this opportunity.",
   "applyAlreadyApplied": "You've already applied to this opportunity.",
-  "applicationsTitle": "My Applications",
+  "applicationsTitle": "My applications",
   "applicationsEntryHint": "Track where each application stands",
   "applicationsSubtitle": "Each company reviews its applications and makes the decision. You can follow every step here.",
-  "applicationsActive": "Active ({count})",
+  "applicationsActive": "Active · {count}",
   "@applicationsActive": {
     "placeholders": {
       "count": {
@@ -820,7 +842,7 @@
       }
     }
   },
-  "applicationsPast": "Past ({count})",
+  "applicationsPast": "Closed · {count}",
   "@applicationsPast": {
     "placeholders": {
       "count": {
@@ -881,6 +903,8 @@
   },
   "applicationWithdrawnMessage": "Application withdrawn",
   "applicationsFooter": "Back Of House connects you with companies. Hiring decisions are made by each company.",
+  "companyNavListings": "Listings",
+  "companyNavSuppliers": "Suppliers",
   "companyNavDashboard": "Dashboard",
   "companyNavPortfolio": "Portfolio",
   "companyWorkspace": "Your workspace",
@@ -903,7 +927,7 @@
   "companyCreateOpportunityShort": "Start a draft for review",
   "applyIndividualsOnly": "Only individual accounts can apply to this opportunity.",
   "applyStudentsOnly": "Co-op training is open to individuals with student status.",
-  "applyProjectsTitle": "Portfolio Projects",
+  "applyProjectsTitle": "Projects",
   "applyProjectsSubtitle": "Choose the projects to include with this application.",
   "applyChecklistProjects": "{count, plural, =0{No projects} =1{1 project} other{{count} projects}}",
   "@applyChecklistProjects": {
@@ -952,7 +976,7 @@
   },
   "opportunityStatusDraft": "Draft",
   "opportunityStatusInReview": "In review",
-  "opportunityStatusPublished": "Published",
+  "opportunityStatusPublished": "Live",
   "opportunityStatusPaused": "Paused",
   "opportunityStatusClosed": "Closed",
   "opportunityStatusArchived": "Archived",
@@ -1023,7 +1047,7 @@
   "companyProjectClientHint": "Optional — leave blank if confidential",
   "companyMyOpportunities": "My Opportunities",
   "companyOpportunitiesSubtitle": "Drafts, listings in review and published opportunities.",
-  "companyReviewNote": "Back Of House reviews every listing before it is published, whether or not your company is verified.",
+  "companyReviewNote": "Every listing is reviewed by Back of House before it goes live.",
   "companyOpportunitiesEmptyTitle": "Nothing here yet",
   "companyOpportunitiesEmptyMessage": "Create a draft, then submit it for review.",
   "companyCreateOpportunity": "Create opportunity",
@@ -1075,7 +1099,7 @@
   "companyShortlist": "Shortlist",
   "companyMoveToContact": "Move to contact",
   "companyAcceptApplicant": "Accept",
-  "companyRejectApplicant": "Reject",
+  "companyRejectApplicant": "Not selected",
   "companyAcceptTitle": "Accept this applicant?",
   "companyRejectTitle": "Reject?",
   "companyDecisionFinal": "This decision for {name} is final and cannot be undone.",
@@ -1217,5 +1241,403 @@
   "companyDetailsNoOpportunities": "No open opportunities right now.",
   "companyDetailsNoProjects": "No projects shared yet.",
   "companyDetailsOpportunitiesStat": "Open roles",
-  "companyDetailsProjectsStat": "Projects"
+  "companyDetailsProjectsStat": "Projects",
+  "welcomeTermsLead": "By continuing you agree to our ",
+  "welcomeTermsLink": "Terms & Privacy",
+  "signInTitleAccent": "back.",
+  "continueWithPhone": "Continue with a phone code",
+  "validationCodeInvalid": "Enter the 6-digit code.",
+  "errorInvalidCode": "That code is wrong or has expired. Try again or send a new one.",
+  "phoneSignInTitle": "Sign in with ",
+  "phoneSignInTitleAccent": "your phone.",
+  "phoneSignInSubtitle": "We’ll text you a 6-digit code. No password needed.",
+  "phoneSendCode": "Send code",
+  "phoneCodeTitle": "Enter the code",
+  "phoneCodeSubtitle": "We sent a 6-digit code to {phone}.",
+  "@phoneCodeSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "phoneCodeLabel": "Code",
+  "phoneVerifyCta": "Verify and sign in",
+  "phoneResendCode": "Send a new code",
+  "phoneChangeNumber": "Change number",
+  "phoneCodeSent": "A new code is on its way.",
+  "pointsLevel": "Level {level}",
+  "@pointsLevel": {
+    "description": "Numbered points level (Rewards). Never verification.",
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "pointsToLevel": "{count} pts to Level {level}",
+  "@pointsToLevel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "pointsTopLevel": "Top level reached",
+  "homeGreetingMorning": "Good morning, ",
+  "homeGreetingAfternoon": "Good afternoon, ",
+  "homeGreetingEvening": "Good evening, ",
+  "homeFlagshipEvent": "Flagship event",
+  "homeOpportunitiesForYou": "Opportunities for you",
+  "actionOpenRewards": "Open rewards",
+  "accountIndividualHint": "Professionals, freelancers and students",
+  "accountCompanyHint": "Organizers, agencies, venues and suppliers",
+  "signUpStudentTitle": "I’m currently a student",
+  "signUpStudentHint": "Unlocks co-op and training opportunities.",
+  "discoverSections": "Discover sections",
+  "discoverUpcomingEvents": "Upcoming Events",
+  "discoverCalendar": "Calendar",
+  "actionClearFilters": "Clear filters",
+  "actionRemoveFilter": "Remove filter {name}",
+  "@actionRemoveFilter": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "searchSuggestionLightShows": "Light shows",
+  "searchSuggestionConcerts": "Concerts",
+  "searchSuggestionRiyadh": "Riyadh",
+  "pointsBalanceLabel": "Balance",
+  "profileGetVerified": "Get verified",
+  "profileNotVerified": "Not verified",
+  "profileStatusProfessional": "Professional",
+  "profileEventsAttended": "Events attended",
+  "profileVisibilityShort": "Visibility",
+  "profileYearsShort": "Years exp.",
+  "profileMyApplications": "My Applications",
+  "profileAddPhoto": "Change photo",
+  "eventAboutTab": "About",
+  "eventAgendaTab": "Agenda",
+  "eventSpeakersTab": "Speakers",
+  "eventSections": "Event sections",
+  "eventAttendingLabel": "{count}+ attending",
+  "@eventAttendingLabel": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "eventPeopleYouKnow": "{count, plural, =1{1 person you know} other{{count} people you know}}",
+  "@eventPeopleYouKnow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "eventEntry": "Entry",
+  "eventMap": "Map",
+  "eventSaveLabel": "Save event",
+  "eventAgendaDay": "Day {day} · {date}",
+  "@eventAgendaDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "eventRegisteredTitle": "You’re registered!",
+  "eventRegisteredBody": "We’ve saved your spot. You’ll get a reminder before the event starts.",
+  "eventDateLabel": "Date",
+  "eventVenueLabel": "Venue",
+  "eventPassHeading": "Your event pass",
+  "eventPassHint": "Show this code at the entrance to check in.",
+  "eventPointsOnAttendance": "Earn points when your attendance is verified at the event.",
+  "eventExploreMore": "Explore more events",
+  "opportunityDetailTitle": "Opportunity",
+  "opportunityEligible": "You’re eligible to apply",
+  "opportunityApplyHint": "You’ll share your experience, projects and a short message.",
+  "applyExperienceRequired": "Choose at least one",
+  "applyExperienceMissing": "Choose at least one experience to share.",
+  "companyWorkspaceSubtitle": "Company workspace",
+  "companyWelcomeBack": "Welcome back",
+  "companyNewListing": "New listing",
+  "companyStatLiveListings": "Live listings",
+  "companyStatNewApplicants": "New applicants",
+  "companyStatThisWeek": "+{count} this week",
+  "@companyStatThisWeek": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "companyStatSupplierInvites": "Supplier invites",
+  "companyStatProfileViews": "Profile views",
+  "companyStatChange": "{sign}{count}%",
+  "@companyStatChange": {
+    "placeholders": {
+      "sign": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "companyChangesRequestedTitle": "Changes requested on “{title}”",
+  "@companyChangesRequestedTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "companyEditListing": "Edit listing",
+  "companyRecentApplicants": "Recent applicants",
+  "companyNoApplicantsYet": "No applicants yet. Once a listing is live, applications appear here.",
+  "companyListingsTitle": "Opportunities",
+  "filterAllCount": "All · {count}",
+  "@filterAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "companyFilterChanges": "Changes",
+  "companyFilterDrafts": "Drafts",
+  "companyListingNotLive": "Not live yet",
+  "companyListingApplicants": "Applicants",
+  "companyListingEdit": "Edit",
+  "companyListingView": "View",
+  "companyListingContinue": "Continue",
+  "companyListingType": "Listing type",
+  "companyClosesOn": "Closes on",
+  "companyClosesOnPick": "Optional — pick a date",
+  "companyClosesInPast": "Choose a date after today.",
+  "companyClearDate": "Clear date",
+  "companyWorkSetup": "Work setup",
+  "workSetupOnSite": "On-site",
+  "workSetupHybrid": "Hybrid",
+  "workSetupRemote": "Remote",
+  "companyReviewInfo": "Back of House reviews every listing before it goes live. You’ll be notified when it’s approved or if changes are needed.",
+  "companyApplicantsSubtitle": "{count, plural, =1{1 applicant} other{{count} applicants}} · {status}",
+  "@companyApplicantsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "stageFilterCount": "{label} · {count}",
+  "@stageFilterCount": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applicantExperienceCount": "{count, plural, =1{1 experience} other{{count} experiences}}",
+  "@applicantExperienceCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applicantProjectCount": "{count, plural, =1{1 project} other{{count} projects}}",
+  "@applicantProjectCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applicantContactShared": "Contact shared",
+  "companyViewApplication": "View application",
+  "companyApplicationFor": "Application for",
+  "companyMessageTitle": "Message",
+  "companyExperienceShared": "Experience shared",
+  "companyProjectsShared": "Projects shared",
+  "applicantStatusApplied": "{status} · Applied {time}",
+  "@applicantStatusApplied": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierYourResponse": "Your response",
+  "supplierRespondBy": "Respond by {date}",
+  "@supplierRespondBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierBudget": "Budget",
+  "supplierRespondByLabel": "Respond by",
+  "supplierYourPrice": "Your price",
+  "supplierSetupTime": "Setup time",
+  "supplierSetupTimeHint": "e.g. 2 days",
+  "supplierAttachProjects": "Attach projects",
+  "supplierSelectedCount": "{count} selected",
+  "@supplierSelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierPrivateNote": "Only {buyer} can see your response and price.",
+  "@supplierPrivateNote": {
+    "placeholders": {
+      "buyer": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierRequestsTitle": "Supplier requests",
+  "supplierTabInvitedCount": "Invited · {count}",
+  "@supplierTabInvitedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierTabResponsesCount": "My responses · {count}",
+  "@supplierTabResponsesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "supplierTabMyRequests": "My requests",
+  "supplierOpenToYourType": "Open to your company type · {time}",
+  "@supplierOpenToYourType": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierYouResponded": "You responded · {date}",
+  "@supplierYouResponded": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "supplierBadgeOpen": "Open",
+  "supplierMyRequestsEmpty": "Your supplier requests appear here.",
+  "companyVerifiedByBoh": "Verified by Back of House",
+  "companyStatProjects": "Projects",
+  "companyStatFollowers": "Followers",
+  "companiesSearchHint": "Search companies, services, cities",
+  "companiesFilterOrganizers": "Organizers",
+  "companiesFilterVenues": "Venues",
+  "companiesFilterSuppliers": "Suppliers",
+  "companiesFilterAgencies": "Agencies",
+  "companiesEditorsPick": "Editor’s pick",
+  "companiesEmpty": "No companies match your search",
+  "professionalsSearchHint": "Search by name, skill or city",
+  "professionalsFilterProducers": "Producers",
+  "professionalsFilterDesigners": "Designers",
+  "professionalsFilterTechnical": "Technical",
+  "professionalsFilterStudents": "Students",
+  "professionalsHighlighted": "Highlighted",
+  "professionalsEmpty": "No professionals match your search",
+  "actionConnected": "Connected",
+  "editProfileIAm": "I’m a",
+  "editProfileHeadline": "Headline",
+  "editProfileAbout": "About",
+  "editProfileInterests": "Interests",
+  "editProfilePrivacy": "Contact privacy",
+  "editProfilePrivacyHint": "Choose what companies see when your application reaches Contact. Off by default.",
+  "editProfileShareEmail": "Share my email",
+  "editProfileSharePhone": "Share my phone",
+  "editProfileSaved": "Profile saved",
+  "editProfileNameRequired": "Enter your name",
+  "editProfileAboutTooLong": "About can be up to 600 characters.",
+  "interestTechInnovation": "Tech & Innovation",
+  "interestMarketing": "Marketing",
+  "interestDesign": "Design",
+  "interestBusiness": "Business",
+  "interestNetworking": "Networking",
+  "interestProduction": "Production",
+  "verifyHeadline": "Show companies it’s really you",
+  "verifyIntro": "A verified badge tells companies your identity and experience were checked by Back of House.",
+  "verifyIdentityTitle": "Identity document",
+  "verifyIdentityHint": "National ID or Iqama",
+  "verifyExperienceTitle": "Proof of experience",
+  "verifyExperienceHint": "A certificate, contract or reference letter",
+  "verifyUploaded": "{hint} · uploaded",
+  "@verifyUploaded": {
+    "placeholders": {
+      "hint": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyReviewTitle": "Review by Back of House",
+  "verifyReviewHint": "We’ll notify you when it’s done",
+  "verifyInReview": "In review — we’ll notify you when it’s done",
+  "verifyNote": "Verification is never granted by points, payments or activity. Your documents are only used for this review.",
+  "verifyUpload": "Upload",
+  "verifySubmit": "Submit for review",
+  "verifySubmitted": "Sent for review",
+  "redeemedTitle": "Your reward",
+  "redeemedBadge": "Redeemed",
+  "redeemedFor": "Redeemed for {points} pts",
+  "@redeemedFor": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      }
+    }
+  },
+  "redeemedYourCode": "Your code",
+  "redeemedHowToUse": "How to use it",
+  "redeemedBalance": "Points balance",
+  "redeemedPts": "pts",
+  "actionCopy": "Copy",
+  "companyProjectStartLabel": "Started",
+  "companyProjectEndLabel": "Finished",
+  "companyProjectOngoing": "Ongoing",
+  "resetTitle": "Reset your password",
+  "resetSubtitle": "Enter your account email and we’ll send you a link to set a new one.",
+  "resetCta": "Send reset link",
+  "resetSentTitle": "Check your email",
+  "resetSentBody": "If an account exists for {email}, a reset link is on its way.",
+  "@resetSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "resetBackToSignIn": "Back to sign in"
 }

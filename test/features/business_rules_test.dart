@@ -373,6 +373,19 @@ void main() {
       expect(created.company.name, 'Sound & Stage Co');
     });
 
+    test('an application shares at least one experience item', () {
+      final (:source, inbox: _) = _applications();
+      expect(
+        source.submit(
+          const ApplicationDraft(
+            opportunityId: 'sound-stage-audio',
+            projectIds: ['proj-2'],
+          ),
+        ),
+        _apiError(ApiErrorType.validation),
+      );
+    });
+
     test('experience and projects must come from the applicant profile', () {
       final (:source, inbox: _) = _applications();
       expect(
@@ -390,7 +403,10 @@ void main() {
       'no duplicate active applications; withdraw then apply again',
       () async {
         final (:source, inbox: _) = _applications();
-        const draft = ApplicationDraft(opportunityId: 'sound-stage-audio');
+        const draft = ApplicationDraft(
+          opportunityId: 'sound-stage-audio',
+          experienceIds: ['exp-1'],
+        );
         final created = await source.submit(draft);
         await expectLater(
           source.submit(draft),
@@ -411,7 +427,10 @@ void main() {
     );
 
     test('co-op: students may apply, other individuals may not', () async {
-      const draft = ApplicationDraft(opportunityId: 'conventions-coop');
+      const draft = ApplicationDraft(
+        opportunityId: 'conventions-coop',
+        experienceIds: ['exp-1'],
+      );
       await expectLater(
         _applications().source.submit(draft),
         _apiError(ApiErrorType.forbidden),
@@ -483,7 +502,10 @@ void main() {
         final before = (await inbox.getNotifications()).length;
 
         final created = await source.submit(
-          const ApplicationDraft(opportunityId: 'sound-stage-audio'),
+          const ApplicationDraft(
+            opportunityId: 'sound-stage-audio',
+            experienceIds: ['exp-1'],
+          ),
         );
         await source.withdraw(created.id);
 

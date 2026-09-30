@@ -89,9 +89,15 @@ class BOHEmptyState extends StatelessWidget {
     this.message,
     this.actionLabel,
     this.onAction,
+    this.extra,
   });
 
+  /// The default [AppIcons.empty] draws the design's search illustration;
+  /// any other icon is shown in a soft violet disc.
   final IconData icon;
+
+  /// Extra content between message and action (suggestion chips).
+  final Widget? extra;
   final String? title;
   final String? message;
   final String? actionLabel;
@@ -101,20 +107,25 @@ class BOHEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return _StateLayout(
-      emblem: Icon(
-        icon,
-        size: AppSizes.iconLarge,
-        color: context.colors.primaryText,
-      ),
+      emblem: icon == AppIcons.empty
+          ? null
+          : Icon(
+              icon,
+              size: AppSizes.iconLarge,
+              color: context.colors.primaryText,
+            ),
+      illustration: icon == AppIcons.empty,
       tone: _Tone.brand,
       title: title ?? l10n.emptyStateTitle,
       message: message ?? l10n.emptyStateMessage,
+      extra: extra,
       action: actionLabel == null || onAction == null
           ? null
-          : BOHSecondaryButton(
+          : BOHButton(
               label: actionLabel!,
               onPressed: onAction,
               size: BOHButtonSize.medium,
+              trailingIcon: null,
               expand: false,
             ),
     );
@@ -130,9 +141,13 @@ class _StateLayout extends StatelessWidget {
     required this.title,
     required this.message,
     this.action,
+    this.extra,
+    this.illustration = false,
   });
 
-  final Widget emblem;
+  final Widget? emblem;
+  final Widget? extra;
+  final bool illustration;
   final _Tone tone;
   final String? title;
   final String message;
@@ -152,34 +167,29 @@ class _StateLayout extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 72,
-                  height: 72,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: c.isDark
-                        ? c.surface
-                        : accent.withValues(alpha: 0.08),
-                    border: c.isDark
-                        ? Border.all(color: accent.withValues(alpha: 0.4))
-                        : null,
-                    boxShadow: c.isDark
-                        ? [
-                            BoxShadow(
-                              color: accent.withValues(alpha: 0.18),
-                              blurRadius: 28,
-                            ),
-                          ]
-                        : null,
+                if (illustration)
+                  const _EmptyIllustration()
+                else
+                  Container(
+                    width: 72,
+                    height: 72,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: tone == _Tone.error
+                          ? accent.withValues(alpha: 0.12)
+                          : c.primaryTint,
+                    ),
+                    child: emblem,
                   ),
-                  child: emblem,
-                ),
-                const SizedBox(height: AppSpacing.s24),
+                const SizedBox(height: AppSpacing.s16),
                 if (title != null) ...[
                   Text(
                     title!,
-                    style: context.text.h3,
+                    style: context.text.title.copyWith(
+                      fontSize: 21,
+                      height: 28 / 21,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.s8),
@@ -189,6 +199,10 @@ class _StateLayout extends StatelessWidget {
                   style: context.text.body,
                   textAlign: TextAlign.center,
                 ),
+                if (extra != null) ...[
+                  const SizedBox(height: AppSpacing.s16),
+                  extra!,
+                ],
                 if (action != null) ...[
                   const SizedBox(height: AppSpacing.s24),
                   action!,
@@ -196,6 +210,77 @@ class _StateLayout extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The design's "nothing found" mark: two offset rounded squares and a
+/// magnifier. Built from shapes, so it follows the theme.
+class _EmptyIllustration extends StatelessWidget {
+  const _EmptyIllustration();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    Widget square({required Color fill}) => Container(
+      width: 84,
+      height: 84,
+      decoration: BoxDecoration(
+        color: fill,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: c.borderAccent, width: 2),
+      ),
+    );
+    return ExcludeSemantics(
+      child: SizedBox(
+        width: 150,
+        height: 130,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 18,
+              top: 10,
+              child: Transform.rotate(
+                angle: -0.14,
+                child: square(fill: c.surface),
+              ),
+            ),
+            Positioned(left: 40, top: 24, child: square(fill: c.primaryTint)),
+            Positioned(
+              left: 70,
+              top: 50,
+              child: Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: c.primary, width: 5),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 112,
+              top: 104,
+              child: Transform.rotate(
+                angle: 0.785,
+                child: Container(
+                  width: 28,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    color: c.primary,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 128,
+              top: 16,
+              child: Container(width: 12, height: 12, color: c.primary),
+            ),
+          ],
         ),
       ),
     );

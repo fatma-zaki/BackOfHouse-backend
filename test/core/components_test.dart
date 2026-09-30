@@ -13,17 +13,6 @@ import '../helpers/test_app.dart';
 const _longTitle =
     'Saudi Events Industry Continues to Grow in 2025 With Record Attendance';
 
-Widget _imageCard({VoidCallback? onTap}) => BOHImageCard(
-  image: null,
-  tag: const BOHTag('Industry'),
-  title: _longTitle,
-  description:
-      'New reports show a significant increase in events, attendees, and '
-      "investment in the Kingdom's events sector.",
-  metadata: const ['2h ago', '5 min read'],
-  onTap: onTap ?? () {},
-);
-
 Widget _nav({int index = 0, ValueChanged<int>? onSelected}) =>
     BOHBottomNavigation(
       currentIndex: index,
@@ -181,8 +170,8 @@ void main() {
       );
       FontWeight? weight(String label) =>
           tester.widget<Text>(find.text(label)).style?.fontWeight;
-      expect(weight('Home'), FontWeight.w700);
-      expect(weight('News'), FontWeight.w500);
+      expect(weight('Home'), FontWeight.w800);
+      expect(weight('News'), FontWeight.w600);
     });
   });
 
@@ -231,12 +220,10 @@ void main() {
             padding: const EdgeInsets.all(20),
             children: [
               BOHSectionHeader(title: 'Latest News', onAction: () {}),
-              _imageCard(),
-              const BOHImageCard(
-                layout: BOHImageCardLayout.vertical,
+              BOHMediaTile(
                 image: AppImage.placeholder,
-                title: _longTitle,
-                metadata: ['2h ago'],
+                onTap: () {},
+                child: const Text(_longTitle),
               ),
               const BOHButton(label: 'Join the Community', onPressed: null),
               const SizedBox(height: 360, child: BOHErrorState()),

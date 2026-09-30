@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Notifications</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</div>
+<a href="#" style="font-size: 12px; font-weight: 700; color: {{c.vt}}; text-decoration: none; min-height: 44px; display: flex; align-items: center">{{s.markAll}}</a>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 10px">
+<div style="display: flex; gap: 8px; padding-bottom: 4px">
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{f.sel}}" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid {{f.border}}; background: {{f.bg}}; color: {{f.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px">{{f.label}}<sc-if value="{{f.count}}" hint-placeholder-val="{{ false }}"><span style="min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border-radius: 9px; background: #ffffff; color: #5424e0; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{f.count}}</span></sc-if></button>
+</sc-for>
+</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+<span style="font-size: 11px; font-weight: 800; letter-spacing: {{tag}}; color: {{c.muted}}; padding: 6px 4px 0">{{g.label}}</span>
+<sc-for list="{{g.items}}" as="n" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; padding: 12px; background: {{n.bg}}; border: 1px solid {{n.border}}; border-radius: 18px; box-shadow: {{c.shadow}}">
+<span style="width: 42px; height: 42px; flex-shrink: 0; border-radius: 14px; background: {{n.iBg}}; color: {{n.iFg}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{n.isApp}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M9 13l2 2 4-4"></path></svg></sc-if>
+<sc-if value="{{n.isEvent}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg></sc-if>
+<sc-if value="{{n.isPoints}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"></path></svg></sc-if>
+<sc-if value="{{n.isNews}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{n.isReward}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8c-1-3-3-5-5-4s0 4 5 4zM12 8c1-3 3-5 5-4s0 4-5 4z"></path></svg></sc-if>
+</span>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 13px; font-weight: 700">{{n.title}}</span><span style="font-size: 11px; color: {{c.muted}}; white-space: nowrap">{{n.time}}</span></div>
+<span style="font-size: 12px; line-height: 17px; color: {{c.muted}}">{{n.body}}</span>
+</div>
+<span style="width: 8px; height: 8px; flex-shrink: 0; margin-top: 4px; border-radius: 4px; background: {{n.dot}}"></span>
+</div>
+</sc-for>
+</sc-for>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', unread: '#ffffff', line: '#e4dff3', unreadLine: '#cbbdfb', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)',
+        tones: { app: ['#dcf4ea', '#0d6446'], event: ['#ece6ff', '#4a22c9'], points: ['#fcefd6', '#80520a'], news: ['#e0ebff', '#1c4aab'], reward: ['#ece6ff', '#4a22c9'] } },
+      dark: { bg: '#05050d', card: '#0b0c1d', unread: '#10112a', line: '#1d1f3d', unreadLine: '#3a2d8f', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)',
+        tones: { app: ['#0c2e24', '#4ade80'], event: ['#1f1650', '#a78bfa'], points: ['#33260a', '#fbbf24'], news: ['#0f2350', '#7fb0ff'], reward: ['#1f1650', '#a78bfa'] } }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Notifications', markAll: 'Mark all read',
+        filters: [['All', '2'], ['Applications', ''], ['Events', '']],
+        groups: [
+          ['TODAY', [
+            ['app', 'You’re shortlisted', 'Riyadh Season shortlisted you for Guest Experience Volunteer.', '2h', true],
+            ['event', 'Event in 5 days', 'Future of Work Summit starts Fri, Oct 2 in Riyadh.', '5h', true]
+          ]],
+          ['EARLIER', [
+            ['points', '+50 points', 'You completed your profile. Keep going to reach Level 4.', '1d', false],
+            ['news', 'New from the Market desk', 'The Future of Events in Saudi Arabia.', '1d', false],
+            ['reward', 'Reward ready', 'Your Workshop seat code is ready to use.', '3d', false]
+          ]]
+        ]
+      },
+      ar: {
+        back: 'رجوع', title: 'الإشعارات', markAll: 'تعليم الكل كمقروء',
+        filters: [['الكل', '2'], ['الطلبات', ''], ['الفعاليات', '']],
+        groups: [
+          ['اليوم', [
+            ['app', 'أنت في القائمة المختصرة', 'اختارك موسم الرياض لدور متطوعة تجربة الزوار.', 'قبل ساعتين', true],
+            ['event', 'فعالية بعد 5 أيام', 'قمة مستقبل العمل تبدأ الجمعة 2 أكتوبر في الرياض.', 'قبل 5 ساعات', true]
+          ]],
+          ['سابقًا', [
+            ['points', '+50 نقطة', 'أكملت ملفك الشخصي. واصل للوصول إلى المستوى 4.', 'أمس', false],
+            ['news', 'جديد من مكتب السوق', 'مستقبل الفعاليات في السعودية.', 'أمس', false],
+            ['reward', 'مكافأتك جاهزة', 'رمز مقعد ورشة العمل جاهز للاستخدام.', 'قبل 3 أيام', false]
+          ]]
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const filters = s.filters.map((f, i) => ({ label: f[0], count: f[1], sel: i === 0 ? 'true' : 'false', bg: i === 0 ? '#6437fa' : c.card, color: i === 0 ? '#ffffff' : c.ink, border: i === 0 ? '#6437fa' : c.line }));
+    const groups = s.groups.map((g) => ({
+      label: g[0],
+      items: g[1].map((n) => ({
+        isApp: n[0] === 'app', isEvent: n[0] === 'event', isPoints: n[0] === 'points', isNews: n[0] === 'news', isReward: n[0] === 'reward',
+        title: n[1], body: n[2], time: n[3],
+        iBg: c.tones[n[0]][0], iFg: c.tones[n[0]][1],
+        bg: n[4] ? c.unread : c.card, border: n[4] ? c.unreadLine : c.line, dot: n[4] ? '#6437fa' : 'transparent'
+      }))
+    }));
+    return {
+      c, s, filters, groups,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

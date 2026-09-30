@@ -23,5 +23,15 @@ abstract interface class AuthRepository {
 
   Future<void> requestPasswordReset(String email);
 
+  /// Sends a one-time sign-in code by SMS.
+  Future<void> requestPhoneCode(String phone);
+
+  /// Signs in with a one-time code; reaches the same account as email or
+  /// Google sign-in.
+  Future<AppUser> verifyPhoneCode({
+    required String phone,
+    required String code,
+  });
+
   Future<void> logout();
 }

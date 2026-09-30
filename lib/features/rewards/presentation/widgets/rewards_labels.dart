@@ -18,7 +18,8 @@ extension PointsActivityPresentation on PointsActivity {
     PointsActivity.attendedWorkshop => l10n.activityAttendedWorkshop,
     PointsActivity.profileCompletion => l10n.activityProfileCompletion,
     PointsActivity.verifiedIdentity => l10n.activityVerifiedIdentity,
-    PointsActivity.joinedEvent => l10n.activityJoinedEvent,
+    PointsActivity.attendanceVerified => l10n.activityAttendanceVerified,
+    PointsActivity.volunteerShiftCompleted => l10n.activityVolunteerShift,
     PointsActivity.followedCompany => l10n.activityFollowedCompany,
     PointsActivity.redeemedReward => l10n.activityRedeemedReward,
   };
@@ -27,7 +28,8 @@ extension PointsActivityPresentation on PointsActivity {
     PointsActivity.attendedWorkshop => AppIcons.workshop,
     PointsActivity.profileCompletion => AppIcons.profileCompletion,
     PointsActivity.verifiedIdentity => AppIcons.identity,
-    PointsActivity.joinedEvent => AppIcons.calendar,
+    PointsActivity.attendanceVerified => AppIcons.registered,
+    PointsActivity.volunteerShiftCompleted => AppIcons.heart,
     PointsActivity.followedCompany => AppIcons.follow,
     PointsActivity.redeemedReward => AppIcons.redeemed,
   };

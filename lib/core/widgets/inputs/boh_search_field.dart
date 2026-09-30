@@ -26,6 +26,8 @@ class BOHSearchField extends StatefulWidget {
     this.readOnly = false,
     this.autofocus = false,
     this.debounce = const Duration(milliseconds: 300),
+    this.onFilter,
+    this.filterLabel,
   });
 
   final TextEditingController? controller;
@@ -36,6 +38,10 @@ class BOHSearchField extends StatefulWidget {
   final bool readOnly;
   final bool autofocus;
   final Duration debounce;
+
+  /// Shows the trailing filter (sliders) action when there is no query.
+  final VoidCallback? onFilter;
+  final String? filterLabel;
 
   @override
   State<BOHSearchField> createState() => _BOHSearchFieldState();
@@ -86,16 +92,22 @@ class _BOHSearchFieldState extends State<BOHSearchField> {
   Widget build(BuildContext context) {
     final c = context.colors;
     final focused = _focusNode.hasFocus;
+    final active = focused || _controller.text.isNotEmpty;
     final l10n = context.l10n;
 
     final field = AnimatedContainer(
       duration: AppMotion.fast,
       curve: AppMotion.standard,
-      height: AppSizes.buttonHeightMedium,
+      height: AppSizes.searchHeight,
       decoration: BoxDecoration(
         color: c.surface,
-        borderRadius: AppRadii.smallAll,
-        border: Border.all(color: focused ? c.primary : c.border),
+        borderRadius: AppRadii.pillAll,
+        border: Border.all(
+          color: active && !widget.readOnly ? c.primary : c.border,
+          width: active && !widget.readOnly
+              ? AppSizes.outline
+              : AppSizes.hairline,
+        ),
       ),
       child: Row(
         children: [
@@ -103,8 +115,8 @@ class _BOHSearchFieldState extends State<BOHSearchField> {
             padding: const EdgeInsetsDirectional.only(start: AppSpacing.s16),
             child: Icon(
               AppIcons.search,
-              size: AppSizes.iconMedium,
-              color: focused ? c.primary : c.textSecondary,
+              size: active ? 18 : AppSizes.iconMedium,
+              color: active ? c.primaryText : c.textSecondary,
             ),
           ),
           Expanded(
@@ -117,18 +129,18 @@ class _BOHSearchFieldState extends State<BOHSearchField> {
               onChanged: _handleChanged,
               onSubmitted: widget.onSubmitted,
               textInputAction: TextInputAction.search,
-              style: context.text.body.copyWith(color: c.textPrimary),
+              style: context.text.bodyLarge,
               cursorColor: c.primary,
               decoration: InputDecoration(
                 hintText: widget.hint ?? l10n.searchHint,
-                hintStyle: context.text.body.copyWith(color: c.textMuted),
+                hintStyle: context.text.bodyLarge.copyWith(color: c.textMuted),
                 filled: false,
                 isDense: true,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s12,
+                  horizontal: AppSpacing.s10,
                   vertical: AppSpacing.s12,
                 ),
               ),
@@ -137,10 +149,18 @@ class _BOHSearchFieldState extends State<BOHSearchField> {
           if (_controller.text.isNotEmpty && !widget.readOnly)
             BOHIconButton(
               icon: AppIcons.close,
-              iconSize: AppSizes.iconSmall,
+              iconSize: 14,
+              visualSize: 36,
+              variant: BOHIconButtonVariant.soft,
               semanticLabel: l10n.actionClearSearch,
-              color: c.textSecondary,
               onPressed: _clear,
+            )
+          else if (widget.onFilter != null)
+            BOHIconButton(
+              icon: AppIcons.filter,
+              semanticLabel: widget.filterLabel ?? l10n.actionSearch,
+              color: c.textPrimary,
+              onPressed: widget.onFilter,
             )
           else
             const SizedBox(width: AppSpacing.s16),

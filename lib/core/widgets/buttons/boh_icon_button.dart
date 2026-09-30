@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_motion.dart';
-import '../../../app/theme/app_radii.dart';
+import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../extensions/context_extensions.dart';
 import '../motion/boh_pressable.dart';
 
 enum BOHIconButtonVariant {
-  /// Bare icon — app bar actions, password eye.
+  /// Bare icon — header search, bell, share.
   plain,
 
-  /// Circle with a hairline — the arrow on a content card.
+  /// Surface circle with a hairline — back, close, share, small card
+  /// actions (icon in violet when [BOHIconButton.color] says so).
   outlined,
 
-  /// Rounded purple square — compact primary action.
+  /// Violet circle with a glow — "+" on tab headers.
   filled,
 
-  /// Soft grey circle — back and toolbar actions in headers.
+  /// Same as [outlined]; kept for back buttons in headers.
   tonal,
+
+  /// Soft violet circle — clear search, small toolbar actions.
+  soft,
+
+  /// Dark translucent circle over photography, white icon.
+  photo,
 }
 
 /// Icon-only control. Always 44×44 or larger, always labelled for
@@ -31,24 +38,35 @@ class BOHIconButton extends StatelessWidget {
     required this.onPressed,
     this.variant = BOHIconButtonVariant.plain,
     this.size = AppSizes.minTouchTarget,
+    this.visualSize,
     this.iconSize = AppSizes.iconMedium,
     this.color,
     this.showBadge = false,
+    this.active = false,
   }) : assert(size >= AppSizes.minTouchTarget, 'Below minimum touch target');
 
   final IconData icon;
   final String semanticLabel;
   final VoidCallback? onPressed;
   final BOHIconButtonVariant variant;
+
+  /// Hit area.
   final double size;
+
+  /// Drawn circle when smaller than the hit area (40 on cards, 36 clear).
+  final double? visualSize;
   final double iconSize;
 
-  /// Overrides the icon colour for [BOHIconButtonVariant.plain].
+  /// Overrides the icon colour.
   final Color? color;
 
   /// Small dot for unread state. Paired with the label in semantics, so it
   /// is never the only signal.
   final bool showBadge;
+
+  /// Selected state for [BOHIconButtonVariant.photo] (e.g. saved): violet
+  /// fill, no border.
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -58,33 +76,44 @@ class BOHIconButton extends StatelessWidget {
     return BOHPressable(
       onTap: onPressed,
       semanticLabel: semanticLabel,
+      selected: variant == BOHIconButtonVariant.photo ? active : null,
       builder: (context, state) {
-        final (background, foreground, border) = switch (variant) {
+        final pressed = state.pressed;
+        final (
+          Color background,
+          Color foreground,
+          Color? border,
+        ) = switch (variant) {
           BOHIconButtonVariant.plain => (
-            state.pressed ? c.pressedOverlay : AppColors.transparent,
+            pressed ? c.pressedOverlay : AppColors.transparent,
             color ?? c.textPrimary,
             null,
           ),
-          BOHIconButtonVariant.outlined => (
-            state.pressed ? c.primaryTint : c.surface,
-            c.textPrimary,
-            state.pressed ? c.primary : c.border,
+          BOHIconButtonVariant.outlined || BOHIconButtonVariant.tonal => (
+            pressed ? c.primaryWash : c.surface,
+            color ?? c.textPrimary,
+            c.border,
           ),
           BOHIconButtonVariant.filled => (
-            state.pressed ? c.primaryPressed : c.primary,
+            pressed ? c.primaryPressed : c.primary,
             c.onPrimary,
             null,
           ),
-          BOHIconButtonVariant.tonal => (
-            state.pressed ? c.border : c.surfaceElevated,
-            color ?? c.textPrimary,
+          BOHIconButtonVariant.soft => (
+            pressed ? c.border : c.primaryTint,
+            color ?? c.primaryText,
             null,
+          ),
+          BOHIconButtonVariant.photo => (
+            active
+                ? c.primary
+                : AppColors.photoInk.withValues(alpha: pressed ? 0.6 : 0.45),
+            AppColors.onPhoto,
+            active ? null : AppColors.onPhoto.withValues(alpha: 0.25),
           ),
         };
 
-        final shape = variant == BOHIconButtonVariant.filled
-            ? const RoundedRectangleBorder(borderRadius: AppRadii.smallAll)
-            : const CircleBorder();
+        final circle = visualSize ?? size;
 
         return SizedBox.square(
           dimension: size,
@@ -94,11 +123,15 @@ class BOHIconButton extends StatelessWidget {
               AnimatedContainer(
                 duration: AppMotion.fast,
                 curve: AppMotion.standard,
-                decoration: ShapeDecoration(
-                  color: enabled ? background : c.surfaceElevated,
-                  shape: border == null
-                      ? shape
-                      : shape.copyWith(side: BorderSide(color: border)),
+                width: circle,
+                height: circle,
+                decoration: BoxDecoration(
+                  color: enabled ? background : c.backgroundSecondary,
+                  shape: BoxShape.circle,
+                  border: border == null ? null : Border.all(color: border),
+                  boxShadow: variant == BOHIconButtonVariant.filled && enabled
+                      ? AppShadows.accentGlow(c)
+                      : null,
                 ),
                 alignment: Alignment.center,
                 child: Icon(
@@ -109,15 +142,15 @@ class BOHIconButton extends StatelessWidget {
               ),
               if (showBadge)
                 PositionedDirectional(
-                  top: size * 0.24,
-                  end: size * 0.26,
+                  top: 10,
+                  end: 11,
                   child: Container(
                     width: 8,
                     height: 8,
                     decoration: BoxDecoration(
                       color: c.primary,
                       shape: BoxShape.circle,
-                      border: Border.all(color: c.background, width: 1.5),
+                      border: Border.all(color: c.background, width: 2),
                     ),
                   ),
                 ),

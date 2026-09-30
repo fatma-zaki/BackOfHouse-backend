@@ -10,15 +10,16 @@ extension BOHContext on BuildContext {
   /// Colour roles for the active theme mode.
   AppColors get colors => Theme.of(this).extension<AppColors>()!;
 
-  /// The type scale, coloured for the active theme mode.
-  AppTextStyles get text => AppTextStyles(colors);
+  /// The type scale, coloured for the active theme mode (no letter-spacing
+  /// in Arabic).
+  AppTextStyles get text => AppTextStyles(colors, arabic: isArabic);
 
   bool get isDark => colors.isDark;
 
   bool get isRtl => Directionality.of(this) == TextDirection.rtl;
 
   /// True for scripts where letter-spacing and uppercasing must be skipped.
-  bool get isArabic => Localizations.localeOf(this).languageCode == 'ar';
+  bool get isArabic => Localizations.maybeLocaleOf(this)?.languageCode == 'ar';
 
   /// Honour the OS "reduce motion" setting in every animated component.
   bool get reduceMotion => MediaQuery.disableAnimationsOf(this);

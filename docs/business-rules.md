@@ -480,13 +480,13 @@ Build the current product as a **simple, professional MVP**, but make the domain
 
 * **Co-op eligibility:** only `INDIVIDUAL` accounts with `profileStatus = STUDENT` may apply to `CO_OP`. Companies and non-student individuals cannot. The rule lives in `Opportunity.eligibilityFor` and is enforced by the data layer, not only the UI.
 * **Applying again:** an active application blocks a new one; a rejected (or accepted) application blocks re-applying to the same listing; only a withdrawn application allows applying again. Never create duplicate active applications. The rule lives in `ApplicationRules`.
-* **Application contents (MVP):** applicant profile snapshot, selected experience, selected portfolio projects, optional message (≤ 500 characters), and a listing snapshot for history. **No CV upload.** Selected items must belong to the applicant's own profile. The company later views: applicant profile + selected experience + selected projects + message.
+* **Application contents (MVP):** applicant profile snapshot, selected experience (**at least one item**, revised 2026-09-28), selected portfolio projects (optional), optional message (≤ 500 characters), and a listing snapshot for history. **No CV upload.** Selected items must belong to the applicant's own profile. The company later views: applicant profile + selected experience + selected projects + message.
 * **Match score:** optional. Calculated by the backend only; the app never computes, invents or placeholders it. Co-op and volunteering show none unless a defined backend matching rule exists. No recommendation engine in the MVP.
 * **Status notifications:** the individual is notified on each official status change (`SUBMITTED`, `REVIEWED`, `SHORTLISTED`, `CONTACT`, and the decision `ACCEPTED` / `REJECTED` / `WITHDRAWN`), naming the opportunity and the new status. Edits to the opportunity never notify. No preference/automation system yet.
 
 ### Account-aware experience *(approved 2026-09-17)*
 
-* `INDIVIDUAL` → individual experience; `COMPANY` → company experience. The company workspace lives under `/company` and individuals never open it. Companies share only **Discover** (events and directories) and **News** with individuals; everything else individual — Home, opportunities and applying, applications, notifications, Rewards/points, the member profile — stays out of reach (enforced by `AuthGuard`). *(Shared tabs approved 2026-09-18.)*
+* `INDIVIDUAL` → individual experience; `COMPANY` → company experience. The company workspace lives under `/company` and individuals never open it. Companies share only **News** with individuals; everything else individual — Home, Discover and its directories, opportunities and applying, applications, notifications, Rewards/points, the member profile — stays out of reach (enforced by `AuthGuard`). *(Shared tabs revised 2026-09-28; previously Discover was shared too.)*
 * **Company MVP scope:** Company Dashboard, Company Profile, Company Projects / Portfolio, My Opportunities, Create Opportunity, Edit / Publish Opportunity, Opportunity Details, Applicants, Applicant Details, Applicant status management, Supplier Requests, Supplier Request Details, Supplier Response.
 * **Out of scope for now:** interview scheduling, full messaging, offer management, advanced recruitment analytics, payments, subscriptions, advertising, advanced matching.
 
@@ -500,8 +500,8 @@ Build the current product as a **simple, professional MVP**, but make the domain
 * **Supplier responses** are a separate domain (`SupplierResponse`): message (required), optional proposed price, optional company projects as evidence, and the responder's company reference. No file attachments. One response per company per request. Buyer lifecycle: `SUBMITTED → REVIEWED → SHORTLISTED → SELECTED`, with `REJECTED` from any open step; `SELECTED` and `REJECTED` are final. Rules live in `SupplierResponseRules`.
 * **CONTACT stage** is not messaging. Before `CONTACT` the company sees only public profile information, selected experience, selected portfolio projects and the message. From `CONTACT` (and after acceptance) contact details may be released, limited to what the applicant's `ContactPrivacy` shares. Opening an application never reveals contact data. The backend redacts; rules live in `ApplicantPrivacy`.
 * **Individual `ProfileProject` ≠ `CompanyProject`.** Company projects can be attached to supplier responses.
-* **Company navigation** *(revised 2026-09-18)*: one bottom bar for both account types. Companies get **Dashboard · Discover · News · Profile** (no Rewards — points are for individuals). The Dashboard opens the workspace: My Opportunities, Supplier Requests, Portfolio and Create opportunity. In Discover a company sees Supplier Requests in place of Opportunities.
-* **Not yet:** team management, complex RBAC, messaging, interview scheduling, offer management, payments/subscriptions, advanced matching, advanced analytics, file attachments.
+* **Company navigation** *(revised 2026-09-28, supersedes 2026-09-18)*: one bottom bar for both account types. Companies get **Dashboard · Listings · Suppliers · News · Profile** (no Rewards — points are for individuals). Listings is My Opportunities; Suppliers holds Invited requests, My responses and My requests. The company portfolio sits inside Company Profile. Companies no longer see Discover.
+* **Not yet:** team management, complex RBAC, messaging, interview scheduling, offer management, payments/subscriptions, advanced matching, advanced analytics, file attachments (except Get-verified documents).
 
 ### Company MVP — settled decisions *(approved 2026-09-18)*
 
@@ -513,3 +513,17 @@ Build the current product as a **simple, professional MVP**, but make the domain
 6. **Supplier selection:** selecting a response sets it `SELECTED`, rejects every other open response and closes the request. Final — no reopening and no changing supplier.
 7. **Applicant notifications:** part of the API contract. Company-side status changes raise the applicant's notification server-side; the app never delivers one and the mock only records the event.
 8. **Company verification:** handled outside the app. The company sees its verification state read-only, and verification grants no publishing rights — the review lifecycle is independent of it.
+
+### App redesign decisions *(approved 2026-09-28)*
+
+The visual redesign (reference files in `docs/design/`) brought these product decisions with it. Everything not listed here is unchanged.
+
+1. **Points levels are numbered** ("Level 3 · 250 pts to Level 4"). A points level is a Rewards concept only: it never grants, implies or displays verification, and uses its own labels (never the verification level wording).
+2. **Sign-in** offers email and password, **Continue with Google** and **Continue with a phone code** (one-time code sent by SMS). All three reach the same account.
+3. **Get verified (individuals):** an individual may submit a verification request with an identity document (ID or Iqama) and proof of experience. Back Of House reviews it; submitting never grants verification, and points, payments or activity never do either. These uploads are the only file attachments in the app; applications and supplier responses still have none. Company verification stays outside the app.
+4. **Listing fields:** an opportunity may carry a closing date (`closesAt`) and a work setup (`ON_SITE`, `HYBRID`, `REMOTE`).
+5. **Supplier response** may carry an optional setup time next to the proposed price.
+6. **Company stats (basic):** the Dashboard shows new applicants, supplier invites, profile views (with change) and recent applicants across listings; Company Profile shows a follower count. These are backend-provided counts, not advanced analytics.
+7. **Registering for an event earns no points.** Points come from verified attendance and other verified activity.
+8. **Profile editing:** individuals edit their profile, interests, student status and contact-privacy settings (all off by default) from Edit profile. Changing student status re-evaluates co-op eligibility in the data layer.
+9. **Directories:** Companies and Professionals directories are part of Discover (individuals only). "Companies to Watch" stays an editor's pick, never "Featured". A highlighted professional is a Profile Highlight reward, never verification.

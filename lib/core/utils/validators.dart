@@ -13,6 +13,7 @@ enum ValidationError {
   passwordWeak,
   confirmRequired,
   passwordMismatch,
+  codeInvalid,
 }
 
 /// Form rules shared by the auth screens.
@@ -73,6 +74,28 @@ abstract final class Validators {
     if ((value?.trim() ?? '').isEmpty) return ValidationError.required;
     return null;
   }
+
+  /// A 6-digit one-time sign-in code.
+  static ValidationError? otpCode(String? value) {
+    final input = _normaliseDigits(value ?? '').trim();
+    return RegExp(r'^\d{6}$').hasMatch(input)
+        ? null
+        : ValidationError.codeInvalid;
+  }
+
+  /// A valid Saudi mobile number in E.164 (`+9665XXXXXXXX`), or `null`.
+  static String? normalisePhone(String? value) {
+    if (phone(value) != null) return null;
+    final input = _normaliseDigits(value!).replaceAll(RegExp(r'[\s()+-]'), '');
+    final local = input.startsWith('966')
+        ? input.substring(3)
+        : input.replaceFirst(RegExp('^0'), '');
+    return '+966$local';
+  }
+
+  /// Digits only, with Eastern Arabic numerals converted.
+  static String digits(String value) =>
+      _normaliseDigits(value).replaceAll(RegExp(r'\D'), '');
 
   /// Arabic keyboards type Eastern Arabic numerals (٠-٩); treat them as digits.
   static String _normaliseDigits(String input) {

@@ -13,6 +13,7 @@ class BOHProgressBar extends StatelessWidget {
     this.color,
     this.trackColor,
     this.semanticLabel,
+    this.onViolet = false,
   });
 
   /// 0–1.
@@ -23,6 +24,9 @@ class BOHProgressBar extends StatelessWidget {
 
   /// Announced with the percentage, e.g. "320 of 500 points".
   final String? semanticLabel;
+
+  /// White fill on a translucent track, for violet hero cards.
+  final bool onViolet;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,13 @@ class BOHProgressBar extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: ColoredBox(color: trackColor ?? c.borderSoft),
+                child: ColoredBox(
+                  color:
+                      trackColor ??
+                      (onViolet
+                          ? c.onPrimary.withValues(alpha: 0.25)
+                          : c.primaryTint),
+                ),
               ),
               TweenAnimationBuilder<double>(
                 tween: Tween(end: clamped),
@@ -51,7 +61,7 @@ class BOHProgressBar extends StatelessWidget {
                   heightFactor: 1,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: color ?? c.primary,
+                      color: color ?? (onViolet ? c.onPrimary : c.primary),
                       borderRadius: AppRadii.pillAll,
                     ),
                   ),

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Splash</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}">
+<div style="position: absolute; top: 120px; inset-inline-end: -60px; width: 220px; height: 220px; border: 2px solid {{c.ring}}; transform: rotate(12deg)"></div>
+<div style="position: absolute; bottom: 150px; inset-inline-start: -70px; width: 180px; height: 180px; border: 2px solid {{c.ring}}; transform: rotate(-10deg)"></div>
+<div style="position: absolute; top: 250px; inset-inline-start: 56px; width: 14px; height: 14px; background: #6437fa; opacity: 0.5"></div>
+<div style="position: absolute; bottom: 300px; inset-inline-end: 64px; width: 10px; height: 10px; background: #6437fa; opacity: 0.35"></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 22px; position: relative">
+<img src="{{c.logo}}" alt="Back of House" style="width: 210px; height: auto; display: block">
+<div style="display: flex; align-items: center; gap: 12px; font-size: 11px; font-weight: 800; letter-spacing: {{wide}}; color: {{c.muted}}"><span style="width: 24px; height: 2px; background: #6437fa"></span>{{s.tag}}<span style="width: 24px; height: 2px; background: #6437fa"></span></div>
+</div>
+<div style="position: absolute; bottom: 72px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 14px">
+<div role="progressbar" aria-label="{{s.loading}}" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 120px; height: 4px; border-radius: 2px; background: {{c.track}}; overflow: hidden; position: relative"><div style="position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 60%; border-radius: 2px; background: #6437fa"></div></div>
+<span style="font-size: 11px; color: {{c.muted}}">{{s.loading}}</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', ink: '#15122e', muted: '#5e5a78', ring: '#e4dff3', track: '#e4dff3', logo: '/_blob/8a2f7555266c2b4d939a8907788882f5' },
+      dark: { bg: '#05050d', ink: '#f4f3ff', muted: '#a9a8c3', ring: '#1d1f3d', track: '#1d1f3d', logo: '/_blob/aed6800614143886079e141957cfdccd' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: { tag: 'SAUDI ARABIA’S EVENTS COMMUNITY', loading: 'Loading…' },
+      ar: { tag: 'مجتمع الفعاليات في السعودية', loading: 'جارٍ التحميل…' }
+    };
+    const s = ar ? S.ar : S.en;
+    return {
+      c, s,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      wide: ar ? '0' : '2px'
+    };
+  }
+}
+</script>
+</body>
+</html>

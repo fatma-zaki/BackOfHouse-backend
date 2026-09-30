@@ -66,23 +66,34 @@ class GallerySample {
 /// Every colour role, in display order, for the active mode.
 List<(String, Color)> galleryColorTokens(AppColors c) => [
   ('background', c.background),
-  ('backgroundSecondary', c.backgroundSecondary),
   ('surface', c.surface),
   ('surfaceElevated', c.surfaceElevated),
+  ('unreadSurface', c.unreadSurface),
   ('primary', c.primary),
-  ('primaryPressed', c.primaryPressed),
   ('primaryText', c.primaryText),
   ('primaryTint', c.primaryTint),
-  ('headlineAccent', c.headlineAccent),
-  ('gold', c.gold),
-  ('goldTint', c.goldTint),
+  ('inverse', c.inverse),
   ('textPrimary', c.textPrimary),
   ('textSecondary', c.textSecondary),
-  ('textMuted', c.textMuted),
   ('textDisabled', c.textDisabled),
   ('border', c.border),
-  ('borderSoft', c.borderSoft),
+  ('borderAccent', c.borderAccent),
+  ('borderStrong', c.borderStrong),
   ('success', c.success),
   ('warning', c.warning),
   ('error', c.error),
+  ('alertWarning', c.alertWarning),
+];
+
+/// Tag and status tones, for the active mode.
+List<(String, AppTone)> galleryTones(AppColors c) => [
+  ('tagViolet', c.tagViolet),
+  ('tagGreen', c.tagGreen),
+  ('tagAmber', c.tagAmber),
+  ('tagBlue', c.tagBlue),
+  ('statusSuccess', c.statusSuccess),
+  ('statusWarning', c.statusWarning),
+  ('statusInfo', c.statusInfo),
+  ('statusNeutral', c.statusNeutral),
+  ('statusViolet', c.statusViolet),
 ];

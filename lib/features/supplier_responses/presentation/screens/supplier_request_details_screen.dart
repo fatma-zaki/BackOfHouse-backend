@@ -53,8 +53,11 @@ class SupplierRequestDetailsScreen extends ConsumerWidget {
         value: request,
         onRetry: () => ref.invalidate(supplierRequestProvider(requestId)),
         data: (r) => ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.only(top: AppSpacing.s8, bottom: AppSpacing.s32),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screenHorizontal,
+            AppSpacing.s8,
+            AppSpacing.screenHorizontal,
+            AppSpacing.s32,
           ),
           children: [
             BOHCard(
@@ -113,9 +116,12 @@ class SupplierRequestDetailsScreen extends ConsumerWidget {
               ),
             ],
             if (isBuyer) ...[
-              const SizedBox(height: AppSpacing.sectionSpacing),
-              BOHSectionHeader(title: l10n.supplierResponsesReceived),
-              const SizedBox(height: AppSpacing.s12),
+              const SizedBox(height: AppSpacing.s16),
+              BOHSectionHeader(
+                title: l10n.supplierResponsesReceived,
+                size: BOHSectionSize.compact,
+              ),
+              const SizedBox(height: AppSpacing.s8),
               AsyncBody<List<SupplierResponse>>(
                 value: ref.watch(responsesToMyRequestProvider(r.id)),
                 onRetry: () =>
@@ -168,6 +174,7 @@ class _Footer extends StatelessWidget {
         child: BOHButton(
           label: l10n.supplierViewMyResponse,
           variant: BOHButtonVariant.secondary,
+          size: BOHButtonSize.large,
           onPressed: () => context.push(AppRoutes.companyResponse(response.id)),
         ),
       );
@@ -176,6 +183,7 @@ class _Footer extends StatelessWidget {
       return BOHActionBar(
         child: BOHButton(
           label: l10n.supplierRespond,
+          size: BOHButtonSize.large,
           onPressed: () => context.push(AppRoutes.companyRespond(requestId)),
         ),
       );

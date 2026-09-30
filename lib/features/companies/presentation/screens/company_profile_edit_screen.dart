@@ -106,23 +106,30 @@ class _FormState extends ConsumerState<_Form> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const gap = SizedBox(height: AppSpacing.s16);
+    const gap = SizedBox(height: AppSpacing.s14);
 
     return BOHScaffold(
-      appBar: BOHAppBar(title: l10n.companyEditProfile),
-      bottomNavigationBar: BOHActionBar(
-        child: BOHButton(
-          label: l10n.actionSave,
-          isLoading: _saving,
-          trailingIcon: null,
-          onPressed: _save,
-        ),
+      appBar: BOHAppBar(
+        title: l10n.companyEditProfile,
+        actions: [
+          BOHButton(
+            label: l10n.actionSave,
+            size: BOHButtonSize.compact,
+            trailingIcon: null,
+            expand: false,
+            isLoading: _saving,
+            onPressed: _save,
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.formHorizontal,
+            AppSpacing.s8,
+            AppSpacing.formHorizontal,
+            AppSpacing.s32,
           ),
           children: [
             BOHInfoNote(
@@ -136,6 +143,7 @@ class _FormState extends ConsumerState<_Form> {
               hint: l10n.companyAboutHint,
               minLines: 3,
               maxLines: 8,
+              maxLength: CompanyProfileDraft.descriptionMaxLength,
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.sentences,
               enabled: !_saving,
@@ -179,7 +187,11 @@ class _FormState extends ConsumerState<_Form> {
               keyboardType: TextInputType.multiline,
               enabled: !_saving,
             ),
-            gap,
+            const SizedBox(height: AppSpacing.s20),
+            BOHSectionHeader(
+              title: l10n.companyContact,
+              size: BOHSectionSize.sub,
+            ),
             BOHTextField(
               controller: _email,
               label: l10n.fieldEmailLabel,

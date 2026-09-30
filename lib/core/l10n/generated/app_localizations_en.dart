@@ -22,13 +22,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navMenu => 'Menu';
 
   @override
-  String get actionViewAll => 'See all';
+  String get actionViewAll => 'View All';
 
   @override
   String get actionReadMore => 'Read More';
 
   @override
   String get actionRetry => 'Try again';
+
+  @override
+  String get appTagline => 'SAUDI ARABIA’S\nEVENTS COMMUNITY';
+
+  @override
+  String get actionClose => 'Close';
 
   @override
   String get actionBack => 'Back';
@@ -163,16 +169,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageArabic => 'العربية';
 
   @override
-  String get welcomeHaveAccount => 'I already have an account';
+  String get welcomeHaveAccount => 'Sign in';
 
   @override
   String get forgotPassword => 'Forgot password?';
 
   @override
-  String get signInCta => 'Sign In';
+  String get signInCta => 'Sign in';
 
   @override
-  String get noAccountPrompt => 'Don\'t have an account?';
+  String get noAccountPrompt => 'New to Back of House?';
 
   @override
   String get agreePrefix => 'I agree to the ';
@@ -187,13 +193,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy Policy';
 
   @override
-  String get signUpCta => 'Create Account';
+  String get signUpCta => 'Continue';
 
   @override
   String get haveAccountPrompt => 'Already have an account?';
 
   @override
-  String get logInLink => 'Sign In';
+  String get logInLink => 'Sign in';
 
   @override
   String get mustAcceptTerms =>
@@ -293,29 +299,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeDark => 'Dark';
 
   @override
-  String get welcomeEyebrow => 'Welcome to';
+  String get welcomeEyebrow => 'Saudi Arabia’s events community';
 
   @override
-  String get welcomeTitleLead => 'Back of House\n';
+  String get welcomeTitleLead => 'We build the community behind ';
 
   @override
-  String get welcomeTitleAccent => 'Community.';
+  String get welcomeTitleAccent => 'every experience.';
 
   @override
-  String get welcomeSubtitle => 'Connect with Saudi Arabia\'s events industry.';
+  String get welcomeSubtitle =>
+      'Connect with the professionals, companies and emerging talent shaping the events industry.';
 
   @override
-  String get welcomeGetStarted => 'Get Started';
+  String get welcomeGetStarted => 'Create account';
 
   @override
-  String get signInTitle => 'Welcome Back';
+  String get signInTitle => 'Welcome ';
 
   @override
-  String get signInSubtitle =>
-      'Sign in to your Back of House account and stay connected with the events community.';
+  String get signInSubtitle => 'Sign in to pick up where you left off.';
 
   @override
-  String get fieldEmailLabel => 'Email address';
+  String get fieldEmailLabel => 'Email';
 
   @override
   String get fieldEmailHint => 'you@example.com';
@@ -333,10 +339,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fieldFullNameHint => 'Enter your full name';
 
   @override
-  String get fieldPhoneLabel => 'Phone number';
+  String get fieldPhoneLabel => 'Phone';
 
   @override
-  String get fieldPhoneHint => '+966 50 123 4567';
+  String get fieldPhoneHint => '+966 5X XXX XXXX';
 
   @override
   String get fieldNewPasswordHint => 'Create a strong password';
@@ -354,14 +360,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueWithGoogle => 'Continue with Google';
 
   @override
-  String get createAccountLink => 'Create one';
+  String get createAccountLink => 'Create account';
 
   @override
-  String get signUpTitle => 'Create Account';
+  String get signUpTitle => 'Create your account';
 
   @override
   String get signUpSubtitle =>
-      'Join Back of House and connect with professionals, companies, and opportunities in the events industry.';
+      'Join Saudi Arabia’s events community in under a minute.';
 
   @override
   String get navDiscover => 'Discover';
@@ -464,7 +470,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get levelLeader => 'Industry Leader';
 
   @override
-  String get myPointsTitle => 'My Points';
+  String get myPointsTitle => 'Points history';
 
   @override
   String get filterAll => 'All';
@@ -473,7 +479,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterEarned => 'Earned';
 
   @override
-  String get filterRedeemed => 'Redeemed';
+  String get filterRedeemed => 'Spent';
 
   @override
   String get pointsHistoryTitle => 'How you earned points';
@@ -486,25 +492,47 @@ class AppLocalizationsEn extends AppLocalizations {
       'Attend events and complete your profile to start earning.';
 
   @override
-  String get activityAttendedWorkshop => 'Attended workshop';
+  String get activityAttendedWorkshop => 'Workshop attended';
 
   @override
-  String get activityProfileCompletion => 'Profile completion';
+  String get activityProfileCompletion => 'Profile completed';
 
   @override
   String get activityVerifiedIdentity => 'Verified identity';
 
   @override
-  String get activityJoinedEvent => 'Joined event';
+  String get activityAttendanceVerified => 'Attendance verified';
+
+  @override
+  String get activityVolunteerShift => 'Volunteer shift completed';
 
   @override
   String get activityFollowedCompany => 'Followed companies';
 
   @override
-  String get activityRedeemedReward => 'Redeemed reward';
+  String get activityRedeemedReward => 'Reward redeemed';
 
   @override
   String get rewardsTitle => 'Rewards';
+
+  @override
+  String get rewardsHistory => 'History';
+
+  @override
+  String get pointsToSpend => 'Points to spend';
+
+  @override
+  String get rewardsHighlightTag => 'Profile Highlight';
+
+  @override
+  String get rewardsHighlightNote =>
+      'Highlight doesn’t change your verification status.';
+
+  @override
+  String get rewardsCatalog => 'Catalog';
+
+  @override
+  String get pointsShortUnit => 'pts';
 
   @override
   String get rewardsHeroTitle => 'Use your points to unlock exclusive benefits';
@@ -554,8 +582,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Redeem for $count points',
-      one: 'Redeem for 1 point',
+      other: 'Redeem for $count pts',
+      one: 'Redeem for 1 pt',
     );
     return '$_temp0';
   }
@@ -608,10 +636,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventsSearchHint => 'Search events';
 
   @override
-  String get eventsEmptyTitle => 'No events found';
+  String get eventsEmptyTitle => 'No events match your search';
 
   @override
-  String get eventsEmptyMessage => 'Try a different search or category.';
+  String get eventsEmptyMessage =>
+      'Try fewer filters or a broader word. Here are a few popular searches:';
 
   @override
   String get eventFilterConferences => 'Conferences';
@@ -623,7 +652,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventFilterNetworking => 'Networking';
 
   @override
-  String get eventFilterExpos => 'Expos';
+  String get eventFilterExpos => 'Exhibitions';
+
+  @override
+  String get eventTypeConference => 'Conference';
+
+  @override
+  String get eventTypeWorkshop => 'Workshop';
+
+  @override
+  String get eventTypeNetworking => 'Networking';
+
+  @override
+  String get eventTypeExpo => 'Exhibition';
+
+  @override
+  String get eventFlagshipTag => 'Flagship';
 
   @override
   String eventAttending(int count) {
@@ -656,7 +700,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionShare => 'Share';
 
   @override
-  String get notificationsMarkAllRead => 'Mark all as read';
+  String get notificationsMarkAllRead => 'Mark all read';
 
   @override
   String get notificationsEmptyTitle => 'You\'re all caught up';
@@ -675,7 +719,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTitle => 'Settings';
 
   @override
-  String get profileEditProfile => 'Edit Profile';
+  String get profileEditProfile => 'Edit profile';
 
   @override
   String get profileMyPointsHint => 'Balance, history and rewards';
@@ -727,7 +771,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionFollowing => 'Following';
 
   @override
-  String get actionViewDetails => 'View Details';
+  String get actionViewDetails => 'View details';
 
   @override
   String get actionConnect => 'Connect';
@@ -778,7 +822,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String verificationLevel(int count) {
-    return 'Level $count';
+    return 'Verification level $count';
   }
 
   @override
@@ -849,7 +893,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoverLiveFeed => 'Live Feed';
 
   @override
-  String get discoverSearchHint => 'Search the ecosystem';
+  String get discoverSearchHint => 'Search events, topics, or locations';
 
   @override
   String get actionFilters => 'Filters';
@@ -891,7 +935,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionRsvp => 'RSVP';
 
   @override
-  String get actionApplyNow => 'Apply Now';
+  String get actionApplyNow => 'Apply now';
 
   @override
   String get discoverLatestBriefings => 'Latest Briefings';
@@ -928,10 +972,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get eventViewPass => 'View Digital Pass';
+  String get eventViewPass => 'View pass';
 
   @override
-  String get eventAddToCalendar => 'Add to Calendar';
+  String get eventAddToCalendar => 'Add to calendar';
 
   @override
   String eventPointsNote(int count) {
@@ -1068,7 +1112,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationCategoryOpportunities => 'Opportunities';
+  String get notificationCategoryOpportunities => 'Applications';
 
   @override
   String get notificationCategoryEvents => 'Events';
@@ -1080,7 +1124,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsToday => 'Today';
 
   @override
-  String get notificationsEarlier => 'Earlier This Week';
+  String get notificationsEarlier => 'Earlier';
 
   @override
   String get notificationsTimezone => 'Riyadh (GMT+3)';
@@ -1164,7 +1208,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newsSearchHint => 'Search articles, reports, briefings…';
 
   @override
-  String get newsFilterForYou => 'For You';
+  String get newsFilterForYou => 'For you';
+
+  @override
+  String get newsAllDesks => 'All desks';
+
+  @override
+  String get newsDeskTechnical => 'Technical';
+
+  @override
+  String get newsDeskRegulatory => 'Regulatory';
+
+  @override
+  String get newsDeskMarket => 'Market';
+
+  @override
+  String get newsBriefings => 'Briefings';
+
+  @override
+  String get newsLatestEyebrow => 'Latest news';
+
+  @override
+  String get newsOrderLabel => 'Order';
+
+  @override
+  String get newsSavedArticles => 'Saved articles';
 
   @override
   String get newsFilterLatest => 'Latest';
@@ -1228,7 +1296,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationCategoryNews => 'News';
 
   @override
-  String get accountTypeLabel => 'I am';
+  String get accountTypeLabel => 'Account type';
 
   @override
   String get accountIndividual => 'Individual';
@@ -1314,10 +1382,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get opportunityTypeProject => 'Project';
 
   @override
-  String get opportunityTypeCoOp => 'Co-op Training';
+  String get opportunityTypeCoOp => 'Co-op';
 
   @override
-  String get opportunityTypeVolunteering => 'Volunteering';
+  String get opportunityTypeVolunteering => 'Volunteer';
 
   @override
   String get opportunityTypeSupplierRequest => 'Supplier Request';
@@ -1374,13 +1442,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get opportunityWhyMatch => 'Why it matches';
 
   @override
-  String get opportunityOverview => 'Overview';
+  String get opportunityOverview => 'About the role';
 
   @override
   String get opportunityResponsibilities => 'Responsibilities';
 
   @override
-  String get opportunityRequirements => 'Requirements';
+  String get opportunityRequirements => 'What we’re looking for';
 
   @override
   String get opportunitySkills => 'Skills';
@@ -1418,7 +1486,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applyStepReview => 'Review & Submit';
 
   @override
-  String get applyExperienceTitle => 'Relevant Experience';
+  String get applyExperienceTitle => 'Experience to share';
 
   @override
   String get applyExperienceSubtitle =>
@@ -1472,7 +1540,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String applyPrivacyNote(String company) {
-    return '$company sees your professional profile. Your ID number is never shared.';
+    return 'Your email and phone stay private. $company only sees the contact details you choose to share, once your application reaches Contact.';
   }
 
   @override
@@ -1481,7 +1549,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get actionSubmitApplication => 'Submit Application';
+  String get actionSubmitApplication => 'Submit application';
 
   @override
   String get applySubmittedMessage => 'Application submitted';
@@ -1494,7 +1562,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'You\'ve already applied to this opportunity.';
 
   @override
-  String get applicationsTitle => 'My Applications';
+  String get applicationsTitle => 'My applications';
 
   @override
   String get applicationsEntryHint => 'Track where each application stands';
@@ -1505,12 +1573,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String applicationsActive(int count) {
-    return 'Active ($count)';
+    return 'Active · $count';
   }
 
   @override
   String applicationsPast(int count) {
-    return 'Past ($count)';
+    return 'Closed · $count';
   }
 
   @override
@@ -1591,6 +1659,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Back Of House connects you with companies. Hiring decisions are made by each company.';
 
   @override
+  String get companyNavListings => 'Listings';
+
+  @override
+  String get companyNavSuppliers => 'Suppliers';
+
+  @override
   String get companyNavDashboard => 'Dashboard';
 
   @override
@@ -1635,7 +1709,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Co-op training is open to individuals with student status.';
 
   @override
-  String get applyProjectsTitle => 'Portfolio Projects';
+  String get applyProjectsTitle => 'Projects';
 
   @override
   String get applyProjectsSubtitle =>
@@ -1725,7 +1799,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get opportunityStatusInReview => 'In review';
 
   @override
-  String get opportunityStatusPublished => 'Published';
+  String get opportunityStatusPublished => 'Live';
 
   @override
   String get opportunityStatusPaused => 'Paused';
@@ -1871,7 +1945,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companyReviewNote =>
-      'Back Of House reviews every listing before it is published, whether or not your company is verified.';
+      'Every listing is reviewed by Back of House before it goes live.';
 
   @override
   String get companyOpportunitiesEmptyTitle => 'Nothing here yet';
@@ -2043,7 +2117,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get companyAcceptApplicant => 'Accept';
 
   @override
-  String get companyRejectApplicant => 'Reject';
+  String get companyRejectApplicant => 'Not selected';
 
   @override
   String get companyAcceptTitle => 'Accept this applicant?';
@@ -2345,4 +2419,684 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get companyDetailsProjectsStat => 'Projects';
+
+  @override
+  String get welcomeTermsLead => 'By continuing you agree to our ';
+
+  @override
+  String get welcomeTermsLink => 'Terms & Privacy';
+
+  @override
+  String get signInTitleAccent => 'back.';
+
+  @override
+  String get continueWithPhone => 'Continue with a phone code';
+
+  @override
+  String get validationCodeInvalid => 'Enter the 6-digit code.';
+
+  @override
+  String get errorInvalidCode =>
+      'That code is wrong or has expired. Try again or send a new one.';
+
+  @override
+  String get phoneSignInTitle => 'Sign in with ';
+
+  @override
+  String get phoneSignInTitleAccent => 'your phone.';
+
+  @override
+  String get phoneSignInSubtitle =>
+      'We’ll text you a 6-digit code. No password needed.';
+
+  @override
+  String get phoneSendCode => 'Send code';
+
+  @override
+  String get phoneCodeTitle => 'Enter the code';
+
+  @override
+  String phoneCodeSubtitle(String phone) {
+    return 'We sent a 6-digit code to $phone.';
+  }
+
+  @override
+  String get phoneCodeLabel => 'Code';
+
+  @override
+  String get phoneVerifyCta => 'Verify and sign in';
+
+  @override
+  String get phoneResendCode => 'Send a new code';
+
+  @override
+  String get phoneChangeNumber => 'Change number';
+
+  @override
+  String get phoneCodeSent => 'A new code is on its way.';
+
+  @override
+  String pointsLevel(int level) {
+    return 'Level $level';
+  }
+
+  @override
+  String pointsToLevel(int count, int level) {
+    return '$count pts to Level $level';
+  }
+
+  @override
+  String get pointsTopLevel => 'Top level reached';
+
+  @override
+  String get homeGreetingMorning => 'Good morning, ';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon, ';
+
+  @override
+  String get homeGreetingEvening => 'Good evening, ';
+
+  @override
+  String get homeFlagshipEvent => 'Flagship event';
+
+  @override
+  String get homeOpportunitiesForYou => 'Opportunities for you';
+
+  @override
+  String get actionOpenRewards => 'Open rewards';
+
+  @override
+  String get accountIndividualHint => 'Professionals, freelancers and students';
+
+  @override
+  String get accountCompanyHint => 'Organizers, agencies, venues and suppliers';
+
+  @override
+  String get signUpStudentTitle => 'I’m currently a student';
+
+  @override
+  String get signUpStudentHint => 'Unlocks co-op and training opportunities.';
+
+  @override
+  String get discoverSections => 'Discover sections';
+
+  @override
+  String get discoverUpcomingEvents => 'Upcoming Events';
+
+  @override
+  String get discoverCalendar => 'Calendar';
+
+  @override
+  String get actionClearFilters => 'Clear filters';
+
+  @override
+  String actionRemoveFilter(String name) {
+    return 'Remove filter $name';
+  }
+
+  @override
+  String get searchSuggestionLightShows => 'Light shows';
+
+  @override
+  String get searchSuggestionConcerts => 'Concerts';
+
+  @override
+  String get searchSuggestionRiyadh => 'Riyadh';
+
+  @override
+  String get pointsBalanceLabel => 'Balance';
+
+  @override
+  String get profileGetVerified => 'Get verified';
+
+  @override
+  String get profileNotVerified => 'Not verified';
+
+  @override
+  String get profileStatusProfessional => 'Professional';
+
+  @override
+  String get profileEventsAttended => 'Events attended';
+
+  @override
+  String get profileVisibilityShort => 'Visibility';
+
+  @override
+  String get profileYearsShort => 'Years exp.';
+
+  @override
+  String get profileMyApplications => 'My Applications';
+
+  @override
+  String get profileAddPhoto => 'Change photo';
+
+  @override
+  String get eventAboutTab => 'About';
+
+  @override
+  String get eventAgendaTab => 'Agenda';
+
+  @override
+  String get eventSpeakersTab => 'Speakers';
+
+  @override
+  String get eventSections => 'Event sections';
+
+  @override
+  String eventAttendingLabel(String count) {
+    return '$count+ attending';
+  }
+
+  @override
+  String eventPeopleYouKnow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people you know',
+      one: '1 person you know',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get eventEntry => 'Entry';
+
+  @override
+  String get eventMap => 'Map';
+
+  @override
+  String get eventSaveLabel => 'Save event';
+
+  @override
+  String eventAgendaDay(int day, String date) {
+    return 'Day $day · $date';
+  }
+
+  @override
+  String get eventRegisteredTitle => 'You’re registered!';
+
+  @override
+  String get eventRegisteredBody =>
+      'We’ve saved your spot. You’ll get a reminder before the event starts.';
+
+  @override
+  String get eventDateLabel => 'Date';
+
+  @override
+  String get eventVenueLabel => 'Venue';
+
+  @override
+  String get eventPassHeading => 'Your event pass';
+
+  @override
+  String get eventPassHint => 'Show this code at the entrance to check in.';
+
+  @override
+  String get eventPointsOnAttendance =>
+      'Earn points when your attendance is verified at the event.';
+
+  @override
+  String get eventExploreMore => 'Explore more events';
+
+  @override
+  String get opportunityDetailTitle => 'Opportunity';
+
+  @override
+  String get opportunityEligible => 'You’re eligible to apply';
+
+  @override
+  String get opportunityApplyHint =>
+      'You’ll share your experience, projects and a short message.';
+
+  @override
+  String get applyExperienceRequired => 'Choose at least one';
+
+  @override
+  String get applyExperienceMissing =>
+      'Choose at least one experience to share.';
+
+  @override
+  String get companyWorkspaceSubtitle => 'Company workspace';
+
+  @override
+  String get companyWelcomeBack => 'Welcome back';
+
+  @override
+  String get companyNewListing => 'New listing';
+
+  @override
+  String get companyStatLiveListings => 'Live listings';
+
+  @override
+  String get companyStatNewApplicants => 'New applicants';
+
+  @override
+  String companyStatThisWeek(int count) {
+    return '+$count this week';
+  }
+
+  @override
+  String get companyStatSupplierInvites => 'Supplier invites';
+
+  @override
+  String get companyStatProfileViews => 'Profile views';
+
+  @override
+  String companyStatChange(String sign, int count) {
+    return '$sign$count%';
+  }
+
+  @override
+  String companyChangesRequestedTitle(String title) {
+    return 'Changes requested on “$title”';
+  }
+
+  @override
+  String get companyEditListing => 'Edit listing';
+
+  @override
+  String get companyRecentApplicants => 'Recent applicants';
+
+  @override
+  String get companyNoApplicantsYet =>
+      'No applicants yet. Once a listing is live, applications appear here.';
+
+  @override
+  String get companyListingsTitle => 'Opportunities';
+
+  @override
+  String filterAllCount(int count) {
+    return 'All · $count';
+  }
+
+  @override
+  String get companyFilterChanges => 'Changes';
+
+  @override
+  String get companyFilterDrafts => 'Drafts';
+
+  @override
+  String get companyListingNotLive => 'Not live yet';
+
+  @override
+  String get companyListingApplicants => 'Applicants';
+
+  @override
+  String get companyListingEdit => 'Edit';
+
+  @override
+  String get companyListingView => 'View';
+
+  @override
+  String get companyListingContinue => 'Continue';
+
+  @override
+  String get companyListingType => 'Listing type';
+
+  @override
+  String get companyClosesOn => 'Closes on';
+
+  @override
+  String get companyClosesOnPick => 'Optional — pick a date';
+
+  @override
+  String get companyClosesInPast => 'Choose a date after today.';
+
+  @override
+  String get companyClearDate => 'Clear date';
+
+  @override
+  String get companyWorkSetup => 'Work setup';
+
+  @override
+  String get workSetupOnSite => 'On-site';
+
+  @override
+  String get workSetupHybrid => 'Hybrid';
+
+  @override
+  String get workSetupRemote => 'Remote';
+
+  @override
+  String get companyReviewInfo =>
+      'Back of House reviews every listing before it goes live. You’ll be notified when it’s approved or if changes are needed.';
+
+  @override
+  String companyApplicantsSubtitle(int count, String status) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count applicants',
+      one: '1 applicant',
+    );
+    return '$_temp0 · $status';
+  }
+
+  @override
+  String stageFilterCount(String label, int count) {
+    return '$label · $count';
+  }
+
+  @override
+  String applicantExperienceCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count experiences',
+      one: '1 experience',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String applicantProjectCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count projects',
+      one: '1 project',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get applicantContactShared => 'Contact shared';
+
+  @override
+  String get companyViewApplication => 'View application';
+
+  @override
+  String get companyApplicationFor => 'Application for';
+
+  @override
+  String get companyMessageTitle => 'Message';
+
+  @override
+  String get companyExperienceShared => 'Experience shared';
+
+  @override
+  String get companyProjectsShared => 'Projects shared';
+
+  @override
+  String applicantStatusApplied(String status, String time) {
+    return '$status · Applied $time';
+  }
+
+  @override
+  String get supplierYourResponse => 'Your response';
+
+  @override
+  String supplierRespondBy(String date) {
+    return 'Respond by $date';
+  }
+
+  @override
+  String get supplierBudget => 'Budget';
+
+  @override
+  String get supplierRespondByLabel => 'Respond by';
+
+  @override
+  String get supplierYourPrice => 'Your price';
+
+  @override
+  String get supplierSetupTime => 'Setup time';
+
+  @override
+  String get supplierSetupTimeHint => 'e.g. 2 days';
+
+  @override
+  String get supplierAttachProjects => 'Attach projects';
+
+  @override
+  String supplierSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String supplierPrivateNote(String buyer) {
+    return 'Only $buyer can see your response and price.';
+  }
+
+  @override
+  String get supplierRequestsTitle => 'Supplier requests';
+
+  @override
+  String supplierTabInvitedCount(int count) {
+    return 'Invited · $count';
+  }
+
+  @override
+  String supplierTabResponsesCount(int count) {
+    return 'My responses · $count';
+  }
+
+  @override
+  String get supplierTabMyRequests => 'My requests';
+
+  @override
+  String supplierOpenToYourType(String time) {
+    return 'Open to your company type · $time';
+  }
+
+  @override
+  String supplierYouResponded(String date) {
+    return 'You responded · $date';
+  }
+
+  @override
+  String get supplierBadgeOpen => 'Open';
+
+  @override
+  String get supplierMyRequestsEmpty => 'Your supplier requests appear here.';
+
+  @override
+  String get companyVerifiedByBoh => 'Verified by Back of House';
+
+  @override
+  String get companyStatProjects => 'Projects';
+
+  @override
+  String get companyStatFollowers => 'Followers';
+
+  @override
+  String get companiesSearchHint => 'Search companies, services, cities';
+
+  @override
+  String get companiesFilterOrganizers => 'Organizers';
+
+  @override
+  String get companiesFilterVenues => 'Venues';
+
+  @override
+  String get companiesFilterSuppliers => 'Suppliers';
+
+  @override
+  String get companiesFilterAgencies => 'Agencies';
+
+  @override
+  String get companiesEditorsPick => 'Editor’s pick';
+
+  @override
+  String get companiesEmpty => 'No companies match your search';
+
+  @override
+  String get professionalsSearchHint => 'Search by name, skill or city';
+
+  @override
+  String get professionalsFilterProducers => 'Producers';
+
+  @override
+  String get professionalsFilterDesigners => 'Designers';
+
+  @override
+  String get professionalsFilterTechnical => 'Technical';
+
+  @override
+  String get professionalsFilterStudents => 'Students';
+
+  @override
+  String get professionalsHighlighted => 'Highlighted';
+
+  @override
+  String get professionalsEmpty => 'No professionals match your search';
+
+  @override
+  String get actionConnected => 'Connected';
+
+  @override
+  String get editProfileIAm => 'I’m a';
+
+  @override
+  String get editProfileHeadline => 'Headline';
+
+  @override
+  String get editProfileAbout => 'About';
+
+  @override
+  String get editProfileInterests => 'Interests';
+
+  @override
+  String get editProfilePrivacy => 'Contact privacy';
+
+  @override
+  String get editProfilePrivacyHint =>
+      'Choose what companies see when your application reaches Contact. Off by default.';
+
+  @override
+  String get editProfileShareEmail => 'Share my email';
+
+  @override
+  String get editProfileSharePhone => 'Share my phone';
+
+  @override
+  String get editProfileSaved => 'Profile saved';
+
+  @override
+  String get editProfileNameRequired => 'Enter your name';
+
+  @override
+  String get editProfileAboutTooLong => 'About can be up to 600 characters.';
+
+  @override
+  String get interestTechInnovation => 'Tech & Innovation';
+
+  @override
+  String get interestMarketing => 'Marketing';
+
+  @override
+  String get interestDesign => 'Design';
+
+  @override
+  String get interestBusiness => 'Business';
+
+  @override
+  String get interestNetworking => 'Networking';
+
+  @override
+  String get interestProduction => 'Production';
+
+  @override
+  String get verifyHeadline => 'Show companies it’s really you';
+
+  @override
+  String get verifyIntro =>
+      'A verified badge tells companies your identity and experience were checked by Back of House.';
+
+  @override
+  String get verifyIdentityTitle => 'Identity document';
+
+  @override
+  String get verifyIdentityHint => 'National ID or Iqama';
+
+  @override
+  String get verifyExperienceTitle => 'Proof of experience';
+
+  @override
+  String get verifyExperienceHint =>
+      'A certificate, contract or reference letter';
+
+  @override
+  String verifyUploaded(String hint) {
+    return '$hint · uploaded';
+  }
+
+  @override
+  String get verifyReviewTitle => 'Review by Back of House';
+
+  @override
+  String get verifyReviewHint => 'We’ll notify you when it’s done';
+
+  @override
+  String get verifyInReview => 'In review — we’ll notify you when it’s done';
+
+  @override
+  String get verifyNote =>
+      'Verification is never granted by points, payments or activity. Your documents are only used for this review.';
+
+  @override
+  String get verifyUpload => 'Upload';
+
+  @override
+  String get verifySubmit => 'Submit for review';
+
+  @override
+  String get verifySubmitted => 'Sent for review';
+
+  @override
+  String get redeemedTitle => 'Your reward';
+
+  @override
+  String get redeemedBadge => 'Redeemed';
+
+  @override
+  String redeemedFor(String points) {
+    return 'Redeemed for $points pts';
+  }
+
+  @override
+  String get redeemedYourCode => 'Your code';
+
+  @override
+  String get redeemedHowToUse => 'How to use it';
+
+  @override
+  String get redeemedBalance => 'Points balance';
+
+  @override
+  String get redeemedPts => 'pts';
+
+  @override
+  String get actionCopy => 'Copy';
+
+  @override
+  String get companyProjectStartLabel => 'Started';
+
+  @override
+  String get companyProjectEndLabel => 'Finished';
+
+  @override
+  String get companyProjectOngoing => 'Ongoing';
+
+  @override
+  String get resetTitle => 'Reset your password';
+
+  @override
+  String get resetSubtitle =>
+      'Enter your account email and we’ll send you a link to set a new one.';
+
+  @override
+  String get resetCta => 'Send reset link';
+
+  @override
+  String get resetSentTitle => 'Check your email';
+
+  @override
+  String resetSentBody(String email) {
+    return 'If an account exists for $email, a reset link is on its way.';
+  }
+
+  @override
+  String get resetBackToSignIn => 'Back to sign in';
 }

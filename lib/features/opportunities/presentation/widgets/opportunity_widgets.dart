@@ -20,6 +20,15 @@ extension OpportunityTypePresentation on OpportunityType {
     OpportunityType.supplierRequest => l10n.opportunityTypeSupplierRequest,
   };
 
+  /// Category colour for type tags.
+  BOHTagVariant get tagVariant => switch (this) {
+    OpportunityType.job => BOHTagVariant.accent,
+    OpportunityType.project => BOHTagVariant.blue,
+    OpportunityType.coOp => BOHTagVariant.amber,
+    OpportunityType.volunteering => BOHTagVariant.green,
+    OpportunityType.supplierRequest => BOHTagVariant.soft,
+  };
+
   IconData get icon => switch (this) {
     OpportunityType.job => AppIcons.job,
     OpportunityType.project => AppIcons.workshop,
@@ -37,6 +46,14 @@ extension ApplicationEligibilityPresentation on ApplicationEligibility {
     ApplicationEligibility.individualsOnly => l10n.applyIndividualsOnly,
     ApplicationEligibility.closed => l10n.opportunityClosed,
     ApplicationEligibility.studentsOnly => l10n.applyStudentsOnly,
+  };
+}
+
+extension WorkSetupPresentation on WorkSetup {
+  String label(AppLocalizations l10n) => switch (this) {
+    WorkSetup.onSite => l10n.workSetupOnSite,
+    WorkSetup.hybrid => l10n.workSetupHybrid,
+    WorkSetup.remote => l10n.workSetupRemote,
   };
 }
 
@@ -80,15 +97,9 @@ class CompanyByline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final c = context.colors;
     return Row(
       children: [
-        BOHIconCircle(
-          icon: company.type.icon,
-          size: 40,
-          rounded: true,
-          tone: BOHIconCircleTone.neutral,
-        ),
+        BOHCompanyLogo(name: company.name, size: 40),
         const SizedBox(width: AppSpacing.s12),
         Expanded(
           child: Column(
@@ -99,17 +110,16 @@ class CompanyByline extends StatelessWidget {
                   Flexible(
                     child: Text(
                       company.name,
-                      style: context.text.label,
+                      style: context.text.itemTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (company.verified) ...[
                     const SizedBox(width: AppSpacing.s4),
-                    Icon(
-                      AppIcons.verified,
-                      size: AppSizes.iconSmall,
-                      color: c.primaryText,
+                    BOHGlyph(
+                      BOHGlyphType.verified,
+                      size: 14,
                       semanticLabel: l10n.verifiedLabel,
                     ),
                   ],
@@ -283,10 +293,94 @@ class OpportunityCard extends StatelessWidget {
   }
 }
 
+/// "Full-time" for a job, the type otherwise — the row tag.
+String opportunityTagLabel(AppLocalizations l10n, Opportunity o) =>
+    o.employment?.label(l10n) ?? o.type.label(l10n);
+
+/// Compact row — company mark, type tag, title and "Company · City".
+/// Home "Opportunities for you".
+class OpportunityRowCard extends StatelessWidget {
+  const OpportunityRowCard({
+    super.key,
+    required this.opportunity,
+    required this.onTap,
+  });
+
+  final Opportunity opportunity;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final o = opportunity;
+    final subtitle = '${o.company.name} · ${o.city}';
+
+    return BOHCard(
+      onTap: onTap,
+      borderRadius: AppRadii.mediumAll,
+      padding: const EdgeInsets.all(AppSpacing.s10),
+      semanticLabel: [
+        o.title,
+        opportunityTagLabel(l10n, o),
+        subtitle,
+      ].join('. '),
+      child: Row(
+        children: [
+          BOHCompanyLogo(name: o.company.name, size: 52),
+          const SizedBox(width: AppSpacing.s12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BOHTag(
+                  opportunityTagLabel(l10n, o),
+                  variant: o.type.tagVariant,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  o.title,
+                  style: context.text.itemTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: context.text.bodySmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s8),
+          ExcludeSemantics(
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: c.border),
+              ),
+              child: Icon(
+                AppIcons.arrowForward,
+                size: 18,
+                color: c.primaryText,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class OpportunityListSkeleton extends StatelessWidget {
-  const OpportunityListSkeleton({super.key, this.count = 3});
+  const OpportunityListSkeleton({super.key, this.count = 3, this.height = 170});
 
   final int count;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -294,9 +388,12 @@ class OpportunityListSkeleton extends StatelessWidget {
       child: Column(
         children: [
           for (var i = 0; i < count; i++)
-            const Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.s12),
-              child: BOHSkeleton(height: 170, borderRadius: AppRadii.mediumAll),
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.s12),
+              child: BOHSkeleton(
+                height: height,
+                borderRadius: AppRadii.mediumAll,
+              ),
             ),
         ],
       ),

@@ -11,13 +11,15 @@ import 'auth_data_source.dart';
 /// In-memory auth for building and demoing the app before the backend exists.
 ///
 /// Any well-formed email signs in; the password `wrongpass1` is rejected so
-/// the error path can be exercised.
+/// the error path can be exercised. Phone sign-in accepts any 6-digit code
+/// except `000000`.
 class AuthMockDataSource implements AuthDataSource {
   AuthMockDataSource({this.latency = const Duration(milliseconds: 600)});
 
   final Duration latency;
 
   static const rejectedPassword = 'wrongpass1';
+  static const rejectedCode = '000000';
 
   AppUser? _user;
 
@@ -85,6 +87,33 @@ class AuthMockDataSource implements AuthDataSource {
             ),
         },
       ),
+    );
+  }
+
+  @override
+  Future<void> requestPhoneCode(String phone) => Future<void>.delayed(latency);
+
+  @override
+  Future<AuthSession> verifyPhoneCode({
+    required String phone,
+    required String code,
+  }) async {
+    await Future<void>.delayed(latency);
+    if (code == rejectedCode) {
+      throw const ApiException(type: ApiErrorType.invalidCode, statusCode: 422);
+    }
+    return _session(
+      _user ??
+          AppUser(
+            id: 'mock-1',
+            fullName: 'Sara Al-Qahtani',
+            email: 'sara@backofhouse.space',
+            phone: phone,
+            accountType: AccountType.individual,
+            profileStatus: ProfileStatus.professional,
+            headline: 'Production Manager',
+            isVerified: true,
+          ),
     );
   }
 

@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_radii.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../constants/app_icons.dart';
 import '../../extensions/context_extensions.dart';
 import '../motion/boh_pressable.dart';
 
-enum BOHIconCircleTone { brand, neutral, gold, success, error, onHero }
+enum BOHIconCircleTone {
+  brand,
+
+  /// Solid violet with a white icon (points star, selected radio card).
+  violet,
+  neutral,
+  gold,
+  success,
+  info,
+  error,
+  onHero,
+}
 
 /// Icon centred in a tinted disc or rounded tile — the leading visual of
 /// list rows and feature cards.
@@ -31,16 +43,27 @@ class BOHIconCircle extends StatelessWidget {
     final c = context.colors;
     final (background, foreground) = switch (tone) {
       BOHIconCircleTone.brand => (c.primaryTint, c.primaryText),
-      BOHIconCircleTone.neutral => (c.surfaceElevated, c.textSecondary),
-      BOHIconCircleTone.gold => (c.goldTint, c.gold),
-      BOHIconCircleTone.success => (
-        c.success.withValues(alpha: 0.1),
-        c.success,
+      BOHIconCircleTone.violet => (c.primary, c.onPrimary),
+      BOHIconCircleTone.neutral => (
+        c.statusNeutral.background,
+        c.textSecondary,
       ),
-      BOHIconCircleTone.error => (c.error.withValues(alpha: 0.08), c.error),
+      BOHIconCircleTone.gold => (
+        c.statusWarning.background,
+        c.statusWarning.foreground,
+      ),
+      BOHIconCircleTone.success => (
+        c.statusSuccess.background,
+        c.statusSuccess.foreground,
+      ),
+      BOHIconCircleTone.info => (
+        c.statusInfo.background,
+        c.statusInfo.foreground,
+      ),
+      BOHIconCircleTone.error => (c.error.withValues(alpha: 0.12), c.error),
       BOHIconCircleTone.onHero => (
-        const Color(0x29FFFFFF),
-        const Color(0xFFFFFFFF),
+        AppColors.onPhoto.withValues(alpha: 0.18),
+        AppColors.onPhoto,
       ),
     };
     return ExcludeSemantics(
@@ -50,10 +73,12 @@ class BOHIconCircle extends StatelessWidget {
         decoration: BoxDecoration(
           color: background,
           shape: rounded ? BoxShape.rectangle : BoxShape.circle,
-          borderRadius: rounded ? AppRadii.smallAll : null,
+          borderRadius: rounded
+              ? BorderRadius.circular(size >= 42 ? 14 : 12)
+              : null,
         ),
         alignment: Alignment.center,
-        child: Icon(icon, size: size * 0.5, color: foreground),
+        child: Icon(icon, size: size * 0.47, color: foreground),
       ),
     );
   }

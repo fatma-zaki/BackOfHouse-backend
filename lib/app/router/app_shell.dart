@@ -9,12 +9,12 @@ import '../../core/widgets/widgets.dart';
 import '../../features/auth/domain/account_type.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 
-/// Signed-in frame for both account types: branch content under the one
-/// floating navigation bar.
+/// Signed-in frame for both account types: branch content above the one
+/// bottom bar.
 ///
 /// Individual: Home · Discover · News · Rewards · Profile.
-/// Company:    Dashboard · Discover · News · Profile — the Dashboard opens
-/// the company's opportunities, supplier requests and portfolio.
+/// Company:    Dashboard · Listings · Suppliers · News · Profile — the
+/// portfolio lives inside the company profile.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.navigationShell});
 
@@ -22,7 +22,8 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabs = _tabsFor(ref.watch(sessionAccountTypeProvider), context.l10n);
+    final account = ref.watch(sessionAccountTypeProvider);
+    final tabs = _tabsFor(account, context.l10n);
     final current = tabs.indexWhere(
       (t) => t.branch == navigationShell.currentIndex,
     );
@@ -32,6 +33,7 @@ class AppShell extends ConsumerWidget {
       body: navigationShell,
       bottomNavigationBar: BOHBottomNavigation(
         currentIndex: current < 0 ? 0 : current,
+        compactLabels: account == AccountType.company,
         onSelected: (index) {
           final branch = tabs[index].branch;
           navigationShell.goBranch(
@@ -53,6 +55,8 @@ abstract final class _Branch {
   static const news = 2;
   static const rewards = 3;
   static const profile = 4;
+  static const companyListings = 5;
+  static const companySuppliers = 6;
 }
 
 typedef _Tab = ({int branch, BOHNavItem item});
@@ -85,13 +89,23 @@ List<_Tab> _tabsFor(AccountType account, AppLocalizations l10n) =>
         (
           branch: _Branch.home,
           item: BOHNavItem(
-            icon: AppIcons.home,
+            icon: AppIcons.dashboard,
             label: l10n.companyNavDashboard,
           ),
         ),
         (
-          branch: _Branch.discover,
-          item: BOHNavItem(icon: AppIcons.discover, label: l10n.navDiscover),
+          branch: _Branch.companyListings,
+          item: BOHNavItem(
+            icon: AppIcons.listings,
+            label: l10n.companyNavListings,
+          ),
+        ),
+        (
+          branch: _Branch.companySuppliers,
+          item: BOHNavItem(
+            icon: AppIcons.handshake,
+            label: l10n.companyNavSuppliers,
+          ),
         ),
         (
           branch: _Branch.news,

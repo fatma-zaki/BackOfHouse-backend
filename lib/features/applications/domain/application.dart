@@ -233,6 +233,9 @@ abstract interface class ApplicantsRepository {
   /// Most recently updated first.
   Future<List<ApplicantView>> getApplicants(String opportunityId);
 
+  /// Newest applications across all of the company's listings.
+  Future<List<ApplicantView>> getRecentApplicants({int limit = 5});
+
   Future<ApplicantView> getApplicant(String applicationId);
 
   Future<ApplicantView> updateStatus(
@@ -309,6 +312,10 @@ class ApplicationDraft {
   final String? statement;
 
   static const int statementMaxLength = 500;
+
+  /// An application shares at least one experience item (approved
+  /// 2026-09-28); projects and the message stay optional.
+  bool get hasRequiredExperience => experienceIds.isNotEmpty;
 }
 
 abstract interface class ApplicationsRepository {

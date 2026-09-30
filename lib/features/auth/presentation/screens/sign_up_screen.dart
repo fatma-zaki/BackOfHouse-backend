@@ -14,6 +14,7 @@ import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../companies/domain/company_type.dart';
 import '../../../companies/presentation/company_labels.dart';
+import '../../../profile/domain/profile_status.dart';
 import '../../domain/account_details.dart';
 import '../../domain/account_type.dart';
 import '../controllers/auth_controller.dart';
@@ -40,6 +41,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   CompanyType? _companyType;
   bool _showCompanyTypeError = false;
   bool _agreed = false;
+  bool _student = false;
 
   late final TapGestureRecognizer _termsTap = TapGestureRecognizer()
     ..onTap = () => _open(AppConfig.termsUrl);
@@ -85,7 +87,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           phone: _phone.text,
           password: _password.text,
           account: switch (_accountType) {
-            AccountType.individual => const IndividualAccountDetails(),
+            AccountType.individual => IndividualAccountDetails(
+              profileStatus: _student
+                  ? ProfileStatus.student
+                  : ProfileStatus.professional,
+            ),
             AccountType.company => CompanyAccountDetails(
               companyName: _companyName.text,
               companyType: _companyType!,
@@ -105,216 +111,224 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
     final query = GoRouterState.of(context).uri.query;
     String withQuery(String path) => query.isEmpty ? path : '$path?$query';
-    const gap = SizedBox(height: AppSpacing.s20);
-    final linkStyle = context.text.body.copyWith(color: c.primaryText);
+    const gap = SizedBox(height: AppSpacing.s12);
+    final linkStyle = context.text.bodySmall.copyWith(
+      color: c.primaryText,
+      fontWeight: FontWeight.w700,
+    );
 
     return BOHScaffold(
       appBar: BOHAppBar(
         showBack: true,
         onBack: () => context.go(withQuery(AppRoutes.auth)),
       ),
-      body: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.only(bottom: AppSpacing.s32),
-          ),
-          child: AutofillGroup(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const BOHLogo(size: 84),
-                  const SizedBox(height: AppSpacing.s24),
-                  Semantics(
-                    header: true,
-                    child: Text(l10n.signUpTitle, style: context.text.display),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.formHorizontal,
+          AppSpacing.s12,
+          AppSpacing.formHorizontal,
+          AppSpacing.s32,
+        ),
+        child: AutofillGroup(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Semantics(
+                  header: true,
+                  child: Text(l10n.signUpTitle, style: context.text.titleXL),
+                ),
+                const SizedBox(height: AppSpacing.s4),
+                Text(
+                  l10n.signUpSubtitle,
+                  style: context.text.body.copyWith(height: 19 / 13),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                AccountTypeSelector(
+                  selected: _accountType,
+                  onChanged: isLoading
+                      ? null
+                      : (t) => setState(() => _accountType = t),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                BOHTextField(
+                  controller: _fullName,
+                  label: l10n.fieldFullNameLabel,
+                  hint: l10n.fieldFullNameHint,
+                  prefixIcon: AppIcons.user,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.name],
+                  validator: l10n.validator(Validators.fullName),
+                  enabled: !isLoading,
+                ),
+                gap,
+                BOHTextField(
+                  controller: _email,
+                  label: l10n.fieldEmailLabel,
+                  hint: l10n.fieldEmailHint,
+                  prefixIcon: AppIcons.email,
+                  keyboardType: TextInputType.emailAddress,
+                  forceLtr: true,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  validator: l10n.validator(Validators.email),
+                  enabled: !isLoading,
+                ),
+                gap,
+                BOHTextField(
+                  controller: _phone,
+                  label: l10n.fieldPhoneLabel,
+                  hint: l10n.fieldPhoneHint,
+                  prefixIcon: AppIcons.smartphone,
+                  keyboardType: TextInputType.phone,
+                  forceLtr: true,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.telephoneNumber],
+                  validator: l10n.validator(Validators.phone),
+                  enabled: !isLoading,
+                ),
+                gap,
+                BOHTextField(
+                  controller: _password,
+                  label: l10n.fieldPasswordLabel,
+                  hint: l10n.fieldNewPasswordHint,
+                  prefixIcon: AppIcons.password,
+                  obscurable: true,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.newPassword],
+                  validator: l10n.validator(Validators.password),
+                  enabled: !isLoading,
+                ),
+                gap,
+                BOHTextField(
+                  controller: _confirm,
+                  label: l10n.fieldConfirmPasswordLabel,
+                  hint: l10n.fieldConfirmPasswordHint,
+                  prefixIcon: AppIcons.password,
+                  obscurable: true,
+                  textInputAction: TextInputAction.done,
+                  validator: l10n.validator(
+                    (v) => Validators.confirmPassword(v, _password.text),
                   ),
-                  const SizedBox(height: AppSpacing.s12),
-                  Text(l10n.signUpSubtitle, style: context.text.bodyLarge),
-                  const SizedBox(height: AppSpacing.s32),
-                  BOHTextField(
-                    controller: _fullName,
-                    label: l10n.fieldFullNameLabel,
-                    hint: l10n.fieldFullNameHint,
-                    prefixIcon: AppIcons.user,
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.next,
-                    autofillHints: const [AutofillHints.name],
-                    validator: l10n.validator(Validators.fullName),
-                    enabled: !isLoading,
-                  ),
-                  gap,
-                  BOHTextField(
-                    controller: _email,
-                    label: l10n.fieldEmailLabel,
-                    hint: l10n.fieldEmailHint,
-                    prefixIcon: AppIcons.email,
-                    keyboardType: TextInputType.emailAddress,
-                    forceLtr: true,
-                    textInputAction: TextInputAction.next,
-                    autofillHints: const [AutofillHints.email],
-                    validator: l10n.validator(Validators.email),
-                    enabled: !isLoading,
-                  ),
-                  gap,
-                  BOHTextField(
-                    controller: _phone,
-                    label: l10n.fieldPhoneLabel,
-                    hint: l10n.fieldPhoneHint,
-                    prefixIcon: AppIcons.phone,
-                    keyboardType: TextInputType.phone,
-                    forceLtr: true,
-                    textInputAction: TextInputAction.next,
-                    autofillHints: const [AutofillHints.telephoneNumber],
-                    validator: l10n.validator(Validators.phone),
-                    enabled: !isLoading,
-                  ),
-                  gap,
-                  BOHTextField(
-                    controller: _password,
-                    label: l10n.fieldPasswordLabel,
-                    hint: l10n.fieldNewPasswordHint,
-                    prefixIcon: AppIcons.password,
-                    obscurable: true,
-                    textInputAction: TextInputAction.next,
-                    autofillHints: const [AutofillHints.newPassword],
-                    validator: l10n.validator(Validators.password),
-                    enabled: !isLoading,
-                  ),
-                  gap,
-                  BOHTextField(
-                    controller: _confirm,
-                    label: l10n.fieldConfirmPasswordLabel,
-                    hint: l10n.fieldConfirmPasswordHint,
-                    prefixIcon: AppIcons.password,
-                    obscurable: true,
-                    textInputAction: TextInputAction.done,
-                    validator: l10n.validator(
-                      (v) => Validators.confirmPassword(v, _password.text),
-                    ),
-                    onSubmitted: (_) => _submit(),
-                    enabled: !isLoading,
-                  ),
-                  const SizedBox(height: AppSpacing.s24),
-                  Text(l10n.accountTypeLabel, style: context.text.label),
-                  const SizedBox(height: AppSpacing.s8),
-                  AccountTypeSelector(
-                    selected: _accountType,
+                  onSubmitted: (_) => _submit(),
+                  enabled: !isLoading,
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                if (_accountType == AccountType.individual)
+                  BOHCheckBanner(
+                    title: l10n.signUpStudentTitle,
+                    subtitle: l10n.signUpStudentHint,
+                    value: _student,
                     onChanged: isLoading
                         ? null
-                        : (t) => setState(() => _accountType = t),
+                        : (v) => setState(() => _student = v),
+                  )
+                else ...[
+                  BOHTextField(
+                    controller: _companyName,
+                    label: l10n.fieldCompanyNameLabel,
+                    hint: l10n.fieldCompanyNameHint,
+                    prefixIcon: AppIcons.companies,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.organizationName],
+                    validator: (v) => (v ?? '').trim().length < 2
+                        ? l10n.fieldCompanyNameRequired
+                        : null,
+                    enabled: !isLoading,
                   ),
-                  const SizedBox(height: AppSpacing.s12),
-                  if (_accountType == AccountType.company) ...[
-                    BOHTextField(
-                      controller: _companyName,
-                      label: l10n.fieldCompanyNameLabel,
-                      hint: l10n.fieldCompanyNameHint,
-                      prefixIcon: AppIcons.companies,
-                      textCapitalization: TextCapitalization.words,
-                      textInputAction: TextInputAction.done,
-                      autofillHints: const [AutofillHints.organizationName],
-                      validator: (v) => (v ?? '').trim().length < 2
-                          ? l10n.fieldCompanyNameRequired
-                          : null,
-                      enabled: !isLoading,
-                    ),
-                    const SizedBox(height: AppSpacing.s16),
-                    Text(l10n.companyTypeLabel, style: context.text.label),
-                    const SizedBox(height: AppSpacing.s8),
-                    Wrap(
-                      spacing: AppSpacing.s8,
-                      runSpacing: AppSpacing.s8,
-                      children: [
-                        for (final type in CompanyType.values)
-                          BOHCategoryChip(
-                            label: type.label(l10n),
-                            selected: _companyType == type,
-                            onSelected: isLoading
-                                ? null
-                                : () => setState(() {
-                                    _companyType = type;
-                                    _showCompanyTypeError = false;
-                                  }),
+                  gap,
+                  Text(l10n.companyTypeLabel, style: context.text.labelMedium),
+                  const SizedBox(height: AppSpacing.s2),
+                  Wrap(
+                    spacing: AppSpacing.s8,
+                    children: [
+                      for (final type in CompanyType.values)
+                        BOHCategoryChip(
+                          label: type.label(l10n),
+                          selected: _companyType == type,
+                          onSelected: isLoading
+                              ? null
+                              : () => setState(() {
+                                  _companyType = type;
+                                  _showCompanyTypeError = false;
+                                }),
+                        ),
+                    ],
+                  ),
+                  if (_showCompanyTypeError)
+                    Semantics(
+                      liveRegion: true,
+                      child: Row(
+                        children: [
+                          Icon(
+                            AppIcons.info,
+                            size: AppSizes.iconSmall,
+                            color: c.error,
                           ),
-                      ],
-                    ),
-                    if (_showCompanyTypeError) ...[
-                      const SizedBox(height: AppSpacing.s8),
-                      Semantics(
-                        liveRegion: true,
-                        child: Row(
-                          children: [
-                            Icon(
-                              AppIcons.info,
-                              size: AppSizes.iconSmall,
-                              color: c.error,
-                            ),
-                            const SizedBox(width: AppSpacing.s8),
-                            Expanded(
-                              child: Text(
-                                l10n.companyTypeRequired,
-                                style: context.text.bodySmall.copyWith(
-                                  color: c.error,
-                                ),
+                          const SizedBox(width: AppSpacing.s8),
+                          Expanded(
+                            child: Text(
+                              l10n.companyTypeRequired,
+                              style: context.text.bodySmall.copyWith(
+                                color: c.error,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: AppSpacing.s4),
-                  ],
-                  const SizedBox(height: AppSpacing.s12),
-                  BOHCheckbox(
-                    value: _agreed,
-                    onChanged: isLoading
-                        ? null
-                        : (v) => setState(() => _agreed = v),
-                    labelWidget: Text.rich(
-                      TextSpan(
-                        style: context.text.body,
-                        children: [
-                          TextSpan(text: l10n.agreePrefix),
-                          TextSpan(
-                            text: l10n.termsOfService,
-                            style: linkStyle,
-                            recognizer: _termsTap,
-                          ),
-                          TextSpan(text: l10n.agreeConjunction),
-                          TextSpan(
-                            text: l10n.privacyPolicy,
-                            style: linkStyle,
-                            recognizer: _privacyTap,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.s20),
-                  BOHButton(
-                    label: l10n.signUpCta,
-                    isLoading: isLoading,
-                    onPressed: _submit,
-                  ),
-                  const SizedBox(height: AppSpacing.s16),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: AppSpacing.s4,
-                    children: [
-                      Text(l10n.haveAccountPrompt, style: context.text.body),
-                      BOHButton(
-                        label: l10n.logInLink,
-                        variant: BOHButtonVariant.text,
-                        onPressed: () => context.go(withQuery(AppRoutes.login)),
-                      ),
-                    ],
-                  ),
                 ],
-              ),
+                const SizedBox(height: AppSpacing.s8),
+                BOHCheckbox(
+                  value: _agreed,
+                  onChanged: isLoading
+                      ? null
+                      : (v) => setState(() => _agreed = v),
+                  labelWidget: Text.rich(
+                    TextSpan(
+                      style: context.text.bodySmall,
+                      children: [
+                        TextSpan(text: l10n.agreePrefix),
+                        TextSpan(
+                          text: l10n.termsOfService,
+                          style: linkStyle,
+                          recognizer: _termsTap,
+                        ),
+                        TextSpan(text: l10n.agreeConjunction),
+                        TextSpan(
+                          text: l10n.privacyPolicy,
+                          style: linkStyle,
+                          recognizer: _privacyTap,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                BOHButton(
+                  label: l10n.signUpCta,
+                  size: BOHButtonSize.auth,
+                  isLoading: isLoading,
+                  onPressed: _submit,
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: AppSpacing.s4,
+                  children: [
+                    Text(l10n.haveAccountPrompt, style: context.text.body),
+                    BOHButton(
+                      label: l10n.logInLink,
+                      variant: BOHButtonVariant.text,
+                      onPressed: () => context.go(withQuery(AppRoutes.login)),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

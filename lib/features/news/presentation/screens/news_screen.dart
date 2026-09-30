@@ -7,16 +7,13 @@ import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../auth/domain/account_type.dart';
-import '../../../auth/presentation/controllers/auth_controller.dart';
-import '../../../notifications/presentation/controllers/notifications_providers.dart';
-import '../../../profile/data/profile_data.dart';
 import '../../domain/article.dart';
 import '../controllers/news_providers.dart';
 import '../widgets/news_widgets.dart';
 
-/// News & Insights: briefings from the Back Of House editorial desk. The
-/// lead briefing first, then the curated list, filterable by desk.
+/// News: briefings from the Back Of House editorial desk. The lead
+/// briefing, desk filters, then the briefings list in the chosen order.
+/// Shared by both account types; there are no member posts.
 class NewsScreen extends ConsumerStatefulWidget {
   const NewsScreen({super.key});
 
@@ -25,47 +22,39 @@ class NewsScreen extends ConsumerStatefulWidget {
 }
 
 class _NewsScreenState extends ConsumerState<NewsScreen> {
-  NewsFilter _filter = NewsFilter.forYou;
+  NewsOrder _order = NewsOrder.forYou;
+  NewsTopic? _topic;
   String _query = '';
+  bool _searching = false;
 
-  NewsQuery get _key => (filter: _filter, query: _query);
+  NewsQuery get _key => (order: _order, topic: _topic, query: _query);
 
-  bool get _showLead => _filter == NewsFilter.forYou && _query.trim().isEmpty;
+  /// The lead card shows only on the unfiltered "For you" feed.
+  bool get _showLead =>
+      _order == NewsOrder.forYou && _topic == null && _query.trim().isEmpty;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final c = context.colors;
     final articles = ref.watch(newsProvider(_key));
-    final profile = ref.watch(myProfileProvider).value;
-    final unread = ref.watch(unreadNotificationsProvider);
-    final individual =
-        ref.watch(sessionAccountTypeProvider) == AccountType.individual;
+    final items = articles.value?.items ?? const <Article>[];
+    final lead = _showLead && items.isNotEmpty ? items.first : null;
 
     return BOHScaffold(
-      appBar: BOHAppBar.brand(
+      appBar: BOHAppBar.tab(
         title: l10n.navNews,
-        // Notifications and the member avatar are the individual's; a
-        // company reaches its profile from the bottom bar.
         actions: [
-          if (individual) ...[
-            BOHIconButton(
-              icon: AppIcons.notifications,
-              semanticLabel: unread > 0
-                  ? l10n.notificationsUnreadCount(unread)
-                  : l10n.notificationsLabel,
-              showBadge: unread > 0,
-              onPressed: () => context.push(AppRoutes.notifications),
-            ),
-            if (profile != null)
-              BOHAvatar(
-                name: profile.name,
-                image: profile.avatar,
-                size: BOHAvatarSize.small,
-                semanticLabel: l10n.profileAvatarLabel,
-                onTap: () => context.go(AppRoutes.profile),
-              ),
-          ],
+          BOHIconButton(
+            icon: _searching ? AppIcons.close : AppIcons.search,
+            iconSize: 21,
+            semanticLabel: _searching
+                ? l10n.actionClearSearch
+                : l10n.newsSearchHint,
+            onPressed: () => setState(() {
+              _searching = !_searching;
+              if (!_searching) _query = '';
+            }),
+          ),
         ],
       ),
       body: BOHRefresh(
@@ -76,47 +65,63 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
               top: AppSpacing.s8,
               sliver: SliverList.list(
                 children: [
-                  BOHPageHeader(
-                    eyebrow: l10n.newsEyebrow,
-                    title: l10n.newsTitle,
-                    subtitle: l10n.newsSubtitle,
-                  ),
-                  const SizedBox(height: AppSpacing.s16),
-                  BOHSearchField(
-                    hint: l10n.newsSearchHint,
-                    onChanged: (q) => setState(() => _query = q),
-                  ),
+                  if (_searching) ...[
+                    BOHSearchField(
+                      hint: l10n.newsSearchHint,
+                      autofocus: true,
+                      onChanged: (q) => setState(() => _query = q),
+                    ),
+                    const SizedBox(height: AppSpacing.s14),
+                  ],
+                  if (lead != null) ...[
+                    BOHFadeSlide(
+                      child: NewsLeadCard(
+                        article: lead,
+                        onTap: () => context.push(AppRoutes.article(lead.id)),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.s14),
+                  ],
                 ],
               ),
             ),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 68,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: BOHScaffold.screenPadding.add(
-                    const EdgeInsets.symmetric(vertical: AppSpacing.s12),
-                  ),
-                  children: [
-                    for (final filter in NewsFilter.values)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          end: AppSpacing.s8,
-                        ),
-                        child: BOHCategoryChip(
-                          label: filter.label(l10n),
-                          selected: _filter == filter,
-                          onSelected: () => setState(() => _filter = filter),
-                        ),
+              child: BOHFilterChips<NewsTopic?>(
+                options: [null, ...NewsTopic.values],
+                selected: _topic,
+                label: (t) => t?.shortLabel(l10n) ?? l10n.newsAllDesks,
+                style: BOHChipStyle.violet,
+                large: true,
+                padding: BOHScaffold.screenPadding,
+                onSelected: (t) => setState(() => _topic = t),
+              ),
+            ),
+            BOHSliverPadding(
+              top: AppSpacing.s10,
+              sliver: SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.gridGap),
+                  child: BOHSectionHeader(
+                    title: l10n.newsBriefings,
+                    trailing: Semantics(
+                      label: l10n.newsOrderLabel,
+                      child: BOHSegmentedControl<NewsOrder>(
+                        style: BOHSegmentedStyle.compact,
+                        segments: [
+                          for (final o in NewsOrder.values) (o, o.label(l10n)),
+                        ],
+                        selected: _order,
+                        onChanged: (o) => setState(() => _order = o),
                       ),
-                  ],
+                    ),
+                  ),
                 ),
               ),
             ),
             BOHSliverPadding(
-              top: AppSpacing.s4,
               sliver: BOHPagedSliverList<Article>(
                 state: articles,
+                spacing: AppSpacing.gridGap,
                 skeleton: const ArticleListSkeleton(),
                 emptyIcon: AppIcons.news,
                 emptyTitle: l10n.newsEmptyTitle,
@@ -125,38 +130,20 @@ class _NewsScreenState extends ConsumerState<NewsScreen> {
                     ref.read(newsProvider(_key).notifier).loadMore(),
                 onRetry: () => ref.invalidate(newsProvider(_key)),
                 itemBuilder: (context, article, i) {
-                  void open() => context.push(AppRoutes.article(article.id));
-                  if (i == 0 && _showLead) {
-                    return BOHFadeSlide(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          NewsLeadCard(article: article, onTap: open),
-                          const SizedBox(height: AppSpacing.sectionSpacing),
-                          BOHSectionHeader(
-                            title: l10n.newsCurated,
-                            subtitle: l10n.newsCuratedSubtitle,
-                            trailing: BOHStatusLabel(
-                              label: l10n.newsPeerReviewed,
-                              color: c.primaryText,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                  // The lead is shown above; the list continues after it.
+                  if (lead != null && article.id == lead.id) {
+                    return const SizedBox.shrink();
                   }
                   return BOHFadeSlide(
                     delay: BOHFadeSlide.stagger(i),
-                    child: ArticleCard(article: article, onTap: open),
+                    child: ArticleCard(
+                      article: article,
+                      onTap: () => context.push(AppRoutes.article(article.id)),
+                    ),
                   );
                 },
               ),
             ),
-            if (articles.value?.items.isNotEmpty ?? false)
-              const BOHSliverPadding(
-                top: AppSpacing.sectionSpacing,
-                sliver: SliverToBoxAdapter(child: EditorialStandardsCard()),
-              ),
             const BOHSliverBottomSpacer(),
           ],
         ),

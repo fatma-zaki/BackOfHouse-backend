@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/media/app_image.dart';
+import '../../applications/domain/application.dart' show ContactPrivacy;
 import 'profile_status.dart';
 
 @immutable
@@ -84,6 +85,8 @@ class Profile {
     this.status = ProfileStatus.professional,
     this.avatar,
     this.verified = false,
+    this.interests = const {},
+    this.contactPrivacy = const ContactPrivacy(),
   });
 
   final String name;
@@ -114,10 +117,73 @@ class Profile {
   final AppImage? avatar;
   final bool verified;
 
+  /// Topics the member follows.
+  final Set<ProfileInterest> interests;
+
+  /// What companies may see from the Contact stage on. Shares nothing by
+  /// default.
+  final ContactPrivacy contactPrivacy;
+
   /// First name, for greetings.
   String get firstName => name.trim().split(RegExp(r'\s+')).first;
 }
 
+/// Topics a member can follow.
+enum ProfileInterest {
+  techInnovation,
+  marketing,
+  design,
+  business,
+  networking,
+  production,
+}
+
+/// What an individual edits on their profile.
+@immutable
+class ProfileDraft {
+  const ProfileDraft({
+    required this.name,
+    required this.headline,
+    required this.city,
+    required this.about,
+    required this.status,
+    required this.interests,
+    required this.contactPrivacy,
+  });
+
+  factory ProfileDraft.of(Profile p) => ProfileDraft(
+    name: p.name,
+    headline: p.headline,
+    city: p.city,
+    about: p.about,
+    status: p.status,
+    interests: p.interests,
+    contactPrivacy: p.contactPrivacy,
+  );
+
+  final String name;
+  final String headline;
+  final String city;
+  final String about;
+
+  /// Student status decides co-op eligibility; the data layer re-evaluates
+  /// eligibility from it.
+  final ProfileStatus status;
+  final Set<ProfileInterest> interests;
+  final ContactPrivacy contactPrivacy;
+
+  static const int aboutMaxLength = 600;
+
+  List<ProfileDraftIssue> validate() => [
+    if (name.trim().length < 2) ProfileDraftIssue.nameRequired,
+    if (about.trim().length > aboutMaxLength) ProfileDraftIssue.aboutTooLong,
+  ];
+}
+
+enum ProfileDraftIssue { nameRequired, aboutTooLong }
+
 abstract interface class ProfileRepository {
   Future<Profile> getMyProfile();
+
+  Future<Profile> updateProfile(ProfileDraft draft);
 }

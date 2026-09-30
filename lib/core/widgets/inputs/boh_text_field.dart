@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../../../app/theme/app_motion.dart';
 import '../../../app/theme/app_radii.dart';
-import '../../../app/theme/app_shadows.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../constants/app_icons.dart';
 import '../../extensions/context_extensions.dart';
@@ -37,6 +36,10 @@ class BOHTextField extends StatefulWidget {
     this.forceLtr = false,
     this.minLines,
     this.maxLines = 1,
+    this.auth = false,
+    this.prefixText,
+    this.maxLength,
+    this.labelTrailing,
   });
 
   final TextEditingController? controller;
@@ -68,6 +71,18 @@ class BOHTextField extends StatefulWidget {
   /// Keep content left-to-right in Arabic — phone numbers, emails, URLs —
   /// while it still sits at the reading-start edge of the field.
   final bool forceLtr;
+
+  /// Auth screens: 52 tall with a 16 radius (forms use 48 / 14).
+  final bool auth;
+
+  /// Unit set before the value, e.g. "SAR".
+  final String? prefixText;
+
+  /// Shows a "104 / 500" counter under multi-line fields and caps input.
+  final int? maxLength;
+
+  /// Action at the end of the label row, e.g. "Forgot password?".
+  final Widget? labelTrailing;
 
   @override
   State<BOHTextField> createState() => _BOHTextFieldState();
@@ -128,7 +143,7 @@ class _BOHTextFieldState extends State<BOHTextField> {
       builder: (field) {
         final hasError = field.hasError;
         final borderColor = !widget.enabled
-            ? c.borderSoft
+            ? c.border
             : hasError
             ? c.error
             : _focused
@@ -139,44 +154,74 @@ class _BOHTextFieldState extends State<BOHTextField> {
             : _focused
             ? c.primary
             : c.textSecondary;
+        final multiline = (widget.maxLines ?? 2) > 1;
+        final radius = widget.auth ? AppRadii.mediumAll : AppRadii.inputAll;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.label != null) ...[
-              Text(
-                widget.label!,
-                style: text.label.copyWith(
-                  color: widget.enabled ? c.textPrimary : c.textDisabled,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.label!,
+                      style: text.labelMedium.copyWith(
+                        color: widget.enabled ? c.textPrimary : c.textDisabled,
+                      ),
+                    ),
+                  ),
+                  ?widget.labelTrailing,
+                ],
               ),
-              const SizedBox(height: AppSpacing.s8),
+              if (widget.labelTrailing == null)
+                const SizedBox(height: AppSpacing.s6),
             ],
             AnimatedContainer(
               duration: AppMotion.fast,
               curve: AppMotion.standard,
-              constraints: const BoxConstraints(
-                minHeight: AppSizes.inputHeight,
+              constraints: BoxConstraints(
+                minHeight: widget.auth
+                    ? AppSizes.inputHeightAuth
+                    : AppSizes.inputHeight,
               ),
               decoration: BoxDecoration(
-                color: widget.enabled ? c.surface : c.surfaceElevated,
-                borderRadius: AppRadii.smallAll,
-                border: Border.all(color: borderColor),
-                boxShadow: _focused && !hasError ? AppShadows.focus(c) : null,
+                color: widget.enabled ? c.surface : c.backgroundSecondary,
+                borderRadius: radius,
+                border: Border.all(
+                  color: borderColor,
+                  width: _focused || hasError
+                      ? AppSizes.outline
+                      : AppSizes.hairline,
+                ),
               ),
               child: Row(
+                crossAxisAlignment: multiline
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.center,
                 children: [
                   if (widget.prefixIcon != null)
                     Padding(
                       padding: const EdgeInsetsDirectional.only(
                         start: AppSpacing.s16,
-                        end: AppSpacing.s4,
                       ),
                       child: Icon(
                         widget.prefixIcon,
-                        size: AppSizes.iconMedium,
+                        size: 18,
                         color: iconColor,
+                      ),
+                    ),
+                  if (widget.prefixText != null)
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                        start: AppSpacing.s14,
+                      ),
+                      child: Text(
+                        widget.prefixText!,
+                        style: text.labelMedium.copyWith(
+                          color: c.textSecondary,
+                        ),
                       ),
                     ),
                   Expanded(
@@ -192,11 +237,18 @@ class _BOHTextFieldState extends State<BOHTextField> {
                       textInputAction: widget.textInputAction,
                       textCapitalization: widget.textCapitalization,
                       autofillHints: widget.autofillHints,
-                      inputFormatters: widget.inputFormatters,
+                      inputFormatters: [
+                        ...?widget.inputFormatters,
+                        if (widget.maxLength != null)
+                          LengthLimitingTextInputFormatter(widget.maxLength),
+                      ],
                       minLines: widget.minLines,
                       maxLines: widget.obscurable ? 1 : widget.maxLines,
-                      style: text.body.copyWith(
+                      style: (multiline ? text.body : text.bodyLarge).copyWith(
                         color: widget.enabled ? c.textPrimary : c.textDisabled,
+                        fontWeight: widget.prefixText != null
+                            ? FontWeight.w700
+                            : null,
                       ),
                       cursorColor: c.primary,
                       textDirection: widget.forceLtr ? TextDirection.ltr : null,
@@ -214,16 +266,23 @@ class _BOHTextFieldState extends State<BOHTextField> {
                         hintTextDirection: widget.forceLtr
                             ? TextDirection.ltr
                             : null,
-                        hintStyle: text.body.copyWith(color: c.textMuted),
+                        hintStyle: (multiline ? text.body : text.bodyLarge)
+                            .copyWith(color: c.textMuted),
                         filled: false,
                         isDense: true,
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.s12,
-                          vertical: AppSpacing.s16,
+                        contentPadding: EdgeInsetsDirectional.only(
+                          start:
+                              widget.prefixIcon != null ||
+                                  widget.prefixText != null
+                              ? AppSpacing.s10
+                              : AppSpacing.s14,
+                          end: AppSpacing.s14,
+                          top: multiline ? AppSpacing.s10 : AppSpacing.s12,
+                          bottom: multiline ? AppSpacing.s10 : AppSpacing.s12,
                         ),
                       ),
                     ),
@@ -231,7 +290,7 @@ class _BOHTextFieldState extends State<BOHTextField> {
                   if (widget.obscurable)
                     Padding(
                       padding: const EdgeInsetsDirectional.only(
-                        end: AppSpacing.s4,
+                        end: AppSpacing.s2,
                       ),
                       child: BOHIconButton(
                         icon: _obscured ? AppIcons.show : AppIcons.hide,
@@ -280,6 +339,19 @@ class _BOHTextFieldState extends State<BOHTextField> {
                     )
                   : const SizedBox(width: double.infinity),
             ),
+            if (widget.maxLength != null && multiline)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.s4),
+                child: ListenableBuilder(
+                  listenable: _controller,
+                  builder: (context, _) => Text(
+                    '${_controller.text.characters.length} / '
+                    '${widget.maxLength}',
+                    textAlign: TextAlign.end,
+                    style: text.caption.copyWith(fontSize: 10),
+                  ),
+                ),
+              ),
           ],
         );
       },

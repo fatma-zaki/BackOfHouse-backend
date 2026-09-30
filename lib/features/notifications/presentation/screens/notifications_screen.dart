@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
+import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
@@ -23,21 +24,20 @@ extension on NotificationCategory {
 
   IconData get icon => switch (this) {
     NotificationCategory.opportunities => AppIcons.job,
-    NotificationCategory.events => AppIcons.registered,
+    NotificationCategory.events => AppIcons.calendar,
     NotificationCategory.credentials => AppIcons.identity,
     NotificationCategory.news => AppIcons.news,
+  };
+
+  BOHIconCircleTone get tone => switch (this) {
+    NotificationCategory.opportunities => BOHIconCircleTone.success,
+    NotificationCategory.events => BOHIconCircleTone.brand,
+    NotificationCategory.credentials => BOHIconCircleTone.gold,
+    NotificationCategory.news => BOHIconCircleTone.info,
   };
 }
 
 extension on AppNotification {
-  String actionLabel(AppLocalizations l10n) => switch (targetType) {
-    NotificationTargetType.opportunity => l10n.notificationActionApplication,
-    NotificationTargetType.event => l10n.notificationActionEvent,
-    NotificationTargetType.profile => l10n.notificationActionCredential,
-    NotificationTargetType.reward => l10n.notificationActionLedger,
-    NotificationTargetType.article => l10n.actionReadBriefing,
-  };
-
   String get route => switch (targetType) {
     NotificationTargetType.opportunity when targetId != null =>
       AppRoutes.opportunity(targetId!),
@@ -77,7 +77,19 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final notifications = ref.watch(notificationsProvider);
 
     return BOHScaffold(
-      appBar: BOHAppBar(title: l10n.notificationsLabel),
+      appBar: BOHAppBar(
+        title: l10n.notificationsLabel,
+        actions: [
+          if (notifications.value?.any((n) => !n.read) ?? false)
+            BOHLinkButton(
+              label: l10n.notificationsMarkAllRead,
+              arrow: false,
+              fontSize: 12,
+              onTap: () =>
+                  ref.read(notificationsProvider.notifier).markAllRead(),
+            ),
+        ],
+      ),
       body: switch (notifications) {
         AsyncData(:final value) when value.isEmpty => BOHEmptyState(
           icon: AppIcons.notifications,
@@ -119,7 +131,6 @@ class _Inbox extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final c = context.colors;
     final unread = all.where((n) => !n.read).length;
     final visible = [
       for (final n in all)
@@ -137,77 +148,20 @@ class _Inbox extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
-        BOHSliverPadding(
-          top: AppSpacing.s8,
-          sliver: SliverToBoxAdapter(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Semantics(
-                        header: true,
-                        child: Text(
-                          l10n.notificationsInbox,
-                          style: context.text.h1,
-                        ),
-                      ),
-                      Semantics(
-                        liveRegion: true,
-                        child: Text(
-                          l10n.notificationsUnread(unread),
-                          style: context.text.body.copyWith(
-                            color: c.primaryText,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (unread > 0)
-                  BOHButton(
-                    label: l10n.notificationsMarkAllRead,
-                    variant: BOHButtonVariant.text,
-                    trailingIcon: null,
-                    leadingIcon: AppIcons.check,
-                    expand: false,
-                    onPressed: () =>
-                        ref.read(notificationsProvider.notifier).markAllRead(),
-                  ),
-              ],
-            ),
-          ),
-        ),
         SliverToBoxAdapter(
-          child: SizedBox(
-            height: 64,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: BOHScaffold.screenPadding.add(
-                const EdgeInsets.symmetric(vertical: AppSpacing.s12),
-              ),
-              children: [
-                for (final option in <NotificationCategory?>[
-                  null,
-                  ...NotificationCategory.values,
-                ])
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(
-                      end: AppSpacing.s8,
-                    ),
-                    child: BOHCategoryChip(
-                      label:
-                          option?.label(l10n) ??
-                          l10n.notificationsAllCount(all.length),
-                      selected: category == option,
-                      onSelected: () => onCategory(option),
-                    ),
-                  ),
-              ],
+          child: BOHFilterChips<NotificationCategory?>(
+            options: [null, ...NotificationCategory.values],
+            selected: category,
+            label: (o) => o?.label(l10n) ?? l10n.filterAll,
+            count: (o) => o == null && unread > 0 ? unread : null,
+            style: BOHChipStyle.violet,
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppSpacing.screenHorizontal,
+              AppSpacing.s4,
+              AppSpacing.screenHorizontal,
+              AppSpacing.s8,
             ),
+            onSelected: onCategory,
           ),
         ),
         if (visible.isEmpty)
@@ -224,10 +178,7 @@ class _Inbox extends ConsumerWidget {
             sliver: SliverList.list(
               children: [
                 if (today.isNotEmpty) ...[
-                  _GroupHeader(
-                    title: l10n.notificationsToday,
-                    trailing: l10n.notificationsTimezone,
-                  ),
+                  _GroupHeader(title: l10n.notificationsToday),
                   for (final (i, n) in today.indexed)
                     BOHFadeSlide(
                       delay: BOHFadeSlide.stagger(i),
@@ -242,24 +193,11 @@ class _Inbox extends ConsumerWidget {
                   for (final n in earlier)
                     _NotificationCard(notification: n, onTap: () => onOpen(n)),
                 ],
-                const SizedBox(height: AppSpacing.s8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      AppIcons.verified,
-                      size: AppSizes.iconSmall,
-                      color: c.textMuted,
-                    ),
-                    const SizedBox(width: AppSpacing.s4),
-                    Flexible(
-                      child: Text(
-                        l10n.notificationsFooter,
-                        style: context.text.caption,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: AppSpacing.s4),
+                Text(
+                  l10n.notificationsFooter,
+                  style: context.text.caption,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -271,28 +209,25 @@ class _Inbox extends ConsumerWidget {
 }
 
 class _GroupHeader extends StatelessWidget {
-  const _GroupHeader({required this.title, this.trailing});
+  const _GroupHeader({required this.title});
 
   final String title;
-  final String? trailing;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
+      padding: const EdgeInsetsDirectional.only(
         top: AppSpacing.s8,
-        bottom: AppSpacing.s12,
+        bottom: AppSpacing.s8,
+        start: AppSpacing.s4,
       ),
-      child: Row(
-        children: [
-          Expanded(child: BOHEyebrow(title, color: context.colors.textPrimary)),
-          if (trailing != null) Text(trailing!, style: context.text.caption),
-        ],
-      ),
+      child: BOHEyebrow(title, fontSize: 11),
     );
   }
 }
 
+/// Icon tile by category, title with its time, the message and an unread
+/// dot. Unread cards carry the accent border.
 class _NotificationCard extends StatelessWidget {
   const _NotificationCard({required this.notification, required this.onTap});
 
@@ -318,10 +253,12 @@ class _NotificationCard extends StatelessWidget {
           );
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.s12),
+      padding: const EdgeInsets.only(bottom: AppSpacing.gridGap),
       child: BOHCard(
         onTap: onTap,
-        color: n.read ? null : c.primaryWash,
+        unread: !n.read,
+        borderRadius: AppRadii.listCardAll,
+        padding: const EdgeInsets.all(AppSpacing.s12),
         semanticLabel: [
           if (!n.read) l10n.notificationUnread,
           category,
@@ -329,104 +266,59 @@ class _NotificationCard extends StatelessWidget {
           body,
           time,
         ].join('. '),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BOHIconCircle(
-                  icon: n.category.icon,
-                  size: 40,
-                  rounded: true,
-                  tone: n.read
-                      ? BOHIconCircleTone.neutral
-                      : BOHIconCircleTone.brand,
-                ),
-                const SizedBox(width: AppSpacing.s12),
-                Expanded(
-                  child: Column(
+            BOHIconCircle(
+              icon: n.category.icon,
+              size: 42,
+              rounded: true,
+              tone: n.category.tone,
+            ),
+            const SizedBox(width: AppSpacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              context.isArabic
-                                  ? category
-                                  : category.toUpperCase(),
-                              style: context.text.caption.copyWith(
-                                color: c.primaryText,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.s8),
-                          Text(time, style: context.text.caption),
-                          const Spacer(),
-                          if (!n.read)
-                            Container(
-                              width: 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: c.primary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.s4),
-                      Text(
-                        title,
-                        style: context.text.cardTitle.copyWith(
-                          fontWeight: n.read
-                              ? FontWeight.w600
-                              : FontWeight.w700,
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: context.text.label,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.s4),
-                      Text(body, style: context.text.body),
-                      if (n.pointsDelta != null) ...[
-                        const SizedBox(height: AppSpacing.s8),
-                        BOHTag(
-                          l10n.notificationPointsLogged(n.pointsDelta!),
-                          variant: BOHTagVariant.gold,
-                          icon: AppIcons.points,
-                        ),
-                      ],
+                      const SizedBox(width: AppSpacing.s8),
+                      Text(time, style: context.text.caption),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.s12),
-            Divider(height: 1, color: c.borderSoft),
-            const SizedBox(height: AppSpacing.s8),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    n.actionLabel(l10n),
-                    style: context.text.labelMedium.copyWith(
-                      color: c.primaryText,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  const SizedBox(height: 2),
+                  Text(
+                    body,
+                    style: context.text.bodySmall.copyWith(height: 17 / 12),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.s4),
-                Icon(
-                  AppIcons.arrowForward,
-                  size: AppSizes.iconSmall,
-                  color: c.primaryText,
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 132),
-                  child: BOHTag(n.source, variant: BOHTagVariant.neutral),
-                ),
-              ],
+                  if (n.pointsDelta != null) ...[
+                    const SizedBox(height: AppSpacing.s6),
+                    BOHStatusBadge(
+                      l10n.notificationPointsLogged(n.pointsDelta!),
+                      tone: BOHStatusTone.warning,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.s8),
+            Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.only(top: AppSpacing.s4),
+              decoration: BoxDecoration(
+                color: n.read ? null : c.primary,
+                shape: BoxShape.circle,
+              ),
             ),
           ],
         ),

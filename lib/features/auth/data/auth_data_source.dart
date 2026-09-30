@@ -30,6 +30,15 @@ abstract interface class AuthDataSource {
     required AccountDetails account,
   });
 
+  /// Sends a one-time sign-in code by SMS to [phone] (E.164).
+  Future<void> requestPhoneCode(String phone);
+
+  /// Signs in with the code sent to [phone].
+  Future<AuthSession> verifyPhoneCode({
+    required String phone,
+    required String code,
+  });
+
   /// The user owning the current access token.
   Future<AppUser> currentUser();
 

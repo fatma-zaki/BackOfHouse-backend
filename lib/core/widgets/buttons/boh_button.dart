@@ -11,35 +11,52 @@ import '../../extensions/context_extensions.dart';
 import '../motion/boh_pressable.dart';
 
 enum BOHButtonVariant {
-  /// Filled purple. One per view.
+  /// Filled violet with a violet glow. One per view.
   primary,
 
-  /// Purple outline.
+  /// Violet 1.5px outline, violet label — "Save draft", "Get verified".
   secondary,
 
-  /// Neutral outline on a surface fill — "Continue with Google".
+  /// Neutral outline on the surface — "Sign in", "Continue with Google".
   ghost,
 
-  /// Borderless inline link — "Forgot password?".
+  /// Danger outline — "Not selected", destructive choices.
+  danger,
+
+  /// White pill set on a photo — "Read more". Same in both modes.
+  overlay,
+
+  /// Borderless inline link — "Forgot password?", "View all".
   text,
 }
 
+/// Heights and label sizes from the design. Every button is a pill.
 enum BOHButtonSize {
-  large(AppSizes.buttonHeightLarge, AppSpacing.s24),
-  medium(AppSizes.buttonHeightMedium, AppSpacing.s20),
-  small(AppSizes.buttonHeightSmall, AppSpacing.s16);
+  /// 54 — Welcome, sign-in and sign-up actions.
+  auth(AppSizes.buttonHeightAuth, AppSpacing.s24, 15, 18),
 
-  const BOHButtonSize(this.height, this.horizontalPadding);
+  /// 52 — screen and footer actions.
+  large(AppSizes.buttonHeightLarge, AppSpacing.s24, 15, 18),
+
+  /// 44 — card actions ("Respond", "Redeem").
+  medium(AppSizes.buttonHeightMedium, AppSpacing.s20, 13, 16),
+
+  /// 40 — compact card actions ("Shortlist", "New listing").
+  small(AppSizes.buttonHeightSmall, AppSpacing.s14, 12, 14),
+
+  /// 34 — inline pills ("Follow", "Connect", "Upload"), in a 44 target.
+  compact(AppSizes.buttonHeightCompact, AppSpacing.s14, 12, 14);
+
+  const BOHButtonSize(
+    this.height,
+    this.horizontalPadding,
+    this.fontSize,
+    this.iconSize,
+  );
   final double height;
   final double horizontalPadding;
-}
-
-enum BOHButtonShape {
-  /// Small-radius rectangle — form actions.
-  rounded,
-
-  /// Full pill — hero calls to action.
-  pill,
+  final double fontSize;
+  final double iconSize;
 }
 
 /// Call to action. Arrow icons are directional and mirror in Arabic.
@@ -50,7 +67,6 @@ class BOHButton extends StatelessWidget {
     required this.onPressed,
     this.variant = BOHButtonVariant.primary,
     this.size = BOHButtonSize.large,
-    this.shape = BOHButtonShape.rounded,
     this.leading,
     this.leadingIcon,
     this.trailingIcon = AppIcons.arrowForward,
@@ -64,7 +80,6 @@ class BOHButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final BOHButtonVariant variant;
   final BOHButtonSize size;
-  final BOHButtonShape shape;
 
   /// Custom leading visual, e.g. a provider logo. Wins over [leadingIcon].
   final Widget? leading;
@@ -81,6 +96,7 @@ class BOHButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final enabled = onPressed != null && !isLoading;
+    final isText = variant == BOHButtonVariant.text;
 
     return BOHPressable(
       onTap: enabled ? onPressed : null,
@@ -92,16 +108,13 @@ class BOHButton extends StatelessWidget {
           enabled: enabled || isLoading,
           pressed: state.pressed,
         );
-        final textStyle =
-            // Inline links sit in running text, so they match its size.
-            (size == BOHButtonSize.small || variant == BOHButtonVariant.text
-                    ? AppTypography.label
-                    : AppTypography.cardTitle)
-                .copyWith(color: style.foreground);
-        final iconSize = size == BOHButtonSize.small
-            ? AppSizes.iconSmall
-            : AppSizes.iconMedium;
-        final isText = variant == BOHButtonVariant.text;
+        final textStyle = AppTypography.label.copyWith(
+          fontSize: isText ? 13 : size.fontSize,
+          height: 1.25,
+          color: style.foreground,
+          letterSpacing: 0,
+        );
+        final iconSize = size.iconSize;
 
         // A Row (not Container.alignment) centres the label: it honours the
         // min height without forcing the button to fill loose constraints.
@@ -120,28 +133,30 @@ class BOHButton extends StatelessWidget {
                 ]
               : [
                   if (leading != null) ...[
-                    SizedBox.square(dimension: iconSize, child: leading),
-                    const SizedBox(width: AppSpacing.s12),
+                    SizedBox.square(dimension: iconSize + 2, child: leading),
+                    const SizedBox(width: AppSpacing.s10),
                   ] else if (leadingIcon != null) ...[
                     Icon(leadingIcon, size: iconSize, color: style.foreground),
                     const SizedBox(width: AppSpacing.s8),
                   ],
+                  // Narrow slots (a paired footer) shrink the label a little
+                  // rather than cut a short action word.
                   Flexible(
-                    child: Text(
-                      label,
-                      style: textStyle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(label, style: textStyle, maxLines: 1),
                     ),
                   ),
+                  // Inline links stay label-only; arrowed links live in
+                  // `BOHSectionHeader` and `BOHLinkButton`.
                   if (trailingIcon != null && !isText) ...[
-                    const SizedBox(width: AppSpacing.s12),
+                    const SizedBox(width: AppSpacing.s10),
                     Icon(trailingIcon, size: iconSize, color: style.foreground),
                   ],
                 ],
         );
 
-        return AnimatedContainer(
+        final visual = AnimatedContainer(
           duration: AppMotion.fast,
           curve: AppMotion.standard,
           constraints: BoxConstraints(
@@ -154,29 +169,46 @@ class BOHButton extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: style.background,
-            borderRadius: shape == BOHButtonShape.pill
-                ? AppRadii.pillAll
-                : AppRadii.smallAll,
+            borderRadius: AppRadii.pillAll,
             border: style.border == null
                 ? null
-                : Border.all(color: style.border!),
-            boxShadow: style.glow ? AppShadows.primaryGlow(c) : null,
+                : Border.all(color: style.border!, width: AppSizes.outline),
+            boxShadow: style.glow
+                ? AppShadows.violet(
+                    c,
+                    strength: size.height >= AppSizes.buttonHeightLarge
+                        ? 0.4
+                        : 0.35,
+                    blur: size.height >= AppSizes.buttonHeightLarge ? 26 : 20,
+                    dy: size.height >= AppSizes.buttonHeightLarge ? 10 : 8,
+                  )
+                : null,
           ),
           child: content,
         );
+
+        // Compact pills keep a 44 hit area around a 34 visual.
+        if (size == BOHButtonSize.compact && !isText) {
+          return ConstrainedBox(
+            constraints: const BoxConstraints(
+              minHeight: AppSizes.minTouchTarget,
+            ),
+            child: Center(widthFactor: 1, heightFactor: 1, child: visual),
+          );
+        }
+        return visual;
       },
     );
   }
 }
 
-/// Outlined purple button — shorthand for [BOHButtonVariant.secondary].
+/// Outlined violet button — shorthand for [BOHButtonVariant.secondary].
 class BOHSecondaryButton extends StatelessWidget {
   const BOHSecondaryButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.size = BOHButtonSize.large,
-    this.shape = BOHButtonShape.rounded,
     this.leadingIcon,
     this.trailingIcon = AppIcons.arrowForward,
     this.isLoading = false,
@@ -186,7 +218,6 @@ class BOHSecondaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final BOHButtonSize size;
-  final BOHButtonShape shape;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final bool isLoading;
@@ -199,7 +230,6 @@ class BOHSecondaryButton extends StatelessWidget {
       onPressed: onPressed,
       variant: BOHButtonVariant.secondary,
       size: size,
-      shape: shape,
       leadingIcon: leadingIcon,
       trailingIcon: trailingIcon,
       isLoading: isLoading,
@@ -231,8 +261,8 @@ class _BOHButtonStyle {
     if (!enabled) {
       return switch (variant) {
         BOHButtonVariant.primary => _BOHButtonStyle(
-          background: c.surfaceElevated,
-          foreground: c.textDisabled,
+          background: c.border,
+          foreground: c.textSecondary,
         ),
         BOHButtonVariant.text => _BOHButtonStyle(
           background: AppColors.transparent,
@@ -241,7 +271,7 @@ class _BOHButtonStyle {
         _ => _BOHButtonStyle(
           background: AppColors.transparent,
           foreground: c.textDisabled,
-          border: c.borderSoft,
+          border: c.border,
         ),
       };
     }
@@ -252,16 +282,26 @@ class _BOHButtonStyle {
         foreground: c.onPrimary,
         glow: !pressed,
       ),
-      // Stitch secondary: lavender wash, purple label, tinted hairline.
       BOHButtonVariant.secondary => _BOHButtonStyle(
-        background: pressed ? c.primaryTint : c.primaryWash,
+        background: pressed ? c.primaryTint : AppColors.transparent,
         foreground: c.primaryText,
-        border: c.primaryTint,
+        border: c.primary,
       ),
       BOHButtonVariant.ghost => _BOHButtonStyle(
-        background: pressed ? c.surfaceElevated : c.surface,
+        background: pressed ? c.primaryWash : c.surface,
         foreground: c.textPrimary,
-        border: c.border,
+        border: c.borderStrong,
+      ),
+      BOHButtonVariant.danger => _BOHButtonStyle(
+        background: pressed
+            ? c.error.withValues(alpha: 0.08)
+            : AppColors.transparent,
+        foreground: c.error,
+        border: c.error,
+      ),
+      BOHButtonVariant.overlay => const _BOHButtonStyle(
+        background: AppColors.onPhoto,
+        foreground: AppColors.photoInk,
       ),
       BOHButtonVariant.text => _BOHButtonStyle(
         background: AppColors.transparent,

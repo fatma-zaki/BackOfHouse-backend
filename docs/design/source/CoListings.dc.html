@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Company listings</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 20px 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 24px; background: #6437fa; transform: skewX(-18deg)"></div><h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1></div>
+<button type="button" aria-label="{{s.newListing}}" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #6437fa; color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 8px 20px rgba(100,55,250,0.35); cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 12px">
+<div style="display: flex; gap: 8px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{chips}}" as="k" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{k.sel}}" style="height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid {{k.border}}; background: {{k.bg}}; color: {{k.color}}; font-family: inherit; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; cursor: pointer">{{k.label}}</button>
+</sc-for>
+</div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+<article style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: {{c.card}}; border: 1px solid {{r.border}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<span style="align-self: flex-start; padding: 2px 7px; border-radius: 6px; background: {{c.soft}}; color: {{c.vt}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{r.type}}</span>
+<span style="font-size: 15px; line-height: 20px; font-weight: 700">{{r.title}}</span>
+<span style="font-size: 12px; color: {{c.muted}}">{{r.meta}}</span>
+</div>
+<span style="display: flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 12px; background: {{r.sBg}}; color: {{r.sFg}}; font-size: 10.5px; font-weight: 800; white-space: nowrap"><span style="width: 6px; height: 6px; border-radius: 3px; background: currentColor"></span>{{r.status}}</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid {{c.line}}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: {{c.muted}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.2 2.3 3.5 5"></path></svg>{{r.apps}}</span>
+<a href="#" style="display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: {{c.vt}}; text-decoration: none">{{r.cta}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+</article>
+</sc-for>
+<p style="margin: 0; text-align: center; font-size: 11px; line-height: 16px; color: {{c.muted}}">{{s.note}}</p>
+</main>
+<nav aria-label="{{s.nav}}" style="flex-shrink: 0; height: 84px; box-sizing: border-box; padding: 8px 6px 22px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button type="button" aria-current="{{t.current}}" style="border: 0; background: transparent; padding: 0; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; color: {{t.color}}; font-size: 10.5px; line-height: 14px; font-weight: {{t.weight}}; cursor: pointer">
+<span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.pill}}; color: {{t.icon}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.k0}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg></sc-if>
+<sc-if value="{{t.k1}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"></path></svg></sc-if>
+<sc-if value="{{t.k2}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l4-4 4 2 3-2 4 1 3 3M3 11l5 5c1 1 2 1 3 0l1-1M21 11l-5 5M12 15l2 2M14 13l2 2"></path></svg></sc-if>
+<sc-if value="{{t.k3}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{t.k4}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="11" height="18" rx="1"></rect><path d="M15 9h5v12h-5M8 7h3M8 11h3M8 15h3"></path></svg></sc-if>
+</span>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', warnLine: '#f3dfb2', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)',
+        st: { live: ['#dcf4ea', '#0d6446'], review: ['#e0ebff', '#1c4aab'], changes: ['#fcefd6', '#80520a'], draft: ['#eeecf4', '#5e5a78'] } },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', warnLine: '#4a3a12', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)',
+        st: { live: ['#0c2e24', '#4ade80'], review: ['#0f2350', '#7fb0ff'], changes: ['#33260a', '#fbbf24'], draft: ['#1a1a2a', '#a9a8c3'] } }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        title: 'Opportunities', newListing: 'New listing', nav: 'Company',
+        chips: ['All · 5', 'Live', 'In review', 'Changes', 'Drafts'],
+        rows: [
+          ['JOB', 'Event Producer', 'Full-time · Riyadh · Closes Oct 20', 'live', 'Live', '8 applicants', 'Applicants'],
+          ['JOB', 'Stage Manager', 'Contract · Riyadh', 'changes', 'Changes requested', '—', 'Edit'],
+          ['CO-OP', 'Summer Co-op Program', 'Students · Riyadh · 8 weeks', 'review', 'In review', 'Not live yet', 'View'],
+          ['VOLUNTEERING', 'Expo Crew Volunteers', 'Jeddah · Oct 16 – 18', 'draft', 'Draft', '—', 'Continue']
+        ],
+        note: 'Every listing is reviewed by Back of House before it goes live.'
+      },
+      ar: {
+        title: 'الفرص', newListing: 'فرصة جديدة', nav: 'الشركة',
+        chips: ['الكل · 5', 'منشورة', 'قيد المراجعة', 'تعديلات', 'مسودات'],
+        rows: [
+          ['وظيفة', 'منتج فعاليات', 'دوام كامل · الرياض · تُغلق 20 أكتوبر', 'live', 'منشورة', '8 متقدمين', 'المتقدمون'],
+          ['وظيفة', 'مدير المسرح', 'عقد · الرياض', 'changes', 'مطلوب تعديل', '—', 'تعديل'],
+          ['تدريب تعاوني', 'برنامج التدريب الصيفي', 'طلاب · الرياض · 8 أسابيع', 'review', 'قيد المراجعة', 'غير منشورة بعد', 'عرض'],
+          ['تطوع', 'متطوعو فريق المعرض', 'جدة · 16 – 18 أكتوبر', 'draft', 'مسودة', '—', 'متابعة']
+        ],
+        note: 'يراجع فريق باك أوف هاوس كل فرصة قبل نشرها.'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const active = 1;
+    const tabs = (ar ? ['اللوحة', 'الفرص', 'التوريد', 'الأخبار', 'الملف'] : ['Dashboard', 'Listings', 'Suppliers', 'News', 'Profile']).map((label, i) => {
+      const on = i === active;
+      const t = { label, color: on ? c.vt : c.muted, icon: on ? (dark ? '#a78bfa' : '#6437fa') : c.muted, pill: on ? c.soft : 'transparent', weight: on ? 800 : 600, current: on ? 'page' : 'false' };
+      for (let j = 0; j < 5; j++) t['k' + j] = i === j;
+      return t;
+    });
+    const chips = s.chips.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.ink : c.card, color: i === 0 ? c.bg : c.ink, border: i === 0 ? c.ink : c.line }));
+    const rows = s.rows.map((r) => ({ type: r[0], title: r[1], meta: r[2], sBg: c.st[r[3]][0], sFg: c.st[r[3]][1], status: r[4], apps: r[5], cta: r[6], border: r[3] === 'changes' ? c.warnLine : c.line }));
+    return {
+      c, s, tabs, chips, rows,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

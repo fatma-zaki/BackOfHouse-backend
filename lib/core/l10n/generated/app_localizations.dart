@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @actionViewAll.
   ///
   /// In en, this message translates to:
-  /// **'See all'**
+  /// **'View All'**
   String get actionViewAll;
 
   /// No description provided for @actionReadMore.
@@ -139,6 +139,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get actionRetry;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'SAUDI ARABIA’S\nEVENTS COMMUNITY'**
+  String get appTagline;
+
+  /// No description provided for @actionClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get actionClose;
 
   /// No description provided for @actionBack.
   ///
@@ -347,7 +359,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeHaveAccount.
   ///
   /// In en, this message translates to:
-  /// **'I already have an account'**
+  /// **'Sign in'**
   String get welcomeHaveAccount;
 
   /// No description provided for @forgotPassword.
@@ -359,13 +371,13 @@ abstract class AppLocalizations {
   /// No description provided for @signInCta.
   ///
   /// In en, this message translates to:
-  /// **'Sign In'**
+  /// **'Sign in'**
   String get signInCta;
 
   /// No description provided for @noAccountPrompt.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t have an account?'**
+  /// **'New to Back of House?'**
   String get noAccountPrompt;
 
   /// No description provided for @agreePrefix.
@@ -395,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @signUpCta.
   ///
   /// In en, this message translates to:
-  /// **'Create Account'**
+  /// **'Continue'**
   String get signUpCta;
 
   /// No description provided for @haveAccountPrompt.
@@ -407,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @logInLink.
   ///
   /// In en, this message translates to:
-  /// **'Sign In'**
+  /// **'Sign in'**
   String get logInLink;
 
   /// No description provided for @mustAcceptTerms.
@@ -593,49 +605,49 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeEyebrow.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to'**
+  /// **'Saudi Arabia’s events community'**
   String get welcomeEyebrow;
 
   /// No description provided for @welcomeTitleLead.
   ///
   /// In en, this message translates to:
-  /// **'Back of House\n'**
+  /// **'We build the community behind '**
   String get welcomeTitleLead;
 
   /// No description provided for @welcomeTitleAccent.
   ///
   /// In en, this message translates to:
-  /// **'Community.'**
+  /// **'every experience.'**
   String get welcomeTitleAccent;
 
   /// No description provided for @welcomeSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Connect with Saudi Arabia\'s events industry.'**
+  /// **'Connect with the professionals, companies and emerging talent shaping the events industry.'**
   String get welcomeSubtitle;
 
   /// No description provided for @welcomeGetStarted.
   ///
   /// In en, this message translates to:
-  /// **'Get Started'**
+  /// **'Create account'**
   String get welcomeGetStarted;
 
   /// No description provided for @signInTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome Back'**
+  /// **'Welcome '**
   String get signInTitle;
 
   /// No description provided for @signInSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to your Back of House account and stay connected with the events community.'**
+  /// **'Sign in to pick up where you left off.'**
   String get signInSubtitle;
 
   /// No description provided for @fieldEmailLabel.
   ///
   /// In en, this message translates to:
-  /// **'Email address'**
+  /// **'Email'**
   String get fieldEmailLabel;
 
   /// No description provided for @fieldEmailHint.
@@ -671,13 +683,13 @@ abstract class AppLocalizations {
   /// No description provided for @fieldPhoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Phone number'**
+  /// **'Phone'**
   String get fieldPhoneLabel;
 
   /// No description provided for @fieldPhoneHint.
   ///
   /// In en, this message translates to:
-  /// **'+966 50 123 4567'**
+  /// **'+966 5X XXX XXXX'**
   String get fieldPhoneHint;
 
   /// No description provided for @fieldNewPasswordHint.
@@ -713,19 +725,19 @@ abstract class AppLocalizations {
   /// No description provided for @createAccountLink.
   ///
   /// In en, this message translates to:
-  /// **'Create one'**
+  /// **'Create account'**
   String get createAccountLink;
 
   /// No description provided for @signUpTitle.
   ///
   /// In en, this message translates to:
-  /// **'Create Account'**
+  /// **'Create your account'**
   String get signUpTitle;
 
   /// No description provided for @signUpSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Join Back of House and connect with professionals, companies, and opportunities in the events industry.'**
+  /// **'Join Saudi Arabia’s events community in under a minute.'**
   String get signUpSubtitle;
 
   /// No description provided for @navDiscover.
@@ -839,7 +851,7 @@ abstract class AppLocalizations {
   /// No description provided for @myPointsTitle.
   ///
   /// In en, this message translates to:
-  /// **'My Points'**
+  /// **'Points history'**
   String get myPointsTitle;
 
   /// No description provided for @filterAll.
@@ -857,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @filterRedeemed.
   ///
   /// In en, this message translates to:
-  /// **'Redeemed'**
+  /// **'Spent'**
   String get filterRedeemed;
 
   /// No description provided for @pointsHistoryTitle.
@@ -881,13 +893,13 @@ abstract class AppLocalizations {
   /// No description provided for @activityAttendedWorkshop.
   ///
   /// In en, this message translates to:
-  /// **'Attended workshop'**
+  /// **'Workshop attended'**
   String get activityAttendedWorkshop;
 
   /// No description provided for @activityProfileCompletion.
   ///
   /// In en, this message translates to:
-  /// **'Profile completion'**
+  /// **'Profile completed'**
   String get activityProfileCompletion;
 
   /// No description provided for @activityVerifiedIdentity.
@@ -896,11 +908,17 @@ abstract class AppLocalizations {
   /// **'Verified identity'**
   String get activityVerifiedIdentity;
 
-  /// No description provided for @activityJoinedEvent.
+  /// No description provided for @activityAttendanceVerified.
   ///
   /// In en, this message translates to:
-  /// **'Joined event'**
-  String get activityJoinedEvent;
+  /// **'Attendance verified'**
+  String get activityAttendanceVerified;
+
+  /// No description provided for @activityVolunteerShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Volunteer shift completed'**
+  String get activityVolunteerShift;
 
   /// No description provided for @activityFollowedCompany.
   ///
@@ -911,7 +929,7 @@ abstract class AppLocalizations {
   /// No description provided for @activityRedeemedReward.
   ///
   /// In en, this message translates to:
-  /// **'Redeemed reward'**
+  /// **'Reward redeemed'**
   String get activityRedeemedReward;
 
   /// No description provided for @rewardsTitle.
@@ -919,6 +937,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rewards'**
   String get rewardsTitle;
+
+  /// No description provided for @rewardsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get rewardsHistory;
+
+  /// No description provided for @pointsToSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Points to spend'**
+  String get pointsToSpend;
+
+  /// No description provided for @rewardsHighlightTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Highlight'**
+  String get rewardsHighlightTag;
+
+  /// No description provided for @rewardsHighlightNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight doesn’t change your verification status.'**
+  String get rewardsHighlightNote;
+
+  /// No description provided for @rewardsCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog'**
+  String get rewardsCatalog;
+
+  /// No description provided for @pointsShortUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get pointsShortUnit;
 
   /// No description provided for @rewardsHeroTitle.
   ///
@@ -1007,7 +1061,7 @@ abstract class AppLocalizations {
   /// No description provided for @rewardRedeemFor.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{Redeem for 1 point} other{Redeem for {count} points}}'**
+  /// **'{count, plural, =1{Redeem for 1 pt} other{Redeem for {count} pts}}'**
   String rewardRedeemFor(int count);
 
   /// No description provided for @rewardNeedMorePoints.
@@ -1085,13 +1139,13 @@ abstract class AppLocalizations {
   /// No description provided for @eventsEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No events found'**
+  /// **'No events match your search'**
   String get eventsEmptyTitle;
 
   /// No description provided for @eventsEmptyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Try a different search or category.'**
+  /// **'Try fewer filters or a broader word. Here are a few popular searches:'**
   String get eventsEmptyMessage;
 
   /// No description provided for @eventFilterConferences.
@@ -1115,8 +1169,38 @@ abstract class AppLocalizations {
   /// No description provided for @eventFilterExpos.
   ///
   /// In en, this message translates to:
-  /// **'Expos'**
+  /// **'Exhibitions'**
   String get eventFilterExpos;
+
+  /// No description provided for @eventTypeConference.
+  ///
+  /// In en, this message translates to:
+  /// **'Conference'**
+  String get eventTypeConference;
+
+  /// No description provided for @eventTypeWorkshop.
+  ///
+  /// In en, this message translates to:
+  /// **'Workshop'**
+  String get eventTypeWorkshop;
+
+  /// No description provided for @eventTypeNetworking.
+  ///
+  /// In en, this message translates to:
+  /// **'Networking'**
+  String get eventTypeNetworking;
+
+  /// No description provided for @eventTypeExpo.
+  ///
+  /// In en, this message translates to:
+  /// **'Exhibition'**
+  String get eventTypeExpo;
+
+  /// No description provided for @eventFlagshipTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Flagship'**
+  String get eventFlagshipTag;
 
   /// No description provided for @eventAttending.
   ///
@@ -1175,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsMarkAllRead.
   ///
   /// In en, this message translates to:
-  /// **'Mark all as read'**
+  /// **'Mark all read'**
   String get notificationsMarkAllRead;
 
   /// No description provided for @notificationsEmptyTitle.
@@ -1211,7 +1295,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileEditProfile.
   ///
   /// In en, this message translates to:
-  /// **'Edit Profile'**
+  /// **'Edit profile'**
   String get profileEditProfile;
 
   /// No description provided for @profileMyPointsHint.
@@ -1295,7 +1379,7 @@ abstract class AppLocalizations {
   /// No description provided for @actionViewDetails.
   ///
   /// In en, this message translates to:
-  /// **'View Details'**
+  /// **'View details'**
   String get actionViewDetails;
 
   /// No description provided for @actionConnect.
@@ -1367,7 +1451,7 @@ abstract class AppLocalizations {
   /// No description provided for @verificationLevel.
   ///
   /// In en, this message translates to:
-  /// **'Level {count}'**
+  /// **'Verification level {count}'**
   String verificationLevel(int count);
 
   /// No description provided for @geaVerified.
@@ -1481,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @discoverSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search the ecosystem'**
+  /// **'Search events, topics, or locations'**
   String get discoverSearchHint;
 
   /// No description provided for @actionFilters.
@@ -1547,7 +1631,7 @@ abstract class AppLocalizations {
   /// No description provided for @actionApplyNow.
   ///
   /// In en, this message translates to:
-  /// **'Apply Now'**
+  /// **'Apply now'**
   String get actionApplyNow;
 
   /// No description provided for @discoverLatestBriefings.
@@ -1613,13 +1697,13 @@ abstract class AppLocalizations {
   /// No description provided for @eventViewPass.
   ///
   /// In en, this message translates to:
-  /// **'View Digital Pass'**
+  /// **'View pass'**
   String get eventViewPass;
 
   /// No description provided for @eventAddToCalendar.
   ///
   /// In en, this message translates to:
-  /// **'Add to Calendar'**
+  /// **'Add to calendar'**
   String get eventAddToCalendar;
 
   /// No description provided for @eventPointsNote.
@@ -1823,7 +1907,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationCategoryOpportunities.
   ///
   /// In en, this message translates to:
-  /// **'Opportunities'**
+  /// **'Applications'**
   String get notificationCategoryOpportunities;
 
   /// No description provided for @notificationCategoryEvents.
@@ -1847,7 +1931,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationsEarlier.
   ///
   /// In en, this message translates to:
-  /// **'Earlier This Week'**
+  /// **'Earlier'**
   String get notificationsEarlier;
 
   /// No description provided for @notificationsTimezone.
@@ -1997,8 +2081,56 @@ abstract class AppLocalizations {
   /// No description provided for @newsFilterForYou.
   ///
   /// In en, this message translates to:
-  /// **'For You'**
+  /// **'For you'**
   String get newsFilterForYou;
+
+  /// No description provided for @newsAllDesks.
+  ///
+  /// In en, this message translates to:
+  /// **'All desks'**
+  String get newsAllDesks;
+
+  /// No description provided for @newsDeskTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical'**
+  String get newsDeskTechnical;
+
+  /// No description provided for @newsDeskRegulatory.
+  ///
+  /// In en, this message translates to:
+  /// **'Regulatory'**
+  String get newsDeskRegulatory;
+
+  /// No description provided for @newsDeskMarket.
+  ///
+  /// In en, this message translates to:
+  /// **'Market'**
+  String get newsDeskMarket;
+
+  /// No description provided for @newsBriefings.
+  ///
+  /// In en, this message translates to:
+  /// **'Briefings'**
+  String get newsBriefings;
+
+  /// No description provided for @newsLatestEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest news'**
+  String get newsLatestEyebrow;
+
+  /// No description provided for @newsOrderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get newsOrderLabel;
+
+  /// No description provided for @newsSavedArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved articles'**
+  String get newsSavedArticles;
 
   /// No description provided for @newsFilterLatest.
   ///
@@ -2117,7 +2249,7 @@ abstract class AppLocalizations {
   /// No description provided for @accountTypeLabel.
   ///
   /// In en, this message translates to:
-  /// **'I am'**
+  /// **'Account type'**
   String get accountTypeLabel;
 
   /// No description provided for @accountIndividual.
@@ -2255,13 +2387,13 @@ abstract class AppLocalizations {
   /// No description provided for @opportunityTypeCoOp.
   ///
   /// In en, this message translates to:
-  /// **'Co-op Training'**
+  /// **'Co-op'**
   String get opportunityTypeCoOp;
 
   /// No description provided for @opportunityTypeVolunteering.
   ///
   /// In en, this message translates to:
-  /// **'Volunteering'**
+  /// **'Volunteer'**
   String get opportunityTypeVolunteering;
 
   /// No description provided for @opportunityTypeSupplierRequest.
@@ -2351,7 +2483,7 @@ abstract class AppLocalizations {
   /// No description provided for @opportunityOverview.
   ///
   /// In en, this message translates to:
-  /// **'Overview'**
+  /// **'About the role'**
   String get opportunityOverview;
 
   /// No description provided for @opportunityResponsibilities.
@@ -2363,7 +2495,7 @@ abstract class AppLocalizations {
   /// No description provided for @opportunityRequirements.
   ///
   /// In en, this message translates to:
-  /// **'Requirements'**
+  /// **'What we’re looking for'**
   String get opportunityRequirements;
 
   /// No description provided for @opportunitySkills.
@@ -2435,7 +2567,7 @@ abstract class AppLocalizations {
   /// No description provided for @applyExperienceTitle.
   ///
   /// In en, this message translates to:
-  /// **'Relevant Experience'**
+  /// **'Experience to share'**
   String get applyExperienceTitle;
 
   /// No description provided for @applyExperienceSubtitle.
@@ -2513,7 +2645,7 @@ abstract class AppLocalizations {
   /// No description provided for @applyPrivacyNote.
   ///
   /// In en, this message translates to:
-  /// **'{company} sees your professional profile. Your ID number is never shared.'**
+  /// **'Your email and phone stay private. {company} only sees the contact details you choose to share, once your application reaches Contact.'**
   String applyPrivacyNote(String company);
 
   /// No description provided for @applyDecisionNote.
@@ -2525,7 +2657,7 @@ abstract class AppLocalizations {
   /// No description provided for @actionSubmitApplication.
   ///
   /// In en, this message translates to:
-  /// **'Submit Application'**
+  /// **'Submit application'**
   String get actionSubmitApplication;
 
   /// No description provided for @applySubmittedMessage.
@@ -2549,7 +2681,7 @@ abstract class AppLocalizations {
   /// No description provided for @applicationsTitle.
   ///
   /// In en, this message translates to:
-  /// **'My Applications'**
+  /// **'My applications'**
   String get applicationsTitle;
 
   /// No description provided for @applicationsEntryHint.
@@ -2567,13 +2699,13 @@ abstract class AppLocalizations {
   /// No description provided for @applicationsActive.
   ///
   /// In en, this message translates to:
-  /// **'Active ({count})'**
+  /// **'Active · {count}'**
   String applicationsActive(int count);
 
   /// No description provided for @applicationsPast.
   ///
   /// In en, this message translates to:
-  /// **'Past ({count})'**
+  /// **'Closed · {count}'**
   String applicationsPast(int count);
 
   /// No description provided for @applicationsEmptyActiveTitle.
@@ -2708,6 +2840,18 @@ abstract class AppLocalizations {
   /// **'Back Of House connects you with companies. Hiring decisions are made by each company.'**
   String get applicationsFooter;
 
+  /// No description provided for @companyNavListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Listings'**
+  String get companyNavListings;
+
+  /// No description provided for @companyNavSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get companyNavSuppliers;
+
   /// No description provided for @companyNavDashboard.
   ///
   /// In en, this message translates to:
@@ -2759,7 +2903,7 @@ abstract class AppLocalizations {
   /// No description provided for @applyProjectsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Portfolio Projects'**
+  /// **'Projects'**
   String get applyProjectsTitle;
 
   /// No description provided for @applyProjectsSubtitle.
@@ -2867,7 +3011,7 @@ abstract class AppLocalizations {
   /// No description provided for @opportunityStatusPublished.
   ///
   /// In en, this message translates to:
-  /// **'Published'**
+  /// **'Live'**
   String get opportunityStatusPublished;
 
   /// No description provided for @opportunityStatusPaused.
@@ -3125,7 +3269,7 @@ abstract class AppLocalizations {
   /// No description provided for @companyReviewNote.
   ///
   /// In en, this message translates to:
-  /// **'Back Of House reviews every listing before it is published, whether or not your company is verified.'**
+  /// **'Every listing is reviewed by Back of House before it goes live.'**
   String get companyReviewNote;
 
   /// No description provided for @companyOpportunitiesEmptyTitle.
@@ -3437,7 +3581,7 @@ abstract class AppLocalizations {
   /// No description provided for @companyRejectApplicant.
   ///
   /// In en, this message translates to:
-  /// **'Reject'**
+  /// **'Not selected'**
   String get companyRejectApplicant;
 
   /// No description provided for @companyAcceptTitle.
@@ -3913,6 +4057,1188 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Projects'**
   String get companyDetailsProjectsStat;
+
+  /// No description provided for @welcomeTermsLead.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing you agree to our '**
+  String get welcomeTermsLead;
+
+  /// No description provided for @welcomeTermsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Privacy'**
+  String get welcomeTermsLink;
+
+  /// No description provided for @signInTitleAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'back.'**
+  String get signInTitleAccent;
+
+  /// No description provided for @continueWithPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with a phone code'**
+  String get continueWithPhone;
+
+  /// No description provided for @validationCodeInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code.'**
+  String get validationCodeInvalid;
+
+  /// No description provided for @errorInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is wrong or has expired. Try again or send a new one.'**
+  String get errorInvalidCode;
+
+  /// No description provided for @phoneSignInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with '**
+  String get phoneSignInTitle;
+
+  /// No description provided for @phoneSignInTitleAccent.
+  ///
+  /// In en, this message translates to:
+  /// **'your phone.'**
+  String get phoneSignInTitleAccent;
+
+  /// No description provided for @phoneSignInSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We’ll text you a 6-digit code. No password needed.'**
+  String get phoneSignInSubtitle;
+
+  /// No description provided for @phoneSendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get phoneSendCode;
+
+  /// No description provided for @phoneCodeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code'**
+  String get phoneCodeTitle;
+
+  /// No description provided for @phoneCodeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {phone}.'**
+  String phoneCodeSubtitle(String phone);
+
+  /// No description provided for @phoneCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get phoneCodeLabel;
+
+  /// No description provided for @phoneVerifyCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify and sign in'**
+  String get phoneVerifyCta;
+
+  /// No description provided for @phoneResendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a new code'**
+  String get phoneResendCode;
+
+  /// No description provided for @phoneChangeNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Change number'**
+  String get phoneChangeNumber;
+
+  /// No description provided for @phoneCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'A new code is on its way.'**
+  String get phoneCodeSent;
+
+  /// Numbered points level (Rewards). Never verification.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level}'**
+  String pointsLevel(int level);
+
+  /// No description provided for @pointsToLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pts to Level {level}'**
+  String pointsToLevel(int count, int level);
+
+  /// No description provided for @pointsTopLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Top level reached'**
+  String get pointsTopLevel;
+
+  /// No description provided for @homeGreetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, '**
+  String get homeGreetingMorning;
+
+  /// No description provided for @homeGreetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon, '**
+  String get homeGreetingAfternoon;
+
+  /// No description provided for @homeGreetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening, '**
+  String get homeGreetingEvening;
+
+  /// No description provided for @homeFlagshipEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Flagship event'**
+  String get homeFlagshipEvent;
+
+  /// No description provided for @homeOpportunitiesForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunities for you'**
+  String get homeOpportunitiesForYou;
+
+  /// No description provided for @actionOpenRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'Open rewards'**
+  String get actionOpenRewards;
+
+  /// No description provided for @accountIndividualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Professionals, freelancers and students'**
+  String get accountIndividualHint;
+
+  /// No description provided for @accountCompanyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizers, agencies, venues and suppliers'**
+  String get accountCompanyHint;
+
+  /// No description provided for @signUpStudentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m currently a student'**
+  String get signUpStudentTitle;
+
+  /// No description provided for @signUpStudentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocks co-op and training opportunities.'**
+  String get signUpStudentHint;
+
+  /// No description provided for @discoverSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover sections'**
+  String get discoverSections;
+
+  /// No description provided for @discoverUpcomingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Events'**
+  String get discoverUpcomingEvents;
+
+  /// No description provided for @discoverCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get discoverCalendar;
+
+  /// No description provided for @actionClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get actionClearFilters;
+
+  /// No description provided for @actionRemoveFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove filter {name}'**
+  String actionRemoveFilter(String name);
+
+  /// No description provided for @searchSuggestionLightShows.
+  ///
+  /// In en, this message translates to:
+  /// **'Light shows'**
+  String get searchSuggestionLightShows;
+
+  /// No description provided for @searchSuggestionConcerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Concerts'**
+  String get searchSuggestionConcerts;
+
+  /// No description provided for @searchSuggestionRiyadh.
+  ///
+  /// In en, this message translates to:
+  /// **'Riyadh'**
+  String get searchSuggestionRiyadh;
+
+  /// No description provided for @pointsBalanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get pointsBalanceLabel;
+
+  /// No description provided for @profileGetVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Get verified'**
+  String get profileGetVerified;
+
+  /// No description provided for @profileNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not verified'**
+  String get profileNotVerified;
+
+  /// No description provided for @profileStatusProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional'**
+  String get profileStatusProfessional;
+
+  /// No description provided for @profileEventsAttended.
+  ///
+  /// In en, this message translates to:
+  /// **'Events attended'**
+  String get profileEventsAttended;
+
+  /// No description provided for @profileVisibilityShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get profileVisibilityShort;
+
+  /// No description provided for @profileYearsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Years exp.'**
+  String get profileYearsShort;
+
+  /// No description provided for @profileMyApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'My Applications'**
+  String get profileMyApplications;
+
+  /// No description provided for @profileAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get profileAddPhoto;
+
+  /// No description provided for @eventAboutTab.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get eventAboutTab;
+
+  /// No description provided for @eventAgendaTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Agenda'**
+  String get eventAgendaTab;
+
+  /// No description provided for @eventSpeakersTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Speakers'**
+  String get eventSpeakersTab;
+
+  /// No description provided for @eventSections.
+  ///
+  /// In en, this message translates to:
+  /// **'Event sections'**
+  String get eventSections;
+
+  /// No description provided for @eventAttendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}+ attending'**
+  String eventAttendingLabel(String count);
+
+  /// No description provided for @eventPeopleYouKnow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person you know} other{{count} people you know}}'**
+  String eventPeopleYouKnow(int count);
+
+  /// No description provided for @eventEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Entry'**
+  String get eventEntry;
+
+  /// No description provided for @eventMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get eventMap;
+
+  /// No description provided for @eventSaveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Save event'**
+  String get eventSaveLabel;
+
+  /// No description provided for @eventAgendaDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day} · {date}'**
+  String eventAgendaDay(int day, String date);
+
+  /// No description provided for @eventRegisteredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re registered!'**
+  String get eventRegisteredTitle;
+
+  /// No description provided for @eventRegisteredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We’ve saved your spot. You’ll get a reminder before the event starts.'**
+  String get eventRegisteredBody;
+
+  /// No description provided for @eventDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get eventDateLabel;
+
+  /// No description provided for @eventVenueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue'**
+  String get eventVenueLabel;
+
+  /// No description provided for @eventPassHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Your event pass'**
+  String get eventPassHeading;
+
+  /// No description provided for @eventPassHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this code at the entrance to check in.'**
+  String get eventPassHint;
+
+  /// No description provided for @eventPointsOnAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn points when your attendance is verified at the event.'**
+  String get eventPointsOnAttendance;
+
+  /// No description provided for @eventExploreMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore more events'**
+  String get eventExploreMore;
+
+  /// No description provided for @opportunityDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunity'**
+  String get opportunityDetailTitle;
+
+  /// No description provided for @opportunityEligible.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re eligible to apply'**
+  String get opportunityEligible;
+
+  /// No description provided for @opportunityApplyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ll share your experience, projects and a short message.'**
+  String get opportunityApplyHint;
+
+  /// No description provided for @applyExperienceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one'**
+  String get applyExperienceRequired;
+
+  /// No description provided for @applyExperienceMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one experience to share.'**
+  String get applyExperienceMissing;
+
+  /// No description provided for @companyWorkspaceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Company workspace'**
+  String get companyWorkspaceSubtitle;
+
+  /// No description provided for @companyWelcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get companyWelcomeBack;
+
+  /// No description provided for @companyNewListing.
+  ///
+  /// In en, this message translates to:
+  /// **'New listing'**
+  String get companyNewListing;
+
+  /// No description provided for @companyStatLiveListings.
+  ///
+  /// In en, this message translates to:
+  /// **'Live listings'**
+  String get companyStatLiveListings;
+
+  /// No description provided for @companyStatNewApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'New applicants'**
+  String get companyStatNewApplicants;
+
+  /// No description provided for @companyStatThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} this week'**
+  String companyStatThisWeek(int count);
+
+  /// No description provided for @companyStatSupplierInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier invites'**
+  String get companyStatSupplierInvites;
+
+  /// No description provided for @companyStatProfileViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile views'**
+  String get companyStatProfileViews;
+
+  /// No description provided for @companyStatChange.
+  ///
+  /// In en, this message translates to:
+  /// **'{sign}{count}%'**
+  String companyStatChange(String sign, int count);
+
+  /// No description provided for @companyChangesRequestedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes requested on “{title}”'**
+  String companyChangesRequestedTitle(String title);
+
+  /// No description provided for @companyEditListing.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit listing'**
+  String get companyEditListing;
+
+  /// No description provided for @companyRecentApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent applicants'**
+  String get companyRecentApplicants;
+
+  /// No description provided for @companyNoApplicantsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No applicants yet. Once a listing is live, applications appear here.'**
+  String get companyNoApplicantsYet;
+
+  /// No description provided for @companyListingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Opportunities'**
+  String get companyListingsTitle;
+
+  /// No description provided for @filterAllCount.
+  ///
+  /// In en, this message translates to:
+  /// **'All · {count}'**
+  String filterAllCount(int count);
+
+  /// No description provided for @companyFilterChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes'**
+  String get companyFilterChanges;
+
+  /// No description provided for @companyFilterDrafts.
+  ///
+  /// In en, this message translates to:
+  /// **'Drafts'**
+  String get companyFilterDrafts;
+
+  /// No description provided for @companyListingNotLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Not live yet'**
+  String get companyListingNotLive;
+
+  /// No description provided for @companyListingApplicants.
+  ///
+  /// In en, this message translates to:
+  /// **'Applicants'**
+  String get companyListingApplicants;
+
+  /// No description provided for @companyListingEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get companyListingEdit;
+
+  /// No description provided for @companyListingView.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get companyListingView;
+
+  /// No description provided for @companyListingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get companyListingContinue;
+
+  /// No description provided for @companyListingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Listing type'**
+  String get companyListingType;
+
+  /// No description provided for @companyClosesOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes on'**
+  String get companyClosesOn;
+
+  /// No description provided for @companyClosesOnPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional — pick a date'**
+  String get companyClosesOnPick;
+
+  /// No description provided for @companyClosesInPast.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a date after today.'**
+  String get companyClosesInPast;
+
+  /// No description provided for @companyClearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear date'**
+  String get companyClearDate;
+
+  /// No description provided for @companyWorkSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Work setup'**
+  String get companyWorkSetup;
+
+  /// No description provided for @workSetupOnSite.
+  ///
+  /// In en, this message translates to:
+  /// **'On-site'**
+  String get workSetupOnSite;
+
+  /// No description provided for @workSetupHybrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid'**
+  String get workSetupHybrid;
+
+  /// No description provided for @workSetupRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote'**
+  String get workSetupRemote;
+
+  /// No description provided for @companyReviewInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Back of House reviews every listing before it goes live. You’ll be notified when it’s approved or if changes are needed.'**
+  String get companyReviewInfo;
+
+  /// No description provided for @companyApplicantsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 applicant} other{{count} applicants}} · {status}'**
+  String companyApplicantsSubtitle(int count, String status);
+
+  /// No description provided for @stageFilterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} · {count}'**
+  String stageFilterCount(String label, int count);
+
+  /// No description provided for @applicantExperienceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 experience} other{{count} experiences}}'**
+  String applicantExperienceCount(int count);
+
+  /// No description provided for @applicantProjectCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 project} other{{count} projects}}'**
+  String applicantProjectCount(int count);
+
+  /// No description provided for @applicantContactShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact shared'**
+  String get applicantContactShared;
+
+  /// No description provided for @companyViewApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'View application'**
+  String get companyViewApplication;
+
+  /// No description provided for @companyApplicationFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Application for'**
+  String get companyApplicationFor;
+
+  /// No description provided for @companyMessageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get companyMessageTitle;
+
+  /// No description provided for @companyExperienceShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience shared'**
+  String get companyExperienceShared;
+
+  /// No description provided for @companyProjectsShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects shared'**
+  String get companyProjectsShared;
+
+  /// No description provided for @applicantStatusApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'{status} · Applied {time}'**
+  String applicantStatusApplied(String status, String time);
+
+  /// No description provided for @supplierYourResponse.
+  ///
+  /// In en, this message translates to:
+  /// **'Your response'**
+  String get supplierYourResponse;
+
+  /// No description provided for @supplierRespondBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Respond by {date}'**
+  String supplierRespondBy(String date);
+
+  /// No description provided for @supplierBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get supplierBudget;
+
+  /// No description provided for @supplierRespondByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Respond by'**
+  String get supplierRespondByLabel;
+
+  /// No description provided for @supplierYourPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Your price'**
+  String get supplierYourPrice;
+
+  /// No description provided for @supplierSetupTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup time'**
+  String get supplierSetupTime;
+
+  /// No description provided for @supplierSetupTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 2 days'**
+  String get supplierSetupTimeHint;
+
+  /// No description provided for @supplierAttachProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach projects'**
+  String get supplierAttachProjects;
+
+  /// No description provided for @supplierSelectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} selected'**
+  String supplierSelectedCount(int count);
+
+  /// No description provided for @supplierPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {buyer} can see your response and price.'**
+  String supplierPrivateNote(String buyer);
+
+  /// No description provided for @supplierRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier requests'**
+  String get supplierRequestsTitle;
+
+  /// No description provided for @supplierTabInvitedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Invited · {count}'**
+  String supplierTabInvitedCount(int count);
+
+  /// No description provided for @supplierTabResponsesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'My responses · {count}'**
+  String supplierTabResponsesCount(int count);
+
+  /// No description provided for @supplierTabMyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'My requests'**
+  String get supplierTabMyRequests;
+
+  /// No description provided for @supplierOpenToYourType.
+  ///
+  /// In en, this message translates to:
+  /// **'Open to your company type · {time}'**
+  String supplierOpenToYourType(String time);
+
+  /// No description provided for @supplierYouResponded.
+  ///
+  /// In en, this message translates to:
+  /// **'You responded · {date}'**
+  String supplierYouResponded(String date);
+
+  /// No description provided for @supplierBadgeOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get supplierBadgeOpen;
+
+  /// No description provided for @supplierMyRequestsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your supplier requests appear here.'**
+  String get supplierMyRequestsEmpty;
+
+  /// No description provided for @companyVerifiedByBoh.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified by Back of House'**
+  String get companyVerifiedByBoh;
+
+  /// No description provided for @companyStatProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get companyStatProjects;
+
+  /// No description provided for @companyStatFollowers.
+  ///
+  /// In en, this message translates to:
+  /// **'Followers'**
+  String get companyStatFollowers;
+
+  /// No description provided for @companiesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search companies, services, cities'**
+  String get companiesSearchHint;
+
+  /// No description provided for @companiesFilterOrganizers.
+  ///
+  /// In en, this message translates to:
+  /// **'Organizers'**
+  String get companiesFilterOrganizers;
+
+  /// No description provided for @companiesFilterVenues.
+  ///
+  /// In en, this message translates to:
+  /// **'Venues'**
+  String get companiesFilterVenues;
+
+  /// No description provided for @companiesFilterSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get companiesFilterSuppliers;
+
+  /// No description provided for @companiesFilterAgencies.
+  ///
+  /// In en, this message translates to:
+  /// **'Agencies'**
+  String get companiesFilterAgencies;
+
+  /// No description provided for @companiesEditorsPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Editor’s pick'**
+  String get companiesEditorsPick;
+
+  /// No description provided for @companiesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No companies match your search'**
+  String get companiesEmpty;
+
+  /// No description provided for @professionalsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, skill or city'**
+  String get professionalsSearchHint;
+
+  /// No description provided for @professionalsFilterProducers.
+  ///
+  /// In en, this message translates to:
+  /// **'Producers'**
+  String get professionalsFilterProducers;
+
+  /// No description provided for @professionalsFilterDesigners.
+  ///
+  /// In en, this message translates to:
+  /// **'Designers'**
+  String get professionalsFilterDesigners;
+
+  /// No description provided for @professionalsFilterTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical'**
+  String get professionalsFilterTechnical;
+
+  /// No description provided for @professionalsFilterStudents.
+  ///
+  /// In en, this message translates to:
+  /// **'Students'**
+  String get professionalsFilterStudents;
+
+  /// No description provided for @professionalsHighlighted.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlighted'**
+  String get professionalsHighlighted;
+
+  /// No description provided for @professionalsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No professionals match your search'**
+  String get professionalsEmpty;
+
+  /// No description provided for @actionConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get actionConnected;
+
+  /// No description provided for @editProfileIAm.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m a'**
+  String get editProfileIAm;
+
+  /// No description provided for @editProfileHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Headline'**
+  String get editProfileHeadline;
+
+  /// No description provided for @editProfileAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get editProfileAbout;
+
+  /// No description provided for @editProfileInterests.
+  ///
+  /// In en, this message translates to:
+  /// **'Interests'**
+  String get editProfileInterests;
+
+  /// No description provided for @editProfilePrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact privacy'**
+  String get editProfilePrivacy;
+
+  /// No description provided for @editProfilePrivacyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what companies see when your application reaches Contact. Off by default.'**
+  String get editProfilePrivacyHint;
+
+  /// No description provided for @editProfileShareEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my email'**
+  String get editProfileShareEmail;
+
+  /// No description provided for @editProfileSharePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my phone'**
+  String get editProfileSharePhone;
+
+  /// No description provided for @editProfileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get editProfileSaved;
+
+  /// No description provided for @editProfileNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your name'**
+  String get editProfileNameRequired;
+
+  /// No description provided for @editProfileAboutTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'About can be up to 600 characters.'**
+  String get editProfileAboutTooLong;
+
+  /// No description provided for @interestTechInnovation.
+  ///
+  /// In en, this message translates to:
+  /// **'Tech & Innovation'**
+  String get interestTechInnovation;
+
+  /// No description provided for @interestMarketing.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketing'**
+  String get interestMarketing;
+
+  /// No description provided for @interestDesign.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get interestDesign;
+
+  /// No description provided for @interestBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get interestBusiness;
+
+  /// No description provided for @interestNetworking.
+  ///
+  /// In en, this message translates to:
+  /// **'Networking'**
+  String get interestNetworking;
+
+  /// No description provided for @interestProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Production'**
+  String get interestProduction;
+
+  /// No description provided for @verifyHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Show companies it’s really you'**
+  String get verifyHeadline;
+
+  /// No description provided for @verifyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'A verified badge tells companies your identity and experience were checked by Back of House.'**
+  String get verifyIntro;
+
+  /// No description provided for @verifyIdentityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity document'**
+  String get verifyIdentityTitle;
+
+  /// No description provided for @verifyIdentityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID or Iqama'**
+  String get verifyIdentityHint;
+
+  /// No description provided for @verifyExperienceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Proof of experience'**
+  String get verifyExperienceTitle;
+
+  /// No description provided for @verifyExperienceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A certificate, contract or reference letter'**
+  String get verifyExperienceHint;
+
+  /// No description provided for @verifyUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'{hint} · uploaded'**
+  String verifyUploaded(String hint);
+
+  /// No description provided for @verifyReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review by Back of House'**
+  String get verifyReviewTitle;
+
+  /// No description provided for @verifyReviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We’ll notify you when it’s done'**
+  String get verifyReviewHint;
+
+  /// No description provided for @verifyInReview.
+  ///
+  /// In en, this message translates to:
+  /// **'In review — we’ll notify you when it’s done'**
+  String get verifyInReview;
+
+  /// No description provided for @verifyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification is never granted by points, payments or activity. Your documents are only used for this review.'**
+  String get verifyNote;
+
+  /// No description provided for @verifyUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get verifyUpload;
+
+  /// No description provided for @verifySubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for review'**
+  String get verifySubmit;
+
+  /// No description provided for @verifySubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent for review'**
+  String get verifySubmitted;
+
+  /// No description provided for @redeemedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reward'**
+  String get redeemedTitle;
+
+  /// No description provided for @redeemedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed'**
+  String get redeemedBadge;
+
+  /// No description provided for @redeemedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed for {points} pts'**
+  String redeemedFor(String points);
+
+  /// No description provided for @redeemedYourCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Your code'**
+  String get redeemedYourCode;
+
+  /// No description provided for @redeemedHowToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'How to use it'**
+  String get redeemedHowToUse;
+
+  /// No description provided for @redeemedBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Points balance'**
+  String get redeemedBalance;
+
+  /// No description provided for @redeemedPts.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get redeemedPts;
+
+  /// No description provided for @actionCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get actionCopy;
+
+  /// No description provided for @companyProjectStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get companyProjectStartLabel;
+
+  /// No description provided for @companyProjectEndLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get companyProjectEndLabel;
+
+  /// No description provided for @companyProjectOngoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get companyProjectOngoing;
+
+  /// No description provided for @resetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset your password'**
+  String get resetTitle;
+
+  /// No description provided for @resetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your account email and we’ll send you a link to set a new one.'**
+  String get resetSubtitle;
+
+  /// No description provided for @resetCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link'**
+  String get resetCta;
+
+  /// No description provided for @resetSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get resetSentTitle;
+
+  /// No description provided for @resetSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account exists for {email}, a reset link is on its way.'**
+  String resetSentBody(String email);
+
+  /// No description provided for @resetBackToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get resetBackToSignIn;
 }
 
 class _AppLocalizationsDelegate

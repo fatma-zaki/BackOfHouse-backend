@@ -8,7 +8,6 @@ import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../companies/data/my_company_data.dart';
 import '../../../companies/presentation/controllers/company_workspace_providers.dart';
-import '../../../companies/presentation/screens/company_portfolio_screen.dart';
 import '../../../companies/presentation/widgets/company_widgets.dart';
 import '../../../opportunities/presentation/widgets/opportunity_widgets.dart';
 import '../../data/supplier_requests_data.dart';
@@ -39,8 +38,11 @@ class SupplierResponseDetailsScreen extends ConsumerWidget {
         value: value,
         onRetry: () => ref.invalidate(supplierResponseProvider(responseId)),
         data: (r) => ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.only(top: AppSpacing.s8, bottom: AppSpacing.s32),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.screenHorizontal,
+            AppSpacing.s8,
+            AppSpacing.screenHorizontal,
+            AppSpacing.s32,
           ),
           children: [
             BOHCard(
@@ -48,8 +50,11 @@ class SupplierResponseDetailsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SupplierResponseStatusPill(r.status),
-                  const SizedBox(height: AppSpacing.s12),
-                  Text(r.requestTitle, style: context.text.h2),
+                  const SizedBox(height: AppSpacing.s10),
+                  Semantics(
+                    header: true,
+                    child: Text(r.requestTitle, style: context.text.h2),
+                  ),
                   Text(
                     l10n.supplierForBuyer(r.buyer.name),
                     style: context.text.bodySmall,
@@ -75,25 +80,39 @@ class SupplierResponseDetailsScreen extends ConsumerWidget {
               title: l10n.supplierMessage,
               child: Text(r.message, style: context.text.body),
             ),
-            if (r.proposedPrice case final price?) ...[
+            if (r.proposedPrice != null || r.setupTime != null) ...[
               const SizedBox(height: AppSpacing.s12),
-              SectionCard(
-                icon: AppIcons.points,
-                title: l10n.supplierProposedPrice,
-                child: Text(price, style: context.text.label),
+              Row(
+                children: [
+                  if (r.proposedPrice case final price?)
+                    Expanded(
+                      child: BOHFieldTile(
+                        label: l10n.supplierProposedPrice,
+                        value: price,
+                      ),
+                    ),
+                  if (r.proposedPrice != null && r.setupTime != null)
+                    const SizedBox(width: AppSpacing.s10),
+                  if (r.setupTime case final setup?)
+                    Expanded(
+                      child: BOHFieldTile(
+                        label: l10n.supplierSetupTime,
+                        value: setup,
+                      ),
+                    ),
+                ],
               ),
             ],
-            const SizedBox(height: AppSpacing.sectionSpacing),
-            BOHSectionHeader(title: l10n.supplierEvidence),
-            const SizedBox(height: AppSpacing.s12),
-            if (r.projects.isEmpty)
-              BOHInfoNote(l10n.companyNoneIncluded)
-            else
-              for (final p in r.projects)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.s12),
-                  child: CompanyProjectCard(project: p),
-                ),
+            const SizedBox(height: AppSpacing.s16),
+            BOHSectionHeader(
+              title: l10n.supplierEvidence,
+              size: BOHSectionSize.compact,
+            ),
+            const SizedBox(height: AppSpacing.s8),
+            CompanyPortfolioGrid(
+              projects: r.projects,
+              emptyMessage: l10n.companyNoneIncluded,
+            ),
           ],
         ),
       ),
@@ -149,36 +168,33 @@ class _BuyerActions extends ConsumerWidget {
         .where((s) => s != SupplierResponseStatus.rejected)
         .firstOrNull;
 
-    return BOHActionBar(
-      child: Row(
-        children: [
-          if (next.contains(SupplierResponseStatus.rejected))
-            Expanded(
-              child: BOHButton(
-                label: l10n.companyRejectApplicant,
-                variant: BOHButtonVariant.ghost,
-                trailingIcon: null,
-                onPressed: () =>
-                    _move(context, ref, SupplierResponseStatus.rejected),
-              ),
-            ),
-          if (advance != null) ...[
-            const SizedBox(width: AppSpacing.s8),
-            Expanded(
-              flex: 2,
-              child: BOHButton(
-                label: switch (advance) {
-                  SupplierResponseStatus.reviewed => l10n.companyMarkReviewed,
-                  SupplierResponseStatus.shortlisted => l10n.companyShortlist,
-                  _ => l10n.supplierSelect,
-                },
-                trailingIcon: null,
-                onPressed: () => _move(context, ref, advance),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
+    final reject = next.contains(SupplierResponseStatus.rejected)
+        ? BOHButton(
+            label: l10n.companyRejectApplicant,
+            variant: BOHButtonVariant.secondary,
+            size: BOHButtonSize.large,
+            trailingIcon: null,
+            onPressed: () =>
+                _move(context, ref, SupplierResponseStatus.rejected),
+          )
+        : null;
+    final forward = advance == null
+        ? null
+        : BOHButton(
+            label: switch (advance) {
+              SupplierResponseStatus.reviewed => l10n.companyMarkReviewed,
+              SupplierResponseStatus.shortlisted => l10n.companyShortlist,
+              _ => l10n.supplierSelect,
+            },
+            size: BOHButtonSize.large,
+            trailingIcon: null,
+            onPressed: () => _move(context, ref, advance),
+          );
+
+    return switch ((reject, forward)) {
+      (final r?, final f?) => BOHActionBar.pair(secondary: r, primary: f),
+      (final only?, null) || (null, final only?) => BOHActionBar(child: only),
+      _ => const SizedBox.shrink(),
+    };
   }
 }

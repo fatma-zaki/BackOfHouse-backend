@@ -5,6 +5,7 @@ import '../domain/application.dart';
 
 abstract interface class ApplicantsDataSource {
   Future<List<ApplicantView>> getApplicants(String opportunityId);
+  Future<List<ApplicantView>> getRecentApplicants({int limit = 5});
   Future<ApplicantView> getApplicant(String applicationId);
   Future<ApplicantView> updateStatus(
     String applicationId,
@@ -20,6 +21,10 @@ class ApplicantsRepositoryImpl implements ApplicantsRepository {
   @override
   Future<List<ApplicantView>> getApplicants(String opportunityId) =>
       _source.getApplicants(opportunityId);
+
+  @override
+  Future<List<ApplicantView>> getRecentApplicants({int limit = 5}) =>
+      _source.getRecentApplicants(limit: limit);
 
   @override
   Future<ApplicantView> getApplicant(String applicationId) =>

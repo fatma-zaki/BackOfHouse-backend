@@ -61,6 +61,19 @@ class AuthRepositoryImpl implements AuthRepository {
       _source.requestPasswordReset(email);
 
   @override
+  Future<void> requestPhoneCode(String phone) =>
+      _source.requestPhoneCode(phone);
+
+  @override
+  Future<AppUser> verifyPhoneCode({
+    required String phone,
+    required String code,
+  }) async {
+    final session = await _source.verifyPhoneCode(phone: phone, code: code);
+    return _persist(session);
+  }
+
+  @override
   Future<void> logout() async {
     try {
       await _source.logout();

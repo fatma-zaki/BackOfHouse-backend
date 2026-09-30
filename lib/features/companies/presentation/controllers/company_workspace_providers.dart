@@ -19,6 +19,17 @@ final myCompanyProvider = FutureProvider.autoDispose<Company>((ref) {
   return ref.watch(myCompanyRepositoryProvider).getMyCompany();
 });
 
+final myCompanyStatsProvider = FutureProvider.autoDispose<CompanyStats>((ref) {
+  ref.watch(contentLanguageProvider);
+  return ref.watch(myCompanyRepositoryProvider).getStats();
+});
+
+final recentApplicantsProvider =
+    FutureProvider.autoDispose<List<ApplicantView>>((ref) {
+      ref.watch(contentLanguageProvider);
+      return ref.watch(applicantsRepositoryProvider).getRecentApplicants();
+    });
+
 final myCompanyProjectsProvider =
     FutureProvider.autoDispose<List<CompanyProject>>((ref) {
       ref.watch(contentLanguageProvider);

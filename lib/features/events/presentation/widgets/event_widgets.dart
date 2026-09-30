@@ -17,45 +17,59 @@ extension EventTypeL10n on EventType {
     EventType.networking => l10n.eventFilterNetworking,
     EventType.expo => l10n.eventFilterExpos,
   };
+
+  /// Singular category, for tags.
+  String label(AppLocalizations l10n) => switch (this) {
+    EventType.conference => l10n.eventTypeConference,
+    EventType.workshop => l10n.eventTypeWorkshop,
+    EventType.networking => l10n.eventTypeNetworking,
+    EventType.expo => l10n.eventTypeExpo,
+  };
+
+  /// Category colour, shared by every event tag.
+  BOHTagVariant get tagVariant => switch (this) {
+    EventType.conference => BOHTagVariant.accent,
+    EventType.workshop => BOHTagVariant.green,
+    EventType.networking => BOHTagVariant.amber,
+    EventType.expo => BOHTagVariant.blue,
+  };
+
+  IconData get icon => switch (this) {
+    EventType.conference => AppIcons.keynote,
+    EventType.workshop => AppIcons.workshop,
+    EventType.networking => AppIcons.people,
+    EventType.expo => AppIcons.companies,
+  };
 }
 
-/// "NOV / 18" block.
+/// The event's category tag.
+class EventTypeTag extends StatelessWidget {
+  const EventTypeTag(this.type, {super.key, this.large = false});
+
+  final EventType type;
+  final bool large;
+
+  @override
+  Widget build(BuildContext context) =>
+      BOHTag(type.label(context.l10n), variant: type.tagVariant, large: large);
+}
+
+/// "THU / 15 / OCT" block.
 class EventDateBadge extends StatelessWidget {
-  const EventDateBadge({super.key, required this.date, this.size = 52});
+  const EventDateBadge({super.key, required this.date});
 
   final DateTime date;
-  final double size;
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
     final month = AppDateFormats.monthShort(context).format(date);
+    final weekday = AppDateFormats.weekdayShort(context).format(date);
+    final arabic = context.isArabic;
     return ExcludeSemantics(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: c.primaryWash,
-          borderRadius: AppRadii.smallAll,
-          border: Border.all(color: c.primaryTint),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              context.isArabic ? month : month.toUpperCase(),
-              style: context.text.caption.copyWith(color: c.primaryText),
-              maxLines: 1,
-            ),
-            Text(
-              AppDateFormats.day(context).format(date),
-              style: context.text.h3.copyWith(
-                color: c.primaryText,
-                height: 1.1,
-              ),
-            ),
-          ],
-        ),
+      child: BOHDateBlock(
+        weekday: arabic ? weekday : weekday.toUpperCase(),
+        day: AppDateFormats.day(context).format(date),
+        month: arabic ? month : month.toUpperCase(),
       ),
     );
   }
@@ -63,18 +77,24 @@ class EventDateBadge extends StatelessWidget {
 
 /// Icon + small text line.
 class EventMetaLine extends StatelessWidget {
-  const EventMetaLine({super.key, required this.icon, required this.text});
+  const EventMetaLine({
+    super.key,
+    required this.icon,
+    required this.text,
+    this.iconSize = 12,
+  });
 
   final IconData icon;
   final String text;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     return Row(
       children: [
-        Icon(icon, size: 14, color: c.textMuted),
-        const SizedBox(width: AppSpacing.s4),
+        Icon(icon, size: iconSize, color: c.textSecondary),
+        const SizedBox(width: 5),
         Flexible(
           child: Text(
             text,
@@ -88,7 +108,8 @@ class EventMetaLine extends StatelessWidget {
   }
 }
 
-/// Compact row — Home "Upcoming Industry Events" and the Events list.
+/// Event row — photo, category, title, city and the date block. Discover,
+/// the Events list and Home.
 class EventListItem extends StatelessWidget {
   const EventListItem({super.key, required this.event, required this.onTap});
 
@@ -102,242 +123,142 @@ class EventListItem extends StatelessWidget {
 
     return BOHCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(AppSpacing.s12),
+      borderRadius: AppRadii.listCardAll,
+      padding: const EdgeInsets.all(AppSpacing.s10),
       semanticLabel: [
         event.title,
+        event.type.label(l10n),
         range,
-        event.venue,
+        event.city,
         if (event.isRegistered) l10n.eventRegisteredTag,
       ].join('. '),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EventDateBadge(date: event.startsAt),
+          BOHImage(
+            image: event.image,
+            width: 84,
+            height: 72,
+            borderRadius: AppRadii.smallAll,
+          ),
           const SizedBox(width: AppSpacing.s12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: BOHTag(range, variant: BOHTagVariant.neutral),
+                    EventTypeTag(event.type),
+                    if (event.isRegistered) ...[
+                      const SizedBox(width: AppSpacing.s6),
+                      Flexible(
+                        child: BOHTag(
+                          l10n.eventRegisteredTag,
+                          variant: BOHTagVariant.success,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: AppSpacing.s8),
-                    if (event.isRegistered)
-                      BOHTag(
-                        l10n.eventRegisteredTag,
-                        variant: BOHTagVariant.success,
-                      )
-                    else
-                      BOHTag(l10n.eventRegister, variant: BOHTagVariant.solid),
+                    ],
                   ],
                 ),
-                const SizedBox(height: AppSpacing.s8),
+                const SizedBox(height: AppSpacing.s4),
                 Text(
                   event.title,
-                  style: context.text.cardTitle,
-                  maxLines: 1,
+                  style: context.text.itemTitle.copyWith(height: 18 / 14),
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
-                EventMetaLine(icon: AppIcons.location, text: event.venue),
+                const SizedBox(height: AppSpacing.s4),
+                EventMetaLine(icon: AppIcons.location, text: event.city),
               ],
             ),
           ),
+          const SizedBox(width: AppSpacing.s10),
+          EventDateBadge(date: event.startsAt),
         ],
       ),
     );
   }
 }
 
-/// Flagship card with photography — Discover and the top of the Events hub.
+/// Flagship event — photo fading in from the end, the neutral "Flagship"
+/// tag (never "Featured": free picks are not paid placement), dates, venue
+/// and a Register action.
 class EventFeatureCard extends StatelessWidget {
   const EventFeatureCard({
     super.key,
     required this.event,
     required this.onTap,
     this.eyebrow,
-    this.compact = false,
   });
 
   final Event event;
   final VoidCallback onTap;
 
-  /// e.g. "Flagship Summit".
+  /// Tag above the title; defaults to "Flagship".
   final String? eyebrow;
-
-  /// Drops the description and organizer, for Discover.
-  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final c = context.colors;
+    final text = context.text;
     final range = AppDateFormats.range(context, event.startsAt, event.endsAt);
-    final kicker = [?eyebrow, ...event.topics.take(1)].join(' · ');
+    final category = {
+      event.type.label(l10n),
+      ...event.topics.take(1),
+    }.join(' · ');
 
-    return BOHCard(
-      padding: EdgeInsets.zero,
+    return BOHFadeImageCard(
+      image: event.image,
       onTap: onTap,
       semanticLabel: '${event.title}. $range. ${event.venue}',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: compact ? 2 : 16 / 9,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                BOHImage(image: event.image, scrim: BOHImageScrim.bottom),
-                PositionedDirectional(
-                  top: AppSpacing.s12,
-                  start: AppSpacing.s12,
-                  end: AppSpacing.s12,
-                  child: Row(
-                    children: [
-                      // The date always shows in full; the accreditation
-                      // label gives way on narrow cards.
-                      if (event.accredited)
-                        Flexible(
-                          child: _PhotoChip(
-                            icon: AppIcons.verified,
-                            label: l10n.geaAccredited,
-                          ),
-                        ),
-                      const Spacer(),
-                      const SizedBox(width: AppSpacing.s8),
-                      _PhotoChip(label: range),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          BOHTag(
+            eyebrow ?? l10n.eventFlagshipTag,
+            variant: BOHTagVariant.solid,
+            large: true,
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (kicker.isNotEmpty) ...[
-                  Text(
-                    context.isArabic ? kicker : kicker.toUpperCase(),
-                    style: context.text.labelMedium.copyWith(
-                      color: c.primaryText,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacing.s4),
-                ],
-                Text(event.title, style: context.text.h3),
-                const SizedBox(height: AppSpacing.s8),
-                EventMetaLine(icon: AppIcons.location, text: event.venue),
-                if (!compact) ...[
-                  const SizedBox(height: AppSpacing.s12),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(text: '${l10n.eventOrganizedBy} '),
-                              TextSpan(
-                                text: event.organizer,
-                                style: TextStyle(
-                                  color: c.textPrimary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          style: context.text.bodySmall,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (event.organizerVerified) ...[
-                        const SizedBox(width: AppSpacing.s4),
-                        Icon(
-                          AppIcons.verified,
-                          size: AppSizes.iconSmall,
-                          color: c.primaryText,
-                          semanticLabel: l10n.eventVerifiedOrganizer,
-                        ),
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.s8),
-                  Text(
-                    event.description,
-                    style: context.text.body,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                const SizedBox(height: AppSpacing.s16),
-                Row(
-                  children: [
-                    BOHButton(
-                      label: compact ? l10n.actionRsvp : l10n.eventViewEvent,
-                      size: BOHButtonSize.small,
-                      expand: false,
-                      onPressed: onTap,
-                    ),
-                    const Spacer(),
-                    if (event.isRegistered)
-                      BOHTag(
-                        l10n.eventRegisteredTag,
-                        variant: BOHTagVariant.success,
-                      ),
-                  ],
-                ),
-              ],
-            ),
+          const SizedBox(height: AppSpacing.s6),
+          Text(
+            event.title,
+            style: text.h3.copyWith(fontSize: 17, height: 22 / 17),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Opaque label over photography.
-class _PhotoChip extends StatelessWidget {
-  const _PhotoChip({required this.label, this.icon});
-
-  final String label;
-  final IconData? icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s8 + 2,
-        vertical: AppSpacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: c.surface.withValues(alpha: 0.94),
-        borderRadius: AppRadii.pillAll,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 14, color: c.primaryText),
-            const SizedBox(width: AppSpacing.s4),
-          ],
-          Flexible(
-            child: Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.text.labelMedium.copyWith(color: c.textPrimary),
+          const SizedBox(height: AppSpacing.s4),
+          Text(
+            category,
+            style: text.labelMedium.copyWith(
+              color: c.primaryText,
+              fontWeight: FontWeight.w600,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
+          const SizedBox(height: AppSpacing.s6),
+          EventMetaLine(icon: AppIcons.calendar, text: range, iconSize: 13),
+          const SizedBox(height: 3),
+          EventMetaLine(
+            icon: AppIcons.location,
+            text: event.venue,
+            iconSize: 13,
+          ),
+          const Spacer(),
+          if (event.isRegistered)
+            BOHTag(l10n.eventRegisteredTag, variant: BOHTagVariant.success)
+          else
+            SizedBox(
+              height: 32,
+              child: BOHButton(
+                label: l10n.eventRegister,
+                variant: BOHButtonVariant.secondary,
+                size: BOHButtonSize.compact,
+                expand: false,
+                onPressed: onTap,
+              ),
+            ),
         ],
       ),
     );
@@ -356,25 +277,10 @@ class EventListSkeleton extends StatelessWidget {
         children: [
           for (var i = 0; i < count; i++)
             const Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.s12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BOHSkeleton(width: 52, height: 52),
-                  SizedBox(width: AppSpacing.s12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        BOHSkeleton.line(width: 110),
-                        SizedBox(height: AppSpacing.s8),
-                        BOHSkeleton.line(height: 14),
-                        SizedBox(height: AppSpacing.s8),
-                        BOHSkeleton.line(width: 160),
-                      ],
-                    ),
-                  ),
-                ],
+              padding: EdgeInsets.only(bottom: AppSpacing.s10),
+              child: BOHSkeleton(
+                height: 92,
+                borderRadius: AppRadii.listCardAll,
               ),
             ),
         ],

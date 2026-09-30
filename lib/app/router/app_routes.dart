@@ -11,6 +11,7 @@ abstract final class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String resetPassword = '/reset-password';
+  static const String phoneLogin = '/login/phone';
 
   // ── Signed in ────────────────────────────────────────────────────────────
   static const String home = '/';
@@ -18,6 +19,8 @@ abstract final class AppRoutes {
   static const String rewards = '/rewards';
   static const String myPoints = '/rewards/points';
   static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
+  static const String getVerified = '/profile/verify';
   static const String companies = '/companies';
   static const String courses = '/courses';
   static const String news = '/news';
@@ -34,7 +37,9 @@ abstract final class AppRoutes {
   static String course(String id) => '$courses/$id';
   static String article(String id) => '$news/$id';
   static String event(String id) => '$events/$id';
+  static String eventRegistered(String id) => '$events/$id/registered';
   static String reward(String id) => '$rewards/$id';
+  static String rewardRedeemed(String id) => '$rewards/$id/redeemed';
 
   // ── Company account ──────────────────────────────────────────────────────
   // The company's own workspace lives under this prefix. Individuals never
@@ -64,18 +69,11 @@ abstract final class AppRoutes {
 
   static bool isCompanyArea(String path) => _within(companyHome, path);
 
-  /// Tabs both account types browse: Discover (with its events and
-  /// directories) and News. Opportunities, applications, notifications and
-  /// rewards stay individual; a company finds supplier requests in its
-  /// workspace.
-  static bool isSharedArea(String path) => [
-    discover,
-    events,
-    news,
-    companies,
-    professionals,
-    courses,
-  ].any((root) => _within(root, path));
+  /// The only area both account types browse: News. Everything else
+  /// individual (Home, Discover and its directories, opportunities,
+  /// applications, notifications, rewards, the member profile) stays out
+  /// of a company's reach.
+  static bool isSharedArea(String path) => _within(news, path);
 
   static bool _within(String root, String path) =>
       path == root || path.startsWith('$root/');
@@ -109,7 +107,13 @@ abstract final class AppRoutes {
   static const String designSystem = '/design-system';
 
   /// Reachable without a session.
-  static const Set<String> public = {auth, login, register, resetPassword};
+  static const Set<String> public = {
+    auth,
+    login,
+    register,
+    resetPassword,
+    phoneLogin,
+  };
 
   /// Query parameter carrying the location a guard interrupted.
   static const String fromParam = 'from';

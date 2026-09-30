@@ -11,7 +11,10 @@ import '../domain/company_project.dart';
 import '../domain/company_type.dart';
 
 abstract interface class CompaniesDataSource {
-  Future<Paginated<Company>> getCompanies(PageRequest request);
+  Future<Paginated<Company>> getCompanies(
+    PageRequest request, {
+    CompaniesQuery query,
+  });
   Future<Company> getCompany(String id);
   Future<Company> setFollowing(String id, {required bool following});
   Future<int> countVerified();
@@ -24,8 +27,10 @@ class CompaniesRepositoryImpl implements CompaniesRepository {
   final CompaniesDataSource _source;
 
   @override
-  Future<Paginated<Company>> getCompanies(PageRequest request) =>
-      _source.getCompanies(request);
+  Future<Paginated<Company>> getCompanies(
+    PageRequest request, {
+    CompaniesQuery query = (type: null, query: ''),
+  }) => _source.getCompanies(request, query: query);
 
   @override
   Future<Company> getCompany(String id) => _source.getCompany(id);
@@ -64,13 +69,34 @@ class CompaniesMockDataSource implements CompaniesDataSource {
       completedProjects: m.completedProjects,
       verified: m.verified,
       followed: _followed.contains(m.id),
+      // TODO(api): follower counts come from the backend.
+      followers:
+          300 + m.completedProjects * 37 + (_followed.contains(m.id) ? 1 : 0),
     );
   }
 
   @override
-  Future<Paginated<Company>> getCompanies(PageRequest request) async {
+  Future<Paginated<Company>> getCompanies(
+    PageRequest request, {
+    CompaniesQuery query = (type: null, query: ''),
+  }) async {
     await Future<void>.delayed(latency);
-    return Paginated.slice([for (final m in _mock) _build(m)], request);
+    final q = query.query.trim().toLowerCase();
+    final all = [
+      for (final m in _mock)
+        if (query.type == null || m.type == query.type) _build(m),
+    ];
+    return Paginated.slice([
+      for (final c in all)
+        if (q.isEmpty ||
+            [
+              c.name,
+              c.specialization,
+              c.city,
+              ...c.services,
+            ].any((s) => s.toLowerCase().contains(q)))
+          c,
+    ], request);
   }
 
   _Mock _find(String id) {

@@ -17,6 +17,10 @@ abstract final class AppDateFormats {
   static DateFormat monthShort(BuildContext context) =>
       _western(DateFormat.MMM(_locale(context)));
 
+  /// "Thu" / "الخميس"
+  static DateFormat weekdayShort(BuildContext context) =>
+      _western(DateFormat.E(_locale(context)));
+
   /// "28"
   static DateFormat day(BuildContext context) =>
       _western(DateFormat.d(_locale(context)));
@@ -28,6 +32,21 @@ abstract final class AppDateFormats {
   /// "September 28"
   static DateFormat monthDay(BuildContext context) =>
       _western(DateFormat.MMMMd(_locale(context)));
+
+  /// "Sunday, 27 September" / "الأحد، 27 سبتمبر"
+  static DateFormat weekdayDayMonth(BuildContext context) {
+    final locale = _locale(context);
+    final comma = locale.startsWith('ar') ? '،' : ',';
+    return _western(DateFormat("EEEE'$comma' d MMMM", locale));
+  }
+
+  /// "September 2026" / "سبتمبر 2026" — month group headers.
+  static DateFormat monthYearLong(BuildContext context) =>
+      _western(DateFormat.yMMMM(_locale(context)));
+
+  /// "Sep 26" / "26 سبتمبر"
+  static DateFormat monthDayShort(BuildContext context) =>
+      _western(DateFormat.MMMd(_locale(context)));
 
   /// "Sep 12, 2026"
   static DateFormat mediumDate(BuildContext context) =>

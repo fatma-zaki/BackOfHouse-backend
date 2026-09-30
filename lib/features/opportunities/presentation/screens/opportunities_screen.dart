@@ -43,6 +43,7 @@ class _OpportunitiesScreenState extends ConsumerState<OpportunitiesScreen> {
 
     return BOHScaffold(
       appBar: BOHAppBar(
+        title: l10n.directoryOpportunities,
         actions: [
           if (account == AccountType.individual)
             BOHIconButton(
@@ -58,42 +59,20 @@ class _OpportunitiesScreenState extends ConsumerState<OpportunitiesScreen> {
         child: CustomScrollView(
           slivers: [
             BOHSliverPadding(
-              sliver: SliverList.list(
-                children: [
-                  BOHPageHeader(
-                    title: l10n.directoryOpportunities,
-                    subtitle: l10n.opportunitiesSubtitle,
-                  ),
-                  const SizedBox(height: AppSpacing.s16),
-                  BOHSearchField(
-                    hint: l10n.opportunitiesSearchHint,
-                    onChanged: (q) => setState(() => _query = q),
-                  ),
-                ],
+              top: AppSpacing.s8,
+              sliver: SliverToBoxAdapter(
+                child: BOHSearchField(
+                  hint: l10n.opportunitiesSearchHint,
+                  onChanged: (q) => setState(() => _query = q),
+                ),
               ),
             ),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 68,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: BOHScaffold.screenPadding.add(
-                    const EdgeInsets.symmetric(vertical: AppSpacing.s12),
-                  ),
-                  children: [
-                    for (final type in <OpportunityType?>[null, ...types])
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          end: AppSpacing.s8,
-                        ),
-                        child: BOHCategoryChip(
-                          label: type?.label(l10n) ?? l10n.filterAll,
-                          selected: _type == type,
-                          onSelected: () => setState(() => _type = type),
-                        ),
-                      ),
-                  ],
-                ),
+              child: BOHFilterChips<OpportunityType?>(
+                options: [null, ...types],
+                selected: _type,
+                label: (t) => t?.label(l10n) ?? l10n.filterAll,
+                onSelected: (t) => setState(() => _type = t),
               ),
             ),
             BOHSliverPadding(
@@ -116,9 +95,7 @@ class _OpportunitiesScreenState extends ConsumerState<OpportunitiesScreen> {
                         children: [
                           BOHSectionHeader(
                             title: l10n.opportunitiesRecommended,
-                            showDot: true,
                           ),
-                          const SizedBox(height: AppSpacing.s12),
                           OpportunityCard(
                             opportunity: o,
                             showReasons: true,
@@ -142,7 +119,10 @@ class _OpportunitiesScreenState extends ConsumerState<OpportunitiesScreen> {
                   }
                   return BOHFadeSlide(
                     delay: BOHFadeSlide.stagger(i),
-                    child: OpportunityCard(opportunity: o, onTap: open),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.s10),
+                      child: OpportunityRowCard(opportunity: o, onTap: open),
+                    ),
                   );
                 },
               ),

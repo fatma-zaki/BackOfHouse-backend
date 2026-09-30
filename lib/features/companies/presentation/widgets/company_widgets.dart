@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../app/theme/app_typography.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/l10n/generated/app_localizations.dart';
 import '../../../../core/l10n/l10n_messages.dart';
+import '../../../../core/media/app_image.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../opportunities/domain/opportunity.dart';
 import '../../../supplier_responses/domain/supplier_response.dart';
+import '../../domain/company.dart';
+import '../../domain/company_project.dart';
+import '../company_labels.dart';
 
 extension OpportunityStatusPresentation on OpportunityStatus {
   String label(AppLocalizations l10n) => switch (this) {
@@ -34,12 +37,13 @@ extension OpportunityStatusPresentation on OpportunityStatus {
     OpportunityStatus.closed || OpportunityStatus.archived => AppIcons.close,
   };
 
-  Color color(AppColors c) => switch (this) {
-    OpportunityStatus.published => c.success,
-    OpportunityStatus.inReview => c.warning,
-    OpportunityStatus.changesRequested => c.error,
-    OpportunityStatus.draft => c.primaryText,
-    _ => c.textMuted,
+  /// Live (published) green, in review blue, changes requested amber,
+  /// draft and closed neutral.
+  BOHStatusTone get tone => switch (this) {
+    OpportunityStatus.published => BOHStatusTone.success,
+    OpportunityStatus.inReview => BOHStatusTone.info,
+    OpportunityStatus.changesRequested => BOHStatusTone.warning,
+    _ => BOHStatusTone.neutral,
   };
 }
 
@@ -60,54 +64,31 @@ extension SupplierResponseStatusPresentation on SupplierResponseStatus {
     SupplierResponseStatus.rejected => AppIcons.close,
   };
 
-  Color color(AppColors c) => switch (this) {
-    SupplierResponseStatus.selected => c.success,
-    SupplierResponseStatus.rejected => c.textMuted,
-    _ => c.primaryText,
+  BOHStatusTone get tone => switch (this) {
+    SupplierResponseStatus.submitted => BOHStatusTone.info,
+    SupplierResponseStatus.reviewed => BOHStatusTone.warning,
+    SupplierResponseStatus.shortlisted => BOHStatusTone.violet,
+    SupplierResponseStatus.selected => BOHStatusTone.success,
+    SupplierResponseStatus.rejected => BOHStatusTone.neutral,
   };
 }
 
-/// Icon + label pill; never colour alone.
+/// Status pill; the label carries the meaning.
 class StatusPill extends StatelessWidget {
   const StatusPill({
     super.key,
     required this.label,
-    required this.icon,
-    required this.color,
+    this.tone = BOHStatusTone.neutral,
+    this.dot = true,
   });
 
   final String label;
-  final IconData icon;
-  final Color color;
+  final BOHStatusTone tone;
+  final bool dot;
 
   @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s8 + 2,
-        vertical: AppSpacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: c.isDark ? 0.16 : 0.10),
-        borderRadius: AppRadii.pillAll,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: AppSpacing.s4),
-          Text(
-            label,
-            style: AppTypography.caption.copyWith(
-              color: color,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      BOHStatusBadge(label, tone: tone, dot: dot);
 }
 
 class OpportunityStatusPill extends StatelessWidget {
@@ -116,11 +97,8 @@ class OpportunityStatusPill extends StatelessWidget {
   final OpportunityStatus status;
 
   @override
-  Widget build(BuildContext context) => StatusPill(
-    label: status.label(context.l10n),
-    icon: status.icon,
-    color: status.color(context.colors),
-  );
+  Widget build(BuildContext context) =>
+      StatusPill(label: status.label(context.l10n), tone: status.tone);
 }
 
 class SupplierResponseStatusPill extends StatelessWidget {
@@ -131,12 +109,12 @@ class SupplierResponseStatusPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StatusPill(
     label: status.label(context.l10n),
-    icon: status.icon,
-    color: status.color(context.colors),
+    tone: status.tone,
+    dot: false,
   );
 }
 
-/// Card with an icon heading.
+/// A titled section: the skew-bar heading above a card.
 class SectionCard extends StatelessWidget {
   const SectionCard({
     super.key,
@@ -146,6 +124,7 @@ class SectionCard extends StatelessWidget {
     this.trailing,
   });
 
+  /// Kept for callers; the design's section motif replaces icons.
   final IconData icon;
   final String title;
   final Widget child;
@@ -153,28 +132,17 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    return BOHCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: AppSizes.iconMedium, color: c.primaryText),
-              const SizedBox(width: AppSpacing.s8),
-              Expanded(
-                child: Semantics(
-                  header: true,
-                  child: Text(title, style: context.text.cardTitle),
-                ),
-              ),
-              ?trailing,
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s12),
-          child,
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        BOHSectionHeader(
+          title: title,
+          size: BOHSectionSize.sub,
+          trailing: trailing,
+        ),
+        const SizedBox(height: AppSpacing.gridGap),
+        BOHCard(child: child),
+      ],
     );
   }
 }
@@ -205,7 +173,7 @@ class DetailLine extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: Icon(icon, size: AppSizes.iconSmall, color: c.textMuted),
+              child: Icon(icon, size: AppSizes.iconSmall, color: c.primaryText),
             ),
             const SizedBox(width: AppSpacing.s8),
             Expanded(
@@ -236,28 +204,13 @@ class Bulleted extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final item in items)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Icon(
-                    AppIcons.success,
-                    size: AppSizes.iconSmall,
-                    color: c.primaryText,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                Expanded(child: Text(item, style: context.text.body)),
-              ],
-            ),
+            child: BOHCheckBullet(item),
           ),
       ],
     );
@@ -377,6 +330,7 @@ class WorkspaceTile extends StatelessWidget {
     return BOHCard(
       onTap: onTap,
       semanticLabel: [title, ?subtitle, ?caption].join('. '),
+      borderRadius: AppRadii.largeAll,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -406,6 +360,300 @@ class WorkspaceTile extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// A company page: the cover photo with the logo overlapping the sheet.
+/// Shared by the company's own profile and its public profile.
+class CompanyPhotoPage extends StatelessWidget {
+  const CompanyPhotoPage({
+    super.key,
+    required this.company,
+    required this.body,
+    this.leading,
+    this.actions = const [],
+  });
+
+  final Company company;
+  final Widget body;
+  final Widget? leading;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return BOHPhotoPage(
+      // TODO(api): company cover photo.
+      image: const AppImage.asset(AppAssets.concertCrowd),
+      height: 170,
+      overlap: 36,
+      roundedSheet: false,
+      leading: leading,
+      actions: actions,
+      overPhoto: BOHCompanyLogo(
+        name: company.name,
+        size: 76,
+        borderColor: context.colors.background,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.screenHorizontal,
+          AppSpacing.s8,
+          AppSpacing.screenHorizontal,
+          AppSpacing.s32,
+        ),
+        child: body,
+      ),
+    );
+  }
+}
+
+/// Name and verification, what the company does, where, the stat strip
+/// and services. [action] (Edit or Follow) sits opposite the logo.
+/// Verification is shown as a state only; nothing here grants it.
+class CompanyIdentity extends StatelessWidget {
+  const CompanyIdentity({
+    super.key,
+    required this.company,
+    required this.projects,
+    this.action,
+  });
+
+  final Company company;
+
+  /// Portfolio size.
+  final int projects;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // The logo overlaps the cover at the start; the action sits opposite.
+        SizedBox(
+          height: 40,
+          child: Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: action,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s8),
+        Row(
+          children: [
+            Flexible(
+              child: Semantics(
+                header: true,
+                child: Text(company.name, style: context.text.title),
+              ),
+            ),
+            if (company.verified) ...[
+              const SizedBox(width: AppSpacing.s6),
+              BOHGlyph(
+                BOHGlyphType.verified,
+                size: 18,
+                semanticLabel: l10n.verifiedLabel,
+              ),
+            ],
+          ],
+        ),
+        Text(
+          company.specialization.isNotEmpty
+              ? company.specialization
+              : company.type.label(l10n),
+          style: context.text.label.copyWith(color: c.primaryText),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          [
+            if (company.city.isNotEmpty) company.city,
+            company.verified
+                ? l10n.companyVerifiedByBoh
+                : l10n.companyNotVerified,
+          ].join(' · '),
+          style: context.text.bodySmall,
+        ),
+        const SizedBox(height: AppSpacing.s14),
+        BOHStatStrip(
+          items: [
+            (l10n.formatCount(projects), l10n.companyStatProjects),
+            (
+              l10n.formatCount(company.openOpportunities),
+              l10n.companyStatLiveListings,
+            ),
+            (l10n.formatCompact(company.followers), l10n.companyStatFollowers),
+          ],
+        ),
+        if (company.services.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.s14),
+          Wrap(
+            spacing: AppSpacing.s6,
+            runSpacing: AppSpacing.s6,
+            children: [
+              for (final s in company.services) BOHMetaChip(s, large: true),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// The portfolio as a two-column photo grid. `null` [projects] shows a
+/// skeleton.
+class CompanyPortfolioGrid extends StatelessWidget {
+  const CompanyPortfolioGrid({
+    super.key,
+    required this.projects,
+    required this.emptyMessage,
+    this.onTap,
+  });
+
+  final List<CompanyProject>? projects;
+  final String emptyMessage;
+  final ValueChanged<CompanyProject>? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final all = projects;
+    if (all == null) {
+      return const BOHShimmer(
+        child: BOHSkeleton(height: 150, borderRadius: AppRadii.mediumAll),
+      );
+    }
+    if (all.isEmpty) return BOHInfoNote(emptyMessage);
+    return GridView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: AppSpacing.gridGap,
+        mainAxisSpacing: AppSpacing.gridGap,
+        mainAxisExtent: 144,
+      ),
+      children: [
+        for (final p in all)
+          BOHMediaTile(
+            image: p.images.firstOrNull,
+            imageHeight: 70,
+            borderRadius: AppRadii.mediumAll,
+            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+            semanticLabel: p.title,
+            onTap: onTap == null ? null : () => onTap!(p),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  p.title,
+                  style: context.text.labelMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  [
+                    '${p.startedAt.year}',
+                    if (p.location.isNotEmpty) p.location,
+                  ].join(' · '),
+                  style: context.text.caption.copyWith(fontSize: 10.5),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// About, industries and contact. Services show as chips in
+/// [CompanyIdentity]. With [showEmptyContact] the contact card says nothing
+/// is listed (the owner's view); otherwise an empty one is hidden.
+class CompanyAboutSections extends StatelessWidget {
+  const CompanyAboutSections({
+    super.key,
+    required this.company,
+    this.showEmptyContact = false,
+  });
+
+  final Company company;
+  final bool showEmptyContact;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final hasContact =
+        (company.contactEmail ?? company.contactPhone ?? company.website) !=
+        null;
+    const gap = SizedBox(height: AppSpacing.s12);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (company.description.isNotEmpty ||
+            company.specialization.isNotEmpty ||
+            company.city.isNotEmpty) ...[
+          gap,
+          SectionCard(
+            icon: AppIcons.companies,
+            title: l10n.companyAbout,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (company.description.isNotEmpty) ...[
+                  Text(company.description, style: context.text.body),
+                  const SizedBox(height: AppSpacing.s12),
+                ],
+                DetailLine(
+                  icon: AppIcons.job,
+                  label: l10n.companySpecialization,
+                  value: company.specialization,
+                ),
+                DetailLine(icon: AppIcons.location, value: company.city),
+              ],
+            ),
+          ),
+        ],
+        if (company.industries.isNotEmpty) ...[
+          gap,
+          SectionCard(
+            icon: AppIcons.technology,
+            title: l10n.companyIndustries,
+            child: Wrap(
+              spacing: AppSpacing.s6,
+              runSpacing: AppSpacing.s6,
+              children: [for (final i in company.industries) BOHMetaChip(i)],
+            ),
+          ),
+        ],
+        if (hasContact || showEmptyContact) ...[
+          gap,
+          SectionCard(
+            icon: AppIcons.email,
+            title: l10n.companyContact,
+            child: hasContact
+                ? Column(
+                    children: [
+                      DetailLine(
+                        icon: AppIcons.email,
+                        value: company.contactEmail,
+                      ),
+                      DetailLine(
+                        icon: AppIcons.phone,
+                        value: company.contactPhone,
+                      ),
+                      DetailLine(
+                        icon: AppIcons.website,
+                        value: company.website,
+                      ),
+                    ],
+                  )
+                : Text(l10n.companyContactEmpty, style: context.text.bodySmall),
+          ),
+        ],
+      ],
     );
   }
 }

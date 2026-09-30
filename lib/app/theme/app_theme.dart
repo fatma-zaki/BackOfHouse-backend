@@ -60,8 +60,8 @@ abstract final class AppTheme {
       shadow: c.shadow,
       scrim: AppColors.photoInk.withValues(alpha: 0.6),
       surfaceTint: AppColors.transparent,
-      inverseSurface: c.textPrimary,
-      onInverseSurface: c.surface,
+      inverseSurface: c.inverse,
+      onInverseSurface: c.onInverse,
       inversePrimary: c.primaryTint,
     );
 
@@ -108,7 +108,7 @@ abstract final class AppTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         systemOverlayStyle: overlayFor(c.brightness),
-        titleTextStyle: text.h3,
+        titleTextStyle: text.appBarTitle,
       ),
 
       textSelectionTheme: TextSelectionThemeData(
@@ -154,26 +154,17 @@ abstract final class AppTheme {
         elevation: 0,
         showDragHandle: true,
         dragHandleColor: c.border,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(AppRadii.large),
-          ),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: AppRadii.sheetTop),
       ),
 
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: c.isDark ? c.surfaceElevated : c.textPrimary,
-        contentTextStyle: text.body.copyWith(
-          color: c.isDark ? c.textPrimary : c.surface,
-        ),
-        actionTextColor: c.isDark ? c.primaryText : c.primaryTint,
+        backgroundColor: c.inverse,
+        contentTextStyle: text.body.copyWith(color: c.onInverse),
+        actionTextColor: c.isDark ? c.primary : c.primaryTint,
         behavior: SnackBarBehavior.floating,
         elevation: 0,
         insetPadding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadii.smallAll,
-          side: c.isDark ? BorderSide(color: c.border) : BorderSide.none,
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: AppRadii.inputAll),
       ),
 
       tooltipTheme: TooltipThemeData(
@@ -189,15 +180,15 @@ abstract final class AppTheme {
         filled: true,
         fillColor: c.surface,
         border: OutlineInputBorder(
-          borderRadius: AppRadii.smallAll,
+          borderRadius: AppRadii.inputAll,
           borderSide: BorderSide(color: c.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: AppRadii.smallAll,
+          borderRadius: AppRadii.inputAll,
           borderSide: BorderSide(color: c.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: AppRadii.smallAll,
+          borderRadius: AppRadii.inputAll,
           borderSide: BorderSide(color: c.primary),
         ),
       ),

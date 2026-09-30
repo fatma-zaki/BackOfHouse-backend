@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Edit profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</div>
+<button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 18px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{s.save}}</button>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 20px 24px; gap: 14px">
+<div style="display: flex; align-items: center; gap: 16px">
+<div style="position: relative; flex-shrink: 0">
+<img src="/_blob/17c4ffa8b33f8d93c5fc6d4d6e5955ea" alt="{{s.name}}" style="width: 76px; height: 76px; display: block; object-fit: cover; border-radius: 38px; border: 3px solid {{c.bg}}; box-shadow: 0 0 0 2px #6437fa">
+<button type="button" aria-label="{{s.photo}}" style="position: absolute; bottom: -2px; inset-inline-end: -2px; width: 30px; height: 30px; border-radius: 15px; border: 2px solid {{c.bg}}; background: #6437fa; color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1">
+<span style="font-size: 12px; font-weight: 700">{{s.statusL}}</span>
+<div role="radiogroup" aria-label="{{s.statusL}}" style="display: flex; padding: 3px; border-radius: 17px; background: {{c.soft}}">
+<sc-for list="{{statuses}}" as="m" hint-placeholder-count="2">
+<button type="button" role="radio" aria-checked="{{m.sel}}" style="flex-grow: 1; flex-basis: 0; height: 30px; border: 0; border-radius: 15px; background: {{m.bg}}; color: {{m.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: {{m.shadow}}">{{m.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{fields}}" as="f" hint-placeholder-count="3">
+<label style="display: flex; flex-direction: column; gap: 5px">
+<span style="font-size: 12px; font-weight: 700">{{f.label}}</span>
+<input type="text" value="{{f.value}}" style="height: 46px; box-sizing: border-box; padding: 0 14px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; font-family: inherit; font-size: 14px; outline: 0">
+</label>
+</sc-for>
+<label style="display: flex; flex-direction: column; gap: 5px">
+<span style="font-size: 12px; font-weight: 700">{{s.aboutL}}</span>
+<textarea rows="3" style="height: 76px; box-sizing: border-box; resize: none; padding: 10px 14px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; font-family: inherit; font-size: 13px; line-height: 19px; outline: 0">{{s.about}}</textarea>
+</label>
+</div>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700">{{s.interestsL}}</span>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{interests}}" as="i" hint-placeholder-count="6">
+<button type="button" aria-pressed="{{i.sel}}" style="height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid {{i.border}}; background: {{i.bg}}; color: {{i.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{i.label}}</button>
+</sc-for>
+</div>
+</section>
+<section style="background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 18px; display: flex; flex-direction: column">
+<div style="padding: 12px 14px 4px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700">{{s.privH}}</span><span style="font-size: 11px; line-height: 15px; color: {{c.muted}}">{{s.privSub}}</span></div>
+<sc-for list="{{toggles}}" as="t" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-top: {{t.rule}}">
+<span style="font-size: 13px">{{t.label}}</span>
+<button type="button" role="switch" aria-checked="{{t.on}}" aria-label="{{t.label}}" style="width: 48px; height: 28px; padding: 3px; box-sizing: border-box; border: 0; border-radius: 14px; background: {{t.track}}; display: flex; justify-content: {{t.side}}; cursor: pointer"><span style="width: 22px; height: 22px; border-radius: 11px; background: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.25)"></span></button>
+</div>
+</sc-for>
+</section>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', off: '#c9c4dc' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', off: '#3a3858' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Edit profile', save: 'Save', name: 'Fatma Zaki', photo: 'Change photo',
+        statusL: 'I’m a', statuses: ['Professional', 'Student'],
+        fields: [['Full name', 'Fatma Zaki'], ['Headline', 'Event Attendee'], ['City', 'Cairo, Egypt']],
+        aboutL: 'About', about: 'I love being part of events that bring people together. Always excited to discover new opportunities.',
+        interestsL: 'Interests', interests: [['Tech & Innovation', true], ['Marketing', true], ['Design', false], ['Business', true], ['Networking', false], ['Production', false]],
+        privH: 'Contact privacy', privSub: 'Choose what companies see when you apply. Off by default.',
+        toggles: [['Share my email', false], ['Share my phone', false]]
+      },
+      ar: {
+        back: 'رجوع', title: 'تعديل الملف', save: 'حفظ', name: 'فاطمة زكي', photo: 'تغيير الصورة',
+        statusL: 'أنا', statuses: ['محترفة', 'طالبة'],
+        fields: [['الاسم الكامل', 'فاطمة زكي'], ['النبذة المختصرة', 'مهتمة بالفعاليات'], ['المدينة', 'القاهرة، مصر']],
+        aboutL: 'نبذة', about: 'أحب أن أكون جزءًا من فعاليات تجمع الناس، وأتحمس دائمًا لاكتشاف فرص جديدة.',
+        interestsL: 'الاهتمامات', interests: [['التقنية والابتكار', true], ['التسويق', true], ['التصميم', false], ['الأعمال', true], ['التواصل المهني', false], ['الإنتاج', false]],
+        privH: 'خصوصية التواصل', privSub: 'اختر ما تراه الشركات عند تقديمك. مغلق افتراضيًا.',
+        toggles: [['مشاركة بريدي', false], ['مشاركة جوالي', false]]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const statuses = s.statuses.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? '#6437fa' : 'transparent', color: i === 0 ? '#ffffff' : c.muted, shadow: i === 0 ? '0 4px 12px rgba(100,55,250,0.35)' : 'none' }));
+    const fields = s.fields.map((f) => ({ label: f[0], value: f[1] }));
+    const interests = s.interests.map((x) => ({ label: x[0], sel: x[1] ? 'true' : 'false', bg: x[1] ? c.soft : c.card, color: x[1] ? c.vt : c.ink, border: x[1] ? '#6437fa' : c.line }));
+    const toggles = s.toggles.map((t, i) => ({ label: t[0], on: t[1] ? 'true' : 'false', track: t[1] ? '#6437fa' : c.off, side: t[1] ? 'flex-end' : 'flex-start', rule: '1px solid ' + c.line }));
+    return {
+      c, s, statuses, fields, interests, toggles,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

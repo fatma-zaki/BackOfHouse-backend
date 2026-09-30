@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>New listing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<button type="button" aria-label="{{s.close}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</div>
+<div style="display: flex; align-items: center; gap: 4px"><span style="width: 18px; height: 5px; border-radius: 3px; background: #6437fa"></span><span style="width: 18px; height: 5px; border-radius: 3px; background: #6437fa"></span><span style="width: 18px; height: 5px; border-radius: 3px; background: {{c.line}}"></span></div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 20px 0; gap: 14px">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12px; font-weight: 700">{{s.typeL}}</span>
+<div role="radiogroup" aria-label="{{s.typeL}}" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{types}}" as="t" hint-placeholder-count="4">
+<button type="button" role="radio" aria-checked="{{t.sel}}" style="height: 64px; padding: 0; border-radius: 16px; border: 1.5px solid {{t.border}}; background: {{t.bg}}; color: {{t.color}}; font-family: inherit; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; box-shadow: {{t.shadow}}">
+<sc-if value="{{t.k0}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></sc-if>
+<sc-if value="{{t.k1}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V8l8-5 8 5v12z"></path><path d="M9 20v-6h6v6"></path></svg></sc-if>
+<sc-if value="{{t.k2}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5z"></path><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path></svg></sc-if>
+<sc-if value="{{t.k3}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></sc-if>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</div>
+</section>
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.titleL}}</span><input type="text" value="{{s.titleV}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 14px; background: {{c.card}}; border: 1.5px solid #6437fa; color: {{c.ink}}; font-family: inherit; font-size: 14px; outline: 0"></label>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.cityL}}</span><span style="height: 48px; box-sizing: border-box; padding: 0 12px 0 14px; padding-inline: 14px 12px; display: flex; align-items: center; justify-content: space-between; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; font-size: 14px">{{s.cityV}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></label>
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.closeL}}</span><span style="height: 48px; box-sizing: border-box; padding: 0 12px 0 14px; padding-inline: 14px 12px; display: flex; align-items: center; justify-content: space-between; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; font-size: 14px">{{s.closeV}}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg></span></label>
+</div>
+<section style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700">{{s.modeL}}</span>
+<div role="radiogroup" aria-label="{{s.modeL}}" style="display: flex; padding: 4px; border-radius: 22px; background: {{c.soft}}">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{m.sel}}" style="flex-grow: 1; flex-basis: 0; height: 34px; border: 0; border-radius: 17px; background: {{m.bg}}; color: {{m.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: {{m.shadow}}">{{m.label}}</button>
+</sc-for>
+</div>
+</section>
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.descL}}</span><textarea rows="4" style="height: 96px; box-sizing: border-box; resize: none; padding: 10px 14px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; font-family: inherit; font-size: 13px; line-height: 19px; outline: 0">{{s.descV}}</textarea></label>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: {{c.infoBg}}; color: {{c.infoFg}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+<span style="font-size: 11px; line-height: 16px; font-weight: 600">{{s.review}}</span>
+</div>
+</main>
+<div style="flex-shrink: 0; display: flex; gap: 10px; padding: 14px 20px 30px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}">
+<button type="button" style="flex-grow: 1; flex-basis: 0; height: 52px; border: 1.5px solid #6437fa; border-radius: 26px; background: transparent; color: {{c.vt}}; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{s.draft}}</button>
+<button type="button" style="flex-grow: 1.4; flex-basis: 0; height: 52px; border: 0; border-radius: 26px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 14px; font-weight: 700; box-shadow: 0 10px 26px rgba(100,55,250,0.4); cursor: pointer">{{s.submit}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', infoBg: '#e0ebff', infoFg: '#1c4aab', navShadow: '0 -10px 30px rgba(40,20,120,0.07)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', infoBg: '#0f2350', infoFg: '#7fb0ff', navShadow: '0 -10px 30px rgba(0,0,0,0.5)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        close: 'Close', title: 'New listing', typeL: 'Listing type', types: ['Job', 'Project', 'Co-op', 'Volunteer'],
+        titleL: 'Title', titleV: 'Stage Manager', cityL: 'City', cityV: 'Riyadh', closeL: 'Closes on', closeV: 'Oct 30',
+        modeL: 'Work setup', modes: ['On-site', 'Hybrid', 'Remote'],
+        descL: 'Description', descV: 'Run stage operations for a three-day technology summit, coordinating crew, cues and suppliers.',
+        review: 'Back of House reviews every listing before it goes live. You’ll be notified when it’s approved or if changes are needed.',
+        draft: 'Save draft', submit: 'Submit for review'
+      },
+      ar: {
+        close: 'إغلاق', title: 'فرصة جديدة', typeL: 'نوع الفرصة', types: ['وظيفة', 'مشروع', 'تعاوني', 'تطوع'],
+        titleL: 'المسمى', titleV: 'مدير المسرح', cityL: 'المدينة', cityV: 'الرياض', closeL: 'تُغلق في', closeV: '30 أكتوبر',
+        modeL: 'طبيعة العمل', modes: ['حضوري', 'مرن', 'عن بُعد'],
+        descL: 'الوصف', descV: 'إدارة عمليات المسرح لقمة تقنية مدتها ثلاثة أيام، وتنسيق الطاقم والإشارات والموردين.',
+        review: 'يراجع فريق باك أوف هاوس كل فرصة قبل نشرها، وسيصلك إشعار عند الموافقة أو طلب تعديلات.',
+        draft: 'حفظ كمسودة', submit: 'إرسال للمراجعة'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const types = s.types.map((label, i) => {
+      const on = i === 0;
+      const t = { label, sel: on ? 'true' : 'false', bg: on ? '#6437fa' : c.card, color: on ? '#ffffff' : c.ink, border: on ? '#6437fa' : c.line, shadow: on ? '0 8px 20px rgba(100,55,250,0.35)' : 'none' };
+      for (let j = 0; j < 4; j++) t['k' + j] = i === j;
+      return t;
+    });
+    const modes = s.modes.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.card : 'transparent', color: i === 0 ? c.vt : c.muted, shadow: i === 0 ? '0 4px 12px rgba(40,20,120,0.10)' : 'none' }));
+    return {
+      c, s, types, modes,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

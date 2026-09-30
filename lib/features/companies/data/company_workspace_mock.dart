@@ -115,6 +115,49 @@ class CompanyWorkspaceMock
           .where((l) => l.own && l.status == OpportunityStatus.published)
           .length,
       completedProjects: _projects.length,
+      // TODO(api): follower count comes from the backend.
+      followers: 1240,
+    );
+  }
+
+  @override
+  Future<CompanyStats> getStats() async {
+    await _wait();
+    final own = _own(CompanyPermission.reviewApplicants);
+    final weekAgo = DateTime.now().subtract(const Duration(days: 7));
+    final ownIds = {
+      for (final l in _listings)
+        if (l.own) l.id,
+    };
+    final fresh = [
+      for (final a in _applicants)
+        if (ownIds.contains(a.opportunityId) &&
+            a.status == ApplicationStatus.submitted)
+          a,
+    ];
+    final invites = [
+      for (final l in _listings)
+        if (!l.own &&
+            SupplierResponseRules.eligibility(
+                  request: _opportunity(l, own),
+                  responder: own,
+                  alreadyResponded: _responded(l.id),
+                ) ==
+                SupplierResponseEligibility.eligible)
+          l,
+    ];
+    return CompanyStats(
+      liveListings: _listings
+          .where((l) => l.own && l.status == OpportunityStatus.published)
+          .length,
+      newApplicants: fresh.length,
+      newApplicantsThisWeek: fresh
+          .where((a) => a.submittedAt.isAfter(weekAgo))
+          .length,
+      supplierInvites: invites.length,
+      // TODO(api): profile views come from the backend.
+      profileViews: 148,
+      profileViewsChangePercent: 18,
     );
   }
 
@@ -195,6 +238,7 @@ class CompanyWorkspaceMock
       description: l.description.of(lang),
       postedAt: l.updatedAt,
       closesAt: l.closesAt,
+      workSetup: l.workSetup,
       applicants: l.type == OpportunityType.supplierRequest
           ? _responses.where((r) => r.requestId == l.id).length
           : _applicants.where((a) => a.opportunityId == l.id).length,
@@ -466,6 +510,20 @@ class CompanyWorkspaceMock
   }
 
   @override
+  Future<List<ApplicantView>> getRecentApplicants({int limit = 5}) async {
+    await _wait();
+    _own(CompanyPermission.reviewApplicants);
+    final ownIds = {
+      for (final l in _listings)
+        if (l.own && l.type != OpportunityType.supplierRequest) l.id,
+    };
+    final list =
+        _applicants.where((a) => ownIds.contains(a.opportunityId)).toList()
+          ..sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+    return [for (final a in list.take(limit)) _view(a)];
+  }
+
+  @override
   Future<ApplicantView> getApplicant(String applicationId) async {
     await _wait();
     _own(CompanyPermission.reviewApplicants);
@@ -510,6 +568,7 @@ class CompanyWorkspaceMock
       responder: r.responder ?? own,
       message: r.message.of(lang),
       proposedPrice: r.price?.of(lang),
+      setupTime: r.setupTime?.of(lang),
       projects: [
         for (final p in r.projects) p.build((r.responder ?? own).id, lang),
       ],
@@ -585,12 +644,14 @@ class CompanyWorkspaceMock
       throw _invalid;
     }
     final price = draft.proposedPrice?.trim();
+    final setup = draft.setupTime?.trim();
     final now = DateTime.now();
     final response = _Response(
       id: _id('response'),
       requestId: draft.requestId,
       message: _same(draft.message.trim()),
       price: price == null || price.isEmpty ? null : _same(price),
+      setupTime: setup == null || setup.isEmpty ? null : _same(setup),
       projects: projects,
       status: SupplierResponseStatus.submitted,
       submittedAt: now,
@@ -727,6 +788,7 @@ class CompanyWorkspaceMock
           'تدريب منظم للطلاب الملتحقين ببرامج الفعاليات أو البرامج التقنية.',
         ),
         duration: const MockText('6 months', '6 أشهر'),
+        workSetup: WorkSetup.onSite,
         status: OpportunityStatus.inReview,
         updatedAt: now.subtract(const Duration(hours: 5)),
       ),
@@ -1150,6 +1212,7 @@ class _Listing {
     this.compensation,
     this.duration,
     this.closesAt,
+    this.workSetup,
     this.responsibilities = const [],
     this.requirements = const [],
     this.skills = const [],
@@ -1182,6 +1245,7 @@ class _Listing {
   MockText? compensation;
   MockText? duration;
   DateTime? closesAt;
+  WorkSetup? workSetup;
   List<MockText> responsibilities;
   List<MockText> requirements;
   List<MockText> skills;
@@ -1213,6 +1277,8 @@ class _Listing {
     supplierTypes = d.type == OpportunityType.supplierRequest
         ? d.supplierTypes
         : const [];
+    closesAt = d.closesAt;
+    workSetup = d.type == OpportunityType.supplierRequest ? null : d.workSetup;
     updatedAt = DateTime.now();
   }
 
@@ -1226,6 +1292,8 @@ class _Listing {
     compensation: compensation?.en ?? '',
     duration: duration?.en ?? '',
     supplierTypes: supplierTypes,
+    closesAt: closesAt,
+    workSetup: workSetup,
   );
 }
 
@@ -1304,6 +1372,7 @@ class _Response {
     required this.updatedAt,
     this.responder,
     this.price,
+    this.setupTime,
     this.projects = const [],
   });
 
@@ -1314,6 +1383,7 @@ class _Response {
   final CompanySummary? responder;
   final MockText message;
   final MockText? price;
+  final MockText? setupTime;
 
   /// Snapshots of the projects offered as evidence.
   final List<_Project> projects;

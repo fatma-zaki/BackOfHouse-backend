@@ -34,7 +34,7 @@ dependencies:
   url_launcher: ^6.3.2
   package_info_plus: ^9.0.0
   shared_preferences: ^2.5.3
-
+  file_picker: ^10.3.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -49,17 +49,31 @@ flutter:
     - assets/images/content/
     - assets/icons/
 
-  # Plus Jakarta Sans (SIL OFL 1.1 — see assets/fonts/OFL.txt). Bundled rather
-  # than fetched at runtime so first launch renders offline with the brand face.
-  # It has no Arabic glyphs; Arabic falls back to the platform font.
+  # Poppins (Latin, all numbers) and Cairo (Arabic), SIL OFL 1.1 â€” see
+  # assets/fonts/OFL-*.txt. Bundled so first launch renders offline. Cairo
+  # weights are static instances cut from the upstream variable font.
   fonts:
-    - family: PlusJakartaSans
+    - family: Poppins
       fonts:
-        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf
           weight: 400
-        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
           weight: 500
-        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+        - asset: assets/fonts/Poppins-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
           weight: 700
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+          weight: 800
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Cairo-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Cairo-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Cairo-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Cairo-ExtraBold.ttf
+          weight: 800

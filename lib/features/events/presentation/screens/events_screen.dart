@@ -37,53 +37,26 @@ class _EventsScreenState extends ConsumerState<EventsScreen> {
     final scheduled = ref.watch(directoryCountsProvider).value?.events;
 
     return BOHScaffold(
-      appBar: const BOHAppBar(),
+      appBar: BOHAppBar(title: l10n.eventsTitle),
       body: BOHRefresh(
         onRefresh: () => ref.read(eventsProvider(_key).notifier).refresh(),
         child: CustomScrollView(
           slivers: [
             BOHSliverPadding(
-              sliver: SliverList.list(
-                children: [
-                  BOHPageHeader(
-                    eyebrow: l10n.eventsEyebrow,
-                    title: l10n.eventsTitle,
-                    subtitle: l10n.eventsSubtitle,
-                    trailing: BOHTag(
-                      l10n.eventsVisionChip,
-                      icon: AppIcons.calendar,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.s16),
-                  BOHSearchField(
-                    hint: l10n.eventsSearchHint,
-                    onChanged: (q) => setState(() => _query = q),
-                  ),
-                ],
+              top: AppSpacing.s8,
+              sliver: SliverToBoxAdapter(
+                child: BOHSearchField(
+                  hint: l10n.eventsSearchHint,
+                  onChanged: (q) => setState(() => _query = q),
+                ),
               ),
             ),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 68,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: BOHScaffold.screenPadding.add(
-                    const EdgeInsets.symmetric(vertical: AppSpacing.s12),
-                  ),
-                  children: [
-                    for (final type in <EventType?>[null, ...EventType.values])
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          end: AppSpacing.s8,
-                        ),
-                        child: BOHCategoryChip(
-                          label: type?.filterLabel(l10n) ?? l10n.filterAll,
-                          selected: _type == type,
-                          onSelected: () => setState(() => _type = type),
-                        ),
-                      ),
-                  ],
-                ),
+              child: BOHFilterChips<EventType?>(
+                options: [null, ...EventType.values],
+                selected: _type,
+                label: (t) => t?.filterLabel(l10n) ?? l10n.filterAll,
+                onSelected: (t) => setState(() => _type = t),
               ),
             ),
             BOHSliverPadding(

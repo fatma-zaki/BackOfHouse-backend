@@ -141,6 +141,7 @@ class ApplicationsMockDataSource implements ApplicationsDataSource {
     final projects = _pick(p.projects, (e) => e.id, draft.projectIds);
     final statement = draft.statement?.trim();
     if (!ApplicationRules.canApplyAgain(previous) ||
+        !draft.hasRequiredExperience ||
         experience == null ||
         projects == null ||
         (statement?.length ?? 0) > ApplicationDraft.statementMaxLength) {

@@ -183,12 +183,7 @@ class NewsMockDataSource implements NewsDataSource {
     await _wait();
     final lang = language();
     final q = query.query.trim().toLowerCase();
-    final topic = switch (query.filter) {
-      NewsFilter.technical => NewsTopic.technical,
-      NewsFilter.regulatory => NewsTopic.regulatory,
-      NewsFilter.market => NewsTopic.market,
-      NewsFilter.forYou || NewsFilter.latest => null,
-    };
+    final topic = query.topic;
     final matches = [
       for (final m in _mock)
         if (topic == null || m.topic == topic)
@@ -201,7 +196,7 @@ class NewsMockDataSource implements NewsDataSource {
     // "For You" leads with the breaking briefing; everything else is newest
     // first.
     matches.sort((a, b) {
-      if (query.filter == NewsFilter.forYou && a.breaking != b.breaking) {
+      if (query.order == NewsOrder.forYou && a.breaking != b.breaking) {
         return a.breaking ? -1 : 1;
       }
       return b.publishedAt.compareTo(a.publishedAt);

@@ -115,6 +115,7 @@ class SupplierResponse {
     required this.submittedAt,
     required this.updatedAt,
     this.proposedPrice,
+    this.setupTime,
     this.projects = const [],
   });
 
@@ -133,6 +134,9 @@ class SupplierResponse {
   /// Free text, e.g. "SAR 180,000 all-in".
   final String? proposedPrice;
 
+  /// Free text, e.g. "2 days on site" (approved 2026-09-28).
+  final String? setupTime;
+
   /// The responder's company projects offered as evidence.
   final List<CompanyProject> projects;
 }
@@ -146,12 +150,16 @@ class SupplierResponseDraft {
     required this.requestId,
     required this.message,
     this.proposedPrice,
+    this.setupTime,
     this.projectIds = const [],
   });
 
   final String requestId;
   final String message;
   final String? proposedPrice;
+
+  /// Optional, e.g. "2 days on site".
+  final String? setupTime;
 
   /// From the responder's own company portfolio.
   final List<String> projectIds;

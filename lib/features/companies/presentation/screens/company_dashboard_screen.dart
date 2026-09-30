@@ -3,19 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
+import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/l10n/l10n_messages.dart';
+import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../applications/domain/application.dart';
 import '../../../opportunities/domain/opportunity.dart';
-import '../../../opportunities/presentation/screens/company_opportunities_screen.dart';
-import '../company_labels.dart';
+import '../../domain/company.dart';
 import '../controllers/company_workspace_providers.dart';
-import '../widgets/company_widgets.dart';
 
-/// The company's home tab and the door to its workspace: listing counts,
-/// then one tile per area — opportunities, supplier requests, portfolio and
-/// a new listing — then what is live. No analytics.
+/// The company's home tab: a greeting with "New listing", the basic
+/// workspace counts, anything Back Of House sent back for changes, and the
+/// newest applicants. No advanced analytics.
 class CompanyDashboardScreen extends ConsumerWidget {
   const CompanyDashboardScreen({super.key});
 
@@ -23,195 +25,123 @@ class CompanyDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final company = ref.watch(myCompanyProvider).value;
-    final opportunities = ref.watch(myCompanyOpportunitiesProvider);
-    final invited = ref.watch(invitedSupplierRequestsProvider).value;
-    final projects = ref.watch(myCompanyProjectsProvider).value;
+    final stats = ref.watch(myCompanyStatsProvider);
+    final opportunities = ref.watch(myCompanyOpportunitiesProvider).value;
+    final changes = opportunities
+        ?.where((o) => o.status == OpportunityStatus.changesRequested)
+        .firstOrNull;
 
     return BOHScaffold(
-      appBar: BOHAppBar.brand(title: l10n.companyNavDashboard),
+      appBar: company == null
+          ? BOHAppBar.tab(title: l10n.companyNavDashboard)
+          : BOHAppBar.company(
+              title: company.name,
+              subtitle: l10n.companyWorkspaceSubtitle,
+              verified: company.verified,
+              leading: BOHCompanyLogo(name: company.name, size: 40),
+            ),
       body: BOHRefresh(
         onRefresh: () async {
           ref
             ..invalidate(myCompanyProvider)
+            ..invalidate(myCompanyStatsProvider)
             ..invalidate(myCompanyOpportunitiesProvider)
-            ..invalidate(invitedSupplierRequestsProvider)
-            ..invalidate(myCompanyProjectsProvider);
-          await ref.read(myCompanyOpportunitiesProvider.future);
+            ..invalidate(recentApplicantsProvider);
+          await ref.read(myCompanyStatsProvider.future);
         },
         child: ListView(
           padding: BOHScaffold.screenPadding.add(
             EdgeInsets.only(
-              top: AppSpacing.s12,
+              top: AppSpacing.s8,
               bottom: MediaQuery.paddingOf(context).bottom + AppSpacing.s32,
             ),
           ),
           children: [
-            if (company != null) ...[
-              Row(
-                children: [
-                  BOHIconCircle(
-                    icon: company.type.icon,
-                    size: 48,
-                    rounded: true,
-                  ),
-                  const SizedBox(width: AppSpacing.s12),
-                  Expanded(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      start: AppSpacing.s4,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          AppDateFormats.weekdayDayMonth(context)
+                              .format(DateTime.now()),
+                          style: context.text.labelMedium.copyWith(
+                            color: context.colors.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         Semantics(
                           header: true,
-                          child: Text(company.name, style: context.text.h2),
-                        ),
-                        Text(
-                          company.type.label(l10n),
-                          style: context.text.bodySmall,
+                          child: Text(
+                            l10n.companyWelcomeBack,
+                            style: context.text.title,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  if (company.verified)
-                    BOHTag(l10n.verifiedLabel, variant: BOHTagVariant.verified),
-                ],
+                ),
+                BOHButton(
+                  label: l10n.companyNewListing,
+                  size: BOHButtonSize.small,
+                  leadingIcon: AppIcons.plus,
+                  trailingIcon: null,
+                  expand: false,
+                  onPressed: () =>
+                      context.push(AppRoutes.companyNewOpportunity),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.s16),
+            switch (stats) {
+              AsyncData(:final value) => _StatsGrid(stats: value),
+              AsyncError(:final error) => SizedBox(
+                height: 200,
+                child: BOHErrorState(
+                  error: error,
+                  onRetry: () => ref.invalidate(myCompanyStatsProvider),
+                ),
               ),
+              _ => const BOHShimmer(
+                child: BOHSkeleton(
+                  height: 220,
+                  borderRadius: AppRadii.largeAll,
+                ),
+              ),
+            },
+            if (changes != null) ...[
               const SizedBox(height: AppSpacing.s16),
+              BOHAlertCard(
+                title: l10n.companyChangesRequestedTitle(
+                  AppDateFormats.isolate(changes.title),
+                ),
+                message: changes.reviewerNote ?? '',
+                action: BOHLinkButton(
+                  label: l10n.companyEditListing,
+                  arrow: false,
+                  fontSize: 12,
+                  color: context.colors.statusWarning.foreground,
+                  onTap: () => context.push(
+                    AppRoutes.companyEditOpportunity(changes.id),
+                  ),
+                ),
+              ),
             ],
-            AsyncBody<List<Opportunity>>(
-              value: opportunities,
-              onRetry: () => ref.invalidate(myCompanyOpportunitiesProvider),
-              data: (all) {
-                int count(OpportunityStatus s) =>
-                    all.where((o) => o.status == s).length;
-                final published = all
-                    .where((o) => o.status == OpportunityStatus.published)
-                    .toList();
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: _Stat(
-                              label: l10n.opportunityStatusPublished,
-                              value: count(OpportunityStatus.published),
-                              icon: AppIcons.success,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.s8),
-                          Expanded(
-                            child: _Stat(
-                              label: l10n.opportunityStatusInReview,
-                              value: count(OpportunityStatus.inReview),
-                              icon: AppIcons.clock,
-                            ),
-                          ),
-                          const SizedBox(width: AppSpacing.s8),
-                          Expanded(
-                            child: _Stat(
-                              label: l10n.opportunityStatusDraft,
-                              value: count(OpportunityStatus.draft),
-                              icon: AppIcons.edit,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sectionSpacing),
-                    BOHSectionHeader(title: l10n.companyWorkspace),
-                    const SizedBox(height: AppSpacing.s12),
-                    _WorkspaceGrid(
-                      tiles: [
-                        BOHFeatureTile(
-                          icon: AppIcons.opportunities,
-                          title: l10n.companyMyOpportunities,
-                          subtitle: l10n.companyListingsCount(all.length),
-                          onTap: () =>
-                              context.push(AppRoutes.companyOpportunities),
-                        ),
-                        BOHFeatureTile(
-                          icon: AppIcons.supplierRequests,
-                          tone: BOHIconCircleTone.success,
-                          title: l10n.companyNavSupplierRequests,
-                          subtitle: invited == null
-                              ? l10n.supplierRequestsSubtitle
-                              : l10n.supplierInvitedCount(invited.length),
-                          onTap: () =>
-                              context.push(AppRoutes.companySupplierRequests),
-                        ),
-                        BOHFeatureTile(
-                          icon: AppIcons.workshop,
-                          tone: BOHIconCircleTone.neutral,
-                          title: l10n.companyNavPortfolio,
-                          subtitle: projects == null
-                              ? l10n.companyPortfolioSubtitle
-                              : l10n.companyProjectsCount(projects.length),
-                          onTap: () => context.push(AppRoutes.companyPortfolio),
-                        ),
-                        BOHFeatureTile(
-                          icon: AppIcons.plus,
-                          title: l10n.companyCreateOpportunity,
-                          subtitle: l10n.companyCreateOpportunityShort,
-                          onTap: () =>
-                              context.push(AppRoutes.companyNewOpportunity),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sectionSpacing),
-                    BOHSectionHeader(
-                      title: l10n.companyLiveOpportunities,
-                      actionLabel: l10n.actionViewAll,
-                      onAction: () =>
-                          context.push(AppRoutes.companyOpportunities),
-                    ),
-                    const SizedBox(height: AppSpacing.s8),
-                    if (published.isEmpty)
-                      BOHInfoNote(l10n.companyNoLiveOpportunities)
-                    else
-                      for (final o in published.take(3))
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: AppSpacing.s12,
-                          ),
-                          child: CompanyOpportunityTile(opportunity: o),
-                        ),
-                  ],
-                );
-              },
+            const SizedBox(height: AppSpacing.s16),
+            BOHSectionHeader(
+              title: l10n.companyRecentApplicants,
+              size: BOHSectionSize.compact,
+              actionArrow: false,
+              onAction: () => context.go(AppRoutes.companyOpportunities),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value, required this.icon});
-
-  final String label;
-  final int value;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return BOHCard(
-      padding: const EdgeInsets.all(AppSpacing.s12),
-      child: MergeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: AppSizes.iconSmall, color: c.primaryText),
             const SizedBox(height: AppSpacing.s8),
-            Text('$value', style: context.text.h2),
-            Text(
-              label,
-              style: context.text.caption,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            const _RecentApplicants(),
           ],
         ),
       ),
@@ -219,34 +149,124 @@ class _Stat extends StatelessWidget {
   }
 }
 
-/// Two tiles per row, each row as tall as its tallest tile.
-class _WorkspaceGrid extends StatelessWidget {
-  const _WorkspaceGrid({required this.tiles});
+class _StatsGrid extends StatelessWidget {
+  const _StatsGrid({required this.stats});
 
-  final List<Widget> tiles;
+  final CompanyStats stats;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final change = stats.profileViewsChangePercent;
+    final tiles = [
+      BOHStatTile(
+        label: l10n.companyStatLiveListings,
+        value: l10n.formatCount(stats.liveListings),
+        onTap: () => context.go(AppRoutes.companyOpportunities),
+      ),
+      BOHStatTile(
+        label: l10n.companyStatNewApplicants,
+        value: l10n.formatCount(stats.newApplicants),
+        delta: stats.newApplicantsThisWeek > 0
+            ? l10n.companyStatThisWeek(stats.newApplicantsThisWeek)
+            : null,
+        highlight: true,
+        onTap: () => context.go(AppRoutes.companyOpportunities),
+      ),
+      BOHStatTile(
+        label: l10n.companyStatSupplierInvites,
+        value: l10n.formatCount(stats.supplierInvites),
+        onTap: () => context.go(AppRoutes.companySupplierRequests),
+      ),
+      BOHStatTile(
+        label: l10n.companyStatProfileViews,
+        value: l10n.formatCount(stats.profileViews),
+        delta: change == null
+            ? null
+            : AppDateFormats.ltr(
+                l10n.companyStatChange(change >= 0 ? '+' : '−', change.abs()),
+              ),
+      ),
+    ];
     return Column(
       children: [
         for (var row = 0; row < tiles.length; row += 2) ...[
-          if (row > 0) const SizedBox(height: AppSpacing.s12),
+          if (row > 0) const SizedBox(height: AppSpacing.gridGap),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(child: tiles[row]),
-                const SizedBox(width: AppSpacing.s12),
-                Expanded(
-                  child: row + 1 < tiles.length
-                      ? tiles[row + 1]
-                      : const SizedBox.shrink(),
-                ),
+                const SizedBox(width: AppSpacing.gridGap),
+                Expanded(child: tiles[row + 1]),
               ],
             ),
           ),
         ],
       ],
+    );
+  }
+}
+
+class _RecentApplicants extends ConsumerWidget {
+  const _RecentApplicants();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final applicants = ref.watch(recentApplicantsProvider);
+    return switch (applicants) {
+      AsyncData(:final value) when value.isEmpty => BOHInfoNote(
+        l10n.companyNoApplicantsYet,
+      ),
+      AsyncData(:final value) => BOHGroupedList(
+        children: [for (final a in value.take(3)) _ApplicantRow(applicant: a)],
+      ),
+      AsyncError() => const SizedBox.shrink(),
+      _ => const BOHShimmer(
+        child: BOHSkeleton(height: 180, borderRadius: AppRadii.largeAll),
+      ),
+    };
+  }
+}
+
+class _ApplicantRow extends StatelessWidget {
+  const _ApplicantRow({required this.applicant});
+
+  final ApplicantView applicant;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final a = applicant;
+    final time = l10n.relativeTime(a.submittedAt);
+    return BOHPressable(
+      onTap: () => context.push(AppRoutes.companyApplicant(a.applicationId)),
+      semanticLabel: '${a.applicant.name}. ${a.opportunityTitle}. $time',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        child: Row(
+          children: [
+            BOHAvatar(name: a.applicant.name, dimension: 40),
+            const SizedBox(width: AppSpacing.s12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(a.applicant.name, style: context.text.label),
+                  Text(
+                    a.opportunityTitle,
+                    style: context.text.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Text(time, style: context.text.caption),
+          ],
+        ),
+      ),
     );
   }
 }

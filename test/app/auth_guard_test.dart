@@ -108,20 +108,29 @@ void main() {
       }
     });
 
-    test('companies share Discover and News with individuals', () {
+    test('companies share only News with individuals', () {
+      for (final path in [AppRoutes.news, AppRoutes.article('42')]) {
+        expect(
+          redirect(SessionStatus.authenticated, path, account: company),
+          isNull,
+          reason: path,
+        );
+      }
+    });
+
+    test('companies never see Discover or its directories', () {
       for (final path in [
         AppRoutes.discover,
         AppRoutes.events,
         AppRoutes.event('3'),
-        AppRoutes.news,
-        AppRoutes.article('42'),
         AppRoutes.companies,
+        AppRoutes.company('nexa'),
         AppRoutes.professionals,
         AppRoutes.courses,
       ]) {
         expect(
           redirect(SessionStatus.authenticated, path, account: company),
-          isNull,
+          AppRoutes.companyHome,
           reason: path,
         );
       }
@@ -150,6 +159,7 @@ void main() {
       for (final path in [
         AppRoutes.companyHome,
         AppRoutes.companyOpportunities,
+        AppRoutes.companySupplierRequests,
         AppRoutes.companyPortfolio,
         AppRoutes.companyProfile,
       ]) {

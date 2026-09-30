@@ -132,25 +132,60 @@ class _FormState extends ConsumerState<_Form> {
     }
   }
 
+  Future<void> _delete() async {
+    final project = widget.project!;
+    final l10n = context.l10n;
+    final confirmed = await confirmCompanyAction(
+      context,
+      title: l10n.companyProjectDeleteTitle,
+      message: l10n.companyProjectDeleteBody(project.title),
+      action: l10n.actionDelete,
+    );
+    if (!confirmed || !mounted) return;
+    setState(() => _saving = true);
+    final ok = await runCompanyAction(
+      context,
+      () => ref.read(myCompanyRepositoryProvider).deleteProject(project.id),
+      success: l10n.companyProjectDeleted,
+    );
+    if (!mounted) return;
+    setState(() => _saving = false);
+    if (ok) {
+      ref
+        ..invalidate(myCompanyProjectsProvider)
+        ..invalidate(myCompanyProvider);
+      context.pop();
+    }
+  }
+
   String? _required(String? v) =>
       (v ?? '').trim().isEmpty ? context.l10n.fieldRequired : null;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final c = context.colors;
     final date = AppDateFormats.mediumDate(context);
-    const gap = SizedBox(height: AppSpacing.s16);
+    const gap = SizedBox(height: AppSpacing.s14);
 
     return BOHScaffold(
       appBar: BOHAppBar(
+        closeIcon: true,
         title: widget.project == null
             ? l10n.companyAddProject
             : l10n.companyEditProject,
+        actions: [
+          if (widget.project != null)
+            BOHIconButton(
+              icon: AppIcons.delete,
+              semanticLabel: l10n.actionDelete,
+              onPressed: _saving ? null : _delete,
+            ),
+        ],
       ),
       bottomNavigationBar: BOHActionBar(
         child: BOHButton(
           label: l10n.actionSave,
+          size: BOHButtonSize.large,
           isLoading: _saving,
           trailingIcon: null,
           onPressed: _save,
@@ -159,8 +194,11 @@ class _FormState extends ConsumerState<_Form> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.formHorizontal,
+            AppSpacing.s8,
+            AppSpacing.formHorizontal,
+            AppSpacing.s24,
           ),
           children: [
             BOHTextField(
@@ -199,39 +237,41 @@ class _FormState extends ConsumerState<_Form> {
             ),
             gap,
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: BOHButton(
-                    label: l10n.companyProjectStart(date.format(_start)),
-                    variant: BOHButtonVariant.ghost,
-                    size: BOHButtonSize.small,
-                    leadingIcon: AppIcons.calendar,
-                    trailingIcon: null,
-                    onPressed: _saving ? null : () => _pick(end: false),
+                  child: BOHSelectField(
+                    label: l10n.companyProjectStartLabel,
+                    value: date.format(_start),
+                    icon: AppIcons.calendar,
+                    onTap: _saving ? null : () => _pick(end: false),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.s8),
+                const SizedBox(width: AppSpacing.s10),
                 Expanded(
-                  child: BOHButton(
-                    label: _end == null
-                        ? l10n.companyProjectAddEnd
-                        : l10n.companyProjectEnd(date.format(_end!)),
-                    variant: BOHButtonVariant.ghost,
-                    size: BOHButtonSize.small,
-                    leadingIcon: AppIcons.calendar,
-                    trailingIcon: null,
-                    onPressed: _saving ? null : () => _pick(end: true),
+                  child: BOHSelectField(
+                    label: l10n.companyProjectEndLabel,
+                    value: _end == null ? null : date.format(_end!),
+                    placeholder: l10n.companyProjectOngoing,
+                    icon: AppIcons.calendar,
+                    errorText: _showDateError
+                        ? l10n.companyProjectEndsBeforeStart
+                        : null,
+                    onTap: _saving ? null : () => _pick(end: true),
                   ),
                 ),
               ],
             ),
-            if (_showDateError) ...[
-              const SizedBox(height: AppSpacing.s8),
-              Text(
-                l10n.companyProjectEndsBeforeStart,
-                style: context.text.bodySmall.copyWith(color: c.error),
+            if (_end != null)
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: BOHLinkButton(
+                  label: l10n.companyClearDate,
+                  arrow: false,
+                  fontSize: 12,
+                  onTap: _saving ? null : () => setState(() => _end = null),
+                ),
               ),
-            ],
             gap,
             BOHTextField(
               controller: _services,

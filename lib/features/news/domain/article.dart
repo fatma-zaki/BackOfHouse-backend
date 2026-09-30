@@ -7,10 +7,12 @@ import '../../auth/domain/account_type.dart';
 /// Editorial desk an article is filed under.
 enum NewsTopic { technical, regulatory, market }
 
-/// The chips on the News tab: two orderings, then one per topic.
-enum NewsFilter { forYou, latest, technical, regulatory, market }
+/// How the News list is ordered: "For you" leads with the breaking
+/// briefing, "Latest" is newest first.
+enum NewsOrder { forYou, latest }
 
-typedef NewsQuery = ({NewsFilter filter, String query});
+/// News list query: an order, an optional desk and free text.
+typedef NewsQuery = ({NewsOrder order, NewsTopic? topic, String query});
 
 /// Byline of a named contributor. Articles without one credit their desk.
 @immutable

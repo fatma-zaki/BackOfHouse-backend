@@ -110,6 +110,19 @@ enum OpportunityStatus {
   );
 }
 
+/// Where the work happens (approved 2026-09-28).
+enum WorkSetup {
+  onSite('ON_SITE'),
+  hybrid('HYBRID'),
+  remote('REMOTE');
+
+  const WorkSetup(this.wireValue);
+  final String wireValue;
+
+  static WorkSetup? fromWire(String? value) =>
+      values.where((w) => w.wireValue == value).firstOrNull;
+}
+
 @immutable
 class Opportunity {
   const Opportunity({
@@ -126,6 +139,7 @@ class Opportunity {
     this.compensation,
     this.duration,
     this.closesAt,
+    this.workSetup,
     this.description = '',
     this.responsibilities = const [],
     this.requirements = const [],
@@ -160,7 +174,12 @@ class Opportunity {
 
   /// e.g. "4 months". Projects, co-op and volunteering.
   final String? duration;
+
+  /// Applications close at the end of this day, when set.
   final DateTime? closesAt;
+
+  /// On-site, hybrid or remote, when the company says.
+  final WorkSetup? workSetup;
   final String description;
   final List<String> responsibilities;
   final List<String> requirements;
@@ -286,6 +305,9 @@ enum OpportunityDraftIssue {
   cityRequired,
   summaryRequired,
   descriptionRequired,
+
+  /// A closing date must be in the future.
+  closesInPast,
   employmentRequired,
   supplierTypesRequired,
 }
@@ -306,6 +328,8 @@ class OpportunityDraft {
     this.requirements = const [],
     this.skills = const [],
     this.supplierTypes = const [],
+    this.closesAt,
+    this.workSetup,
   });
 
   factory OpportunityDraft.of(Opportunity o) => OpportunityDraft(
@@ -321,6 +345,8 @@ class OpportunityDraft {
     requirements: o.requirements,
     skills: o.skills,
     supplierTypes: o.supplierTypes,
+    closesAt: o.closesAt,
+    workSetup: o.workSetup,
   );
 
   final OpportunityType type;
@@ -336,6 +362,12 @@ class OpportunityDraft {
   final List<String> skills;
   final List<CompanyType> supplierTypes;
 
+  /// Optional closing date (applications or responses stop after it).
+  final DateTime? closesAt;
+
+  /// Optional work setup; not used by supplier requests.
+  final WorkSetup? workSetup;
+
   /// Types [company] may create: every individual-facing type, plus
   /// supplier requests with the capability.
   static List<OpportunityType> typesFor(CompanySummary company) => [
@@ -345,7 +377,10 @@ class OpportunityDraft {
         t,
   ];
 
-  List<OpportunityDraftIssue> validate(CompanySummary company) => [
+  List<OpportunityDraftIssue> validate(
+    CompanySummary company, {
+    DateTime? now,
+  }) => [
     if (!typesFor(company).contains(type)) OpportunityDraftIssue.typeNotAllowed,
     if (title.trim().isEmpty) OpportunityDraftIssue.titleRequired,
     if (city.trim().isEmpty) OpportunityDraftIssue.cityRequired,
@@ -355,6 +390,8 @@ class OpportunityDraft {
       OpportunityDraftIssue.employmentRequired,
     if (type == OpportunityType.supplierRequest && supplierTypes.isEmpty)
       OpportunityDraftIssue.supplierTypesRequired,
+    if (closesAt != null && !closesAt!.isAfter(now ?? DateTime.now()))
+      OpportunityDraftIssue.closesInPast,
   ];
 }
 

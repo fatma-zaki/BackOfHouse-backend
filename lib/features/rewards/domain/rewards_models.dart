@@ -2,8 +2,32 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/media/app_image.dart';
 
-/// Tiers a member moves through as they earn points.
-enum MemberLevel { newcomer, active, contributor, leader }
+/// Numbered points levels a member moves through as they earn points
+/// ("Level 3 · 250 pts to Level 4").
+///
+/// A points level is a Rewards concept only: it never grants, implies or
+/// displays verification, and uses its own labels (never the verification
+/// level wording).
+enum MemberLevel {
+  newcomer(0),
+  active(100),
+  contributor(500),
+  leader(1500);
+
+  const MemberLevel(this.floor);
+
+  /// Points at which this level starts.
+  final int floor;
+
+  /// 1-based number shown to members.
+  int get number => index + 1;
+
+  /// The level after this one, or `null` at the top.
+  MemberLevel? get next => index + 1 < values.length ? values[index + 1] : null;
+
+  static MemberLevel forPoints(int points) =>
+      values.lastWhere((l) => points >= l.floor);
+}
 
 @immutable
 class PointsSummary {
@@ -13,6 +37,8 @@ class PointsSummary {
     required this.level,
     required this.levelTarget,
     required this.nextBenefitAt,
+    this.totalEarned = 0,
+    this.totalSpent = 0,
   });
 
   /// Points available to spend.
@@ -20,24 +46,40 @@ class PointsSummary {
   final int earnedThisMonth;
   final MemberLevel level;
 
-  /// Lifetime points needed to reach the next level.
+  /// Points needed to reach the next level (the current balance at the
+  /// top level).
   final int levelTarget;
 
   /// Balance at which the next reward unlocks.
   final int nextBenefitAt;
 
+  /// Lifetime points earned and spent (spent is positive).
+  final int totalEarned;
+  final int totalSpent;
+
   int get pointsToNextLevel => (levelTarget - balance).clamp(0, levelTarget);
   int get pointsToNextBenefit =>
       (nextBenefitAt - balance).clamp(0, nextBenefitAt);
-  double get levelProgress => levelTarget == 0 ? 1 : balance / levelTarget;
+  bool get isTopLevel => level.next == null;
+
+  /// Progress through the current level, 0–1.
+  double get levelProgress {
+    if (isTopLevel) return 1;
+    final span = levelTarget - level.floor;
+    return span <= 0 ? 1 : ((balance - level.floor) / span).clamp(0, 1);
+  }
 }
 
 /// Why points were earned or spent. The UI names each kind.
 enum PointsActivity {
   attendedWorkshop,
+
+  /// Attendance at an event, verified at the venue. Registering alone
+  /// earns nothing.
+  attendanceVerified,
+  volunteerShiftCompleted,
   profileCompletion,
   verifiedIdentity,
-  joinedEvent,
   followedCompany,
   redeemedReward,
 }

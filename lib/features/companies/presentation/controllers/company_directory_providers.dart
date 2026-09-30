@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/l10n/content_language.dart';
+import '../../../../core/utils/paginated.dart';
 import '../../../opportunities/data/opportunities_data.dart';
 import '../../../opportunities/domain/opportunity.dart';
 import '../../data/companies_data.dart';
@@ -57,3 +58,37 @@ final companyOpenOpportunitiesProvider = FutureProvider.autoDispose
       ref.watch(contentLanguageProvider);
       return ref.watch(opportunitiesRepositoryProvider).getByCompany(companyId);
     });
+
+/// The companies directory, with an optimistic follow toggle.
+class CompaniesDirectoryController extends PagedNotifier<Company> {
+  CompaniesDirectoryController(this.query);
+
+  final CompaniesQuery query;
+
+  @override
+  void watchDependencies() => ref.watch(contentLanguageProvider);
+
+  @override
+  Future<Paginated<Company>> fetchPage(PageRequest request) =>
+      ref.read(companiesRepositoryProvider).getCompanies(request, query: query);
+
+  /// Rolls back and rethrows if the call fails.
+  Future<void> toggleFollow(Company company) async {
+    final next = !company.followed;
+    updateWhere((c) => c.id == company.id, (c) => c.copyWith(followed: next));
+    try {
+      final saved = await ref
+          .read(companiesRepositoryProvider)
+          .setFollowing(company.id, following: next);
+      updateWhere((c) => c.id == saved.id, (_) => saved);
+    } catch (error, stack) {
+      updateWhere((c) => c.id == company.id, (_) => company);
+      Error.throwWithStackTrace(error, stack);
+    }
+  }
+}
+
+final companiesDirectoryProvider = AsyncNotifierProvider.autoDispose
+    .family<CompaniesDirectoryController, PagedState<Company>, CompaniesQuery>(
+      CompaniesDirectoryController.new,
+    );

@@ -17,7 +17,7 @@ enum SessionStatus {
 ///
 /// Signed in, each account type stays in its own area: individuals never
 /// see company screens, and a company sees only its workspace plus the
-/// shared Discover and News tabs. A tab root that exists for both accounts
+/// shared News tab. A tab root that exists for both accounts
 /// (Home, Profile) resolves to the signed-in account's own version.
 abstract final class AuthGuard {
   static String? redirect({

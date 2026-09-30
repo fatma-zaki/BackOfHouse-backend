@@ -3,31 +3,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
-import '../../../../app/theme/app_typography.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/l10n/generated/app_localizations.dart';
 import '../../../../core/l10n/l10n_messages.dart';
-import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/article.dart';
 import '../controllers/news_providers.dart';
 
-extension NewsFilterLabel on NewsFilter {
+extension NewsOrderLabel on NewsOrder {
   String label(AppLocalizations l10n) => switch (this) {
-    NewsFilter.forYou => l10n.newsFilterForYou,
-    NewsFilter.latest => l10n.newsFilterLatest,
-    NewsFilter.technical => l10n.newsTopicTechnical,
-    NewsFilter.regulatory => l10n.newsTopicRegulatory,
-    NewsFilter.market => l10n.newsTopicMarket,
+    NewsOrder.forYou => l10n.newsFilterForYou,
+    NewsOrder.latest => l10n.newsFilterLatest,
   };
 }
 
 extension NewsTopicLabel on NewsTopic {
+  /// Full desk name, e.g. "Technical Briefings".
   String label(AppLocalizations l10n) => switch (this) {
     NewsTopic.technical => l10n.newsTopicTechnical,
     NewsTopic.regulatory => l10n.newsTopicRegulatory,
     NewsTopic.market => l10n.newsTopicMarket,
+  };
+
+  /// Short desk name for filters and tags, e.g. "Technical".
+  String shortLabel(AppLocalizations l10n) => switch (this) {
+    NewsTopic.technical => l10n.newsDeskTechnical,
+    NewsTopic.regulatory => l10n.newsDeskRegulatory,
+    NewsTopic.market => l10n.newsDeskMarket,
+  };
+
+  BOHTagVariant get tagVariant => switch (this) {
+    NewsTopic.technical => BOHTagVariant.accent,
+    NewsTopic.regulatory => BOHTagVariant.blue,
+    NewsTopic.market => BOHTagVariant.amber,
   };
 
   IconData get icon => switch (this) {
@@ -37,6 +46,11 @@ extension NewsTopicLabel on NewsTopic {
   };
 }
 
+/// "7 min read · 5h ago".
+String articleMeta(AppLocalizations l10n, Article article) =>
+    '${l10n.readTimeMinutes(article.readMinutes)} · '
+    '${l10n.relativeTime(article.publishedAt)}';
+
 /// Bookmark toggle shared by cards and the article screen. Confirms the
 /// change in a snackbar and restores the previous state on failure.
 class ArticleSaveButton extends ConsumerWidget {
@@ -44,10 +58,12 @@ class ArticleSaveButton extends ConsumerWidget {
     super.key,
     required this.article,
     this.variant = BOHIconButtonVariant.plain,
+    this.iconSize = AppSizes.iconMedium,
   });
 
   final Article article;
   final BOHIconButtonVariant variant;
+  final double iconSize;
 
   Future<void> _toggle(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -71,101 +87,26 @@ class ArticleSaveButton extends ConsumerWidget {
     final l10n = context.l10n;
     ref.watch(savedArticlesProvider);
     final saved = ref.read(savedArticlesProvider.notifier).isSaved(article);
+    final photo = variant == BOHIconButtonVariant.photo;
 
     return BOHIconButton(
       icon: saved ? AppIcons.saved : AppIcons.bookmark,
       semanticLabel: saved ? l10n.actionSaved : l10n.actionSave,
       variant: variant,
-      color: saved ? context.colors.primaryText : null,
+      active: photo && saved,
+      iconSize: iconSize,
+      color: photo
+          ? null
+          : saved
+          ? context.colors.primaryText
+          : context.colors.textSecondary,
       onPressed: () => _toggle(context, ref),
     );
   }
 }
 
-/// Opaque label set on photography — legible over any image.
-class _PhotoLabel extends StatelessWidget {
-  const _PhotoLabel(this.text, {this.dotColor});
-
-  final String text;
-  final Color? dotColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.s8 + 2,
-        vertical: AppSpacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: c.surface,
-        borderRadius: AppRadii.pillAll,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (dotColor != null) ...[
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: dotColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.s4),
-          ],
-          Text(
-            context.isArabic ? text : text.toUpperCase(),
-            style: AppTypography.caption.copyWith(
-              color: c.primaryText,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ArticleMeta extends StatelessWidget {
-  const _ArticleMeta({required this.article, this.showDate = false});
-
-  final Article article;
-  final bool showDate;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final c = context.colors;
-    final parts = [
-      article.source,
-      if (showDate)
-        AppDateFormats.mediumDate(context).format(article.publishedAt),
-      l10n.readTimeMinutes(article.readMinutes),
-    ];
-    return Row(
-      children: [
-        Icon(
-          article.topic.icon,
-          size: AppSizes.iconSmall,
-          color: c.primaryText,
-        ),
-        const SizedBox(width: AppSpacing.s8),
-        Expanded(
-          child: Text(
-            parts.join(' · '),
-            style: context.text.caption,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// The lead briefing at the top of the News tab.
+/// The lead briefing at the top of the News tab: photo fading in from the
+/// end, the "Latest news" overline, title, summary and a Read More pill.
 class NewsLeadCard extends StatelessWidget {
   const NewsLeadCard({super.key, required this.article, required this.onTap});
 
@@ -175,86 +116,55 @@ class NewsLeadCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final text = context.text;
     final c = context.colors;
 
-    return BOHCard(
-      padding: EdgeInsets.zero,
+    return BOHFadeImageCard(
+      image: article.image,
+      height: 164,
+      imageWidth: 210,
+      fadeWidth: 120,
+      contentWidth: 190,
+      borderRadius: AppRadii.heroAll,
+      accentBorder: false,
       onTap: onTap,
-      semanticLabel: '${article.title}. ${article.source}',
+      semanticLabel: '${article.title}. ${articleMeta(l10n, article)}',
+      overlay: BOHButton(
+        label: l10n.actionReadMore,
+        variant: BOHButtonVariant.overlay,
+        size: BOHButtonSize.compact,
+        expand: false,
+        onPressed: onTap,
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AspectRatio(
-            aspectRatio: 16 / 10,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                BOHImage(image: article.image),
-                PositionedDirectional(
-                  top: AppSpacing.s12,
-                  start: AppSpacing.s12,
-                  end: AppSpacing.s64,
-                  child: Wrap(
-                    spacing: AppSpacing.s8,
-                    runSpacing: AppSpacing.s8,
-                    children: [
-                      for (final (i, label) in article.labels.indexed)
-                        _PhotoLabel(label, dotColor: i == 0 ? null : c.error),
-                    ],
-                  ),
-                ),
-                PositionedDirectional(
-                  top: AppSpacing.s4,
-                  end: AppSpacing.s4,
-                  child: ArticleSaveButton(
-                    article: article,
-                    variant: BOHIconButtonVariant.tonal,
-                  ),
-                ),
-              ],
-            ),
+          BOHEyebrow(
+            l10n.newsLatestEyebrow,
+            lead: BOHEyebrowLead.skewBar,
+            tracking: 3,
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BOHEyebrow(article.category, color: c.primaryText),
-                const SizedBox(height: AppSpacing.s8),
-                Semantics(
-                  header: true,
-                  child: Text(article.title, style: context.text.h2),
-                ),
-                const SizedBox(height: AppSpacing.s8),
-                Text(
-                  article.summary,
-                  style: context.text.body,
-                  maxLines: 3,
+          const SizedBox(height: AppSpacing.s6),
+          Text(
+            article.title,
+            style: text.h2.copyWith(height: 23 / 18),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              Icon(AppIcons.clock, size: 12, color: c.textSecondary),
+              const SizedBox(width: AppSpacing.s4),
+              Flexible(
+                child: Text(
+                  articleMeta(l10n, article),
+                  style: text.caption,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: AppSpacing.s12),
-                _ArticleMeta(article: article, showDate: true),
-                const SizedBox(height: AppSpacing.s12),
-                Divider(height: 1, color: c.borderSoft),
-                const SizedBox(height: AppSpacing.s4),
-                Row(
-                  children: [
-                    BOHButton(
-                      label: l10n.actionReadFullBriefing,
-                      variant: BOHButtonVariant.text,
-                      expand: false,
-                      onPressed: onTap,
-                    ),
-                    const Spacer(),
-                    BOHTag(
-                      article.topic.label(l10n),
-                      variant: BOHTagVariant.outline,
-                      icon: article.topic.icon,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -262,65 +172,93 @@ class NewsLeadCard extends StatelessWidget {
   }
 }
 
-/// A briefing in the News list.
+/// A briefing in the News list: desk tag, title and read time, with the
+/// photo at the end.
 class ArticleCard extends StatelessWidget {
-  const ArticleCard({super.key, required this.article, required this.onTap});
+  const ArticleCard({
+    super.key,
+    required this.article,
+    required this.onTap,
+    this.showSave = true,
+  });
 
   final Article article;
   final VoidCallback onTap;
+  final bool showSave;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final c = context.colors;
+    final text = context.text;
+
     return BOHCard(
-      padding: EdgeInsets.zero,
       onTap: onTap,
-      semanticLabel: '${article.title}. ${article.source}',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      borderRadius: AppRadii.listCardAll,
+      padding: const EdgeInsets.all(AppSpacing.s10),
+      semanticLabel: '${article.title}. ${articleMeta(l10n, article)}',
+      child: Row(
         children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                BOHImage(image: article.image),
-                PositionedDirectional(
-                  top: AppSpacing.s12,
-                  start: AppSpacing.s12,
-                  end: AppSpacing.s64,
-                  child: Align(
-                    alignment: AlignmentDirectional.topStart,
-                    child: _PhotoLabel(article.category),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(start: AppSpacing.s4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      BOHTag(
+                        article.topic.shortLabel(l10n),
+                        variant: article.topic.tagVariant,
+                      ),
+                      const Spacer(),
+                      if (showSave)
+                        SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: OverflowBox(
+                            maxWidth: AppSizes.minTouchTarget,
+                            maxHeight: AppSizes.minTouchTarget,
+                            child: ArticleSaveButton(
+                              article: article,
+                              iconSize: 15,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                PositionedDirectional(
-                  top: AppSpacing.s4,
-                  end: AppSpacing.s4,
-                  child: ArticleSaveButton(
-                    article: article,
-                    variant: BOHIconButtonVariant.tonal,
+                  const SizedBox(height: AppSpacing.s4),
+                  Text(
+                    article.title,
+                    style: text.itemTitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.s4),
+                  Row(
+                    children: [
+                      Icon(AppIcons.clock, size: 11, color: c.textSecondary),
+                      const SizedBox(width: AppSpacing.s4),
+                      Flexible(
+                        child: Text(
+                          articleMeta(l10n, article),
+                          style: text.caption,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.cardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(article.title, style: context.text.h3),
-                const SizedBox(height: AppSpacing.s8),
-                Text(
-                  article.summary,
-                  style: context.text.bodySmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacing.s12),
-                _ArticleMeta(article: article),
-              ],
-            ),
+          const SizedBox(width: AppSpacing.s12),
+          BOHImage(
+            image: article.image,
+            width: 104,
+            height: 78,
+            borderRadius: AppRadii.smallAll,
           ),
         ],
       ),
@@ -328,7 +266,8 @@ class ArticleCard extends StatelessWidget {
   }
 }
 
-/// Compact row for "Related Briefings".
+/// Compact row for "Related briefings" — the list card without the save
+/// action.
 class ArticleListTile extends StatelessWidget {
   const ArticleListTile({
     super.key,
@@ -340,101 +279,12 @@ class ArticleListTile extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final c = context.colors;
-
-    return BOHCard(
-      onTap: onTap,
-      semanticLabel:
-          '${article.title}. ${l10n.readTimeMinutes(article.readMinutes)}',
-      child: Row(
-        children: [
-          BOHImage(
-            image: article.image,
-            width: 64,
-            height: 64,
-            borderRadius: AppRadii.smallAll,
-          ),
-          const SizedBox(width: AppSpacing.s12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BOHEyebrow(article.category, color: c.primaryText),
-                const SizedBox(height: AppSpacing.s4),
-                Text(
-                  article.title,
-                  style: context.text.label,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacing.s4),
-                Row(
-                  children: [
-                    Icon(AppIcons.clock, size: 14, color: c.textMuted),
-                    const SizedBox(width: AppSpacing.s4),
-                    Text(
-                      l10n.readTimeMinutes(article.readMinutes),
-                      style: context.text.caption,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Icon(
-            AppIcons.chevronForward,
-            size: AppSizes.iconMedium,
-            color: c.textMuted,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Closing note on who writes the briefings.
-class EditorialStandardsCard extends StatelessWidget {
-  const EditorialStandardsCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final c = context.colors;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.s20),
-      decoration: BoxDecoration(
-        color: c.primaryWash,
-        borderRadius: AppRadii.mediumAll,
-        border: Border.all(color: c.primaryTint),
-      ),
-      child: MergeSemantics(
-        child: Column(
-          children: [
-            const BOHIconCircle(icon: AppIcons.identity, size: 44),
-            const SizedBox(height: AppSpacing.s12),
-            Text(
-              l10n.newsStandardsTitle,
-              style: context.text.label,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.s4),
-            Text(
-              l10n.newsStandardsBody,
-              style: context.text.bodySmall,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      ArticleCard(article: article, onTap: onTap, showSave: false);
 }
 
 class ArticleListSkeleton extends StatelessWidget {
-  const ArticleListSkeleton({super.key, this.count = 2});
+  const ArticleListSkeleton({super.key, this.count = 3});
 
   final int count;
 
@@ -445,16 +295,10 @@ class ArticleListSkeleton extends StatelessWidget {
         children: [
           for (var i = 0; i < count; i++)
             const Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.s12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BOHSkeleton(height: 180, borderRadius: AppRadii.mediumAll),
-                  SizedBox(height: AppSpacing.s12),
-                  BOHSkeleton.line(height: 16),
-                  SizedBox(height: AppSpacing.s8),
-                  BOHSkeleton.line(width: 200),
-                ],
+              padding: EdgeInsets.only(bottom: AppSpacing.gridGap),
+              child: BOHSkeleton(
+                height: 98,
+                borderRadius: AppRadii.listCardAll,
               ),
             ),
         ],

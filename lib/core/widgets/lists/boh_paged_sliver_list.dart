@@ -23,6 +23,7 @@ class BOHPagedSliverList<T> extends StatelessWidget {
     this.emptyIcon,
     this.emptyTitle,
     this.emptyMessage,
+    this.empty,
     this.spacing = AppSpacing.s12,
   });
 
@@ -36,6 +37,9 @@ class BOHPagedSliverList<T> extends StatelessWidget {
   final IconData? emptyIcon;
   final String? emptyTitle;
   final String? emptyMessage;
+
+  /// Replaces the default empty state (e.g. with suggestions and actions).
+  final Widget? empty;
   final double spacing;
 
   @override
@@ -58,7 +62,9 @@ class BOHPagedSliverList<T> extends StatelessWidget {
     if (data.items.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: emptyIcon == null
+        child: empty != null
+            ? empty!
+            : emptyIcon == null
             ? BOHEmptyState(title: emptyTitle, message: emptyMessage)
             : BOHEmptyState(
                 icon: emptyIcon!,

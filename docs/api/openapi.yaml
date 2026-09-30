@@ -1,0 +1,2253 @@
+openapi: 3.1.0
+info:
+  title: Back Of House API
+  version: 1.0.0
+  description: |
+    The contract the Back Of House mobile app integrates with. Read
+    `docs/api/README.md` first: it covers conventions (envelopes, paging,
+    localisation, errors) and the business rules the backend enforces.
+
+    Conventions in one line each:
+    - JSON, `snake_case` fields, enum values in `UPPER_SNAKE_CASE`.
+    - Single resources come as `{ "data": {...} }`, lists as
+      `{ "data": [...], "meta": {...} }`.
+    - Timestamps are ISO 8601 in UTC (`2026-09-28T14:30:00Z`).
+    - IDs are opaque strings.
+    - Localised content follows the `Accept-Language` header (`en` or `ar`).
+    - Errors: `{ "code", "message", "errors" }` with an HTTP status.
+servers:
+  - url: https://backofhouse.space/api
+    description: Production (also staging and dev; the app reads it from config)
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+  - name: Me
+    description: The signed-in individual (profile, verification, applications, points, notifications)
+  - name: Discover
+    description: Individual-facing directories and listings
+  - name: News
+  - name: Rewards
+  - name: Company
+    description: The signed-in company's workspace (company accounts only)
+  - name: Suppliers
+    description: B2B supplier requests and responses (company accounts only)
+
+paths:
+  # ── Auth ──────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Create an individual or company account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201': { $ref: '#/components/responses/Session' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Sign in with email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+                remember_me: { type: boolean, default: false, description: 'Longer-lived refresh token when true' }
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        '401':
+          description: Wrong email or password (`INVALID_CREDENTIALS`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/social:
+    post:
+      tags: [Auth]
+      summary: Sign in or sign up with Google
+      description: |
+        The app sends the Google ID token. An unknown email creates an
+        INDIVIDUAL account (profile status PROFESSIONAL). A company account
+        signs in the same way once it exists. Email, Google and phone code
+        all reach the same account when they share an email or phone.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provider, id_token]
+              properties:
+                provider: { type: string, enum: [GOOGLE] }
+                id_token: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        '401':
+          description: Token rejected by the provider (`INVALID_CREDENTIALS`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /auth/phone/code:
+    post:
+      tags: [Auth]
+      summary: Send a one-time sign-in code by SMS
+      description: Always answers 204 for a well-formed number, whether or not an account exists.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone]
+              properties:
+                phone: { type: string, description: 'E.164, e.g. +966501234567', example: '+966501234567' }
+      responses:
+        '204': { description: 'Code sent' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/phone/verify:
+    post:
+      tags: [Auth]
+      summary: Sign in with the SMS code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, code]
+              properties:
+                phone: { type: string, example: '+966501234567' }
+                code: { type: string, pattern: '^[0-9]{6}$' }
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        '422':
+          description: Wrong or expired code (`INVALID_CODE`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Exchange a refresh token for a new session
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: { type: string }
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Revoke the current session
+      responses:
+        '204': { description: 'Signed out' }
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Email a password reset link
+      description: Always 204, so the response never reveals whether the email has an account. The link opens the website, which calls `/auth/reset-password`.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '204': { description: 'Accepted' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Set a new password from a reset link (used by the website)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token: { type: string }
+                password: { type: string, minLength: 8 }
+      responses:
+        '204': { description: 'Password changed' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me:
+    get:
+      tags: [Auth]
+      summary: The account behind the access token
+      description: Called on launch to restore the session.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/AppUser' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  # ── Me (individual) ───────────────────────────────────────────────────────
+  /me/profile:
+    get:
+      tags: [Me]
+      summary: The signed-in individual's full profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    patch:
+      tags: [Me]
+      summary: Edit the profile
+      description: |
+        Changing `profile_status` re-evaluates co-op eligibility for every
+        later request. The response is the whole updated profile; the app
+        also refreshes `/me` from it (name, headline, profile status).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileUpdate' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me/verification:
+    get:
+      tags: [Me]
+      summary: The individual's verification request
+      description: Returns a DRAFT with no files when none was started. Never grants verification by itself; the outcome shows as `AppUser.is_verified` / `Profile.verified`.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/VerificationRequest' }
+
+  /me/verification/documents:
+    post:
+      tags: [Me]
+      summary: Upload one verification document
+      description: |
+        The only file upload in the app. Accepts PDF, JPEG or PNG up to
+        10 MB. Uploading the same document type again replaces it. Only
+        while the request is DRAFT (`VERIFICATION_LOCKED` otherwise).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [document, file]
+              properties:
+                document: { $ref: '#/components/schemas/VerificationDocument' }
+                file: { type: string, format: binary }
+      responses:
+        '200':
+          description: The updated request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/VerificationRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { description: 'File too large (`FILE_TOO_LARGE`)' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me/verification/submit:
+    post:
+      tags: [Me]
+      summary: Send the request for review
+      description: Needs both IDENTITY and EXPERIENCE documents. Moves the request to IN_REVIEW; grants nothing.
+      responses:
+        '200':
+          description: The updated request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/VerificationRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /me/applications:
+    get:
+      tags: [Me]
+      summary: The individual's applications, most recently updated first
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Application' }
+    post:
+      tags: [Me]
+      summary: Apply to an individual-facing opportunity
+      description: |
+        Rejected unless all of these hold (see README "Applications"):
+        the listing is eligible for this applicant (`NOT_ELIGIBLE` with a
+        `reason`), no earlier application blocks it (`ALREADY_APPLIED`),
+        at least one experience item is selected (`VALIDATION_FAILED` on
+        `experience_ids`), and every selected id belongs to the applicant's
+        own profile. The server captures the applicant and listing
+        snapshots and raises the SUBMITTED notification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApplicationCreate' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Application' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me/applications/{id}/withdraw:
+    post:
+      tags: [Me]
+      summary: Withdraw an active application
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The application, now WITHDRAWN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Application' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /me/points:
+    get:
+      tags: [Rewards]
+      summary: Points balance and level
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/PointsSummary' }
+
+  /me/points/transactions:
+    get:
+      tags: [Rewards]
+      summary: Points history, newest first
+      parameters:
+        - name: filter
+          in: query
+          schema: { type: string, enum: [ALL, EARNED, REDEEMED], default: ALL }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/PointsTransaction' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /me/notifications:
+    get:
+      tags: [Me]
+      summary: The member's notifications, newest first
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Notification' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /me/notifications/{id}/read:
+    post:
+      tags: [Me]
+      summary: Mark one notification read
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: 'Done' }
+
+  /me/notifications/read-all:
+    post:
+      tags: [Me]
+      summary: Mark every notification read
+      responses:
+        '204': { description: 'Done' }
+
+  # ── Discover (individuals) ───────────────────────────────────────────────
+  /discover/counts:
+    get:
+      tags: [Discover]
+      summary: Directory counts for the Discover header
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/DiscoverCounts' }
+
+  /events:
+    get:
+      tags: [Discover]
+      summary: Upcoming events, soonest first
+      parameters:
+        - name: type
+          in: query
+          schema: { $ref: '#/components/schemas/EventType' }
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Event' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /events/{id}:
+    get:
+      tags: [Discover]
+      summary: One event with speakers and agenda
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Event' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /events/{id}/registration:
+    put:
+      tags: [Discover]
+      summary: Register for an event
+      description: Idempotent. Issues `pass_code`. Registering earns no points; points come from verified attendance.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The updated event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Event' }
+    delete:
+      tags: [Discover]
+      summary: Cancel a registration
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The updated event
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Event' }
+
+  /opportunities:
+    get:
+      tags: [Discover]
+      summary: Published opportunities visible to the signed-in account
+      description: |
+        Scoped by the token: individuals never receive SUPPLIER_REQUEST,
+        whatever `type` asks for. Best match first when the backend has a
+        match score, otherwise newest first.
+      parameters:
+        - name: type
+          in: query
+          schema: { $ref: '#/components/schemas/OpportunityType' }
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Opportunity' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /opportunities/{id}:
+    get:
+      tags: [Discover]
+      summary: One published opportunity
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: |
+            OK. Includes `my_application` when the signed-in individual
+            has applied, so the app can show the right action.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Opportunity' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /companies:
+    get:
+      tags: [Discover]
+      summary: Company directory
+      parameters:
+        - name: type
+          in: query
+          schema: { $ref: '#/components/schemas/CompanyType' }
+        - name: editors_pick
+          in: query
+          description: Only the editorial "Companies to Watch" list. Free and editorial, never a paid placement.
+          schema: { type: boolean }
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Company' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /companies/{id}:
+    get:
+      tags: [Discover]
+      summary: A company's public profile
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Company' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /companies/{id}/follow:
+    put:
+      tags: [Discover]
+      summary: Follow a company (individuals)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The company with updated `followed` and `followers`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Company' }
+    delete:
+      tags: [Discover]
+      summary: Unfollow a company
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The company with updated `followed` and `followers`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Company' }
+
+  /companies/{id}/projects:
+    get:
+      tags: [Discover]
+      summary: A company's portfolio, newest first
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/CompanyProject' }
+
+  /companies/{id}/opportunities:
+    get:
+      tags: [Discover]
+      summary: A company's published listings visible to the signed-in account, newest first
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Opportunity' }
+
+  /professionals:
+    get:
+      tags: [Discover]
+      summary: Professionals directory (individuals)
+      description: Members with an active Profile Highlight come first (a points reward, never verification and never paid placement), then the rest.
+      parameters:
+        - name: filter
+          in: query
+          schema: { type: string, enum: [PRODUCERS, DESIGNERS, TECHNICAL, STUDENTS] }
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Professional' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /professionals/{id}/connection:
+    put:
+      tags: [Discover]
+      summary: Send a connection request
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The professional with `connected` updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Professional' }
+    delete:
+      tags: [Discover]
+      summary: Withdraw a connection
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: The professional with `connected` updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Professional' }
+
+  # ── News ──────────────────────────────────────────────────────────────────
+  /news:
+    get:
+      tags: [News]
+      summary: Editorial briefings
+      parameters:
+        - name: order
+          in: query
+          description: FOR_YOU leads with the breaking briefing; LATEST is newest first.
+          schema: { type: string, enum: [FOR_YOU, LATEST], default: FOR_YOU }
+        - name: topic
+          in: query
+          schema: { $ref: '#/components/schemas/NewsTopic' }
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK (list items may omit `body`, `directives` and `keywords`)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Article' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+
+  /news/{id}:
+    get:
+      tags: [News]
+      summary: One article with its body
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Article' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /news/{id}/related:
+    get:
+      tags: [News]
+      summary: Briefings to read next, same topic first (up to 5)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Article' }
+
+  /news/{id}/save:
+    put:
+      tags: [News]
+      summary: Save an article
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/ArticleResponse' }
+    delete:
+      tags: [News]
+      summary: Remove from saved
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/ArticleResponse' }
+
+  /news/{id}/like:
+    put:
+      tags: [News]
+      summary: Like an article (individuals only)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/ArticleResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    delete:
+      tags: [News]
+      summary: Remove a like (individuals only)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/ArticleResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /news/{id}/comments:
+    get:
+      tags: [News]
+      summary: Comments, newest first (everyone may read)
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ArticleComment' }
+                  meta: { $ref: '#/components/schemas/PageMeta' }
+    post:
+      tags: [News]
+      summary: Comment on an article (individuals only)
+      description: Flat comments, 1–500 characters after trimming. The server stores an author snapshot.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text: { type: string, minLength: 1, maxLength: 500 }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ArticleComment' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /news/{id}/comments/{commentId}:
+    delete:
+      tags: [News]
+      summary: Delete own comment
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - name: commentId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '204': { description: 'Deleted' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ── Rewards ───────────────────────────────────────────────────────────────
+  /rewards:
+    get:
+      tags: [Rewards]
+      summary: Rewards catalog
+      parameters:
+        - name: category
+          in: query
+          schema: { $ref: '#/components/schemas/RewardCategory' }
+        - $ref: '#/components/parameters/Query'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Reward' }
+
+  /rewards/{id}:
+    get:
+      tags: [Rewards]
+      summary: One reward
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Reward' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /rewards/{id}/redeem:
+    post:
+      tags: [Rewards]
+      summary: Spend points on a reward
+      description: Atomic. Fails with `INSUFFICIENT_POINTS` or `REWARD_UNAVAILABLE`. Records a negative REDEEMED_REWARD transaction.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '201':
+          description: Redeemed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Redemption' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ── Company workspace ─────────────────────────────────────────────────────
+  /company:
+    get:
+      tags: [Company]
+      summary: The signed-in company's profile
+      responses:
+        '200': { $ref: '#/components/responses/CompanyResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    patch:
+      tags: [Company]
+      summary: Edit the company profile (EDIT_PROFILE permission)
+      description: Name and company type are the registered identity and cannot be changed here.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompanyProfileUpdate' }
+      responses:
+        '200': { $ref: '#/components/responses/CompanyResponse' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/stats:
+    get:
+      tags: [Company]
+      summary: Dashboard counts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/CompanyStats' }
+
+  /company/projects:
+    get:
+      tags: [Company]
+      summary: Own portfolio, newest first
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/CompanyProject' }
+    post:
+      tags: [Company]
+      summary: Add a project (MANAGE_PROJECTS)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompanyProjectInput' }
+      responses:
+        '201': { $ref: '#/components/responses/CompanyProjectResponse' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/projects/{id}:
+    patch:
+      tags: [Company]
+      summary: Edit a project (MANAGE_PROJECTS)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CompanyProjectInput' }
+      responses:
+        '200': { $ref: '#/components/responses/CompanyProjectResponse' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+    delete:
+      tags: [Company]
+      summary: Delete a project (MANAGE_PROJECTS)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: 'Deleted' }
+
+  /company/opportunities:
+    get:
+      tags: [Company]
+      summary: Own listings in every status, most recently updated first
+      description: Includes the company's supplier requests (`type = SUPPLIER_REQUEST`).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Opportunity' }
+    post:
+      tags: [Company]
+      summary: Create a DRAFT listing (MANAGE_OPPORTUNITIES)
+      description: SUPPLIER_REQUEST needs the CREATE_SUPPLIER_REQUEST capability (`CAPABILITY_REQUIRED`).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpportunityInput' }
+      responses:
+        '201': { $ref: '#/components/responses/OpportunityResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/opportunities/{id}:
+    get:
+      tags: [Company]
+      summary: One own listing, with its pending revision if any
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Company]
+      summary: Edit a DRAFT or CHANGES_REQUESTED listing
+      description: |
+        `NOT_EDITABLE` for any other status (published content changes
+        through a revision). Editing a CHANGES_REQUESTED listing keeps its
+        status until it is resubmitted. The listing type cannot change.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpportunityInput' }
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/opportunities/{id}/submit:
+    post:
+      tags: [Company]
+      summary: DRAFT or CHANGES_REQUESTED → IN_REVIEW
+      description: Validates the full listing first. Clears `reviewer_note`. Back Of House reviews every listing, verified company or not.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/opportunities/{id}/return-to-draft:
+    post:
+      tags: [Company]
+      summary: IN_REVIEW → DRAFT (pull back to edit)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /company/opportunities/{id}/close:
+    post:
+      tags: [Company]
+      summary: PUBLISHED → CLOSED (final)
+      description: Supplier requests close with their open responses left as they are; a selection closes a request on its own.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /company/opportunities/{id}/revision:
+    post:
+      tags: [Company]
+      summary: Start a revision of a PUBLISHED listing
+      description: Copies the live content into `revision.draft` (status DRAFT). The live listing stays up. `REVISION_EXISTS` if one is pending.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '201': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    patch:
+      tags: [Company]
+      summary: Edit the pending revision (DRAFT or CHANGES_REQUESTED)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpportunityInput' }
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/opportunities/{id}/revision/submit:
+    post:
+      tags: [Company]
+      summary: Send the revision for review
+      description: On approval the revision replaces the live content and `revision` becomes null; on changes requested the live content is untouched.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/opportunities/{id}/applicants:
+    get:
+      tags: [Company]
+      summary: Applicants to one own listing, most recently updated first (REVIEW_APPLICANTS)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ApplicantView' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /company/applicants/recent:
+    get:
+      tags: [Company]
+      summary: Newest applications across all own listings (dashboard)
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, default: 5, maximum: 20 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/ApplicantView' }
+
+  /company/applicants/{id}:
+    get:
+      tags: [Company]
+      summary: One application to an own listing
+      description: Opening it never changes its status and never releases contact details.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/ApplicantResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /company/applicants/{id}/status:
+    post:
+      tags: [Company]
+      summary: Move an application one step, accept or reject (REVIEW_APPLICANTS)
+      description: |
+        Allowed: SUBMITTED→REVIEWED→SHORTLISTED→CONTACT→ACCEPTED one step
+        at a time, and REJECTED from any active status. ACCEPTED only from
+        CONTACT. Decisions are final. Anything else is
+        `INVALID_TRANSITION`. Every change raises the applicant's
+        notification server-side.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [REVIEWED, SHORTLISTED, CONTACT, ACCEPTED, REJECTED]
+      responses:
+        '200': { $ref: '#/components/responses/ApplicantResponse' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ── Suppliers (B2B) ───────────────────────────────────────────────────────
+  /company/supplier-requests/invited:
+    get:
+      tags: [Suppliers]
+      summary: Open supplier requests that invite this company's type, newest first
+      description: Excludes the company's own requests.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Opportunity' }
+
+  /company/supplier-requests/{id}:
+    get:
+      tags: [Suppliers]
+      summary: One supplier request (the buyer's own, or one open to this company's type)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/OpportunityResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /company/supplier-requests/{id}/responses:
+    get:
+      tags: [Suppliers]
+      summary: Responses to one of this company's own requests (buyer)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/SupplierResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /company/supplier-responses:
+    get:
+      tags: [Suppliers]
+      summary: This company's responses, most recently updated first
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/SupplierResponse' }
+    post:
+      tags: [Suppliers]
+      summary: Respond to a supplier request (RESPOND_TO_SUPPLIER_REQUESTS)
+      description: |
+        Rejected with `NOT_ELIGIBLE` and a `reason` (OWN_REQUEST,
+        NOT_INVITED, CLOSED, NOT_SUPPLIER_REQUEST) or `ALREADY_RESPONDED`.
+        `project_ids` must be the responder's own company projects. No file
+        attachments.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SupplierResponseCreate' }
+      responses:
+        '201': { $ref: '#/components/responses/SupplierResponseResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /company/supplier-responses/{id}:
+    get:
+      tags: [Suppliers]
+      summary: One response (as its buyer or its responder)
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '200': { $ref: '#/components/responses/SupplierResponseResponse' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /company/supplier-responses/{id}/status:
+    post:
+      tags: [Suppliers]
+      summary: Buyer moves a response (buyer only)
+      description: |
+        SUBMITTED→REVIEWED→SHORTLISTED→SELECTED one step at a time,
+        REJECTED from any open status; SELECTED and REJECTED are final.
+        SELECTED also rejects every other open response and closes the
+        request, in one transaction.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [REVIEWED, SHORTLISTED, SELECTED, REJECTED] }
+      responses:
+        '200': { $ref: '#/components/responses/SupplierResponseResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token from a Session. Send `Accept-Language` on every request too.
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+    Page:
+      name: page
+      in: query
+      description: 1-based
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+    Query:
+      name: q
+      in: query
+      description: Free-text search, case-insensitive
+      schema: { type: string }
+
+  responses:
+    Session:
+      description: Signed in
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/Session' }
+    ValidationFailed:
+      description: '`VALIDATION_FAILED` with field errors'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            code: VALIDATION_FAILED
+            message: The given data was invalid.
+            errors:
+              experience_ids: [Select at least one experience item.]
+    Unauthenticated:
+      description: Missing, expired or revoked token (`UNAUTHENTICATED`). The app signs the user out.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Wrong account type, missing permission or capability, or not eligible (`FORBIDDEN`, `PERMISSION_DENIED`, `CAPABILITY_REQUIRED`, `ENGAGEMENT_NOT_ALLOWED`, `NOT_ELIGIBLE`)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example:
+            code: NOT_ELIGIBLE
+            message: Co-op training is for students.
+            reason: STUDENTS_ONLY
+    NotFound:
+      description: '`NOT_FOUND` (also used for resources the account may not see)'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: The action conflicts with the resource's state (`INVALID_TRANSITION`, `NOT_EDITABLE`, `ALREADY_APPLIED`, `ALREADY_RESPONDED`, `REVISION_EXISTS`, `INSUFFICIENT_POINTS`, `REWARD_UNAVAILABLE`, `VERIFICATION_LOCKED`, `VERIFICATION_INCOMPLETE`, `EMAIL_TAKEN`, `PHONE_TAKEN`)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: '`RATE_LIMITED`. `Retry-After` header in seconds.'
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ArticleResponse:
+      description: The updated article
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/Article' }
+    CompanyResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/Company' }
+    CompanyProjectResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/CompanyProject' }
+    OpportunityResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/Opportunity' }
+    ApplicantResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/ApplicantView' }
+    SupplierResponseResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data: { $ref: '#/components/schemas/SupplierResponse' }
+
+  schemas:
+    # ── Shared ──────────────────────────────────────────────────────────────
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { $ref: '#/components/schemas/ErrorCode' }
+        message: { type: string, description: 'For logs only; the app shows its own localised copy.' }
+        errors:
+          type: object
+          description: Field errors keyed by request field name
+          additionalProperties:
+            type: array
+            items: { type: string }
+        reason:
+          type: string
+          description: |
+            With `NOT_ELIGIBLE`. Applications: COMPANY_FACING,
+            INDIVIDUALS_ONLY, CLOSED, STUDENTS_ONLY. Supplier responses:
+            NOT_SUPPLIER_REQUEST, OWN_REQUEST, NOT_INVITED, CLOSED.
+    ErrorCode:
+      type: string
+      enum:
+        - VALIDATION_FAILED
+        - UNAUTHENTICATED
+        - INVALID_CREDENTIALS
+        - INVALID_CODE
+        - FORBIDDEN
+        - PERMISSION_DENIED
+        - CAPABILITY_REQUIRED
+        - ENGAGEMENT_NOT_ALLOWED
+        - NOT_ELIGIBLE
+        - NOT_FOUND
+        - INVALID_TRANSITION
+        - NOT_EDITABLE
+        - REVISION_EXISTS
+        - ALREADY_APPLIED
+        - ALREADY_RESPONDED
+        - INSUFFICIENT_POINTS
+        - REWARD_UNAVAILABLE
+        - VERIFICATION_LOCKED
+        - VERIFICATION_INCOMPLETE
+        - EMAIL_TAKEN
+        - PHONE_TAKEN
+        - FILE_TOO_LARGE
+        - RATE_LIMITED
+        - SERVER_ERROR
+    PageMeta:
+      type: object
+      required: [page, page_size, has_more]
+      properties:
+        page: { type: integer, description: '1-based' }
+        page_size: { type: integer }
+        has_more: { type: boolean }
+        total: { type: integer, description: 'Optional' }
+    ImageUrl:
+      type: [string, 'null']
+      format: uri
+      description: Absolute HTTPS URL of an image, or null
+
+    # ── Enums ───────────────────────────────────────────────────────────────
+    AccountType:
+      type: string
+      enum: [INDIVIDUAL, COMPANY]
+    ProfileStatus:
+      type: string
+      description: Individuals only. A profile attribute, not an account type.
+      enum: [PROFESSIONAL, STUDENT]
+    CompanyType:
+      type: string
+      description: A company classification, not an account type
+      enum: [EVENT_ORGANIZER, SUPPLIER, VENUE, PRODUCTION, AGENCY, SERVICE_PROVIDER, OTHER]
+    CompanyRole:
+      type: string
+      enum: [OWNER]
+    CompanyPermission:
+      type: string
+      enum: [EDIT_PROFILE, MANAGE_PROJECTS, MANAGE_OPPORTUNITIES, REVIEW_APPLICANTS, RESPOND_TO_SUPPLIER_REQUESTS]
+    CompanyCapability:
+      type: string
+      enum: [CREATE_SUPPLIER_REQUEST]
+    OpportunityType:
+      type: string
+      description: SUPPLIER_REQUEST is company-facing (B2B); the others are individual-facing.
+      enum: [JOB, PROJECT, CO_OP, VOLUNTEERING, SUPPLIER_REQUEST]
+    OpportunityStatus:
+      type: string
+      enum: [DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, PAUSED, CLOSED, ARCHIVED]
+    EmploymentType:
+      type: string
+      enum: [FULL_TIME, PART_TIME, CONTRACT, FREELANCE]
+    WorkSetup:
+      type: string
+      enum: [ON_SITE, HYBRID, REMOTE]
+    ApplicationStatus:
+      type: string
+      enum: [SUBMITTED, REVIEWED, SHORTLISTED, CONTACT, ACCEPTED, REJECTED, WITHDRAWN]
+    SupplierResponseStatus:
+      type: string
+      enum: [SUBMITTED, REVIEWED, SHORTLISTED, SELECTED, REJECTED]
+    EventType:
+      type: string
+      enum: [CONFERENCE, WORKSHOP, NETWORKING, EXPO]
+    NewsTopic:
+      type: string
+      enum: [TECHNICAL, REGULATORY, MARKET]
+    RewardCategory:
+      type: string
+      enum: [LEARN, ATTEND, CAREER, COMMUNITY]
+    RewardKind:
+      type: string
+      description: HIGHLIGHT is a Profile Highlight (points reward), never verification and never paid placement.
+      enum: [COURSE, TICKET, HIGHLIGHT, REPORT, COMMUNITY]
+    PointsActivity:
+      type: string
+      enum: [ATTENDED_WORKSHOP, ATTENDANCE_VERIFIED, VOLUNTEER_SHIFT_COMPLETED, PROFILE_COMPLETION, VERIFIED_IDENTITY, FOLLOWED_COMPANY, REDEEMED_REWARD]
+    ProfileInterest:
+      type: string
+      enum: [TECH_INNOVATION, MARKETING, DESIGN, BUSINESS, NETWORKING, PRODUCTION]
+    Availability:
+      type: string
+      enum: [AVAILABLE, IN_PRODUCTION, FULLY_BOOKED]
+    ProfessionalField:
+      type: string
+      enum: [PRODUCTION, DESIGN, TECHNICAL, OTHER]
+    NotificationCategory:
+      type: string
+      enum: [OPPORTUNITIES, EVENTS, CREDENTIALS, NEWS]
+    NotificationTargetType:
+      type: string
+      enum: [OPPORTUNITY, EVENT, REWARD, ARTICLE, PROFILE]
+    VerificationDocument:
+      type: string
+      description: IDENTITY = National ID or Iqama; EXPERIENCE = certificate, contract or reference letter
+      enum: [IDENTITY, EXPERIENCE]
+    VerificationRequestStatus:
+      type: string
+      enum: [DRAFT, IN_REVIEW]
+
+    # ── Auth ────────────────────────────────────────────────────────────────
+    RegisterRequest:
+      type: object
+      required: [full_name, email, phone, password, account_type]
+      properties:
+        full_name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        phone: { type: string, description: 'E.164' }
+        password: { type: string, minLength: 8 }
+        account_type: { $ref: '#/components/schemas/AccountType' }
+        profile_status:
+          $ref: '#/components/schemas/ProfileStatus'
+          description: INDIVIDUAL only (default PROFESSIONAL)
+        company:
+          type: object
+          description: COMPANY only. Creates the company with this account as its OWNER.
+          required: [name, company_type]
+          properties:
+            name: { type: string }
+            company_type: { $ref: '#/components/schemas/CompanyType' }
+    Session:
+      type: object
+      required: [access_token, user]
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        expires_in: { type: integer, description: 'Access token lifetime in seconds' }
+        user: { $ref: '#/components/schemas/AppUser' }
+    AppUser:
+      type: object
+      required: [id, full_name, email, account_type, is_verified]
+      properties:
+        id: { type: string }
+        full_name: { type: string, description: 'For a company, its representative' }
+        email: { type: string }
+        phone: { type: [string, 'null'] }
+        account_type: { $ref: '#/components/schemas/AccountType' }
+        profile_status:
+          description: INDIVIDUAL only, null for companies
+          oneOf:
+            - $ref: '#/components/schemas/ProfileStatus'
+            - type: 'null'
+        headline: { type: [string, 'null'] }
+        avatar_url: { $ref: '#/components/schemas/ImageUrl' }
+        is_verified: { type: boolean, description: 'Verification only. Never implied by points, payment or activity.' }
+        membership:
+          description: COMPANY only, null for individuals
+          oneOf:
+            - $ref: '#/components/schemas/CompanyMembership'
+            - type: 'null'
+    CompanyMembership:
+      type: object
+      required: [company, role]
+      properties:
+        company: { $ref: '#/components/schemas/CompanySummary' }
+        role: { $ref: '#/components/schemas/CompanyRole' }
+        permissions:
+          type: array
+          description: Informational; the app derives permissions from the role today.
+          items: { $ref: '#/components/schemas/CompanyPermission' }
+
+    # ── Companies ───────────────────────────────────────────────────────────
+    CompanySummary:
+      type: object
+      required: [id, name, company_type, is_verified]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        company_type: { $ref: '#/components/schemas/CompanyType' }
+        logo_url: { $ref: '#/components/schemas/ImageUrl' }
+        is_verified: { type: boolean }
+        capabilities:
+          type: array
+          description: Always send it; the app falls back to type defaults only when absent.
+          items: { $ref: '#/components/schemas/CompanyCapability' }
+    Company:
+      allOf:
+        - $ref: '#/components/schemas/CompanySummary'
+        - type: object
+          required: [specialization, city, description, services, open_opportunities, completed_projects, followers, followed]
+          properties:
+            specialization: { type: string, example: Staging & Rigging }
+            city: { type: string }
+            description: { type: string, maxLength: 1000 }
+            services: { type: array, items: { type: string } }
+            industries: { type: array, items: { type: string } }
+            contact_email: { type: [string, 'null'] }
+            contact_phone: { type: [string, 'null'] }
+            website: { type: [string, 'null'] }
+            cover_url: { $ref: '#/components/schemas/ImageUrl' }
+            open_opportunities: { type: integer, description: 'Published listings' }
+            completed_projects: { type: integer, description: 'Portfolio size' }
+            followers: { type: integer }
+            followed: { type: boolean, description: 'Whether the signed-in individual follows it' }
+    CompanyProfileUpdate:
+      type: object
+      description: Send the whole editable set; empty strings clear optional fields.
+      properties:
+        specialization: { type: string }
+        city: { type: string }
+        description: { type: string, maxLength: 1000 }
+        services: { type: array, items: { type: string } }
+        industries: { type: array, items: { type: string } }
+        contact_email: { type: string, description: 'Empty or a valid email' }
+        contact_phone: { type: string }
+        website: { type: string }
+    CompanyStats:
+      type: object
+      required: [live_listings, new_applicants, new_applicants_this_week, supplier_invites, profile_views]
+      properties:
+        live_listings: { type: integer, description: 'PUBLISHED listings' }
+        new_applicants: { type: integer, description: 'SUBMITTED applications across all listings' }
+        new_applicants_this_week: { type: integer }
+        supplier_invites: { type: integer, description: 'Open requests inviting this company''s type, not yet answered' }
+        profile_views: { type: integer, description: 'Last 30 days' }
+        profile_views_change_percent: { type: [integer, 'null'], description: 'Against the previous 30 days' }
+    CompanyProject:
+      type: object
+      required: [id, company_id, title, description, location, category, started_at]
+      properties:
+        id: { type: string }
+        company_id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        location: { type: string }
+        category: { type: string, example: Technical Production }
+        started_at: { type: string, format: date }
+        ended_at: { type: [string, 'null'], format: date, description: 'Null for single-day or ongoing' }
+        services: { type: array, items: { type: string } }
+        image_urls: { type: array, items: { type: string, format: uri } }
+        client_name: { type: [string, 'null'], description: 'Optional; some clients are confidential' }
+    CompanyProjectInput:
+      type: object
+      required: [title, description, location, category, started_at]
+      properties:
+        title: { type: string, minLength: 1 }
+        description: { type: string, minLength: 1 }
+        location: { type: string, minLength: 1 }
+        category: { type: string, minLength: 1 }
+        started_at: { type: string, format: date }
+        ended_at: { type: [string, 'null'], format: date, description: 'Not before started_at' }
+        services: { type: array, items: { type: string } }
+        client_name: { type: [string, 'null'] }
+
+    # ── Opportunities ───────────────────────────────────────────────────────
+    Opportunity:
+      type: object
+      required: [id, type, status, title, company, city, summary, posted_at, applicants]
+      properties:
+        id: { type: string }
+        type: { $ref: '#/components/schemas/OpportunityType' }
+        status: { $ref: '#/components/schemas/OpportunityStatus' }
+        title: { type: string }
+        company: { $ref: '#/components/schemas/CompanySummary' }
+        city: { type: string }
+        summary: { type: string, description: 'One line for cards' }
+        description: { type: string }
+        posted_at: { type: string, format: date-time }
+        closes_at: { type: [string, 'null'], format: date-time, description: 'Applications stop after it' }
+        work_setup:
+          oneOf:
+            - $ref: '#/components/schemas/WorkSetup'
+            - type: 'null'
+        employment_type:
+          description: JOB only
+          oneOf:
+            - $ref: '#/components/schemas/EmploymentType'
+            - type: 'null'
+        compensation: { type: [string, 'null'], description: 'Display text, e.g. "SAR 28k – 34k / mo"' }
+        duration: { type: [string, 'null'], description: 'e.g. "4 months"' }
+        responsibilities: { type: array, items: { type: string } }
+        requirements: { type: array, items: { type: string } }
+        skills: { type: array, items: { type: string } }
+        applicants: { type: integer, description: 'Applications, or responses for a supplier request' }
+        match_score:
+          type: [integer, 'null']
+          minimum: 0
+          maximum: 100
+          description: Backend-computed fit with the signed-in individual. Null when no matching rule applies; the app never invents one.
+        match_reasons: { type: array, items: { type: string } }
+        supplier_types:
+          type: array
+          description: SUPPLIER_REQUEST only — the company types invited to respond
+          items: { $ref: '#/components/schemas/CompanyType' }
+        reviewer_note: { type: [string, 'null'], description: 'Owner only; set with CHANGES_REQUESTED' }
+        revision:
+          description: Owner only; the pending update of a PUBLISHED listing
+          oneOf:
+            - $ref: '#/components/schemas/OpportunityRevision'
+            - type: 'null'
+        my_application:
+          description: Individuals only — the latest application to this listing, if any
+          oneOf:
+            - $ref: '#/components/schemas/ApplicationRef'
+            - type: 'null'
+    ApplicationRef:
+      type: object
+      required: [id, status]
+      properties:
+        id: { type: string }
+        status: { $ref: '#/components/schemas/ApplicationStatus' }
+    OpportunityRevision:
+      type: object
+      required: [status, draft]
+      properties:
+        status:
+          type: string
+          enum: [DRAFT, IN_REVIEW, CHANGES_REQUESTED]
+        draft: { $ref: '#/components/schemas/OpportunityInput' }
+        reviewer_note: { type: [string, 'null'] }
+    OpportunityInput:
+      type: object
+      description: |
+        Draft content. Saving a draft accepts incomplete content; submitting
+        for review validates it: title, city, summary and description
+        required; employment_type for JOB; at least one supplier type for
+        SUPPLIER_REQUEST; closes_at in the future when set.
+      required: [type]
+      properties:
+        type: { $ref: '#/components/schemas/OpportunityType' }
+        title: { type: string }
+        city: { type: string }
+        summary: { type: string }
+        description: { type: string }
+        employment_type:
+          oneOf:
+            - $ref: '#/components/schemas/EmploymentType'
+            - type: 'null'
+        compensation: { type: string }
+        duration: { type: string }
+        responsibilities: { type: array, items: { type: string } }
+        requirements: { type: array, items: { type: string } }
+        skills: { type: array, items: { type: string } }
+        supplier_types: { type: array, items: { $ref: '#/components/schemas/CompanyType' } }
+        closes_at: { type: [string, 'null'], format: date-time }
+        work_setup:
+          description: Not used by SUPPLIER_REQUEST
+          oneOf:
+            - $ref: '#/components/schemas/WorkSetup'
+            - type: 'null'
+
+    # ── Profile ─────────────────────────────────────────────────────────────
+    Experience:
+      type: object
+      required: [id, role, company, start]
+      properties:
+        id: { type: string }
+        role: { type: string }
+        company: { type: string }
+        start: { type: string, format: date }
+        end: { type: [string, 'null'], format: date, description: 'Null while current' }
+    ProfileProject:
+      type: object
+      description: An individual's own work (not a CompanyProject)
+      required: [id, year, category, title, role]
+      properties:
+        id: { type: string }
+        year: { type: integer }
+        category: { type: string }
+        title: { type: string }
+        role: { type: string, example: Lead Producer · 120k attendees }
+        image_url: { $ref: '#/components/schemas/ImageUrl' }
+    ProfileBadge:
+      type: object
+      required: [title, issuer]
+      properties:
+        title: { type: string }
+        issuer: { type: string }
+        premium: { type: boolean, description: 'Formal certifications and honours' }
+    ContactPrivacy:
+      type: object
+      description: What companies may see from the CONTACT stage on. Both default to false.
+      properties:
+        share_email: { type: boolean, default: false }
+        share_phone: { type: boolean, default: false }
+    Profile:
+      type: object
+      required: [name, headline, city, about, profile_status, verified, verification_level, experience, projects, skills, interests, contact_privacy]
+      properties:
+        name: { type: string }
+        headline: { type: string }
+        company: { type: string, description: 'Current employer, display only' }
+        city: { type: string }
+        industry: { type: string }
+        about: { type: string, maxLength: 600 }
+        profile_status: { $ref: '#/components/schemas/ProfileStatus' }
+        avatar_url: { $ref: '#/components/schemas/ImageUrl' }
+        verified: { type: boolean }
+        verification_level: { type: integer, description: 'Verification state only; points and payment never change it' }
+        visibility_score: { type: integer, minimum: 0, maximum: 100 }
+        availability: { type: string, example: Available for Q3/Q4 cultural projects }
+        years_experience: { type: integer }
+        events_attended: { type: integer }
+        attendance_points: { type: integer }
+        experience: { type: array, items: { $ref: '#/components/schemas/Experience' } }
+        projects: { type: array, items: { $ref: '#/components/schemas/ProfileProject' } }
+        skills: { type: array, items: { type: string } }
+        badges: { type: array, items: { $ref: '#/components/schemas/ProfileBadge' } }
+        interests: { type: array, items: { $ref: '#/components/schemas/ProfileInterest' } }
+        contact_privacy: { $ref: '#/components/schemas/ContactPrivacy' }
+    ProfileUpdate:
+      type: object
+      required: [name, headline, city, about, profile_status, interests, contact_privacy]
+      properties:
+        name: { type: string, minLength: 2 }
+        headline: { type: string }
+        city: { type: string }
+        about: { type: string, maxLength: 600 }
+        profile_status: { $ref: '#/components/schemas/ProfileStatus' }
+        interests: { type: array, uniqueItems: true, items: { $ref: '#/components/schemas/ProfileInterest' } }
+        contact_privacy: { $ref: '#/components/schemas/ContactPrivacy' }
+    VerificationRequest:
+      type: object
+      required: [status, files]
+      properties:
+        status: { $ref: '#/components/schemas/VerificationRequestStatus' }
+        files:
+          type: object
+          description: 'Uploaded file name per document type, e.g. { "IDENTITY": "iqama.pdf" }'
+          propertyNames: { $ref: '#/components/schemas/VerificationDocument' }
+          additionalProperties: { type: string }
+        submitted_at: { type: [string, 'null'], format: date-time }
+
+    # ── Applications ────────────────────────────────────────────────────────
+    ApplicationCreate:
+      type: object
+      required: [opportunity_id, experience_ids]
+      properties:
+        opportunity_id: { type: string }
+        experience_ids:
+          type: array
+          minItems: 1
+          description: From the applicant's own profile; at least one
+          items: { type: string }
+        project_ids:
+          type: array
+          description: From the applicant's own profile; optional
+          items: { type: string }
+        message: { type: [string, 'null'], maxLength: 500 }
+    ApplicantSnapshot:
+      type: object
+      description: Public profile captured at submission. Never contains contact details.
+      required: [name, headline, profile_status, verification_level, verified]
+      properties:
+        name: { type: string }
+        headline: { type: string }
+        profile_status: { $ref: '#/components/schemas/ProfileStatus' }
+        verification_level: { type: integer }
+        verified: { type: boolean }
+        city: { type: string }
+        skills: { type: array, items: { type: string } }
+        avatar_url: { $ref: '#/components/schemas/ImageUrl' }
+    Application:
+      type: object
+      description: The applicant's view, with snapshots of the listing and applicant taken at submission.
+      required: [id, reference, opportunity_id, opportunity_title, opportunity_type, company, city, status, submitted_at, updated_at, applicant]
+      properties:
+        id: { type: string }
+        reference: { type: string, example: ME-8841 }
+        opportunity_id: { type: string }
+        opportunity_title: { type: string }
+        opportunity_type: { $ref: '#/components/schemas/OpportunityType' }
+        company: { $ref: '#/components/schemas/CompanySummary' }
+        city: { type: string }
+        employment_type:
+          oneOf:
+            - $ref: '#/components/schemas/EmploymentType'
+            - type: 'null'
+        compensation: { type: [string, 'null'] }
+        status: { $ref: '#/components/schemas/ApplicationStatus' }
+        submitted_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        applicant: { $ref: '#/components/schemas/ApplicantSnapshot' }
+        message: { type: [string, 'null'] }
+        experience: { type: array, items: { $ref: '#/components/schemas/Experience' } }
+        projects: { type: array, items: { $ref: '#/components/schemas/ProfileProject' } }
+    ApplicantContact:
+      type: object
+      properties:
+        email: { type: [string, 'null'] }
+        phone: { type: [string, 'null'] }
+    ApplicantView:
+      type: object
+      description: An application as the owning company sees it.
+      required: [application_id, reference, opportunity_id, opportunity_title, status, submitted_at, updated_at, applicant]
+      properties:
+        application_id: { type: string }
+        reference: { type: string }
+        opportunity_id: { type: string }
+        opportunity_title: { type: string }
+        status: { $ref: '#/components/schemas/ApplicationStatus' }
+        submitted_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        applicant: { $ref: '#/components/schemas/ApplicantSnapshot' }
+        experience: { type: array, items: { $ref: '#/components/schemas/Experience' } }
+        projects: { type: array, items: { $ref: '#/components/schemas/ProfileProject' } }
+        message: { type: [string, 'null'] }
+        contact:
+          description: |
+            Null before CONTACT. From CONTACT (and ACCEPTED after it) only
+            the fields the applicant's contact_privacy shares; null when it
+            shares nothing. Redacted by the server.
+          oneOf:
+            - $ref: '#/components/schemas/ApplicantContact'
+            - type: 'null'
+
+    # ── Suppliers ───────────────────────────────────────────────────────────
+    SupplierResponseCreate:
+      type: object
+      required: [request_id, message]
+      properties:
+        request_id: { type: string }
+        message: { type: string, minLength: 1, maxLength: 1000 }
+        proposed_price: { type: [string, 'null'], description: 'Free text, e.g. "SAR 180,000 all-in"' }
+        setup_time: { type: [string, 'null'], description: 'Free text, e.g. "2 days on site"' }
+        project_ids:
+          type: array
+          description: The responder's own company projects, as evidence
+          items: { type: string }
+    SupplierResponse:
+      type: object
+      required: [id, request_id, request_title, buyer, responder, message, status, submitted_at, updated_at]
+      properties:
+        id: { type: string }
+        request_id: { type: string }
+        request_title: { type: string }
+        buyer: { $ref: '#/components/schemas/CompanySummary' }
+        responder: { $ref: '#/components/schemas/CompanySummary' }
+        message: { type: string }
+        proposed_price: { type: [string, 'null'] }
+        setup_time: { type: [string, 'null'] }
+        status: { $ref: '#/components/schemas/SupplierResponseStatus' }
+        submitted_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        projects: { type: array, items: { $ref: '#/components/schemas/CompanyProject' } }
+
+    # ── Discover ────────────────────────────────────────────────────────────
+    DiscoverCounts:
+      type: object
+      required: [companies, professionals, events, opportunities]
+      properties:
+        companies: { type: integer, description: 'Verified companies' }
+        professionals: { type: integer, description: 'Verified professionals' }
+        events: { type: integer, description: 'Upcoming events' }
+        opportunities: { type: integer, description: 'Open opportunities visible to the account' }
+    EventSpeaker:
+      type: object
+      required: [name, role, organization]
+      properties:
+        name: { type: string }
+        role: { type: string }
+        organization: { type: string }
+        photo_url: { $ref: '#/components/schemas/ImageUrl' }
+        host: { type: boolean }
+    AgendaItem:
+      type: object
+      required: [day, starts_at, ends_at, title, description]
+      properties:
+        day: { type: integer, minimum: 1 }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        title: { type: string }
+        description: { type: string }
+        format: { type: [string, 'null'], example: Technical Panel }
+        keynote: { type: boolean }
+    Event:
+      type: object
+      required: [id, title, type, starts_at, ends_at, city, venue, organizer, description, topics, attendees, is_registered]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        type: { $ref: '#/components/schemas/EventType' }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        city: { type: string }
+        venue: { type: string }
+        organizer: { type: string }
+        organizer_verified: { type: boolean }
+        description: { type: string }
+        topics: { type: array, items: { type: string } }
+        attendees: { type: integer }
+        image_url: { $ref: '#/components/schemas/ImageUrl' }
+        is_registered: { type: boolean }
+        pass_code: { type: [string, 'null'], description: 'Issued once registered' }
+        accredited: { type: boolean, description: 'Accredited by the General Entertainment Authority' }
+        flagship: { type: boolean, description: 'Editorial pick for Home. Neutral label; never "Featured".' }
+        points_reward: { type: integer, description: 'Credited after verified attendance, never on registration' }
+        network_peers: { type: integer, description: 'Confirmed attendees from the member''s network' }
+        match_score: { type: [integer, 'null'], minimum: 0, maximum: 100 }
+        speakers: { type: array, items: { $ref: '#/components/schemas/EventSpeaker' } }
+        agenda: { type: array, items: { $ref: '#/components/schemas/AgendaItem' } }
+    Professional:
+      type: object
+      required: [id, name, role, company, city, years_experience, skills, availability, verified, connected, field, student, highlighted]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role: { type: string }
+        company: { type: string }
+        city: { type: string }
+        years_experience: { type: integer }
+        skills: { type: array, items: { type: string } }
+        availability: { $ref: '#/components/schemas/Availability' }
+        avatar_url: { $ref: '#/components/schemas/ImageUrl' }
+        verified: { type: boolean }
+        connected: { type: boolean }
+        field: { $ref: '#/components/schemas/ProfessionalField' }
+        student: { type: boolean, description: 'Individual with STUDENT status' }
+        highlighted: { type: boolean, description: 'Active Profile Highlight (points reward). Not verification, not paid.' }
+        match_score: { type: [integer, 'null'], minimum: 0, maximum: 100 }
+
+    # ── News ────────────────────────────────────────────────────────────────
+    ArticleAuthor:
+      type: object
+      required: [name, role]
+      properties:
+        name: { type: string }
+        role: { type: string }
+        photo_url: { $ref: '#/components/schemas/ImageUrl' }
+        verified: { type: boolean }
+    ArticleBlock:
+      type: object
+      description: One piece of the body, in reading order
+      required: [type]
+      properties:
+        type: { type: string, enum: [PARAGRAPH, QUOTE, NOTICE] }
+        text: { type: string }
+        attribution: { type: string, description: 'QUOTE only' }
+        title: { type: string, description: 'NOTICE only' }
+    Article:
+      type: object
+      required: [id, topic, category, title, summary, source, teaser, read_minutes, published_at, like_count, liked, comment_count, saved]
+      properties:
+        id: { type: string }
+        topic: { $ref: '#/components/schemas/NewsTopic' }
+        category: { type: string, example: Technical Mandate }
+        title: { type: string }
+        summary: { type: string }
+        source: { type: string, example: General Entertainment Authority }
+        teaser: { type: string }
+        read_minutes: { type: integer }
+        published_at: { type: string, format: date-time }
+        image_url: { $ref: '#/components/schemas/ImageUrl' }
+        image_caption: { type: [string, 'null'] }
+        breaking: { type: boolean }
+        labels: { type: array, items: { type: string } }
+        author:
+          oneOf:
+            - $ref: '#/components/schemas/ArticleAuthor'
+            - type: 'null'
+        directives: { type: array, items: { type: string } }
+        body: { type: array, items: { $ref: '#/components/schemas/ArticleBlock' } }
+        keywords: { type: array, items: { type: string } }
+        saved: { type: boolean }
+        like_count: { type: integer }
+        liked: { type: boolean }
+        comment_count: { type: integer }
+    ArticleComment:
+      type: object
+      required: [id, article_id, author_name, text, created_at, mine]
+      properties:
+        id: { type: string }
+        article_id: { type: string }
+        author_name: { type: string, description: 'Snapshot at posting' }
+        author_headline: { type: [string, 'null'] }
+        author_avatar_url: { $ref: '#/components/schemas/ImageUrl' }
+        text: { type: string }
+        created_at: { type: string, format: date-time }
+        mine: { type: boolean, description: 'Posted by the signed-in member (may delete)' }
+
+    # ── Rewards ─────────────────────────────────────────────────────────────
+    PointsSummary:
+      type: object
+      description: |
+        Points levels are numbered Rewards levels (1 at 0 pts, 2 at 100,
+        3 at 500, 4 at 1500). They never mean verification.
+      required: [balance, earned_this_month, level, level_target, next_benefit_at, total_earned, total_spent]
+      properties:
+        balance: { type: integer }
+        earned_this_month: { type: integer }
+        level: { type: integer, minimum: 1, maximum: 4 }
+        level_target: { type: integer, description: 'Points needed for the next level (the balance at the top level)' }
+        next_benefit_at: { type: integer, description: 'Balance at which the next reward unlocks' }
+        total_earned: { type: integer }
+        total_spent: { type: integer, description: 'Positive number' }
+    PointsTransaction:
+      type: object
+      required: [id, activity, detail, date, points]
+      properties:
+        id: { type: string }
+        activity: { $ref: '#/components/schemas/PointsActivity' }
+        detail: { type: string, example: Tech & Innovation in Events }
+        date: { type: string, format: date-time }
+        points: { type: integer, description: 'Positive when earned, negative when redeemed' }
+    Reward:
+      type: object
+      required: [id, category, kind, title, description, cost, benefits, steps, note, available]
+      properties:
+        id: { type: string }
+        category: { $ref: '#/components/schemas/RewardCategory' }
+        kind: { $ref: '#/components/schemas/RewardKind' }
+        title: { type: string }
+        description: { type: string }
+        cost: { type: integer }
+        benefits: { type: array, items: { type: string } }
+        steps: { type: array, items: { type: string }, description: 'How to use it once redeemed' }
+        note: { type: string }
+        image_url: { $ref: '#/components/schemas/ImageUrl' }
+        available: { type: boolean, description: 'False for "Coming soon"' }
+    Redemption:
+      type: object
+      required: [reward, code, remaining_balance]
+      properties:
+        reward: { $ref: '#/components/schemas/Reward' }
+        code: { type: string, example: BOH-7K2Q-94XM }
+        remaining_balance: { type: integer }
+        valid_until: { type: [string, 'null'], format: date-time }
+
+    # ── Notifications ───────────────────────────────────────────────────────
+    Notification:
+      type: object
+      required: [id, category, title, body, created_at, target_type, source, read]
+      properties:
+        id: { type: string }
+        category: { $ref: '#/components/schemas/NotificationCategory' }
+        title: { type: string, description: 'Localised by the server (ignored for application updates)' }
+        body: { type: string }
+        created_at: { type: string, format: date-time }
+        target_type: { $ref: '#/components/schemas/NotificationTargetType' }
+        target_id: { type: [string, 'null'] }
+        source: { type: string, example: Midan Hub }
+        points_delta: { type: [integer, 'null'] }
+        read: { type: boolean }
+        application_update:
+          description: Set for official application status changes; the app words these itself.
+          oneOf:
+            - type: object
+              required: [application_id, opportunity_title, status]
+              properties:
+                application_id: { type: string }
+                opportunity_title: { type: string }
+                status: { $ref: '#/components/schemas/ApplicationStatus' }
+            - type: 'null'

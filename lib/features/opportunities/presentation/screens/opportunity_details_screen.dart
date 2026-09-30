@@ -12,9 +12,16 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../applications/domain/application.dart';
 import '../../../applications/presentation/controllers/applications_providers.dart';
 import '../../../applications/presentation/widgets/application_widgets.dart';
+import '../../../companies/presentation/company_labels.dart';
 import '../../domain/opportunity.dart';
 import '../controllers/opportunities_providers.dart';
 import '../widgets/opportunity_widgets.dart';
+
+void _comingSoon(BuildContext context) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoonMessage)));
+}
 
 /// One opportunity, any type. What the footer offers comes from the
 /// domain: apply, view the existing application, or why neither applies.
@@ -31,11 +38,23 @@ class OpportunityDetailsScreen extends ConsumerWidget {
         ref.watch(applicationsForOpportunityProvider(opportunityId)).value ??
         const <Application>[];
     final blocking = ApplicationRules.blockingApplication(history);
+    final eligibility = opportunity.value?.eligibilityFor(
+      ref.watch(applicantProvider),
+    );
 
     return BOHScaffold(
       appBar: BOHAppBar(
-        title:
-            opportunity.value?.type.label(l10n) ?? l10n.directoryOpportunities,
+        title: l10n.opportunityDetailTitle,
+        centerTitle: true,
+        actions: [
+          BOHIconButton(
+            icon: AppIcons.share,
+            iconSize: 19,
+            semanticLabel: l10n.actionShare,
+            variant: BOHIconButtonVariant.outlined,
+            onPressed: () => _comingSoon(context),
+          ),
+        ],
       ),
       bottomNavigationBar: switch (opportunity) {
         AsyncData(:final value) => _Footer(
@@ -47,6 +66,7 @@ class OpportunityDetailsScreen extends ConsumerWidget {
       body: switch (opportunity) {
         AsyncData(:final value) => _Body(
           opportunity: value,
+          eligible: blocking == null && (eligibility?.isEligible ?? false),
           // The application that decides what can happen next, else the
           // latest (withdrawn) one.
           application: blocking ?? history.firstOrNull,
@@ -63,15 +83,22 @@ class OpportunityDetailsScreen extends ConsumerWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({required this.opportunity, required this.application});
+  const _Body({
+    required this.opportunity,
+    required this.eligible,
+    required this.application,
+  });
 
   final Opportunity opportunity;
+  final bool eligible;
   final Application? application;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final o = opportunity;
+    const gap = SizedBox(height: AppSpacing.s16);
+    const headerGap = SizedBox(height: AppSpacing.gridGap);
 
     return ListView(
       padding: BOHScaffold.screenPadding.add(
@@ -81,85 +108,109 @@ class _Body extends StatelessWidget {
         _Header(opportunity: o),
         if (application case final app?) ...[
           const SizedBox(height: AppSpacing.s12),
-          _ApplicationCard(application: app),
-        ],
-        if (o.matchReasons.isNotEmpty) ...[
+          BOHCard(
+            tone: BOHCardTone.accent,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.opportunityYourApplication,
+                        style: context.text.label,
+                      ),
+                    ),
+                    ApplicationStatusTag(app.status),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s16),
+                ApplicationPipeline(status: app.status),
+              ],
+            ),
+          ),
+        ] else if (eligible) ...[
           const SizedBox(height: AppSpacing.s12),
-          _Section(
-            icon: AppIcons.match,
-            title: l10n.opportunityWhyMatch,
-            child: _Checklist(items: o.matchReasons),
+          BOHBanner(
+            '',
+            title: l10n.opportunityEligible,
+            tone: BOHBannerTone.success,
           ),
         ],
         if (o.description.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s12),
-          _Section(
-            icon: AppIcons.report,
+          gap,
+          BOHSectionHeader(
             title: l10n.opportunityOverview,
-            child: Text(o.description, style: context.text.body),
+            size: BOHSectionSize.sub,
+          ),
+          headerGap,
+          Text(
+            o.description,
+            style: context.text.body.copyWith(
+              color: context.colors.textPrimary,
+            ),
           ),
         ],
         if (o.responsibilities.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s12),
-          _Section(
-            icon: AppIcons.check,
+          gap,
+          BOHSectionHeader(
             title: l10n.opportunityResponsibilities,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (i, r) in o.responsibilities.indexed)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _Number(i + 1),
-                        const SizedBox(width: AppSpacing.s8),
-                        Expanded(child: Text(r, style: context.text.body)),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            size: BOHSectionSize.sub,
           ),
+          headerGap,
+          for (final (i, r) in o.responsibilities.indexed)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+              child: BOHNumberedStep(number: i + 1, text: r),
+            ),
         ],
         if (o.requirements.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s12),
-          _Section(
-            icon: AppIcons.level,
+          gap,
+          BOHSectionHeader(
             title: l10n.opportunityRequirements,
-            child: _Checklist(items: o.requirements),
+            size: BOHSectionSize.sub,
           ),
+          headerGap,
+          for (final r in o.requirements)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.s8),
+              child: BOHCheckBullet(r),
+            ),
         ],
         if (o.skills.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.s12),
-          _Section(
-            icon: AppIcons.technology,
+          gap,
+          BOHSectionHeader(
             title: l10n.opportunitySkills,
-            child: Wrap(
-              spacing: AppSpacing.s8,
-              runSpacing: AppSpacing.s8,
-              children: [
-                for (final s in o.skills)
-                  BOHTag(s, variant: BOHTagVariant.outline),
-              ],
-            ),
+            size: BOHSectionSize.sub,
+          ),
+          headerGap,
+          Wrap(
+            spacing: AppSpacing.s8,
+            runSpacing: AppSpacing.s8,
+            children: [for (final s in o.skills) BOHMetaChip(s, large: true)],
           ),
         ],
-        const SizedBox(height: AppSpacing.s12),
+        gap,
         BOHCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          onTap: () => context.push(AppRoutes.company(o.company.id)),
+          semanticLabel: '${l10n.actionViewCompany}: ${o.company.name}',
+          child: Row(
             children: [
-              Text(l10n.opportunityPostedBy, style: context.text.caption),
-              const SizedBox(height: AppSpacing.s8),
-              CompanyByline(company: o.company),
-              const SizedBox(height: AppSpacing.s12),
-              BOHButton(
+              BOHCompanyLogo(name: o.company.name, size: 44),
+              const SizedBox(width: AppSpacing.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(l10n.opportunityPostedBy, style: context.text.caption),
+                    Text(o.company.name, style: context.text.label),
+                  ],
+                ),
+              ),
+              BOHLinkButton(
                 label: l10n.actionViewCompany,
-                variant: BOHButtonVariant.secondary,
-                size: BOHButtonSize.small,
-                onPressed: () => context.push(AppRoutes.company(o.company.id)),
+                fontSize: 12,
+                onTap: () => context.push(AppRoutes.company(o.company.id)),
               ),
             ],
           ),
@@ -181,189 +232,85 @@ class _Header extends StatelessWidget {
     final closesAt = o.closesAt;
 
     return BOHCard(
+      borderRadius: AppRadii.heroAll,
+      padding: const EdgeInsets.all(AppSpacing.s16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CompanyByline(
-            company: o.company,
-            trailing: o.matchScore == null ? null : MatchPill(o.matchScore!),
+          Row(
+            children: [
+              BOHCompanyLogo(name: o.company.name, size: 52),
+              const SizedBox(width: AppSpacing.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            o.company.name,
+                            style: context.text.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (o.company.verified) ...[
+                          const SizedBox(width: 5),
+                          BOHGlyph(
+                            BOHGlyphType.verified,
+                            size: 15,
+                            semanticLabel: l10n.verifiedLabel,
+                          ),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      o.company.type.label(l10n),
+                      style: context.text.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppSpacing.s12),
-          Semantics(header: true, child: Text(o.title, style: context.text.h1)),
-          const SizedBox(height: AppSpacing.s12),
+          const SizedBox(height: AppSpacing.s14),
+          Semantics(
+            header: true,
+            child: Text(o.title, style: context.text.title),
+          ),
+          const SizedBox(height: AppSpacing.s10),
           Wrap(
             spacing: AppSpacing.s8,
             runSpacing: AppSpacing.s8,
             children: [
-              BOHTag(
+              BOHMetaChip(
                 opportunityTerms(
                   l10n,
                   type: o.type,
                   employment: o.employment,
                   duration: o.duration,
                 ),
-                icon: o.type.icon,
+                large: true,
               ),
-              BOHTag(
-                o.city,
-                variant: BOHTagVariant.outline,
-                icon: AppIcons.location,
-              ),
-              BOHTag(
-                o.compensation ?? l10n.opportunityUnpaid,
-                variant: BOHTagVariant.outline,
-                icon: AppIcons.points,
-              ),
+              BOHMetaChip(o.city, large: true),
+              if (o.workSetup case final setup?)
+                BOHMetaChip(setup.label(l10n), large: true),
+              if (o.compensation case final pay?) BOHMetaChip(pay, large: true),
             ],
           ),
-          const SizedBox(height: AppSpacing.s12),
+          const SizedBox(height: AppSpacing.s10),
           Text(
             [
               postedAgo(l10n, o.postedAt),
-              l10n.opportunityApplicants(o.applicants),
               if (closesAt != null && o.isOpenAt(DateTime.now()))
                 l10n.opportunityClosesOn(
-                  AppDateFormats.mediumDate(context).format(closesAt),
+                  AppDateFormats.monthDayShort(context).format(closesAt),
                 ),
             ].join(' · '),
             style: context.text.caption,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ApplicationCard extends StatelessWidget {
-  const _ApplicationCard({required this.application});
-
-  final Application application;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final c = context.colors;
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
-      decoration: BoxDecoration(
-        color: c.primaryWash,
-        borderRadius: AppRadii.mediumAll,
-        border: Border.all(color: c.primaryTint),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.opportunityYourApplication,
-                  style: context.text.label,
-                ),
-              ),
-              ApplicationStatusTag(application.status),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s16),
-          ApplicationPipeline(status: application.status),
-        ],
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({
-    required this.icon,
-    required this.title,
-    required this.child,
-  });
-
-  final IconData icon;
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return BOHCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: AppSizes.iconMedium, color: c.primaryText),
-              const SizedBox(width: AppSpacing.s8),
-              Expanded(
-                child: Semantics(
-                  header: true,
-                  child: Text(title, style: context.text.cardTitle),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s12),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _Checklist extends StatelessWidget {
-  const _Checklist({required this.items});
-
-  final List<String> items;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (final item in items)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Icon(
-                    AppIcons.success,
-                    size: AppSizes.iconSmall,
-                    color: c.primaryText,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.s8),
-                Expanded(child: Text(item, style: context.text.body)),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _Number extends StatelessWidget {
-  const _Number(this.value);
-
-  final int value;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Container(
-      width: 22,
-      height: 22,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(color: c.primaryWash, shape: BoxShape.circle),
-      child: Text(
-        '$value',
-        style: context.text.caption.copyWith(
-          color: c.primaryText,
-          fontWeight: FontWeight.w700,
-        ),
       ),
     );
   }
@@ -395,6 +342,7 @@ class _Footer extends ConsumerWidget {
     }
     if (eligibility.isEligible) {
       return BOHActionBar(
+        helper: l10n.opportunityApplyHint,
         child: BOHButton(
           label: l10n.actionApplyNow,
           onPressed: () =>

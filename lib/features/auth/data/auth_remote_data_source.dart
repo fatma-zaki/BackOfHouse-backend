@@ -51,6 +51,28 @@ class AuthRemoteDataSource implements AuthDataSource {
   }
 
   @override
+  Future<void> requestPhoneCode(String phone) {
+    return _api.post<dynamic>(
+      ApiEndpoints.phoneCode,
+      skipAuth: true,
+      data: {'phone': phone},
+    );
+  }
+
+  @override
+  Future<AuthSession> verifyPhoneCode({
+    required String phone,
+    required String code,
+  }) async {
+    final data = await _api.post<Map<String, dynamic>>(
+      ApiEndpoints.phoneVerify,
+      skipAuth: true,
+      data: {'phone': phone, 'code': code},
+    );
+    return _parseSession(data);
+  }
+
+  @override
   Future<AppUser> currentUser() async {
     final data = await _api.get<Map<String, dynamic>>(ApiEndpoints.me);
     return AppUser.fromJson(_unwrapUser(data));

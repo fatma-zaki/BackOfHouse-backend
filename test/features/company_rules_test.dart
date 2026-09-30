@@ -166,6 +166,46 @@ void main() {
     });
   });
 
+  group('listing fields', () {
+    final now = DateTime(2026, 9, 28);
+    OpportunityDraft job({DateTime? closesAt, WorkSetup? workSetup}) =>
+        OpportunityDraft(
+          type: OpportunityType.job,
+          title: 'Stage Manager',
+          city: 'Riyadh',
+          summary: 'Run the stage',
+          description: 'Run stage operations.',
+          employment: EmploymentType.fullTime,
+          closesAt: closesAt,
+          workSetup: workSetup,
+        );
+
+    test('a closing date must be in the future', () {
+      final company = _company(CompanyType.production);
+      expect(
+        job(closesAt: now.subtract(const Duration(days: 1)))
+            .validate(company, now: now),
+        contains(OpportunityDraftIssue.closesInPast),
+      );
+      expect(
+        job(closesAt: now.add(const Duration(days: 30)))
+            .validate(company, now: now),
+        isNot(contains(OpportunityDraftIssue.closesInPast)),
+      );
+      expect(job().validate(company, now: now), isEmpty);
+    });
+
+    test('work setup and closing date round-trip through a draft', () {
+      final draft = job(
+        closesAt: now.add(const Duration(days: 30)),
+        workSetup: WorkSetup.hybrid,
+      );
+      expect(draft.workSetup, WorkSetup.hybrid);
+      expect(WorkSetup.fromWire('REMOTE'), WorkSetup.remote);
+      expect(WorkSetup.fromWire('nope'), isNull);
+    });
+  });
+
   group('opportunity publishing', () {
     test('drafts go to review; only Back Of House publishes', () {
       const company = OpportunityActor.company;

@@ -8,6 +8,7 @@ import 'company_workspace_mock.dart';
 
 abstract interface class MyCompanyDataSource {
   Future<Company> getMyCompany();
+  Future<CompanyStats> getStats();
   Future<Company> updateProfile(CompanyProfileDraft draft);
   Future<List<CompanyProject>> getMyProjects();
   Future<CompanyProject> addProject(CompanyProjectDraft draft);
@@ -22,6 +23,9 @@ class MyCompanyRepositoryImpl implements MyCompanyRepository {
 
   @override
   Future<Company> getMyCompany() => _source.getMyCompany();
+
+  @override
+  Future<CompanyStats> getStats() => _source.getStats();
 
   @override
   Future<Company> updateProfile(CompanyProfileDraft draft) =>

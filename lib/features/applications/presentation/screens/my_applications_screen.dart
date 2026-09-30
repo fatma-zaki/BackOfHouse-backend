@@ -132,11 +132,6 @@ class _List extends ConsumerWidget {
           ),
         ),
         children: [
-          BOHPageHeader(
-            title: l10n.applicationsTitle,
-            subtitle: l10n.applicationsSubtitle,
-          ),
-          const SizedBox(height: AppSpacing.s16),
           BOHSegmentedControl<_Tab>(
             segments: [
               (_Tab.active, l10n.applicationsActive(active.length)),
@@ -173,14 +168,19 @@ class _List extends ConsumerWidget {
                   delay: BOHFadeSlide.stagger(i),
                   child: ApplicationCard(
                     application: a,
+                    expanded: i == 0,
                     onOpen: () =>
                         context.push(AppRoutes.opportunity(a.opportunityId)),
                     onWithdraw: a.status.isActive ? () => onWithdraw(a) : null,
                   ),
                 ),
               ),
-          const SizedBox(height: AppSpacing.s8),
-          BOHInfoNote(l10n.applicationsFooter, icon: AppIcons.shield),
+          const SizedBox(height: AppSpacing.s4),
+          Text(
+            l10n.applicationsFooter,
+            textAlign: TextAlign.center,
+            style: context.text.caption.copyWith(height: 16 / 11),
+          ),
         ],
       ),
     );

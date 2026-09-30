@@ -11,18 +11,21 @@ import '../../features/applications/presentation/screens/apply_screen.dart';
 import '../../features/applications/presentation/screens/my_applications_screen.dart';
 import '../../features/auth/domain/account_type.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
+import '../../features/auth/presentation/screens/phone_sign_in_screen.dart';
+import '../../features/auth/presentation/screens/reset_password_screen.dart';
 import '../../features/auth/presentation/screens/sign_in_screen.dart';
 import '../../features/auth/presentation/screens/sign_up_screen.dart';
 import '../../features/auth/presentation/screens/welcome_screen.dart';
+import '../../features/companies/presentation/screens/companies_directory_screen.dart';
 import '../../features/companies/presentation/screens/company_dashboard_screen.dart';
 import '../../features/companies/presentation/screens/company_details_screen.dart';
-import '../../features/companies/presentation/screens/company_portfolio_screen.dart';
 import '../../features/companies/presentation/screens/company_profile_edit_screen.dart';
 import '../../features/companies/presentation/screens/company_profile_screen.dart';
 import '../../features/companies/presentation/screens/company_project_form_screen.dart';
 import '../../features/design_system/presentation/design_system_screen.dart';
 import '../../features/discover/presentation/screens/discover_screen.dart';
 import '../../features/events/presentation/screens/event_details_screen.dart';
+import '../../features/events/presentation/screens/event_registered_screen.dart';
 import '../../features/events/presentation/screens/events_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/news/presentation/screens/article_details_screen.dart';
@@ -33,9 +36,13 @@ import '../../features/opportunities/presentation/screens/company_opportunity_de
 import '../../features/opportunities/presentation/screens/opportunities_screen.dart';
 import '../../features/opportunities/presentation/screens/opportunity_details_screen.dart';
 import '../../features/opportunities/presentation/screens/opportunity_form_screen.dart';
+import '../../features/professionals/presentation/screens/professionals_directory_screen.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
+import '../../features/profile/presentation/screens/get_verified_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/rewards/presentation/screens/my_points_screen.dart';
 import '../../features/rewards/presentation/screens/reward_details_screen.dart';
+import '../../features/rewards/presentation/screens/reward_redeemed_screen.dart';
 import '../../features/rewards/presentation/screens/rewards_screen.dart';
 import '../../features/supplier_responses/presentation/screens/supplier_request_details_screen.dart';
 import '../../features/supplier_responses/presentation/screens/supplier_requests_screen.dart';
@@ -53,8 +60,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 /// every account in its own area.
 ///
 /// Individual tabs: Home · Discover · News · Rewards · Profile.
-/// Company tabs: Dashboard · Discover · News · Profile. The Dashboard opens
-/// the company's opportunities, supplier requests and portfolio. Screens
+/// Company tabs: Dashboard · Listings · Suppliers · News · Profile; the
+/// portfolio sits under the company profile. Screens
 /// reached from a tab stay inside it (the navigation remains visible); event
 /// and article details open above the shell because they are reachable from
 /// every tab.
@@ -97,13 +104,35 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: AppRoutes.auth, builder: (_, _) => const WelcomeScreen()),
       GoRoute(path: AppRoutes.login, builder: (_, _) => const SignInScreen()),
       GoRoute(
+        path: AppRoutes.phoneLogin,
+        builder: (_, _) => const PhoneSignInScreen(),
+      ),
+      GoRoute(
         path: AppRoutes.register,
         builder: (_, _) => const SignUpScreen(),
       ),
+      // The portfolio lives inside Company Profile; this path only hosts
+      // the add/edit forms, above the shell.
+      GoRoute(
+        path: AppRoutes.companyPortfolio,
+        redirect: (_, state) => state.fullPath == AppRoutes.companyPortfolio
+            ? AppRoutes.companyProfile
+            : null,
+        routes: [
+          GoRoute(
+            path: 'new',
+            builder: (_, _) => const CompanyProjectFormScreen(),
+          ),
+          GoRoute(
+            path: ':id/edit',
+            builder: (_, state) =>
+                CompanyProjectFormScreen(projectId: state.pathParameters['id']),
+          ),
+        ],
+      ),
       GoRoute(
         path: AppRoutes.resetPassword,
-        builder: (_, _) =>
-            RoutePlaceholderScreen(title: (l10n) => l10n.routeResetPassword),
+        builder: (_, _) => const ResetPasswordScreen(),
       ),
       // Above the shell: reached from Profile, Opportunities and after
       // applying.
@@ -131,7 +160,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // One shell and one bottom bar for both account types. Home and
       // Profile hold each account's own screen and the guard keeps every
-      // account on its own; companies have no Rewards tab.
+      // account on its own. Branches 0–4 serve individuals (companies use
+      // Home, News and Profile); 5–6 are the company's Listings and
+      // Suppliers tabs.
       StatefulShellRoute.indexedStack(
         builder: (_, _, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -145,88 +176,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: AppRoutes.notifications,
                 builder: (_, _) => const NotificationsScreen(),
               ),
-              // The company's workspace: the dashboard and every area it
-              // opens, so the Dashboard tab stays lit throughout.
+              // The company's dashboard.
               GoRoute(
                 path: AppRoutes.companyHome,
                 builder: (_, _) => const CompanyDashboardScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'opportunities',
-                    builder: (_, _) => const CompanyOpportunitiesScreen(),
-                    routes: [
-                      // Declared before `:id` so it is not read as an id.
-                      GoRoute(
-                        path: 'new',
-                        parentNavigatorKey: _rootNavigatorKey,
-                        builder: (_, _) => const OpportunityFormScreen(),
-                      ),
-                      GoRoute(
-                        path: ':id',
-                        parentNavigatorKey: _rootNavigatorKey,
-                        builder: (_, state) => CompanyOpportunityDetailsScreen(
-                          opportunityId: state.pathParameters['id']!,
-                        ),
-                        routes: [
-                          GoRoute(
-                            path: 'edit',
-                            parentNavigatorKey: _rootNavigatorKey,
-                            builder: (_, state) => OpportunityFormScreen(
-                              opportunityId: state.pathParameters['id'],
-                            ),
-                          ),
-                          GoRoute(
-                            path: 'applicants',
-                            parentNavigatorKey: _rootNavigatorKey,
-                            builder: (_, state) => ApplicantsScreen(
-                              opportunityId: state.pathParameters['id']!,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    path: 'supplier-requests',
-                    builder: (_, _) => const SupplierRequestsScreen(),
-                    routes: [
-                      GoRoute(
-                        path: ':id',
-                        parentNavigatorKey: _rootNavigatorKey,
-                        builder: (_, state) => SupplierRequestDetailsScreen(
-                          requestId: state.pathParameters['id']!,
-                        ),
-                        routes: [
-                          GoRoute(
-                            path: 'respond',
-                            parentNavigatorKey: _rootNavigatorKey,
-                            builder: (_, state) => SupplierResponseFormScreen(
-                              requestId: state.pathParameters['id']!,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    path: 'portfolio',
-                    builder: (_, _) => const CompanyPortfolioScreen(),
-                    routes: [
-                      GoRoute(
-                        path: 'new',
-                        parentNavigatorKey: _rootNavigatorKey,
-                        builder: (_, _) => const CompanyProjectFormScreen(),
-                      ),
-                      GoRoute(
-                        path: ':id/edit',
-                        parentNavigatorKey: _rootNavigatorKey,
-                        builder: (_, state) => CompanyProjectFormScreen(
-                          projectId: state.pathParameters['id'],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ],
           ),
@@ -246,6 +199,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, state) => EventDetailsScreen(
                       eventId: state.pathParameters['id']!,
                     ),
+                    routes: [
+                      GoRoute(
+                        path: 'registered',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (_, state) => EventRegisteredScreen(
+                          eventId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -271,17 +233,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                   ),
                 ],
               ),
-              _placeholder(
-                AppRoutes.professionals,
-                (l10n) => l10n.directoryProfessionals,
-                AppIcons.professionals,
+              GoRoute(
+                path: AppRoutes.professionals,
+                builder: (_, _) => const ProfessionalsDirectoryScreen(),
               ),
               GoRoute(
                 path: AppRoutes.companies,
-                builder: (_, _) => RoutePlaceholderScreen(
-                  title: (l10n) => l10n.routeCompanies,
-                  icon: AppIcons.companies,
-                ),
+                builder: (_, _) => const CompaniesDirectoryScreen(),
                 routes: [
                   GoRoute(
                     path: ':id',
@@ -332,6 +290,15 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, state) => RewardDetailsScreen(
                       rewardId: state.pathParameters['id']!,
                     ),
+                    routes: [
+                      GoRoute(
+                        path: 'redeemed',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (_, state) => RewardRedeemedScreen(
+                          rewardId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -342,6 +309,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: AppRoutes.profile,
                 builder: (_, _) => const ProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (_, _) => const EditProfileScreen(),
+                  ),
+                  GoRoute(
+                    path: 'verify',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (_, _) => const GetVerifiedScreen(),
+                  ),
+                ],
               ),
               GoRoute(
                 path: AppRoutes.companyProfile,
@@ -351,6 +330,72 @@ final routerProvider = Provider<GoRouter>((ref) {
                     path: 'edit',
                     parentNavigatorKey: _rootNavigatorKey,
                     builder: (_, _) => const CompanyProfileEditScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // Company tabs: Listings and Suppliers.
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.companyOpportunities,
+                builder: (_, _) => const CompanyOpportunitiesScreen(),
+                routes: [
+                  // Declared before `:id` so it is not read as an id.
+                  GoRoute(
+                    path: 'new',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (_, _) => const OpportunityFormScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (_, state) => CompanyOpportunityDetailsScreen(
+                      opportunityId: state.pathParameters['id']!,
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (_, state) => OpportunityFormScreen(
+                          opportunityId: state.pathParameters['id'],
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'applicants',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (_, state) => ApplicantsScreen(
+                          opportunityId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.companySupplierRequests,
+                builder: (_, _) => const SupplierRequestsScreen(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    parentNavigatorKey: _rootNavigatorKey,
+                    builder: (_, state) => SupplierRequestDetailsScreen(
+                      requestId: state.pathParameters['id']!,
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: 'respond',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        builder: (_, state) => SupplierResponseFormScreen(
+                          requestId: state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

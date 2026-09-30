@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My applications</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; gap: 12px; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 12px">
+<div role="tablist" aria-label="{{s.title}}" style="display: flex; padding: 4px; border-radius: 22px; background: {{c.soft}}; flex-shrink: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2">
+<button type="button" role="tab" aria-selected="{{t.sel}}" style="flex-grow: 1; flex-basis: 0; height: 36px; border: 0; border-radius: 18px; background: {{t.bg}}; color: {{t.color}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: {{t.shadow}}">{{t.label}}</button>
+</sc-for>
+</div>
+<article style="display: flex; flex-direction: column; gap: 14px; padding: 14px; background: {{c.card}}; border: 1.5px solid {{c.feat}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<img src="/_blob/b9a81774c8b93cc78c19008bd80b4b27" alt="" style="width: 46px; height: 46px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{s.a1}}</span><span style="font-size: 12px; color: {{c.muted}}">{{s.a1org}}</span></div>
+<span style="padding: 3px 9px; border-radius: 12px; background: {{c.okBg}}; color: {{c.okFg}}; font-size: 10.5px; font-weight: 800; white-space: nowrap">{{s.shortlisted}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative">
+<div style="position: absolute; top: 9px; inset-inline-start: 50%; width: 100%; height: 3px; background: {{st.line}}"></div>
+<span style="position: relative; width: 20px; height: 20px; box-sizing: border-box; border-radius: 10px; background: {{st.fill}}; border: 2px solid {{st.ring}}; display: flex; align-items: center; justify-content: center"><sc-if value="{{st.done}}" hint-placeholder-val="{{ false }}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></sc-if></span>
+<span style="font-size: 10px; line-height: 13px; font-weight: 700; color: {{st.color}}; text-align: center">{{st.label}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid {{c.line}}"><span style="font-size: 11px; color: {{c.muted}}">{{s.a1date}}</span><a href="#" style="font-size: 12px; font-weight: 700; color: {{c.vt}}; text-decoration: none">{{s.view}}</a></div>
+</article>
+<sc-for list="{{apps}}" as="a" hint-placeholder-count="2">
+<article style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<img src="/_blob/959bcd8bd2cfb6539f98a4500b4be775" alt="" style="width: 46px; height: 46px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{a.title}}</span><span style="font-size: 12px; color: {{c.muted}}">{{a.org}}</span></div>
+<span style="padding: 3px 9px; border-radius: 12px; background: {{a.bg}}; color: {{a.fg}}; font-size: 10.5px; font-weight: 800; white-space: nowrap">{{a.status}}</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid {{c.line}}"><span style="font-size: 11px; color: {{c.muted}}">{{a.date}}</span><button type="button" style="border: 0; background: transparent; padding: 0; font-family: inherit; font-size: 12px; font-weight: 700; color: {{c.danger}}; cursor: pointer; min-height: 32px">{{s.withdraw}}</button></div>
+</article>
+</sc-for>
+<p style="margin: 4px 0 0; text-align: center; font-size: 11px; line-height: 16px; color: {{c.muted}}">{{s.note}}</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', feat: '#cbbdfb', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', danger: '#b42318', okBg: '#dcf4ea', okFg: '#0d6446', warnBg: '#fcefd6', warnFg: '#80520a', infoBg: '#e0ebff', infoFg: '#1c4aab', shadow: '0 8px 30px rgba(40,20,120,0.06)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', feat: '#3a2d8f', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', danger: '#f87171', okBg: '#0c2e24', okFg: '#4ade80', warnBg: '#33260a', warnFg: '#fbbf24', infoBg: '#0f2350', infoFg: '#7fb0ff', shadow: '0 8px 30px rgba(0,0,0,0.35)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'My applications', tabs: ['Active · 3', 'Closed · 1'],
+        a1: 'Guest Experience Volunteer', a1org: 'Riyadh Season · Riyadh', shortlisted: 'Shortlisted', a1date: 'Applied Sep 12', view: 'View details',
+        steps: ['Applied', 'In review', 'Shortlisted', 'Decision'], withdraw: 'Withdraw',
+        apps: [['Event Producer', 'Saudi Events Group · Riyadh', 'Submitted', 'info', 'Applied today'], ['Event Coordinator', 'Saudi Events Group · Jeddah', 'In review', 'warn', 'Applied Sep 20']],
+        note: 'You’ll get a notification whenever a company updates your application.'
+      },
+      ar: {
+        back: 'رجوع', title: 'طلباتي', tabs: ['النشطة · 3', 'المغلقة · 1'],
+        a1: 'متطوعة تجربة الزوار', a1org: 'موسم الرياض · الرياض', shortlisted: 'في القائمة المختصرة', a1date: 'قُدّم في 12 سبتمبر', view: 'عرض التفاصيل',
+        steps: ['تم التقديم', 'قيد المراجعة', 'القائمة المختصرة', 'القرار'], withdraw: 'سحب الطلب',
+        apps: [['منتج فعاليات', 'مجموعة الفعاليات السعودية · الرياض', 'تم الإرسال', 'info', 'قُدّم اليوم'], ['منسقة فعاليات', 'مجموعة الفعاليات السعودية · جدة', 'قيد المراجعة', 'warn', 'قُدّم في 20 سبتمبر']],
+        note: 'ستصلك إشعارات كلما حدّثت الشركة حالة طلبك.'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const tabs = s.tabs.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.card : 'transparent', color: i === 0 ? c.vt : c.muted, shadow: i === 0 ? '0 4px 12px rgba(40,20,120,0.10)' : 'none' }));
+    const reached = 2;
+    const steps = s.steps.map((label, i) => ({
+      label, done: i <= reached,
+      fill: i <= reached ? '#6437fa' : c.card, ring: i <= reached ? '#6437fa' : c.line,
+      line: i === s.steps.length - 1 ? 'transparent' : (i < reached ? '#6437fa' : c.line),
+      color: i <= reached ? c.ink : c.muted
+    }));
+    const apps = s.apps.map((a) => ({ title: a[0], org: a[1], status: a[2], bg: c[a[3] + 'Bg'], fg: c[a[3] + 'Fg'], date: a[4] }));
+    return {
+      c, s, tabs, steps, apps,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

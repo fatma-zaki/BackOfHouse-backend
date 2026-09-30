@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/router/auth_guard.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../profile/domain/profile_status.dart';
 import '../../data/auth_repository_impl.dart';
 import '../../domain/account_details.dart';
 import '../../domain/account_type.dart';
@@ -57,6 +58,36 @@ class AuthController extends AsyncNotifier<AppUser?> {
             password: password,
             account: account,
           ),
+    );
+  }
+
+  Future<void> signInWithPhoneCode({
+    required String phone,
+    required String code,
+  }) async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(
+      () => ref
+          .read(authRepositoryProvider)
+          .verifyPhoneCode(phone: phone, code: code),
+    );
+  }
+
+  /// Reflects a saved profile in the session: name, headline and student
+  /// status. Eligibility (e.g. co-op) reads the session, so it follows.
+  void applyProfile({
+    required String fullName,
+    required String headline,
+    required ProfileStatus profileStatus,
+  }) {
+    final user = state.value;
+    if (user == null || !user.isIndividual) return;
+    state = AsyncData(
+      user.copyWith(
+        fullName: fullName,
+        headline: headline,
+        profileStatus: profileStatus,
+      ),
     );
   }
 

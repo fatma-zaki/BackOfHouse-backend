@@ -15,6 +15,9 @@ enum ApiErrorType {
   tooManyRequests,
   server,
   invalidCredentials,
+
+  /// A one-time sign-in code was wrong or expired.
+  invalidCode,
   insufficientPoints,
   unknown,
 }

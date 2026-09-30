@@ -9,7 +9,10 @@ import '../../../core/utils/paginated.dart';
 import '../domain/professional.dart';
 
 abstract interface class ProfessionalsDataSource {
-  Future<Paginated<Professional>> getProfessionals(PageRequest request);
+  Future<Paginated<Professional>> getProfessionals(
+    PageRequest request, {
+    ProfessionalsQuery query,
+  });
   Future<Professional> setConnected(String id, {required bool connected});
   Future<int> countVerified();
 }
@@ -20,8 +23,10 @@ class ProfessionalsRepositoryImpl implements ProfessionalsRepository {
   final ProfessionalsDataSource _source;
 
   @override
-  Future<Paginated<Professional>> getProfessionals(PageRequest request) =>
-      _source.getProfessionals(request);
+  Future<Paginated<Professional>> getProfessionals(
+    PageRequest request, {
+    ProfessionalsQuery query = (filter: null, query: ''),
+  }) => _source.getProfessionals(request, query: query);
 
   @override
   Future<Professional> setConnected(String id, {required bool connected}) =>
@@ -52,15 +57,43 @@ class ProfessionalsMockDataSource implements ProfessionalsDataSource {
       matchScore: m.match,
       availability: m.availability,
       avatar: m.photo == null ? null : AppImage.asset(m.photo!),
-      verified: true,
+      verified: !_meta(m.id).student,
       connected: _connected.contains(m.id),
+      field: _meta(m.id).field,
+      student: _meta(m.id).student,
+      highlighted: _meta(m.id).highlighted,
     );
   }
 
   @override
-  Future<Paginated<Professional>> getProfessionals(PageRequest request) async {
+  Future<Paginated<Professional>> getProfessionals(
+    PageRequest request, {
+    ProfessionalsQuery query = (filter: null, query: ''),
+  }) async {
     await Future<void>.delayed(latency);
-    return Paginated.slice([for (final m in _mock) _build(m)], request);
+    final q = query.query.trim().toLowerCase();
+    bool matches(Professional p) =>
+        switch (query.filter) {
+          null => true,
+          ProfessionalFilter.producers =>
+            p.field == ProfessionalField.production,
+          ProfessionalFilter.designers => p.field == ProfessionalField.design,
+          ProfessionalFilter.technical =>
+            p.field == ProfessionalField.technical,
+          ProfessionalFilter.students => p.student,
+        } &&
+        (q.isEmpty ||
+            [
+              p.name,
+              p.role,
+              p.city,
+              ...p.skills,
+            ].any((s) => s.toLowerCase().contains(q)));
+    final all = [
+      for (final m in _mock)
+        if (matches(_build(m))) _build(m),
+    ]..sort((a, b) => (b.highlighted ? 1 : 0) - (a.highlighted ? 1 : 0));
+    return Paginated.slice(all, request);
   }
 
   @override
@@ -94,6 +127,32 @@ final professionalsRepositoryProvider = Provider<ProfessionalsRepository>(
   (ref) =>
       ProfessionalsRepositoryImpl(ref.watch(professionalsDataSourceProvider)),
 );
+
+typedef _Meta = ({ProfessionalField field, bool student, bool highlighted});
+
+_Meta _meta(String id) => switch (id) {
+  'ziyad' => (
+    field: ProfessionalField.design,
+    student: false,
+    highlighted: true,
+  ),
+  'noura' || 'lama' => (
+    field: ProfessionalField.production,
+    student: false,
+    highlighted: false,
+  ),
+  'faisal' => (
+    field: ProfessionalField.technical,
+    student: false,
+    highlighted: false,
+  ),
+  'reem' => (
+    field: ProfessionalField.production,
+    student: true,
+    highlighted: false,
+  ),
+  _ => (field: ProfessionalField.other, student: false, highlighted: false),
+};
 
 class _Mock {
   const _Mock(
@@ -181,5 +240,19 @@ const _mock = [
     ],
     83,
     Availability.fullyBooked,
+  ),
+  _Mock(
+    'reem',
+    MockText('Reem Al-Shehri', 'ريم الشهري'),
+    MockText('Student · Event Management', 'طالبة · إدارة الفعاليات'),
+    MockText('Princess Nourah University', 'جامعة الأميرة نورة'),
+    MockText('Riyadh', 'الرياض'),
+    1,
+    [
+      MockText('Volunteering', 'التطوع'),
+      MockText('Social media', 'التواصل الاجتماعي'),
+    ],
+    70,
+    Availability.available,
   ),
 ];

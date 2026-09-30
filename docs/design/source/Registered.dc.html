@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Registered</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: flex-end; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.close}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 0 24px; gap: 18px">
+<div style="width: 84px; height: 84px; border-radius: 42px; background: #6437fa; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 10px {{c.soft}}, 0 16px 40px rgba(100,55,250,0.45)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center">
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: {{c.muted}}; max-width: 290px">{{s.sub}}</p>
+</div>
+<article style="width: 100%; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 22px; overflow: hidden; box-shadow: {{c.shadow}}">
+<div style="position: relative; height: 110px">
+<img src="/_blob/fe99293a7d78b5eec8cf75c718f91260" alt="" style="width: 100%; height: 100%; display: block; object-fit: cover">
+<span style="position: absolute; top: 12px; inset-inline-start: 12px; padding: 3px 8px; border-radius: 6px; background: #6437fa; color: #ffffff; font-size: 10px; font-weight: 800; letter-spacing: {{tag}}">{{s.type}}</span>
+</div>
+<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: {{disp}}; font-size: 17px; font-weight: 700">{{s.event}}</span>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<div style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 10px; font-weight: 800; letter-spacing: {{tag}}; color: {{c.muted}}">{{s.dateL}}</span><span style="font-size: 13px; font-weight: 700">{{s.date}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 10px; font-weight: 800; letter-spacing: {{tag}}; color: {{c.muted}}">{{s.placeL}}</span><span style="font-size: 13px; font-weight: 700">{{s.place}}</span></div>
+</div>
+</div>
+<div style="position: relative; height: 0; border-top: 2px dashed {{c.line}}; margin: 0 16px"></div>
+<div style="padding: 14px 16px; display: flex; align-items: center; gap: 14px">
+<div style="width: 64px; height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 6px; border-radius: 10px; background: #ffffff; border: 1px solid #e4dff3; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px">
+<span style="background: #15122e"></span><span style="background: #15122e"></span><span style="background: #ffffff"></span><span style="background: #15122e"></span><span style="background: #15122e"></span>
+<span style="background: #15122e"></span><span style="background: #ffffff"></span><span style="background: #15122e"></span><span style="background: #ffffff"></span><span style="background: #15122e"></span>
+<span style="background: #ffffff"></span><span style="background: #15122e"></span><span style="background: #6437fa"></span><span style="background: #15122e"></span><span style="background: #ffffff"></span>
+<span style="background: #15122e"></span><span style="background: #ffffff"></span><span style="background: #15122e"></span><span style="background: #15122e"></span><span style="background: #15122e"></span>
+<span style="background: #15122e"></span><span style="background: #15122e"></span><span style="background: #ffffff"></span><span style="background: #15122e"></span><span style="background: #15122e"></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 700">{{s.pass}}</span><span style="font-size: 11px; line-height: 16px; color: {{c.muted}}">{{s.passSub}}</span></div>
+</div>
+</article>
+<div style="width: 100%; display: flex; gap: 10px; align-items: center; padding: 12px 14px; box-sizing: border-box; border-radius: 16px; background: {{c.warnBg}}; color: {{c.warnFg}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" style="flex-shrink: 0"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"></path></svg>
+<span style="font-size: 12px; line-height: 17px; font-weight: 600">{{s.points}}</span>
+</div>
+</main>
+<div style="flex-shrink: 0; padding: 12px 24px 34px; display: flex; flex-direction: column; gap: 10px">
+<button type="button" style="height: 52px; border: 0; border-radius: 26px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 26px rgba(100,55,250,0.4); cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"></path></svg>{{s.calendar}}</button>
+<button type="button" style="height: 52px; border: 1.5px solid #6437fa; border-radius: 26px; background: transparent; color: {{c.vt}}; font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer">{{s.myEvents}}</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', warnBg: '#fcefd6', warnFg: '#80520a', shadow: '0 8px 30px rgba(40,20,120,0.06)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', warnBg: '#33260a', warnFg: '#fbbf24', shadow: '0 8px 30px rgba(0,0,0,0.35)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        close: 'Close', title: 'You’re registered!', sub: 'We’ve saved your spot. You’ll get a reminder before the event starts.',
+        type: 'CONFERENCE', event: 'Riyadh Tech Summit 2026', dateL: 'DATE', date: 'Oct 15 – 17', placeL: 'VENUE', place: 'Riyadh Front',
+        pass: 'Your event pass', passSub: 'Show this code at the entrance to check in.',
+        points: 'Earn points when your attendance is verified at the event.',
+        calendar: 'Add to calendar', myEvents: 'View my events'
+      },
+      ar: {
+        close: 'إغلاق', title: 'تم تسجيلك!', sub: 'حجزنا مكانك، وسيصلك تذكير قبل بدء الفعالية.',
+        type: 'مؤتمر', event: 'قمة الرياض للتقنية 2026', dateL: 'التاريخ', date: '15 – 17 أكتوبر', placeL: 'المكان', place: 'واجهة الرياض',
+        pass: 'تذكرة الفعالية', passSub: 'اعرض هذا الرمز عند المدخل لتسجيل حضورك.',
+        points: 'تحصل على النقاط عند التحقق من حضورك في الفعالية.',
+        calendar: 'أضف إلى التقويم', myEvents: 'عرض فعالياتي'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    return {
+      c, s,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/router/app_routes.dart';
-import '../../../../app/theme/app_motion.dart';
-import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../companies/data/my_company_data.dart';
 import '../../../companies/domain/company_project.dart';
@@ -96,6 +94,7 @@ class _FormState extends ConsumerState<_Form> {
   final _formKey = GlobalKey<FormState>();
   final _message = TextEditingController();
   final _price = TextEditingController();
+  final _setup = TextEditingController();
   final Set<String> _projectIds = {};
   bool _sending = false;
 
@@ -103,6 +102,7 @@ class _FormState extends ConsumerState<_Form> {
   void dispose() {
     _message.dispose();
     _price.dispose();
+    _setup.dispose();
     super.dispose();
   }
 
@@ -118,7 +118,10 @@ class _FormState extends ConsumerState<_Form> {
             SupplierResponseDraft(
               requestId: widget.request.id,
               message: _message.text,
-              proposedPrice: _price.text,
+              proposedPrice: _price.text.trim().isEmpty
+                  ? null
+                  : 'SAR ${_price.text.trim()}',
+              setupTime: _setup.text,
               projectIds: [
                 for (final p in widget.projects)
                   if (_projectIds.contains(p.id)) p.id,
@@ -139,11 +142,13 @@ class _FormState extends ConsumerState<_Form> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final c = context.colors;
+    final r = widget.request;
     const max = SupplierResponseDraft.messageMaxLength;
+    const gap = SizedBox(height: AppSpacing.s14);
+    final closesAt = r.closesAt;
 
     return BOHScaffold(
-      appBar: BOHAppBar(title: l10n.supplierRespond),
+      appBar: BOHAppBar(title: l10n.supplierYourResponse),
       bottomNavigationBar: BOHActionBar(
         child: BOHButton(
           label: l10n.supplierSendResponse,
@@ -155,133 +160,150 @@ class _FormState extends ConsumerState<_Form> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.formHorizontal,
+            AppSpacing.s8,
+            AppSpacing.formHorizontal,
+            AppSpacing.s24,
           ),
           children: [
             BOHCard(
+              tone: BOHCardTone.accent,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.request.title, style: context.text.cardTitle),
+                  Row(
+                    children: [
+                      BOHCompanyLogo(name: r.company.name, size: 40),
+                      const SizedBox(width: AppSpacing.s10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              r.company.name,
+                              style: context.text.labelMedium,
+                            ),
+                            if (closesAt != null)
+                              Text(
+                                l10n.supplierRespondBy(
+                                  AppDateFormats.monthDayShort(context)
+                                      .format(closesAt),
+                                ),
+                                style: context.text.caption,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.s10),
+                  Text(r.title, style: context.text.h3),
+                  const SizedBox(height: 2),
                   Text(
-                    l10n.supplierForBuyer(widget.request.company.name),
+                    [
+                      if (r.compensation case final budget?)
+                        '${l10n.supplierBudget} $budget',
+                      if (r.city.isNotEmpty) r.city,
+                    ].join(' · '),
                     style: context.text.bodySmall,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.s16),
+            gap,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: BOHTextField(
+                    controller: _price,
+                    label: l10n.supplierYourPrice,
+                    prefixText: 'SAR',
+                    hint: l10n.fieldOptional,
+                    forceLtr: true,
+                    keyboardType: TextInputType.number,
+                    enabled: !_sending,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s10),
+                Expanded(
+                  child: BOHTextField(
+                    controller: _setup,
+                    label: l10n.supplierSetupTime,
+                    hint: l10n.supplierSetupTimeHint,
+                    enabled: !_sending,
+                  ),
+                ),
+              ],
+            ),
+            gap,
             BOHTextField(
               controller: _message,
               label: l10n.supplierMessage,
               hint: l10n.supplierMessageHint,
               minLines: 4,
               maxLines: 10,
+              maxLength: max,
               keyboardType: TextInputType.multiline,
               textCapitalization: TextCapitalization.sentences,
-              inputFormatters: [LengthLimitingTextInputFormatter(max)],
               enabled: !_sending,
               validator: (v) =>
                   SupplierResponseDraft(
-                    requestId: widget.request.id,
+                    requestId: r.id,
                     message: v ?? '',
                   ).validate().isEmpty
                   ? null
                   : l10n.fieldRequired,
             ),
-            const SizedBox(height: AppSpacing.s16),
-            BOHTextField(
-              controller: _price,
-              label: l10n.supplierProposedPrice,
-              hint: l10n.fieldOptional,
-              enabled: !_sending,
+            gap,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.supplierAttachProjects,
+                    style: context.text.cardTitle,
+                  ),
+                ),
+                if (_projectIds.isNotEmpty)
+                  Text(
+                    l10n.supplierSelectedCount(_projectIds.length),
+                    style: context.text.caption,
+                  ),
+              ],
             ),
-            const SizedBox(height: AppSpacing.sectionSpacing),
-            BOHSectionHeader(
-              title: l10n.supplierEvidence,
-              subtitle: l10n.supplierEvidenceSubtitle,
-            ),
-            const SizedBox(height: AppSpacing.s12),
+            const SizedBox(height: AppSpacing.s10),
             if (widget.projects.isEmpty)
               BOHInfoNote(l10n.supplierNoProjects)
             else
-              for (final p in widget.projects)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.s8),
-                  child: _ProjectOption(
-                    project: p,
-                    selected: _projectIds.contains(p.id),
-                    onTap: _sending
-                        ? null
-                        : () => setState(
-                            () => _projectIds.contains(p.id)
-                                ? _projectIds.remove(p.id)
-                                : _projectIds.add(p.id),
-                          ),
-                  ),
-                ),
-            const SizedBox(height: AppSpacing.s8),
-            Text(
-              l10n.supplierNoAttachments,
-              style: context.text.caption.copyWith(color: c.textMuted),
+              Wrap(
+                spacing: AppSpacing.s10,
+                runSpacing: AppSpacing.s10,
+                children: [
+                  for (final p in widget.projects)
+                    SizedBox(
+                      width: 104,
+                      child: BOHSelectableMediaTile(
+                        label: p.title,
+                        imageHeight: 58,
+                        selected: _projectIds.contains(p.id),
+                        onChanged: _sending
+                            ? null
+                            : (on) => setState(
+                                () => on
+                                    ? _projectIds.add(p.id)
+                                    : _projectIds.remove(p.id),
+                              ),
+                      ),
+                    ),
+                ],
+              ),
+            gap,
+            BOHBanner(
+              l10n.supplierPrivateNote(r.company.name),
+              tone: BOHBannerTone.privacy,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProjectOption extends StatelessWidget {
-  const _ProjectOption({
-    required this.project,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final CompanyProject project;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return Semantics(
-      checked: selected,
-      child: BOHPressable(
-        onTap: onTap,
-        selected: selected,
-        semanticLabel: project.title,
-        builder: (context, state) => AnimatedContainer(
-          duration: AppMotion.fast,
-          padding: const EdgeInsets.all(AppSpacing.cardPadding),
-          decoration: BoxDecoration(
-            color: selected ? c.primaryWash : c.surface,
-            borderRadius: AppRadii.mediumAll,
-            border: Border.all(color: selected ? c.primary : c.borderSoft),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(project.title, style: context.text.label),
-                    Text(
-                      '${project.category} · ${project.location}',
-                      style: context.text.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                selected ? AppIcons.success : AppIcons.plus,
-                size: AppSizes.iconMedium,
-                color: selected ? c.primary : c.textMuted,
-              ),
-            ],
-          ),
         ),
       ),
     );

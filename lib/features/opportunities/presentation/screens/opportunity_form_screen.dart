@@ -6,6 +6,7 @@ import '../../../../app/router/app_routes.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../companies/data/my_company_data.dart';
 import '../../../companies/domain/company.dart';
@@ -112,6 +113,8 @@ class _FormState extends ConsumerState<_Form> {
   late final _skills = TextEditingController(
     text: widget.initial?.skills.join('\n'),
   );
+  late DateTime? _closesAt = widget.initial?.closesAt;
+  late WorkSetup? _workSetup = widget.initial?.workSetup ?? WorkSetup.onSite;
   bool _showIssues = false;
   bool _saving = false;
 
@@ -155,9 +158,28 @@ class _FormState extends ConsumerState<_Form> {
               if (_supplierTypes.contains(t)) t,
           ]
         : const [],
+    closesAt: _closesAt,
+    workSetup: _isSupplierRequest ? null : _workSetup,
   );
 
-  Future<void> _save() async {
+  Future<void> _pickCloseDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _closesAt ?? now.add(const Duration(days: 30)),
+      firstDate: now.add(const Duration(days: 1)),
+      lastDate: now.add(const Duration(days: 365)),
+    );
+    if (picked != null) setState(() => _closesAt = picked);
+  }
+
+  /// Saves, then (unless editing a pending update) submits the draft for
+  /// Back Of House review.
+  Future<void> _saveAndSubmit() async {
+    await _save(submit: true);
+  }
+
+  Future<void> _save({bool submit = false}) async {
     final formOk = _formKey.currentState?.validate() ?? false;
     final issues = _draft.validate(widget.company);
     setState(() => _showIssues = true);
@@ -168,12 +190,21 @@ class _FormState extends ConsumerState<_Form> {
     Opportunity? saved;
     final ok = await runCompanyAction(
       context,
-      () async => saved = switch ((id, widget.isRevision)) {
-        (null, _) => await repo.createDraft(_draft),
-        (final id?, true) => await repo.updateRevision(id, _draft),
-        (final id?, false) => await repo.updateDraft(id, _draft),
+      () async {
+        saved = switch ((id, widget.isRevision)) {
+          (null, _) => await repo.createDraft(_draft),
+          (final id?, true) => await repo.updateRevision(id, _draft),
+          (final id?, false) => await repo.updateDraft(id, _draft),
+        };
+        if (submit) {
+          saved = widget.isRevision
+              ? await repo.submitRevisionForReview(saved!.id)
+              : await repo.submitForReview(saved!.id);
+        }
       },
-      success: widget.isRevision
+      success: submit
+          ? context.l10n.companySubmittedForReview
+          : widget.isRevision
           ? context.l10n.companyUpdateSaved
           : context.l10n.companyDraftSaved,
     );
@@ -202,7 +233,7 @@ class _FormState extends ConsumerState<_Form> {
         _draft
             .validate(widget.company)
             .contains(OpportunityDraftIssue.supplierTypesRequired);
-    const gap = SizedBox(height: AppSpacing.s16);
+    const gap = SizedBox(height: AppSpacing.s14);
 
     Widget lines(TextEditingController controller, String label) =>
         BOHTextField(
@@ -216,47 +247,69 @@ class _FormState extends ConsumerState<_Form> {
           enabled: !_saving,
         );
 
+    final closesInPast =
+        _showIssues &&
+        _draft
+            .validate(widget.company)
+            .contains(OpportunityDraftIssue.closesInPast);
+
+    Widget fieldLabel(String text) => Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.s6),
+      child: Text(text, style: context.text.labelMedium),
+    );
+
     return BOHScaffold(
       appBar: BOHAppBar(
+        closeIcon: true,
         title: switch ((widget.opportunityId, widget.isRevision)) {
-          (null, _) => l10n.companyCreateOpportunity,
+          (null, _) => l10n.companyNewListing,
           (_, true) => l10n.companyEditUpdate,
           _ => l10n.companyEditOpportunity,
         },
       ),
-      bottomNavigationBar: BOHActionBar(
-        child: BOHButton(
+      bottomNavigationBar: BOHActionBar.pair(
+        secondary: BOHButton(
           label: widget.isRevision
               ? l10n.companySaveUpdate
               : l10n.companySaveDraft,
+          variant: BOHButtonVariant.secondary,
+          size: BOHButtonSize.large,
+          trailingIcon: null,
+          onPressed: _saving ? null : _save,
+        ),
+        primary: BOHButton(
+          label: widget.isRevision
+              ? l10n.companySubmitUpdate
+              : l10n.companySubmitForReview,
           isLoading: _saving,
           trailingIcon: null,
-          onPressed: _save,
+          onPressed: _saveAndSubmit,
         ),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: BOHScaffold.screenPadding.add(
-            const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.formHorizontal,
+            AppSpacing.s8,
+            AppSpacing.formHorizontal,
+            AppSpacing.s24,
           ),
           children: [
-            BOHInfoNote(
-              widget.isRevision
-                  ? l10n.companyUpdateNoteDraft
-                  : l10n.companyDraftNote,
-              icon: AppIcons.shield,
-            ),
-            gap,
-            Text(l10n.companyOpportunityType, style: context.text.label),
-            const SizedBox(height: AppSpacing.s8),
-            Wrap(
-              spacing: AppSpacing.s8,
-              runSpacing: AppSpacing.s8,
+            fieldLabel(l10n.companyListingType),
+            GridView.count(
+              crossAxisCount: 4,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: AppSpacing.s8,
+              mainAxisSpacing: AppSpacing.s8,
+              childAspectRatio: 1.25,
               children: [
                 for (final t in types)
                   BOHCategoryChip(
+                    icon: t.icon,
                     label: t.label(l10n),
+                    expandTile: true,
                     selected: _type == t,
                     // The type is fixed once a draft exists.
                     onSelected: widget.opportunityId != null || _saving
@@ -274,13 +327,59 @@ class _FormState extends ConsumerState<_Form> {
               enabled: !_saving,
             ),
             gap,
-            BOHTextField(
-              controller: _city,
-              label: l10n.fieldCityLabel,
-              prefixIcon: AppIcons.location,
-              validator: _required,
-              enabled: !_saving,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: BOHTextField(
+                    controller: _city,
+                    label: l10n.fieldCityLabel,
+                    validator: _required,
+                    enabled: !_saving,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.s10),
+                Expanded(
+                  child: BOHSelectField(
+                    label: l10n.companyClosesOn,
+                    value: _closesAt == null
+                        ? null
+                        : AppDateFormats.monthDayShort(context)
+                              .format(_closesAt!),
+                    placeholder: l10n.companyClosesOnPick,
+                    icon: AppIcons.calendar,
+                    errorText: closesInPast ? l10n.companyClosesInPast : null,
+                    onTap: _saving ? null : _pickCloseDate,
+                  ),
+                ),
+              ],
             ),
+            if (_closesAt != null)
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: BOHLinkButton(
+                  label: l10n.companyClearDate,
+                  arrow: false,
+                  fontSize: 12,
+                  onTap: _saving
+                      ? null
+                      : () => setState(() => _closesAt = null),
+                ),
+              ),
+            if (!_isSupplierRequest) ...[
+              gap,
+              fieldLabel(l10n.companyWorkSetup),
+              Semantics(
+                label: l10n.companyWorkSetup,
+                child: BOHSegmentedControl<WorkSetup>(
+                  segments: [
+                    for (final w in WorkSetup.values) (w, w.label(l10n)),
+                  ],
+                  selected: _workSetup ?? WorkSetup.onSite,
+                  onChanged: (w) => setState(() => _workSetup = w),
+                ),
+              ),
+            ],
             gap,
             BOHTextField(
               controller: _summary,
@@ -302,11 +401,9 @@ class _FormState extends ConsumerState<_Form> {
             ),
             if (_type == OpportunityType.job) ...[
               gap,
-              Text(l10n.companyEmploymentType, style: context.text.label),
-              const SizedBox(height: AppSpacing.s8),
+              fieldLabel(l10n.companyEmploymentType),
               Wrap(
                 spacing: AppSpacing.s8,
-                runSpacing: AppSpacing.s8,
                 children: [
                   for (final e in EmploymentType.values)
                     BOHCategoryChip(
@@ -321,38 +418,33 @@ class _FormState extends ConsumerState<_Form> {
             ],
             if (_isSupplierRequest) ...[
               gap,
-              Text(l10n.companySupplierTypes, style: context.text.label),
-              const SizedBox(height: AppSpacing.s4),
+              fieldLabel(l10n.companySupplierTypes),
               Text(
                 l10n.companySupplierTypesHint,
                 style: context.text.bodySmall,
               ),
-              const SizedBox(height: AppSpacing.s8),
               Wrap(
                 spacing: AppSpacing.s8,
-                runSpacing: AppSpacing.s8,
                 children: [
                   for (final t in CompanyType.values)
-                    BOHCategoryChip(
+                    BOHSelectChip(
                       label: t.label(l10n),
                       selected: _supplierTypes.contains(t),
-                      onSelected: _saving
+                      onChanged: _saving
                           ? null
-                          : () => setState(
-                              () => _supplierTypes.contains(t)
-                                  ? _supplierTypes.remove(t)
-                                  : _supplierTypes.add(t),
+                          : (on) => setState(
+                              () => on
+                                  ? _supplierTypes.add(t)
+                                  : _supplierTypes.remove(t),
                             ),
                     ),
                 ],
               ),
-              if (supplierTypesMissing) ...[
-                const SizedBox(height: AppSpacing.s8),
+              if (supplierTypesMissing)
                 Text(
                   l10n.companySupplierTypesRequired,
                   style: context.text.bodySmall.copyWith(color: c.error),
                 ),
-              ],
             ],
             gap,
             BOHTextField(
@@ -383,6 +475,13 @@ class _FormState extends ConsumerState<_Form> {
               gap,
               lines(_skills, l10n.opportunitySkills),
             ],
+            gap,
+            BOHBanner(
+              widget.isRevision
+                  ? l10n.companyUpdateNoteDraft
+                  : l10n.companyReviewInfo,
+              tone: BOHBannerTone.info,
+            ),
           ],
         ),
       ),

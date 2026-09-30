@@ -7,8 +7,13 @@ import '../../../../app/theme/app_radii.dart';
 import '../../../../app/theme/app_spacing.dart';
 import '../../../../core/constants/app_icons.dart';
 import '../../../../core/extensions/context_extensions.dart';
+import '../../../../core/l10n/l10n_messages.dart';
+import '../../../../core/utils/date_formats.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../applications/presentation/controllers/applications_providers.dart';
+import '../../../applications/presentation/widgets/application_widgets.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../rewards/presentation/controllers/rewards_providers.dart';
 import '../../data/profile_data.dart';
 import '../../domain/profile.dart';
 import '../../domain/profile_status.dart';
@@ -20,8 +25,8 @@ void _comingSoon(BuildContext context) {
     ..showSnackBar(SnackBar(content: Text(context.l10n.comingSoonMessage)));
 }
 
-/// The member's professional dossier: standing, record, skills, work and
-/// recognition.
+/// The member's profile: identity and standing, applications, the
+/// professional record and display settings.
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -31,17 +36,18 @@ class ProfileScreen extends ConsumerWidget {
     final profile = ref.watch(myProfileProvider);
 
     return BOHScaffold(
-      appBar: BOHAppBar(
-        showBack: false,
+      appBar: BOHAppBar.tab(
         title: l10n.navProfile,
         actions: [
           BOHIconButton(
             icon: AppIcons.share,
+            iconSize: 21,
             semanticLabel: l10n.actionShare,
             onPressed: () => _comingSoon(context),
           ),
           BOHIconButton(
             icon: AppIcons.settings,
+            iconSize: 21,
             semanticLabel: l10n.settingsTitle,
             onPressed: () => showSettingsSheet(context),
           ),
@@ -70,7 +76,8 @@ class _Body extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final c = context.colors;
+    const gap = SizedBox(height: AppSpacing.s16);
+    const sectionGap = SizedBox(height: AppSpacing.s8);
 
     return ListView(
       padding: BOHScaffold.screenPadding.add(
@@ -81,44 +88,71 @@ class _Body extends ConsumerWidget {
       ),
       children: [
         _Header(profile: profile),
-        const SizedBox(height: AppSpacing.s20),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: _StatCard(
-                  label: l10n.profileVisibilityScore,
-                  icon: AppIcons.trendingUp,
-                  value: '${profile.visibilityScore}',
-                  suffix: '/100',
-                  hint: l10n.profileVisibilityHint,
-                  progress: profile.visibilityScore / 100,
+        const SizedBox(height: AppSpacing.s12),
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 42,
+                child: BOHButton(
+                  label: l10n.profileEditProfile,
+                  size: BOHButtonSize.medium,
+                  trailingIcon: null,
+                  onPressed: () => context.push(AppRoutes.editProfile),
                 ),
               ),
-              const SizedBox(width: AppSpacing.s12),
+            ),
+            if (!profile.verified) ...[
+              const SizedBox(width: AppSpacing.s10),
               Expanded(
-                child: _StatCard(
-                  label: l10n.profileVerification,
-                  icon: AppIcons.shield,
-                  value: l10n.verificationLevel(profile.verificationLevel),
-                  hint: l10n.profileVerificationHint,
+                child: SizedBox(
+                  height: 42,
+                  child: BOHButton(
+                    label: l10n.profileGetVerified,
+                    variant: BOHButtonVariant.secondary,
+                    size: BOHButtonSize.medium,
+                    trailingIcon: null,
+                    onPressed: () => context.push(AppRoutes.getVerified),
+                  ),
                 ),
               ),
             ],
-          ),
+          ],
         ),
         const SizedBox(height: AppSpacing.s12),
-        _Section(
-          icon: AppIcons.user,
+        BOHStatStrip(
+          items: [
+            ('${profile.eventsAttended}', l10n.profileEventsAttended),
+            ('${profile.visibilityScore}', l10n.profileVisibilityShort),
+            (
+              AppDateFormats.ltr('${profile.yearsExperience}+'),
+              l10n.profileYearsShort,
+            ),
+          ],
+        ),
+        gap,
+        BOHSectionHeader(
+          title: l10n.profileMyApplications,
+          size: BOHSectionSize.compact,
+          onAction: () => context.push(AppRoutes.applications),
+        ),
+        sectionGap,
+        const _Applications(),
+        gap,
+        BOHSectionHeader(
           title: l10n.profileExecutiveSummary,
-          child: Text(profile.about, style: context.text.body),
+          size: BOHSectionSize.compact,
         ),
-        const SizedBox(height: AppSpacing.s12),
-        _Section(
-          icon: AppIcons.job,
+        sectionGap,
+        BOHCard(child: Text(profile.about, style: context.text.body)),
+        gap,
+        BOHSectionHeader(
           title: l10n.profileExperienceRecord,
-          trailing: BOHTag(l10n.profileYearsExp(profile.yearsExperience)),
+          size: BOHSectionSize.compact,
+          trailing: BOHMetaChip(l10n.profileYearsExp(profile.yearsExperience)),
+        ),
+        sectionGap,
+        BOHCard(
           child: Column(
             children: [
               for (final (i, e) in profile.experience.indexed)
@@ -129,71 +163,96 @@ class _Body extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: AppSpacing.s12),
-        _Section(
-          icon: AppIcons.tips,
+        gap,
+        BOHSectionHeader(
           title: l10n.profileSkillsTitle,
-          trailing: BOHTag(
-            l10n.verifiedCount(profile.skills.length),
-            variant: BOHTagVariant.success,
-          ),
-          child: Wrap(
-            spacing: AppSpacing.s8,
-            runSpacing: AppSpacing.s8,
-            children: [
-              for (final skill in profile.skills)
-                BOHTag(skill, variant: BOHTagVariant.neutral),
-            ],
-          ),
+          size: BOHSectionSize.compact,
+        ),
+        sectionGap,
+        Wrap(
+          spacing: AppSpacing.s8,
+          runSpacing: AppSpacing.s8,
+          children: [
+            for (final skill in profile.skills) BOHMetaChip(skill, large: true),
+          ],
         ),
         if (profile.projects.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.sectionSpacing),
-          BOHSectionHeader(title: l10n.profileSelectedProjects),
-          const SizedBox(height: AppSpacing.s12),
-          BOHCarousel(
-            padding: EdgeInsets.zero,
+          gap,
+          BOHSectionHeader(
+            title: l10n.profileSelectedProjects,
+            size: BOHSectionSize.compact,
+          ),
+          sectionGap,
+          GridView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: AppSpacing.gridGap,
+              mainAxisSpacing: AppSpacing.gridGap,
+              mainAxisExtent: 138,
+            ),
             children: [
               for (final project in profile.projects)
-                _ProjectCard(project: project),
+                BOHMediaTile(
+                  image: project.image,
+                  imageHeight: 70,
+                  borderRadius: AppRadii.mediumAll,
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                  semanticLabel: '${project.title}, ${project.year}',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        project.title,
+                        style: context.text.labelMedium,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${project.category} · ${project.year}',
+                        style: context.text.caption.copyWith(fontSize: 10.5),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ],
         if (profile.badges.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.sectionSpacing),
-          BOHSectionHeader(title: l10n.profileBadges),
-          const SizedBox(height: AppSpacing.s12),
-          BOHCard(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.s4),
-            child: Column(
-              children: [
-                for (final (i, badge) in profile.badges.indexed) ...[
-                  if (i > 0)
-                    Divider(
-                      height: 1,
-                      indent: AppSpacing.s16,
-                      endIndent: AppSpacing.s16,
-                      color: c.borderSoft,
-                    ),
-                  BOHListTile(
-                    leading: BOHIconCircle(
-                      icon: badge.premium ? AppIcons.level : AppIcons.keynote,
-                      rounded: true,
-                      tone: badge.premium
-                          ? BOHIconCircleTone.gold
-                          : BOHIconCircleTone.brand,
-                    ),
-                    title: badge.title,
-                    subtitle: badge.issuer,
+          gap,
+          BOHSectionHeader(
+            title: l10n.profileBadges,
+            size: BOHSectionSize.compact,
+          ),
+          sectionGap,
+          BOHGroupedList(
+            children: [
+              for (final badge in profile.badges)
+                BOHListTile(
+                  leading: BOHIconCircle(
+                    icon: badge.premium ? AppIcons.level : AppIcons.keynote,
+                    size: AppSizes.iconTile,
+                    rounded: true,
+                    tone: badge.premium
+                        ? BOHIconCircleTone.gold
+                        : BOHIconCircleTone.brand,
                   ),
-                ],
-              ],
-            ),
+                  title: badge.title,
+                  subtitle: badge.issuer,
+                ),
+            ],
           ),
         ],
-        const SizedBox(height: AppSpacing.sectionSpacing),
+        gap,
+        const DisplaySettingsCard(),
+        const SizedBox(height: AppSpacing.s12),
         BOHButton(
           label: l10n.actionSignOut,
           variant: BOHButtonVariant.ghost,
+          size: BOHButtonSize.medium,
           leadingIcon: AppIcons.logOut,
           trailingIcon: null,
           onPressed: () => ref.read(authControllerProvider.notifier).logout(),
@@ -203,214 +262,178 @@ class _Body extends ConsumerWidget {
   }
 }
 
-class _Header extends StatelessWidget {
+/// Identity card: photo, name, role, city, status tags and the points tile.
+class _Header extends ConsumerWidget {
   const _Header({required this.profile});
 
   final Profile profile;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final c = context.colors;
+    final summary = ref.watch(pointsSummaryProvider).value;
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: c.primaryTint, width: 2),
-          ),
-          child: BOHAvatar(
-            name: profile.name,
-            image: profile.avatar,
-            size: BOHAvatarSize.xlarge,
-            verified: profile.verified,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.s12),
-        Semantics(
-          header: true,
-          child: Text(
-            profile.name,
-            style: context.text.h1,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.s4),
-        Text(
-          profile.headline,
-          style: context.text.bodyLarge.copyWith(color: c.textPrimary),
-          textAlign: TextAlign.center,
-        ),
-        if (profile.status == ProfileStatus.student) ...[
-          const SizedBox(height: AppSpacing.s8),
-          BOHTag(l10n.profileStatusStudent, icon: AppIcons.courses),
-        ],
-        const SizedBox(height: AppSpacing.s4),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              AppIcons.location,
-              size: AppSizes.iconSmall,
-              color: c.textMuted,
-            ),
-            const SizedBox(width: AppSpacing.s4),
-            Flexible(
-              child: Text(
-                '${profile.company} · ${profile.city}',
-                style: context.text.bodySmall,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.s12),
-        BOHStatusLabel(
-          label: profile.availability,
-          color: c.success,
-          filled: true,
-        ),
-        const SizedBox(height: AppSpacing.s16),
-        Row(
-          children: [
-            Expanded(
-              child: BOHButton(
-                label: l10n.profileEditProfile,
-                leadingIcon: AppIcons.user,
-                trailingIcon: null,
-                size: BOHButtonSize.small,
-                onPressed: () => _comingSoon(context),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.s8),
-            Expanded(
-              child: BOHButton(
-                label: l10n.myPointsTitle,
-                variant: BOHButtonVariant.secondary,
-                leadingIcon: AppIcons.points,
-                trailingIcon: null,
-                size: BOHButtonSize.small,
-                onPressed: () => context.push(AppRoutes.myPoints),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.s12),
-        BOHCard(
-          padding: EdgeInsets.zero,
-          child: BOHListTile(
-            leading: const BOHIconCircle(icon: AppIcons.job, rounded: true),
-            title: l10n.applicationsTitle,
-            subtitle: l10n.applicationsEntryHint,
-            showChevron: true,
-            onTap: () => context.push(AppRoutes.applications),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.icon,
-    required this.value,
-    required this.hint,
-    this.suffix,
-    this.progress,
-  });
-
-  final String label;
-  final IconData icon;
-  final String value;
-  final String? suffix;
-  final String hint;
-  final double? progress;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
     return BOHCard(
-      padding: const EdgeInsets.all(AppSpacing.s12),
-      child: MergeSemantics(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(child: BOHEyebrow(label)),
-                Icon(icon, size: AppSizes.iconSmall, color: c.primaryText),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.s8),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: value, style: context.text.h2),
-                  if (suffix != null)
-                    TextSpan(
-                      text: suffix,
-                      style: context.text.bodySmall.copyWith(
-                        color: c.textMuted,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            if (progress != null) ...[
-              const SizedBox(height: AppSpacing.s8),
-              ExcludeSemantics(child: BOHProgressBar(value: progress!)),
-            ],
-            const SizedBox(height: AppSpacing.s8),
-            Text(hint, style: context.text.caption),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({
-    required this.icon,
-    required this.title,
-    required this.child,
-    this.trailing,
-  });
-
-  final IconData icon;
-  final String title;
-  final Widget child;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return BOHCard(
-      child: Column(
+      borderRadius: AppRadii.heroAll,
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(icon, size: AppSizes.iconMedium, color: c.primaryText),
-              const SizedBox(width: AppSpacing.s8),
-              Expanded(
-                child: Semantics(
+          BOHAvatar(
+            name: profile.name,
+            image: profile.avatar,
+            dimension: 72,
+            ring: true,
+            ringGap: c.surface,
+            badge: BOHPressable(
+              onTap: () => context.push(AppRoutes.editProfile),
+              semanticLabel: l10n.profileAddPhoto,
+              child: Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: c.primary,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: c.surface, width: 2),
+                ),
+                child: Icon(AppIcons.plus, size: 11, color: c.onPrimary),
+              ),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(
                   header: true,
-                  child: Text(title, style: context.text.cardTitle),
+                  child: Text(
+                    profile.name,
+                    style: context.text.h3.copyWith(
+                      fontSize: 19,
+                      height: 24 / 19,
+                    ),
+                  ),
+                ),
+                Text(
+                  profile.headline,
+                  style: context.text.labelMedium.copyWith(
+                    color: c.primaryText,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    Icon(AppIcons.location, size: 12, color: c.textSecondary),
+                    const SizedBox(width: AppSpacing.s4),
+                    Flexible(
+                      child: Text(
+                        profile.city,
+                        style: context.text.bodySmall,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.s8),
+                Wrap(
+                  spacing: AppSpacing.s6,
+                  runSpacing: AppSpacing.s4,
+                  children: [
+                    BOHTag(
+                      profile.status == ProfileStatus.student
+                          ? l10n.profileStatusStudent
+                          : l10n.profileStatusProfessional,
+                      variant: BOHTagVariant.soft,
+                    ),
+                    if (profile.verified)
+                      BOHTag(
+                        l10n.verificationLevel(profile.verificationLevel),
+                        variant: BOHTagVariant.verified,
+                      )
+                    else
+                      BOHTag(
+                        l10n.profileNotVerified,
+                        variant: BOHTagVariant.outline,
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (summary != null) ...[
+            const SizedBox(width: AppSpacing.s8),
+            BOHPressable(
+              onTap: () => context.push(AppRoutes.myPoints),
+              semanticLabel:
+                  '${l10n.pointsAmount(summary.balance)}, '
+                  '${l10n.pointsLevel(summary.level.number)}',
+              child: Container(
+                width: 76,
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppSpacing.s10,
+                  horizontal: AppSpacing.s6,
+                ),
+                decoration: BoxDecoration(
+                  color: c.primaryTint,
+                  borderRadius: AppRadii.mediumAll,
+                ),
+                child: Column(
+                  children: [
+                    const BOHGlyph(BOHGlyphType.star, size: 18),
+                    const SizedBox(height: 2),
+                    Text(
+                      l10n.formatCount(summary.balance),
+                      style: context.text.number(16),
+                    ),
+                    Text(
+                      l10n.pointsLevel(summary.level.number),
+                      style: context.text.caption.copyWith(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              ?trailing,
-            ],
-          ),
-          const SizedBox(height: AppSpacing.s12),
-          child,
+            ),
+          ],
         ],
       ),
     );
+  }
+}
+
+class _Applications extends ConsumerWidget {
+  const _Applications();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final applications = ref.watch(myApplicationsProvider);
+    return switch (applications) {
+      AsyncData(:final value) when value.isEmpty => BOHCard(
+        child: Text(
+          l10n.applicationsEmptyActiveMessage,
+          style: context.text.body,
+        ),
+      ),
+      AsyncData(:final value) => BOHGroupedList(
+        children: [
+          for (final a in value.take(2))
+            ApplicationRow(
+              application: a,
+              onTap: () => context.push(AppRoutes.applications),
+            ),
+        ],
+      ),
+      AsyncError() => const SizedBox.shrink(),
+      _ => const BOHShimmer(
+        child: BOHSkeleton(height: 124, borderRadius: AppRadii.largeAll),
+      ),
+    };
   }
 }
 
@@ -469,98 +492,17 @@ class _ExperienceItem extends StatelessWidget {
                           ),
                         ),
                         if (experience.isCurrent)
-                          BOHTag(
+                          BOHStatusBadge(
                             l10n.profilePresent,
-                            variant: BOHTagVariant.success,
+                            tone: BOHStatusTone.success,
                           ),
                       ],
                     ),
-                    Text(experience.company, style: context.text.body),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Icon(AppIcons.calendar, size: 14, color: c.textMuted),
-                        const SizedBox(width: AppSpacing.s4),
-                        Text(period, style: context.text.caption),
-                      ],
-                    ),
+                    Text(experience.company, style: context.text.bodySmall),
+                    Text(period, style: context.text.caption),
                   ],
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProjectCard extends StatelessWidget {
-  const _ProjectCard({required this.project});
-
-  final ProfileProject project;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return BOHCard(
-      padding: EdgeInsets.zero,
-      semanticLabel:
-          '${project.title}, ${project.year}. ${project.category}. ${project.role}',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 120,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                BOHImage(image: project.image),
-                PositionedDirectional(
-                  top: AppSpacing.s8,
-                  start: AppSpacing.s8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: c.surface.withValues(alpha: 0.94),
-                      borderRadius: AppRadii.pillAll,
-                    ),
-                    child: Text(
-                      '${project.year}',
-                      style: context.text.labelMedium,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.s12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  project.category,
-                  style: context.text.caption.copyWith(color: c.primaryText),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  project.title,
-                  style: context.text.label,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  project.role,
-                  style: context.text.bodySmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
             ),
           ),
         ],
