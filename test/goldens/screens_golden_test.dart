@@ -2,7 +2,6 @@
 library;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:backofhouse/app/app.dart';
 import 'package:backofhouse/app/router/app_router.dart';
@@ -14,6 +13,7 @@ import 'package:backofhouse/features/auth/data/auth_repository_impl.dart';
 import 'package:backofhouse/features/auth/domain/account_details.dart';
 import 'package:backofhouse/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:backofhouse/features/companies/domain/company_type.dart';
+import 'package:backofhouse/features/rewards/presentation/controllers/rewards_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,23 +34,17 @@ Future<void> _loadFonts() async {
     await loader.load();
   }
 
-  await family('PlusJakartaSans', [
-    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
-      'assets/fonts/PlusJakartaSans-$w.ttf',
+  await family('Poppins', [
+    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold'])
+      'assets/fonts/Poppins-$w.ttf',
   ]);
-  await family('packages/lucide_icons_flutter/Lucide300', [
-    'packages/lucide_icons_flutter/assets/build_font/LucideVariable-w300.ttf',
+  await family('Cairo', [
+    for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold', 'ExtraBold'])
+      'assets/fonts/Cairo-$w.ttf',
   ]);
-
-  // Tests have no system font fallback; borrow an Arabic-capable face so RTL
-  // renders are readable. Registered under the declared fallback family.
-  const arabicFace = r'C:\Windows\Fonts\segoeui.ttf';
-  if (File(arabicFace).existsSync()) {
-    final bytes = File(arabicFace).readAsBytesSync();
-    await (FontLoader(
-      'Inter',
-    )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
-  }
+  await family('packages/lucide_icons_flutter/Lucide400', [
+    'packages/lucide_icons_flutter/assets/build_font/LucideVariable-w400.ttf',
+  ]);
 }
 
 Future<ProviderContainer> _app(
@@ -140,6 +134,17 @@ void main() {
       final c = await _app(tester, size: phone, locale: locale);
       await _capture(tester, c, AppRoutes.auth, 'welcome_$locale');
       await _capture(tester, c, AppRoutes.login, 'login_$locale');
+      await _capture(tester, c, AppRoutes.phoneLogin, 'phone_login_$locale');
+      await _capture(
+        tester,
+        c,
+        AppRoutes.resetPassword,
+        'reset_password_$locale',
+      );
+    });
+    testWidgets('sign up ($locale)', (tester) async {
+      final c = await _app(tester, size: const Size(390, 1100), locale: locale);
+      await _capture(tester, c, AppRoutes.register, 'register_$locale');
     });
 
     testWidgets('member screens ($locale)', (tester) async {
@@ -194,6 +199,37 @@ void main() {
         'notifications_$locale',
       );
       await _capture(tester, c, AppRoutes.profile, 'profile_$locale');
+      await _capture(tester, c, AppRoutes.editProfile, 'edit_profile_$locale');
+      await _capture(tester, c, AppRoutes.getVerified, 'get_verified_$locale');
+      await _capture(tester, c, AppRoutes.companies, 'companies_$locale');
+      await _capture(
+        tester,
+        c,
+        AppRoutes.company('nexa'),
+        'company_details_$locale',
+      );
+      await _capture(
+        tester,
+        c,
+        AppRoutes.professionals,
+        'professionals_$locale',
+      );
+      await _capture(
+        tester,
+        c,
+        AppRoutes.eventRegistered('tech-innovation'),
+        'event_registered_$locale',
+      );
+      // Last: redeeming spends points shown on the screens above.
+      // The mock's latency runs on the tester's clock: start, then pump.
+      unawaited(c.read(redeemControllerProvider.notifier).redeem('course-10'));
+      await tester.pump(const Duration(seconds: 2));
+      await _capture(
+        tester,
+        c,
+        AppRoutes.rewardRedeemed('course-10'),
+        'reward_redeemed_$locale',
+      );
     });
   }
 
@@ -285,12 +321,6 @@ void main() {
       await _capture(
         tester,
         c,
-        AppRoutes.companyPortfolio,
-        'company_portfolio_$locale',
-      );
-      await _capture(
-        tester,
-        c,
         AppRoutes.companyProfile,
         'company_profile_$locale',
       );
@@ -303,8 +333,19 @@ void main() {
     await _capture(tester, c, AppRoutes.rewards, 'rewards_en_dark');
   });
 
-  testWidgets('design system gallery (en)', (tester) async {
-    final c = await _app(tester, size: const Size(393, 5200));
-    await _capture(tester, c, AppRoutes.designSystem, 'gallery_en');
-  });
+  for (final (locale, mode, name) in const [
+    ('en', ThemeMode.light, 'gallery_en'),
+    ('en', ThemeMode.dark, 'gallery_en_dark'),
+    ('ar', ThemeMode.light, 'gallery_ar'),
+  ]) {
+    testWidgets('design system gallery ($name)', (tester) async {
+      final c = await _app(
+        tester,
+        size: const Size(393, 7600),
+        locale: locale,
+        mode: mode,
+      );
+      await _capture(tester, c, AppRoutes.designSystem, name);
+    });
+  }
 }
