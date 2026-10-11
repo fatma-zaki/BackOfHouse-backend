@@ -19,7 +19,7 @@ export function buildLoggerParams(config: AppConfig): Params {
       redact: { paths: [...LOG_REDACT_PATHS], censor: '[REDACTED]' },
       genReqId: (req: RequestWithId) => (typeof req.id === 'string' ? req.id : 'unknown'),
       customProps: (req: RequestWithId) => ({ trace_id: req.id }),
-      autoLogging: { ignore: (req: IncomingMessage) => (req.url ?? '').startsWith('/api/v1/health') },
+      autoLogging: { ignore: (req: IncomingMessage) => (req.url ?? '').startsWith('/api/health') },
       // Only method, path and status: no bodies, no query strings (they can carry PII).
       serializers: {
         req: (req: RequestWithId & { method?: string; url?: string }) => ({

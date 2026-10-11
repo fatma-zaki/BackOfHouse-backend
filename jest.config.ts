@@ -1,6 +1,6 @@
 import type { Config } from 'jest';
 
-/** Unit tests: pure logic, no database. Integration and e2e use test/jest-integration.json. */
+/** Unit tests: pure logic, no database. Architecture: test/jest-architecture.json. Integration and e2e: test/jest-integration.json. */
 const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
