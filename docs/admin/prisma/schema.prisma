@@ -1,0 +1,921 @@
+// Back of House — reference data model (PostgreSQL + Prisma).
+// The backend already exists: map these models onto the current tables first.
+// Keep existing table/column names where they mean the same thing; add what's missing.
+// See docs/03-data-model.md for the rules behind each model.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Prisma 7+: move this to prisma.config.ts
+}
+
+// ───────────── enums ─────────────
+enum AccountType {
+  individual
+  company
+}
+
+enum UserStatus {
+  active
+  suspended
+  deleted
+}
+
+enum VerificationStatus {
+  none
+  pending
+  verified
+  rejected
+}
+
+enum CompanyCategory {
+  organizer
+  venue
+  supplier
+  agency
+  production
+}
+
+enum CompanyStatus {
+  active
+  suspended
+  unclaimed
+}
+
+enum CompanyRole {
+  owner
+  recruiter
+  editor
+}
+
+enum ListingType {
+  job
+  coop
+  project
+  volunteer
+  supplier_request
+}
+
+enum ListingStatus {
+  draft
+  pending_review
+  changes_requested
+  live
+  rejected
+  closed
+}
+
+enum WorkSetup {
+  on_site
+  hybrid
+  remote
+}
+
+enum ReviewDecisionType {
+  approved
+  changes_requested
+  rejected
+}
+
+enum ApplicationStatus {
+  applied
+  in_review
+  shortlisted
+  selected
+  not_selected
+  withdrawn
+}
+
+enum SupplierResponseStatus {
+  new
+  shortlisted
+  declined
+  awarded
+  hidden
+}
+
+enum EventStatus {
+  draft
+  published
+  cancelled
+  completed
+}
+
+enum RegistrationStatus {
+  registered
+  cancelled
+  attended
+  no_show
+}
+
+enum PointsType {
+  event_attendance
+  volunteer_shift
+  profile_completed
+  referral
+  workshop_attendance
+  reward_redemption
+  manual_adjustment
+  reversal
+}
+
+enum RedemptionStatus {
+  pending_fulfilment
+  fulfilled
+  cancelled
+}
+
+enum VerificationRequestStatus {
+  pending
+  more_info
+  approved
+  rejected
+}
+
+enum ClaimStatus {
+  open
+  approved
+  rejected
+}
+
+enum ImportKind {
+  companies
+  events
+  users
+  attendance
+}
+
+enum ImportStatus {
+  validating
+  preview_ready
+  processing
+  done
+  done_with_errors
+  failed
+  cancelled
+}
+
+enum ArticleStatus {
+  draft
+  scheduled
+  published
+  unpublished
+}
+
+enum ReportReason {
+  scam_or_fee
+  misleading_pay
+  off_platform_contact
+  inappropriate
+  harassment
+  unpaid_work
+  other
+}
+
+enum CaseStatus {
+  open
+  resolved
+  dismissed
+}
+
+enum TicketStatus {
+  open
+  waiting_on_member
+  solved
+  closed
+}
+
+enum BroadcastStatus {
+  draft
+  scheduled
+  sending
+  sent
+  cancelled
+}
+
+enum AdminRole {
+  super_admin
+  reviewer
+  editor
+  support
+  analyst
+}
+
+enum AdminStatus {
+  invited
+  active
+  disabled
+}
+
+enum ExportStatus {
+  queued
+  processing
+  ready
+  failed
+  expired
+}
+
+enum ExportFormat {
+  csv
+  xlsx
+  pdf
+}
+
+// ───────────── members ─────────────
+model User {
+  id                    String             @id @default(uuid()) @db.Uuid
+  accountType           AccountType
+  fullName              String
+  email                 String             @unique
+  emailVerifiedAt       DateTime?
+  phone                 String?
+  passwordHash          String
+  avatarUrl             String?
+  headline              String?
+  about                 String?
+  city                  String?
+  isStudent             Boolean            @default(false)
+  university            String?
+  interests             String[]
+  locale                String             @default("en")
+  theme                 String             @default("system")
+  shareEmail            Boolean            @default(false) // contact privacy: off by default
+  sharePhone            Boolean            @default(false)
+  notifyPush            Boolean            @default(true)
+  notifyEmail           Boolean            @default(true)
+  newsAlerts            Boolean            @default(true)
+  marketingOptIn        Boolean            @default(false)
+  verification          VerificationStatus @default(none)
+  verifiedAt            DateTime?
+  verifiedByAdminId     String?            @db.Uuid
+  pointsBalance         Int                @default(0) // cache; source of truth = PointsTransaction
+  lifetimePoints        Int                @default(0) // drives level
+  profileHighlightUntil DateTime?
+  status                UserStatus         @default(active)
+  suspendedReason       String?
+  lastActiveAt          DateTime?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  memberships   CompanyMember[]
+  follows       Follow[]
+  experiences   Experience[]
+  portfolio     PortfolioItem[]
+  applications  Application[]
+  registrations EventRegistration[]
+  points        PointsTransaction[]
+  redemptions   Redemption[]
+  notifications Notification[]
+  devices       Device[]
+  savedItems    SavedItem[]
+
+  @@index([city])
+  @@index([status, accountType])
+}
+
+model Experience {
+  id           String @id @default(uuid()) @db.Uuid
+  userId       String @db.Uuid
+  title        String
+  organization String
+  city         String?
+  startYear    Int
+  endYear      Int?
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PortfolioItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @db.Uuid // either a member's project…
+  companyId   String?  @db.Uuid // …or a company's portfolio
+  title       String
+  imageUrl    String
+  description String?
+  eventName   String?
+  year        Int?
+  createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Connection {
+  id          String    @id @default(uuid()) @db.Uuid
+  requesterId String    @db.Uuid
+  addresseeId String    @db.Uuid
+  acceptedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([requesterId, addresseeId])
+}
+
+model SavedItem {
+  userId    String   @db.Uuid
+  itemType  String // event | listing
+  itemId    String   @db.Uuid
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemType, itemId])
+}
+
+model Device {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  token     String   @unique
+  platform  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ───────────── companies ─────────────
+model Company {
+  id                String             @id @default(uuid()) @db.Uuid
+  slug              String             @unique
+  name              String
+  nameAr            String?
+  logoUrl           String?
+  coverUrl          String?
+  category          CompanyCategory
+  industry          String?
+  city              String?
+  about             String?
+  aboutAr           String?
+  crNumber          String? // private, admin-only
+  verification      VerificationStatus @default(none)
+  verifiedAt        DateTime?
+  verifiedByAdminId String?            @db.Uuid
+  status            CompanyStatus      @default(active)
+  source            String             @default("signup") // signup | import
+  featuredToWatch   Boolean            @default(false)
+  featuredOrder     Int?
+  followersCount    Int                @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  members   CompanyMember[]
+  listings  Listing[]
+  followers Follow[]
+  portfolio PortfolioItem[]
+  responses SupplierResponse[]
+  claims    PageClaim[]
+
+  @@index([name])
+  @@index([category, city])
+}
+
+model CompanyMember {
+  companyId String      @db.Uuid
+  userId    String      @db.Uuid
+  role      CompanyRole
+  createdAt DateTime    @default(now())
+  company   Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([companyId, userId])
+}
+
+model Follow {
+  userId    String   @db.Uuid
+  companyId String   @db.Uuid
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, companyId])
+}
+
+model PageClaim {
+  id                String      @id @default(uuid()) @db.Uuid
+  companyId         String      @db.Uuid
+  claimantUserId    String      @db.Uuid
+  workEmail         String
+  evidence          String // domain_match | needs_documents | documents_provided
+  documentUploadIds String[]
+  status            ClaimStatus @default(open)
+  decidedByAdminId  String?     @db.Uuid
+  decidedAt         DateTime?
+  createdAt         DateTime    @default(now())
+  company           Company     @relation(fields: [companyId], references: [id])
+}
+
+// ───────────── marketplace ─────────────
+model Listing {
+  id                 String        @id @default(uuid()) @db.Uuid
+  companyId          String        @db.Uuid
+  createdByUserId    String        @db.Uuid
+  type               ListingType
+  title              String
+  description        String
+  requirements       String[]
+  city               String
+  setup              WorkSetup     @default(on_site)
+  employment         String?
+  contractLength     String?
+  payMin             Int?
+  payMax             Int?
+  payNote            String?
+  workingHours       String?
+  crafts             String[]
+  closesAt           DateTime?     @db.Date
+  // supplier_request only
+  supplierCategory   String?
+  budgetMin          Int?
+  budgetMax          Int?
+  eventStart         DateTime?     @db.Date
+  eventEnd           DateTime?     @db.Date
+  respondBy          DateTime?     @db.Date
+  // review workflow
+  status             ListingStatus @default(draft)
+  submittedAt        DateTime?
+  reviewDueAt        DateTime?
+  resubmissionCount  Int           @default(0)
+  autoFlagged        Boolean       @default(false)
+  checks             Json? // AutoCheck[] from the last submission
+  publishedAt        DateTime?
+  closedAt           DateTime?
+  views              Int           @default(0)
+  applicationsCount  Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  company      Company            @relation(fields: [companyId], references: [id])
+  reviews      ListingReview[]
+  applications Application[]
+  responses    SupplierResponse[]
+
+  @@index([status, reviewDueAt])
+  @@index([type, status, city])
+}
+
+model ListingReview {
+  id            String             @id @default(uuid()) @db.Uuid
+  listingId     String             @db.Uuid
+  reviewerId    String             @db.Uuid // AdminUser
+  decision      ReviewDecisionType
+  reasons       String[]
+  message       String?
+  createdAt     DateTime           @default(now())
+  listing       Listing            @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model Application {
+  id            String            @id @default(uuid()) @db.Uuid
+  listingId     String            @db.Uuid
+  applicantId   String            @db.Uuid
+  status        ApplicationStatus @default(applied)
+  message       String
+  experienceIds String[]
+  portfolioIds  String[]
+  sharedEmail   Boolean           @default(false) // snapshot of what the applicant chose to share
+  sharedPhone   Boolean           @default(false)
+  statusHistory Json // [{status, at, byUserId}]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  listing       Listing           @relation(fields: [listingId], references: [id])
+  applicant     User              @relation(fields: [applicantId], references: [id])
+
+  @@unique([listingId, applicantId])
+  @@index([status])
+}
+
+model SupplierResponse {
+  id                String                 @id @default(uuid()) @db.Uuid
+  listingId         String                 @db.Uuid // a supplier_request listing
+  supplierCompanyId String                 @db.Uuid
+  priceAmount       Int
+  setupTime         String?
+  message           String
+  portfolioIds      String[]
+  status            SupplierResponseStatus @default(new)
+  createdAt         DateTime               @default(now())
+  listing           Listing                @relation(fields: [listingId], references: [id])
+  supplier          Company                @relation(fields: [supplierCompanyId], references: [id])
+
+  @@unique([listingId, supplierCompanyId])
+}
+
+// ───────────── events & points ─────────────
+model Event {
+  id                  String      @id @default(uuid()) @db.Uuid
+  title               String
+  titleAr             String?
+  description         String?
+  descriptionAr       String?
+  type                String
+  topics              String[]
+  coverUrl            String?
+  startsAt            DateTime
+  endsAt              DateTime
+  venue               String
+  city                String
+  mapUrl              String?
+  organizerCompanyId  String?     @db.Uuid
+  capacity            Int?
+  featured            Boolean     @default(false)
+  priceAmount         Int? // null = free
+  pointsForAttendance Int         @default(150)
+  checkInMethod       String      @default("qr_scan") // qr_scan | import
+  agenda              Json?
+  speakers            Json?
+  status              EventStatus @default(draft)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  registrations EventRegistration[]
+  scans         CheckInScan[]
+
+  @@index([status, startsAt])
+}
+
+model EventRegistration {
+  id                   String             @id @default(uuid()) @db.Uuid
+  eventId              String             @db.Uuid
+  userId               String             @db.Uuid
+  status               RegistrationStatus @default(registered)
+  passCode             String             @unique // QR token
+  registeredAt         DateTime           @default(now())
+  attendanceVerifiedAt DateTime?
+  attendanceSource     String? // scan | import | manual
+  pointsAwardedAt      DateTime?
+  event                Event              @relation(fields: [eventId], references: [id])
+  user                 User               @relation(fields: [userId], references: [id])
+
+  @@unique([eventId, userId])
+}
+
+model CheckInScan {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @db.Uuid
+  passCode  String
+  day       DateTime @db.Date
+  gate      String?
+  matched   Boolean  @default(false)
+  scannedAt DateTime
+  event     Event    @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, passCode, day])
+}
+
+/// Append-only ledger. Balance = SUM(amount). Never update or delete rows; correct with a reversal.
+model PointsTransaction {
+  id               String     @id @default(uuid()) @db.Uuid
+  userId           String     @db.Uuid
+  amount           Int
+  type             PointsType
+  sourceType       String? // event | listing | reward | ticket | rule
+  sourceId         String?
+  reason           String?
+  note             String?
+  createdByAdminId String?    @db.Uuid
+  idempotencyKey   String?    @unique // e.g. event_attendance:<userId>:<eventId>
+  createdAt        DateTime   @default(now())
+  user             User       @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+model EarningRule {
+  key       String   @id // event_registration (locked, 0) | event_attendance | volunteer_shift | profile_completed | referral_attended
+  points    Int
+  enabled   Boolean  @default(true)
+  locked    Boolean  @default(false)
+  limitNote String?
+  updatedAt DateTime @updatedAt
+}
+
+model Reward {
+  id            String       @id @default(uuid()) @db.Uuid
+  title         String
+  titleAr       String?
+  description   String?
+  descriptionAr String?
+  category      String // learn | attend | career | community | visibility
+  kind          String // profile_highlight | partner_voucher | course | event_pass | merch
+  imageUrl      String?
+  cost          Int
+  requiredLevel Int?
+  stock         Int? // null = unlimited
+  redeemedCount Int          @default(0)
+  highlightDays Int?
+  partner       String?
+  live          Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  redemptions   Redemption[]
+}
+
+model Redemption {
+  id          String           @id @default(uuid()) @db.Uuid
+  rewardId    String           @db.Uuid
+  userId      String           @db.Uuid
+  pointsSpent Int
+  code        String?
+  validUntil  DateTime?
+  status      RedemptionStatus @default(pending_fulfilment)
+  createdAt   DateTime         @default(now())
+  fulfilledAt DateTime?
+  reward      Reward           @relation(fields: [rewardId], references: [id])
+  user        User             @relation(fields: [userId], references: [id])
+}
+
+// ───────────── trust & content ─────────────
+model VerificationRequest {
+  id                 String                    @id @default(uuid()) @db.Uuid
+  subjectType        String // user | company
+  subjectId          String                    @db.Uuid
+  requestedByUserId  String                    @db.Uuid
+  documents          Json // [{uploadId, kind}]
+  checks             Json?
+  status             VerificationRequestStatus @default(pending)
+  dueAt              DateTime
+  decisionNote       String?
+  decidedByAdminId   String?                   @db.Uuid
+  decidedAt          DateTime?
+  createdAt          DateTime                  @default(now())
+
+  @@index([status, dueAt])
+}
+
+model Report {
+  id             String       @id @default(uuid()) @db.Uuid
+  caseId         String       @db.Uuid
+  reporterUserId String?      @db.Uuid // null = automatic filter
+  reason         ReportReason
+  note           String?
+  createdAt      DateTime     @default(now())
+  case           ModerationCase @relation(fields: [caseId], references: [id])
+}
+
+/// One case per reported target; reports on the same target join the open case.
+model ModerationCase {
+  id               String     @id @default(uuid()) @db.Uuid
+  targetType       String // listing | user | company | supplier_response | article
+  targetId         String     @db.Uuid
+  source           String // members | auto_filter
+  status           CaseStatus @default(open)
+  resolution       String?
+  resolvedByAdminId String?   @db.Uuid
+  resolvedAt       DateTime?
+  createdAt        DateTime   @default(now())
+  reports          Report[]
+
+  @@index([status, targetType])
+}
+
+model Article {
+  id                 String        @id @default(uuid()) @db.Uuid
+  slug               String        @unique
+  category           String
+  coverUrl           String?
+  coverAltEn         String?
+  coverAltAr         String?
+  headlineEn         String?
+  headlineAr         String?
+  excerptEn          String?
+  excerptAr          String?
+  bodyEn             String?
+  bodyAr             String?
+  ctaLabelEn         String?
+  ctaLabelAr         String?
+  linkType           String?
+  linkId             String?       @db.Uuid
+  status             ArticleStatus @default(draft)
+  scheduledAt        DateTime?
+  publishedAt        DateTime?
+  notifyPush         Boolean       @default(false)
+  pushAudience       Json?
+  featuredUntil      DateTime?
+  shareToFollowers   Boolean       @default(false)
+  authorAdminId      String        @db.Uuid
+  reads              Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+model SupportTicket {
+  id              String          @id @default(uuid()) @db.Uuid
+  number          Int             @unique @default(autoincrement())
+  requesterUserId String          @db.Uuid
+  companyId       String?         @db.Uuid
+  subject         String
+  category        String
+  status          TicketStatus    @default(open)
+  assigneeAdminId String?         @db.Uuid
+  firstReplyDueAt DateTime
+  firstRepliedAt  DateTime?
+  solvedAt        DateTime?
+  createdAt       DateTime        @default(now())
+  messages        TicketMessage[]
+
+  @@index([status, assigneeAdminId])
+}
+
+model TicketMessage {
+  id            String        @id @default(uuid()) @db.Uuid
+  ticketId      String        @db.Uuid
+  authorType    String // member | admin | system
+  authorId      String?       @db.Uuid
+  body          String
+  internal      Boolean       @default(false)
+  attachmentIds String[]
+  createdAt     DateTime      @default(now())
+  ticket        SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model Broadcast {
+  id             String          @id @default(uuid()) @db.Uuid
+  titleEn        String
+  titleAr        String
+  bodyEn         String
+  bodyAr         String
+  channels       String[]
+  audience       Json
+  marketing      Boolean         @default(true)
+  estimatedReach Int             @default(0)
+  status         BroadcastStatus @default(draft)
+  scheduledAt    DateTime?
+  sentAt         DateTime?
+  sentCount      Int             @default(0)
+  openedCount    Int             @default(0)
+  createdByAdminId String        @db.Uuid
+  createdAt      DateTime        @default(now())
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  type      String
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+}
+
+model Upload {
+  id        String   @id @default(uuid()) @db.Uuid
+  ownerType String // user | company | admin
+  ownerId   String   @db.Uuid
+  purpose   String
+  storageKey String
+  mime      String
+  size      Int
+  private   Boolean  @default(false) // verification_doc, import_file, ticket_attachment
+  createdAt DateTime @default(now())
+}
+
+// ───────────── back-office ─────────────
+model AdminUser {
+  id            String      @id @default(uuid()) @db.Uuid
+  name          String
+  email         String      @unique
+  passwordHash  String?
+  role          AdminRole
+  status        AdminStatus @default(invited)
+  totpSecret    String? // encrypted at rest
+  mfaEnabled    Boolean     @default(false)
+  locale        String      @default("en")
+  lastActiveAt  DateTime?
+  createdAt     DateTime    @default(now())
+  invites       AdminInvite[]
+}
+
+model AdminInvite {
+  id              String    @id @default(uuid()) @db.Uuid
+  adminUserId     String    @db.Uuid
+  tokenHash       String    @unique
+  invitedByAdminId String   @db.Uuid
+  expiresAt       DateTime // 72 h
+  acceptedAt      DateTime?
+  revokedAt       DateTime?
+  admin           AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+}
+
+model AdminSession {
+  id          String    @id @default(uuid()) @db.Uuid
+  adminUserId String    @db.Uuid
+  lastSeenAt  DateTime
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  ip          String?
+  userAgent   String?
+}
+
+/// Append-only. No UPDATE/DELETE grants for the app DB role.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String   @db.Uuid
+  actorRole  AdminRole
+  action     String // listing.approve, points.adjust, export.download, admin.sign_in…
+  targetType String?
+  targetId   String?
+  details    Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId, createdAt])
+  @@index([action])
+}
+
+model InternalNote {
+  id          String   @id @default(uuid()) @db.Uuid
+  subjectType String // user | company
+  subjectId   String   @db.Uuid
+  authorAdminId String @db.Uuid
+  body        String
+  createdAt   DateTime @default(now())
+
+  @@index([subjectType, subjectId])
+}
+
+model ImportJob {
+  id             String       @id @default(uuid()) @db.Uuid
+  kind           ImportKind
+  uploadId       String       @db.Uuid
+  eventId        String?      @db.Uuid
+  status         ImportStatus @default(validating)
+  totalRows      Int          @default(0)
+  processedRows  Int          @default(0)
+  added          Int          @default(0)
+  skipped        Int          @default(0)
+  preview        Json?
+  errors         Json?
+  errorReportKey String?
+  createdByAdminId String     @db.Uuid
+  createdAt      DateTime     @default(now())
+}
+
+model Export {
+  id                   String       @id @default(uuid()) @db.Uuid
+  dataset              String
+  format               ExportFormat
+  filters              Json?
+  columns              String[]
+  personalDataIncluded Boolean      @default(false)
+  status               ExportStatus @default(queued)
+  rowCount             Int?
+  sizeBytes            Int?
+  storageKey           String?
+  requestedByAdminId   String       @db.Uuid
+  scheduledExportId    String?      @db.Uuid
+  createdAt            DateTime     @default(now())
+  readyAt              DateTime?
+  expiresAt            DateTime?
+}
+
+model ScheduledExport {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  request          Json // ExportRequest
+  frequency        String // daily | weekly | monthly | after_each_event
+  dayOfWeek        Int?
+  dayOfMonth       Int?
+  time             String // HH:mm Asia/Riyadh
+  recipients       String[]
+  enabled          Boolean  @default(true)
+  lastRunAt        DateTime?
+  createdByAdminId String   @db.Uuid
+}
+
+model SavedReport {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String
+  description      String?
+  request          Json
+  ownerAdminId     String   @db.Uuid
+  createdAt        DateTime @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model TaxonomyItem {
+  kind   String // cities | crafts | listing_types | company_categories | news_categories
+  id     String
+  nameEn String
+  nameAr String
+  active Boolean @default(true)
+  order  Int     @default(0)
+
+  @@id([kind, id])
+}
+
+model IdempotencyRecord {
+  key        String   @id // <actor>:<Idempotency-Key>
+  requestHash String
+  status     Int
+  response   Json
+  createdAt  DateTime @default(now()) // purge after 24 h
+}

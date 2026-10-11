@@ -1,8 +1,14 @@
 # Back Of House — API contract
 
 What the mobile app needs from the backend. The endpoints and payloads are in
-[openapi.yaml](openapi.yaml) (OpenAPI 3.1, 80 operations); this page covers
+[contracts/app/openapi.yaml](../../contracts/app/openapi.yaml) (OpenAPI 3.1, the
+source of truth for the app surface `/api/app/v1`, ADR-031); this page covers
 the conventions, the rules the server must enforce, and what is still open.
+
+> **Changed 2026-10-11:** the base URL is now `https://backofhouse.space/api/app/v1`;
+> Google sign-in (`/auth/social`) is removed (BQ-78); errors carry `trace_id`
+> and 5xx is `SERVER_ERROR` (docs/error-codes.md); `GET /meta/app-version` is
+> new and must be called on launch before the first store release (D11).
 
 The product rules behind everything here are in
 [../business-rules.md](../business-rules.md). Where this contract and that
@@ -19,7 +25,7 @@ below, so it shows the expected behaviour: see `lib/features/*/data/`.
 
 | Topic | Rule |
 |---|---|
-| Base URL | `https://backofhouse.space/api` (the app reads it from `config/*.json`, so a `/v1` suffix is a config change) |
+| Base URL | `https://backofhouse.space/api/app/v1` (the app reads it from `config/*.json`; ADR-031) |
 | Format | JSON, UTF-8. Field names in `snake_case`. Enum values in `UPPER_SNAKE_CASE`, never localised. |
 | Single resource | `{ "data": { ... } }` |
 | List | `{ "data": [ ... ], "meta": { "page": 1, "page_size": 20, "has_more": true, "total": 134 } }`. `total` is optional. |
@@ -56,11 +62,12 @@ only a fallback.
 
 ## 2. Auth and session
 
-- **Three ways to sign in, one account:** email and password, Google
-  (`POST /auth/social` with the Google ID token), and a phone code
-  (`/auth/phone/code` then `/auth/phone/verify`). A matching email or phone
-  reaches the same account. All three return a **Session**: `access_token`,
-  `refresh_token`, `expires_in`, `user`.
+- **Two ways to sign in, one account (BQ-78):** email and password, and a
+  phone code (`/auth/phone/code` then `/auth/phone/verify`). A matching email
+  or phone reaches the same account. Both return a **Session**: `access_token`,
+  `refresh_token`, `expires_in`, `user`. There is no Google or social login at
+  launch. Phone codes are rate-limited per phone and per IP, expire, and have
+  an attempt cap (429 `RATE_LIMITED`, 422 `INVALID_CODE`).
 - **`GET /me`** restores the session on launch. `AppUser` carries
   `account_type`, `profile_status` (individuals) and `membership`
   (companies: company summary and role).
@@ -120,7 +127,7 @@ errors keyed by request field name.
 | HTTP | `code` | When |
 |---|---|---|
 | 401 | `UNAUTHENTICATED` | Missing, expired or revoked token |
-| 401 | `INVALID_CREDENTIALS` | Wrong email or password, or a rejected Google token |
+| 401 | `INVALID_CREDENTIALS` | Wrong email or password |
 | 403 | `FORBIDDEN` | Wrong account type for the endpoint |
 | 403 | `PERMISSION_DENIED` | Company member lacks the permission |
 | 403 | `CAPABILITY_REQUIRED` | Creating a `SUPPLIER_REQUEST` without `CREATE_SUPPLIER_REQUEST` |
@@ -309,7 +316,7 @@ DRAFT ──submit──▶ IN_REVIEW ──(Back Of House)──▶ PUBLISHED �
 ## 5. Endpoint index
 
 `🔓` needs no token. Everything else needs a Bearer token. Full request and
-response schemas are in `openapi.yaml`.
+response schemas are in `contracts/app/openapi.yaml`.
 
 ### Auth
 
@@ -317,7 +324,6 @@ response schemas are in `openapi.yaml`.
 |---|---|---|
 | POST | `/auth/register` 🔓 | Individual or company sign-up (a company is created with the caller as `OWNER`) |
 | POST | `/auth/login` 🔓 | Email and password |
-| POST | `/auth/social` 🔓 | Google ID token |
 | POST | `/auth/phone/code` 🔓 | Send SMS code |
 | POST | `/auth/phone/verify` 🔓 | Sign in with the code |
 | POST | `/auth/refresh` 🔓 | New session from a refresh token |
@@ -431,7 +437,7 @@ and the app will start using them without any contract change.
    `PointsActivity`, `ProfileInterest`, `Availability`,
    `ProfessionalField`, `ProfessionalFilter`, `NotificationCategory`,
    `NotificationTargetType`, `VerificationDocument`, and
-   `VerificationRequestStatus`. Use the values in `openapi.yaml`.
+   `VerificationRequestStatus`. Use the values in `contracts/app/openapi.yaml`.
 6. Upload verification documents as multipart.
 
 ## 9. Open questions for the backend team

@@ -5,7 +5,16 @@
 > Status values: `NOT STARTED` · `IN PROGRESS` · `BLOCKED (<question id>)` · `DONE`
 > Columns: **Database** (Prisma models + migrations + constraints) · **Module** (Nest module wiring, public `index.ts`) · **Service** (use cases, policies, transactions) · **Controller** (endpoints + DTOs + guards) · **Tests** (unit + integration + authz negative) · **Documentation** (OpenAPI + docs updated)
 >
-> Last updated: 2026-09-17 · Mandatory business rules (`business-rules.md`) applied; business decisions of 2026-09-15 applied; **no code yet**.
+> Last updated: 2026-10-11 · Build order is now [execution-plan.md](execution-plan.md) v2.2 (phases 0–9). Operation-level progress per surface is generated in [gap-report.md](gap-report.md). The module trees below were written before Stages 1–3 were built and are refreshed as each phase lands.
+
+## Execution plan progress
+
+| Phase | Scope | State |
+|---|---|---|
+| Stages 1–3 | Project, database and platform foundation (audit, outbox, jobs, storage port) | DONE |
+| 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`), `GET /ping` on both, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, `contracts/` with `x-phase`, contract check, coverage, gap report, oasdiff job, admin client types, error-code catalog | DONE (2026-10-11) |
+| 1 · Shared foundations | Actor, policies, i18n, idempotency, uploads + scanning, settings, taxonomy, observability, environments, backups, security scanning | BLOCKED (BQ-31) |
+| 2 – 9 | See execution-plan.md | NOT STARTED |
 
 ---
 

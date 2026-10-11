@@ -32,6 +32,7 @@
 18. [Clarifications and additional decisions](#18-clarifications-and-additional-decisions-2026-09-17)
 19. [Decisions BQ-62 … BQ-67](#19-decisions-bq-62--bq-67)
 20. [Single Company Account, Companies to Watch, JOB rules, industries list](#20-single-company-account-companies-to-watch-job-rules-industries-list)
+21. [Decisions of 2026-10-11 (execution plan v2)](#21-decisions-of-2026-10-11-execution-plan-v2)
 
 ---
 
@@ -51,7 +52,9 @@ Do **not** create account types such as Supplier User, Event Organizer User, Age
 - `users.account_type` is `AccountType = INDIVIDUAL | COMPANY`. It replaces the PRD §5.1 list (interested, student, professional, company representative, entity representative) and resolves **BQ-29**.
 - Permissions still come **only** from `organization_members` (company roles) and `user_platform_roles` (staff). The account type never grants a permission by itself.
 - ✅ **Decided (BQ-60):** at registration the user chooses **Individual** or **Company**. Each type has its **own registration flow and data**. Individual and Company accounts are **separate security contexts**. The Company Account has **its own RBAC**, independent of Individual accounts. An individual who owns a company gets **no** Company Account permissions; ownership never inherits permissions.
-- ✅ **Decided (BQ-72):** the **student** concept is **removed** entirely (no account type, no profile attribute). **CO_OP** remains an opportunity type.
+- ~~✅ **Decided (BQ-72):** the **student** concept is **removed** entirely (no account type, no profile attribute). **CO_OP** remains an opportunity type.~~
+- ✅ **Decided (BQ-79, 2026-10-11), reverses BQ-72:** students are kept, as a `STUDENT` flag on an Individual account set at sign-up (`profile_status = STUDENT`). It is not an account type. CO_OP opportunities are students-only (`STUDENTS_ONLY`), and a student ID is accepted as a verification document.
+- ✅ **Decided (BQ-78, 2026-10-11):** members sign in with email + password, or with phone + SMS one-time code. No social login at launch.
 - ✅ **Decided (BQ-68, BQ-74):** a company has **exactly one user — its Company Account**. Members and employees use **Individual accounts**, related to the company by **membership only**, which grants no company permissions.
 - ✅ **Decided (BQ-69):** ownership is created or changed **only** through the company creation / ownership flow and admin rules. No separate individual-ownership record.
 
@@ -132,6 +135,8 @@ The frontend should reuse Opportunity components and templates; content and avai
 **Architecture mapping**
 - One `opportunities` table and one `opportunities` module. Type-specific behaviour lives in a single **type policy map** in code (audience, who may respond, which fields are required), not in scattered conditionals.
 - This replaces the PRD §10.2 list. PRD `FREELANCE` has no equivalent. Whether JOB carries an employment type (permanent, temporary) and whether it requires a verified publisher → **BQ-73**.
+- ✅ **Decided (BQ-80, 2026-10-11):** only a **verified** company can submit a JOB. Otherwise the API returns 422 `COMPANY_NOT_VERIFIED`, and the automated check is a hard rule for JOBs. Unverified companies may submit CO_OP, VOLUNTEERING and SUPPLIER_REQUEST, which are reviewed as usual.
+- ⚠️ **Open (BQ-81):** both client contracts list `PROJECT` as an opportunity type, which contradicts BQ-62.
 
 ## 6. Opportunity audience
 
@@ -200,6 +205,10 @@ Back Of House connects individuals and companies but **does not make the hiring 
 
 **Rule.** Companies must eventually be able to create, edit, publish and view their opportunities, view applicants or responses, review applicants and shortlist where applicable. **Keep the initial workflow simple.**
 
+✅ **Decided (P2, 2026-10-11):**
+- Every opportunity is reviewed before it goes live; verified companies get no review skip (D9).
+- A published opportunity **stays live** when edited. The edit becomes a pending **revision**, and approval replaces the live version. The admin review queue labels these "Revision".
+
 **Future scope unless approved:** interview scheduling, full messaging system, offer management, advanced recruitment pipelines, recruitment analytics. The architecture must stay extensible without building them.
 
 **Architecture mapping**
@@ -217,7 +226,24 @@ Never grant verification automatically because of many points, payment, being fe
 
 **Architecture mapping**
 - Already enforced by module boundaries: only `verification` creates verification facts; `engagement` owns points; billing and promotions (future) never write to either (see `auth-architecture.md` §0).
-- ✅ **Decided (BQ-59):** points are **not a currency** and are **never deducted** when a Reward is used. Points **unlock** Levels, Rewards and Benefits.
+- ~~✅ **Decided (BQ-59):** points are **not a currency** and are **never deducted** when a Reward is used. Points **unlock** Levels, Rewards and Benefits.~~
+- ✅ **Decided (BQ-76, 2026-10-11), supersedes BQ-08 and BQ-59:**
+  - **Points are spent when a reward is redeemed.**
+  - Balance = the sum of the ledger.
+  - **Level** comes from lifetime **earned** points only, so spending never lowers a level. Levels: L1 0 · L2 100 · L3 500 · L4 1,500 (D9).
+  - Redemption is atomic and fails with `INSUFFICIENT_POINTS`, `LEVEL_TOO_LOW` or `OUT_OF_STOCK`.
+  - Points still never grant verification.
+- ✅ **Decided (BQ-77, 2026-10-11): earning rules** (seed values):
+
+  | Rule | Points |
+  |---|---|
+  | Event registration | 0 (locked) |
+  | Verified event attendance | +150, editable per event |
+  | Confirmed volunteer shift | +200 |
+  | Profile completed | +50, once |
+  | Friend joins and attends | +50, max 10 a month |
+
+- **Reward prices** are as in the designs: 300–1,500, with Profile Highlight at 500.
 - ✅ **Decided:** the **Profile Highlight** benefit is separate from **Verification** and from **Featured / Promoted** (paid placement). It is shown with its own label.
 
 ## 11. Future monetization
@@ -262,7 +288,7 @@ The implementation stays simple and focused while preserving this ecosystem arch
 
 **Architecture mapping**
 - **Courses** are part of the ecosystem → **BQ-02** is resolved on scope. Their model and phase are still open (no tables designed).
-- **Rewards** → see BQ-59.
+- **Rewards** → see BQ-76 (supersedes BQ-59).
 
 ## 14. MVP principle
 
@@ -297,7 +323,7 @@ The implementation stays simple and focused while preserving this ecosystem arch
 | SupplierResponse | `supplier_responses` — companies only (opportunities) |
 | Verification | `verifications` + `verified_at` facts (verification) |
 | Points | `point_ledger`, `point_balances` (engagement) |
-| Reward | `rewards` catalog: benefits unlocked by points or levels, never spent (BQ-59), e.g. Profile Highlight |
+| Reward | `rewards` catalog, redeemed by spending points with level and stock checks (BQ-76), e.g. Profile Highlight (500) |
 
 Future monetization concepts, **not implemented**, must stay possible:
 
@@ -397,7 +423,7 @@ New open items: **BQ-73** (JOB employment type and verified publisher), **BQ-74*
 | **BQ-69** | Ownership is created or changed **only** through the company creation / ownership flow and the admin rules already decided | T-01 claim, T-02 creation, T-30 admin ownership flow; no individual ownership record |
 | **BQ-70** | **Companies to Watch** is a **mix of factors**: manual selection by a Back Of House admin, an activity-based algorithm, and verification / completeness. It is a neutral replacement for "Featured": **not paid placement** and **not** a verification statement | `companies_to_watch_selections` (admin picks) + computed candidates from activity, verification signals and completion; label never "Featured" / "Verified". Weights, slot count and refresh cadence → BQ-70 (remaining) |
 | **BQ-71** | Profile Highlight — **not decided yet** | Stays open |
-| **BQ-72** | The **student** concept is **removed** entirely | `profiles.is_student` removed; CO_OP stays an opportunity type |
+| **BQ-72** | ~~The **student** concept is **removed** entirely~~ ⚠️ reversed by BQ-79 (§21) | ~~`profiles.is_student` removed~~; students kept |
 | **BQ-73** | A JOB has an **employment type** (permanent, temporary, freelance). Publishing a JOB **requires a verified company** | `JobEmploymentType` enum + `opportunities.employment_type` (required for JOB); publish check (T-32) uses the VERIFIED rule (BQ-53) |
 | **BQ-74** | The company has only one account (the Company Account) | Public team shows member Individual accounts with data from their Individual profiles |
 | **RG-28** | Initial industries list prepared from research (below) | Seed for `industries` after business review |
@@ -426,3 +452,20 @@ New open items: **BQ-73** (JOB employment type and verified publisher), **BQ-74*
 | 16 | `other` | أخرى | Other |
 
 New open question: **BQ-75** (how individuals become company members, and whether members can hide themselves).
+
+## 21. Decisions of 2026-10-11 (execution plan v2)
+
+Recorded with `open-questions.md` §0 and the ADRs named below.
+
+| ID | Decision | Applied as |
+|---|---|---|
+| **D9** | Profile completion **+50** points. Support first-reply deadline counts working hours **Sunday–Thursday 09:00–17:00 Asia/Riyadh**. **No review skip** for verified companies. Levels **0 / 100 / 500 / 1,500**. *Pending product owner sign-off* | `settings` defaults; `support/domain/working-hours`; earning-rule seed |
+| **P2** | A published opportunity stays live while an edit is reviewed as a pending **revision**. Approval replaces the live version. The admin queue labels it "Revision" | `opportunities` state machine (§9) |
+| **P3** | One Company Account per company for launch (ADR-030). The domain `Actor` for a company carries a permissions list so roles can be added later. Admin company detail shows the single account, not a team list | ADR-030 confirmed |
+| **BQ-76** | Points are spent on redeem. Balance = ledger sum; level from lifetime earned points; atomic redemption | §10; ADR-014 amended |
+| **BQ-77** | Design points scale (attendance 150, volunteer shift 200, profile 50, referral 50 × 10/month); reward prices 300–1,500 | §10; earning-rule seed; replaces `points-architecture.md` 10/15 |
+| **BQ-78** | Email + password and phone SMS-code sign-in; no social login at launch | §1; ADR-003 amended; SMS provider → TQ-04 |
+| **BQ-79** | Students kept (reverses BQ-72): `STUDENT` flag at sign-up, CO_OP students-only, student ID as a verification document | §1 |
+| **BQ-80** | JOB requires a verified company (BQ-73 stands); 422 `COMPANY_NOT_VERIFIED`; other types allowed for unverified companies | §5 |
+
+New open item: **BQ-81** (is PROJECT an opportunity type?).

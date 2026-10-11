@@ -15,7 +15,7 @@ const groups = [
   { label: 'Data', docs: ['database-erd', 'database-entities', 'enums-and-statuses', 'database-design-rules', 'transaction-boundaries'] },
   { label: 'Access & trust', docs: ['auth-architecture', 'company-context', 'security-and-audit'] },
   { label: 'Behaviour', docs: ['business-workflows', 'domain-events', 'points-architecture', 'api-map'] },
-  { label: 'Platform & delivery', docs: ['supabase-architecture', 'backend-development-order', 'backend-implementation-status'] },
+  { label: 'Platform & delivery', docs: ['execution-plan', 'gap-report', 'error-codes', 'supabase-architecture', 'backend-development-order', 'backend-implementation-status'] },
 ];
 
 const keywords = {
@@ -41,6 +41,9 @@ const keywords = {
   'supabase-architecture': 'supabase rls storage migrations connection',
   'backend-development-order': 'roadmap order phases stages',
   'backend-implementation-status': 'progress tracker status',
+  'execution-plan': 'plan phases surfaces app admin contracts decisions',
+  'gap-report': 'gap contract coverage missing implemented',
+  'error-codes': 'errors codes catalog http status',
 };
 
 const docs = [];
