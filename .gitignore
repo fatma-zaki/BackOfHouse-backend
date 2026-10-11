@@ -11,3 +11,6 @@ src/generated/
 *.log
 .DS_Store
 Thumbs.db
+
+# Specs generated from code (npm run contract:generate)
+build/
