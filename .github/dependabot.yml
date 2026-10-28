@@ -1,0 +1,22 @@
+# Dependency updates (execution-plan.md Phase 1, security). Security advisories are
+# also gated in CI by `npm audit --omit=dev --audit-level=high`.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      timezone: Asia/Riyadh
+    open-pull-requests-limit: 5
+    groups:
+      nestjs:
+        patterns: ['@nestjs/*']
+      prisma:
+        patterns: ['prisma', '@prisma/*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      timezone: Asia/Riyadh
