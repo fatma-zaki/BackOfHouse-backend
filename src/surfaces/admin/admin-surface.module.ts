@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { SettingsModule } from '../../modules/settings';
 import { AdminMetaController } from './meta/admin-meta.controller';
+import { AdminSettingsController } from './settings/admin-settings.controller';
 
 /**
  * Admin surface (ADR-031): the back-office API under /api/admin/v1. Staff sign in
@@ -8,6 +10,7 @@ import { AdminMetaController } from './meta/admin-meta.controller';
  * surfaces.module.ts.
  */
 @Module({
-  controllers: [AdminMetaController],
+  imports: [SettingsModule],
+  controllers: [AdminMetaController, AdminSettingsController],
 })
 export class AdminSurfaceModule {}

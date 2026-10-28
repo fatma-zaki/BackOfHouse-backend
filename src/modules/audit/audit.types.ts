@@ -1,3 +1,4 @@
+import type { Actor } from '../../common/context/actor';
 import { AuditActorType } from '../../generated/prisma/enums';
 
 export { AuditActorType };
@@ -24,3 +25,20 @@ export interface AuditRecordInput {
 }
 
 export const SYSTEM_ACTOR: AuditActor = { type: AuditActorType.SYSTEM };
+
+/**
+ * The audit actor for a request actor. Staff are not `users` rows (ADR-032): their
+ * staff account id goes in `actor_user_id` with type STAFF, so that column's
+ * foreign key, when identity lands, must not point at `users` for STAFF rows.
+ */
+export function auditActorOf(actor: Actor | undefined): AuditActor {
+  switch (actor?.kind) {
+    case 'staff':
+      return { type: AuditActorType.STAFF, userId: actor.staffId, platformRoles: [actor.role] };
+    case 'member':
+    case 'company':
+      return { type: AuditActorType.USER, userId: actor.userId };
+    default:
+      return SYSTEM_ACTOR;
+  }
+}

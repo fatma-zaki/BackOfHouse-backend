@@ -40,6 +40,7 @@ export class AuditLogger {
         userAgent: context?.userAgent?.slice(0, 512) ?? null,
       },
     });
+    RequestContext.countAuditWrite();
 
     return id;
   }

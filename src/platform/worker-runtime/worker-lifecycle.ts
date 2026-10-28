@@ -2,9 +2,12 @@ import { Injectable, Logger, OnApplicationBootstrap, OnApplicationShutdown } fro
 import { AppConfig } from '../../config/app.config';
 import { JobsService } from '../jobs/jobs.service';
 import { OutboxDispatcher } from '../outbox/outbox-dispatcher';
+import { IdempotencyStore } from '../idempotency/idempotency.store';
 
 /** Daily at 03:15 Riyadh time. */
 const OUTBOX_PURGE_CRON = '15 3 * * *';
+/** Hourly, at minute 20. */
+const IDEMPOTENCY_PURGE_CRON = '20 * * * *';
 
 /**
  * Starts the background runtime (outbox dispatcher + scheduled jobs) when
@@ -20,6 +23,7 @@ export class WorkerLifecycle implements OnApplicationBootstrap, OnApplicationShu
     private readonly config: AppConfig,
     private readonly jobs: JobsService,
     private readonly dispatcher: OutboxDispatcher,
+    private readonly idempotency: IdempotencyStore,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
@@ -32,6 +36,10 @@ export class WorkerLifecycle implements OnApplicationBootstrap, OnApplicationShu
     await this.jobs.registerCron('outbox.purge-processed', OUTBOX_PURGE_CRON, async () => {
       const removed = await this.dispatcher.purgeProcessed();
       this.logger.log(`Purged ${removed} processed outbox events`);
+    });
+    await this.jobs.registerCron('idempotency.purge', IDEMPOTENCY_PURGE_CRON, async () => {
+      const removed = await this.idempotency.purgeExpired();
+      this.logger.log(`Purged ${removed} expired idempotency records`);
     });
     this.dispatcher.start();
   }

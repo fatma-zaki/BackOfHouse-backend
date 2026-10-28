@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { RequestContext } from './request-context';
 import { uuidv7 } from '../ids/uuid-v7';
+import { resolveLocale } from '../i18n/locale';
 
 export const REQUEST_ID_HEADER = 'x-request-id';
 
@@ -15,12 +16,21 @@ export function resolveRequestId(header: string | string[] | undefined): string 
 /**
  * First middleware in the chain: assigns the request id (echoed to the client
  * as `X-Request-Id` and in error bodies as `trace_id`, api-map.md §1.4) and
- * opens the AsyncLocalStorage scope used by logging, audit and the outbox.
+ * opens the AsyncLocalStorage scope used by logging, audit and the outbox. It
+ * also resolves the request language from `Accept-Language`.
  */
 export function requestContextMiddleware(req: Request, res: Response, next: NextFunction): void {
   const requestId = resolveRequestId(req.headers[REQUEST_ID_HEADER]);
   (req as Request & { id: string }).id = requestId;
   res.setHeader('X-Request-Id', requestId);
 
-  RequestContext.run({ requestId, ipAddress: req.ip, userAgent: req.headers['user-agent'] }, () => next());
+  RequestContext.run(
+    {
+      requestId,
+      ipAddress: req.ip,
+      userAgent: req.headers['user-agent'],
+      locale: resolveLocale(req.headers['accept-language']),
+    },
+    () => next(),
+  );
 }

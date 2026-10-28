@@ -1,7 +1,7 @@
 import { Client } from 'pg';
 import { testDatabaseUrl } from './test-db-state';
 
-export const APP_TABLES = ['app.audit_logs', 'app.outbox_events'];
+export const APP_TABLES = ['app.audit_logs', 'app.outbox_events', 'app.idempotency_records', 'app.platform_settings'];
 
 /** Superuser connection to the test database (for setup and assertions). */
 export async function connectAdmin(): Promise<Client> {

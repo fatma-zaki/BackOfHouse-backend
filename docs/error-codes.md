@@ -28,7 +28,9 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 | `RATE_LIMITED` | 429 | both | With `Retry-After` | built |
 | `SERVER_ERROR` | 5xx | both | Unexpected failure; no details exposed | built |
 | `SERVICE_UNAVAILABLE` | 503 | both | A dependency is down (readiness) | built |
-| `IDEMPOTENCY_KEY_REUSED` | 422 | both | Same `Idempotency-Key`, different body | 1 |
+| `IDEMPOTENCY_KEY_REQUIRED` | 400 | both | An operation marked idempotent was sent without a valid `Idempotency-Key` (1–255 of `A-Z a-z 0-9 . _ : -`) | built |
+| `IDEMPOTENCY_KEY_REUSED` | 422 | both | Same `Idempotency-Key`, different body | built |
+| `IDEMPOTENCY_KEY_IN_USE` | 409 | both | A request with the same key is still being processed | built |
 
 ## Identity and access
 

@@ -4333,6 +4333,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/Unprocessable'
       security:
         - adminSession: []
           csrfToken: []
@@ -8502,12 +8504,16 @@ components:
           type: integer
         review_every_opportunity:
           type: boolean
+          const: true
+          description: Always true (D9)
         hide_contact_details_in_opportunities:
           type: boolean
         auto_flag_fee_opportunities:
           type: boolean
         verified_companies_skip_review:
           type: boolean
+          const: false
+          description: Always false (D9)
         support_first_reply_hours:
           type: integer
         support_points_monthly_cap:
@@ -8521,8 +8527,13 @@ components:
           properties:
             start:
               type: string
+              pattern: ^([01]\d|2[0-3]):[0-5]\d$
             end:
               type: string
+              pattern: ^([01]\d|2[0-3]):[0-5]\d$
+          required:
+            - start
+            - end
         levels:
           type: array
           items:
@@ -8532,6 +8543,73 @@ components:
                 type: integer
               min_lifetime_points:
                 type: integer
+            required:
+              - level
+              - min_lifetime_points
+        app_version:
+          type: object
+          additionalProperties: false
+          description: Forced-update policy served by GET /api/app/v1/meta/app-version (D11)
+          required:
+            - ios
+            - android
+          properties:
+            ios:
+              type: object
+              additionalProperties: false
+              required:
+                - min_supported_version
+                - latest_version
+                - update_url
+              properties:
+                min_supported_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                latest_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                update_url:
+                  type: string
+                  format: uri
+            android:
+              type: object
+              additionalProperties: false
+              required:
+                - min_supported_version
+                - latest_version
+                - update_url
+              properties:
+                min_supported_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                latest_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                update_url:
+                  type: string
+                  format: uri
+      description: >-
+        Platform settings (Super admin). Defaults in code; rules fixed by product decisions are enforced:
+        review_every_opportunity must be true and verified_companies_skip_review false (D9); levels start at L1 = 0 and
+        rise (BQ-76). Invalid input → 422 VALIDATION_FAILED with field errors.
+      additionalProperties: false
+      required:
+        - review_sla_hours
+        - review_every_opportunity
+        - hide_contact_details_in_opportunities
+        - auto_flag_fee_opportunities
+        - verified_companies_skip_review
+        - support_first_reply_hours
+        - support_points_monthly_cap
+        - admin_email_domain
+        - admin_idle_timeout_minutes
+        - push_quiet_hours
+        - levels
+        - app_version
     TaxonomyItem:
       type: object
       properties:

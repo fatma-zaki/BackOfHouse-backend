@@ -31,3 +31,37 @@ model OutboxEvent {
   @@map("outbox_events")
   @@schema("app")
 }
+
+// Platform: Idempotency-Key replay store (docs/admin/docs/04-api-conventions.md
+// "Idempotency", ADR-008). One row per caller + key; purged after expiry.
+
+enum IdempotencyStatus {
+  IN_PROGRESS
+  COMPLETED
+
+  @@map("idempotency_status")
+  @@schema("app")
+}
+
+/// First response of an operation sent with `Idempotency-Key`, replayed for 24 h
+/// to the same caller with the same key. A different body under the same key is
+/// refused (IDEMPOTENCY_KEY_REUSED).
+model IdempotencyRecord {
+  id             String            @id @default(uuid(7)) @db.Uuid
+  scope          String
+  idempotencyKey String            @map("idempotency_key")
+  method         String
+  path           String
+  requestHash    String            @map("request_hash")
+  status         IdempotencyStatus @default(IN_PROGRESS)
+  responseStatus Int?              @map("response_status")
+  responseBody   Json?             @map("response_body")
+  expiresAt      DateTime          @map("expires_at") @db.Timestamptz(6)
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([scope, idempotencyKey], map: "uq_idempotency_records__scope_idempotency_key")
+  @@index([expiresAt], map: "ix_idempotency_records__expires_at")
+  @@map("idempotency_records")
+  @@schema("app")
+}

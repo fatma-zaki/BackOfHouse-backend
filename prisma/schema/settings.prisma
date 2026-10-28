@@ -1,0 +1,16 @@
+// Module: settings (execution-plan.md Phase 1). Typed platform settings edited by
+// a Super admin on the admin surface; defaults live in code
+// (src/modules/settings/domain/settings.schema.ts), rows hold overrides only.
+
+/// One row per top-level setting key (e.g. `review_sla_hours`, `levels`).
+/// `value` is validated by the code schema before every write.
+model PlatformSetting {
+  key              String   @id
+  value            Json
+  updatedByStaffId String?  @map("updated_by_staff_id") @db.Uuid
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("platform_settings")
+  @@schema("app")
+}
