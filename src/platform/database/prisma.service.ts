@@ -21,6 +21,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         max: config.database.poolSize,
         statement_timeout: config.database.statementTimeoutMs,
         application_name: 'boh-backend',
+        // The pg adapter sends Date parameters without a UTC offset, so Postgres reads them in the
+        // session time zone. Pin it to UTC; otherwise a server or local Postgres running in
+        // Asia/Riyadh shifts every timestamp comparison by 3 hours.
+        options: '-c TimeZone=UTC',
       }),
     });
   }
