@@ -231,7 +231,9 @@ CI, on every push and PR (`.github/workflows/ci.yml`):
    - a contract operation due by the current phase is not implemented;
    - an implemented operation's success status codes or path/query parameters differ.
 4. `npm run contract:types` regenerates `contracts/admin/types/admin-api.d.ts` (openapi-typescript 7.13.0). `git diff --exit-code` then fails the build when the committed types are stale.
-5. PRs only, job `contract-breaking-changes`: `tufin/oasdiff:v1.32.1 breaking <base> <head> --fail-on ERR` for each contract. Breaking app changes go to `/api/app/v2`; breaking admin changes need a release coordinated with the admin web app.
+5. PRs only, workflow `contract-breaking-changes.yml`, which re-runs when labels change: `tufin/oasdiff:v1.32.1 breaking <base> <head> --fail-on ERR` for each contract.
+   - **App:** breaking changes always fail; ship them under `/api/app/v2`.
+   - **Admin:** breaking changes pass only with the PR label **`breaking-change-approved`**, for a release coordinated with the admin web app.
 6. Phase 1 adds `jest-openapi` response validation in e2e tests, which checks request and response **bodies** against the contract. Until then, bodies are not compared.
 
 Workflow: change the YAML first, then the code, in the same PR.
