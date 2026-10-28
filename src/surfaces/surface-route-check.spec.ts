@@ -20,6 +20,14 @@ class FakeAppFeatureModule implements NestModule {
   }
 }
 
+/** Global middleware outside any surface, like LoggerModule's (Express 5 registers `/api/{*path}`). */
+@Module({})
+class GlobalMiddlewareModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply((_req: unknown, _res: unknown, next: () => void) => next()).forRoutes('*');
+  }
+}
+
 @Controller('stray')
 class StrayController {
   @Get()
@@ -53,6 +61,10 @@ describe('SurfaceRouteCheck (execution-plan.md §1.5)', () => {
 
   it('boots when every route sits under a surface, ignoring forRoutes("*") middleware', async () => {
     await expect(boot(surfaceFeature)).resolves.toBeUndefined();
+  });
+
+  it('ignores global forRoutes("*") middleware outside the surfaces', async () => {
+    await expect(boot([...surfaceFeature, GlobalMiddlewareModule])).resolves.toBeUndefined();
   });
 
   it('fails boot when a controller is mounted outside the surfaces', async () => {

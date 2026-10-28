@@ -6,16 +6,18 @@ interface ExpressLayer {
   route?: { path: string | string[]; methods: Record<string, boolean> };
 }
 
+/** A trailing wildcard: Express 4 (`/api$`, `/api/*`) or Express 5 / path-to-regexp 8 (`/api/{*path}`). */
+const TRAILING_WILDCARD = /(\$|\*|\{\*\w+\})$/;
+
 /**
  * Nest binds `forRoutes('*')` middleware (request context, logging) as Express
- * routes on a prefix wildcard (`/api$`, `/api/*`) for every HTTP method. Those are
- * not controller routes and are skipped.
+ * routes on a prefix wildcard for every HTTP method. Those are not controller
+ * routes and are skipped.
  */
 function isMiddlewareBinding(layer: ExpressLayer): boolean {
   const { path, methods } = layer.route!;
   const paths = Array.isArray(path) ? path : [path];
-  const wildcard = paths.every((p) => p.endsWith('$') || p.endsWith('*'));
-  return wildcard && Object.keys(methods).length > 7;
+  return paths.every((p) => TRAILING_WILDCARD.test(p)) && Object.keys(methods).length > 7;
 }
 
 /** Lists "METHOD /path" for every controller route registered on the Express app. */
