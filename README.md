@@ -1,21 +1,27 @@
 # Back Of House — Backend
 
-NestJS modular monolith (`api` + `worker` from one codebase) on Supabase PostgreSQL through Prisma, exposing REST under `/api/v1`.
+NestJS modular monolith (`api` + `worker` from one codebase) on Supabase PostgreSQL through Prisma, exposing two REST surfaces (ADR-031):
+
+| Surface | Prefix | Client | Contract | Swagger (non-production) |
+| --- | --- | --- | --- | --- |
+| **App** | `/api/app/v1` | Flutter app (members, Company Accounts) | [contracts/app/openapi.yaml](contracts/app/openapi.yaml) | `/docs/app` |
+| **Admin** | `/api/admin/v1` | Admin back-office (staff, Google Workspace sign-in) | [contracts/admin/openapi.yaml](contracts/admin/openapi.yaml) | `/docs/admin` |
+
+Health probes are shared: `/api/health`, `/api/health/ready`. The build plan is [docs/execution-plan.md](docs/execution-plan.md).
 
 **The architecture lives in [`docs/`](docs/BACK_OF_HOUSE_BACKEND_MAP.md) and is the source of truth.** This README covers only how to run and work on the code. Where the code makes a choice the docs leave open, it is listed under [Decisions and assumptions](#decisions-and-assumptions).
 
 ## Status
 
-Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-development-order.md).
+Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-development-order.md), then **Phase 0** of [docs/execution-plan.md](docs/execution-plan.md), which supersedes the stage order from here on.
 
 | Stage | Contents | State |
 | --- | --- | --- |
 | 1 · Project foundation | Config validation (zod), pino logging with redaction, request id → `trace_id`, error body `{code, message, trace_id, errors}`, 422 validation, `{data, meta}` envelope, cursor/offset pagination, `/health` + `/health/ready`, OpenAPI, Helmet, CORS allow-list, throttling, deny-by-default, `api` + `worker` entrypoints, ESLint + Prettier + dependency-cruiser, Jest, CI, Dockerfile | Done |
 | 2 · Database foundation | Prisma 7 multi-file schema, private `app` schema, extensions, `boh_app` role and grants, RLS deny-all helper, `raise_immutable()`, `app.normalize_ar()`, `PrismaService`, `TransactionRunner`, real-Postgres test harness, seed runner | Done |
 | 3 · Platform | `audit_logs` + `AuditLogger` + `redact()`, transactional outbox (`outbox_events`, writer, dispatcher, `@OnDomainEvent`), pg-boss jobs, storage port | Done (audit read endpoint waits for Stage 6) |
-| 4+ | Identity, access, organizations, … | **Blocked** — see below |
-
-Stage 4 onwards is blocked by open questions the docs say must be answered first (backend-development-order.md, cross-phase rule 4): **TQ-01/TQ-02** (Supabase Auth client-direct vs `/auth/*` facade), **TQ-05** (JSON casing), **BQ-58** (sign-in options), **BQ-68** (identifiers across account types), **BQ-75** (membership flow). See [docs/open-questions.md](docs/open-questions.md).
+| Phase 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`) with `GET /ping`, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, contracts in `contracts/` with `x-phase`, contract check + coverage + gap report scripts, oasdiff in CI, admin client types | Done |
+| Phase 1+ | Shared foundations, identity, … | Phase 1 waits for D10 / BQ-31 (hosting region, PDPL). See [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 
@@ -24,6 +30,13 @@ prisma/
   schema/            multi-file Prisma schema (one file per module), all models in the `app` schema
   migrations/        Prisma migrations with hand-written SQL (RLS, grants, triggers, CHECKs)
   seed/              idempotent seed runner
+contracts/
+  app/openapi.yaml   app surface contract (source of truth), every operation tagged x-phase
+  admin/openapi.yaml admin surface contract (source of truth); admin/types/ = generated client types
+  phase.json         current phase: operations due up to it must be implemented
+scripts/
+  contracts/         coverage, generate (spec from code), check (code vs contract), one-time converter
+  gap-report.mjs     regenerates docs/gap-report.md
 src/
   main.ts            api entrypoint
   worker.ts          worker entrypoint (outbox dispatcher + scheduled jobs)
@@ -32,12 +45,13 @@ src/
   common/            framework-only: errors, filter, envelope, pagination, pipes, request context, Arabic text
   platform/          database, observability, outbox, jobs, rate-limit, storage, worker runtime
   modules/audit/     AuditLogger (first domain module, layer L0)
+  surfaces/          ADR-031: app/ (/api/app/v1) and admin/ (/api/admin/v1) controllers + DTOs; route check
   generated/prisma/  generated client (git-ignored; `npm run prisma:generate`)
 test/
   support/           embedded-Postgres harness, DB helpers
   integration/       real-database tests (migrations, roles, RLS, transactions, outbox)
   e2e/               full HTTP stack against the real database
-legacy/              archived first implementation; not built, not linted, not tested
+  architecture/      boundary rules (dependency-cruiser) checked against fixtures; npm run test:architecture
 ```
 
 ## Getting started
@@ -48,10 +62,20 @@ Requirements: Node.js ≥ 20.19 (developed on 24), npm.
 npm install
 npm run prisma:generate
 cp .env.example .env        # fill in the database URLs
-npm run start:dev           # http://localhost:3000/api/v1/health
+npm run start:dev           # http://localhost:3000/api/health
 ```
 
-OpenAPI UI: `http://localhost:3000/docs` (disabled when `APP_ENV=production`).
+Swagger UI: `http://localhost:3000/docs/app` and `http://localhost:3000/docs/admin` (disabled when `APP_ENV=production`).
+
+### Contracts
+
+```bash
+npm run contracts          # x-phase coverage, generate specs from code, compare with contracts/
+npm run contract:types     # regenerate contracts/admin/types/admin-api.d.ts
+npm run gap-report         # regenerate docs/gap-report.md
+```
+
+Change the contract first, then the code, in the same PR. When a phase is done, raise `current_phase` in `contracts/phase.json`.
 
 ### Environment
 
@@ -108,7 +132,7 @@ Choices made where the docs are open or silent. Each is reversible without a dat
 
 | Topic | Choice | Doc reference |
 | --- | --- | --- |
-| JSON casing | snake_case (the docs' recommendation) | ADR-019 / TQ-05 **open** |
+| JSON casing | snake_case on both surfaces | ADR-019 (accepted 2026-10-11) |
 | Prisma version | 7.10.1, `prisma-client` generator, `pg` driver adapter, `prisma.config.ts` | ADR-002, TQ-23 |
 | NestJS version | 11 (Express 5). Exact pins; `overrides` force `multer` 2.5.0 and Swagger's `js-yaml` 5.4.3 until Nest ships them (security advisories). Remove each override once the parent package carries a fixed version | `npm audit --omit=dev --audit-level=high` in CI |
 | UUID v7 | Generated by Prisma (`uuid(7)`) and by `common/ids/uuid-v7.ts`; **no database default**, because a DB default causes Prisma schema drift. Raw SQL inserts must supply ids | ADR-005, TQ-22 |
@@ -118,5 +142,5 @@ Choices made where the docs are open or silent. Each is reversible without a dat
 | Outbox retries | Event-level status: when one handler fails, all handlers for that event are retried (all must be idempotent). The docs mention per-handler records, but the catalog defines no table for them | domain-events.md §1 |
 | Outbox claiming | Lease pattern: `FOR UPDATE SKIP LOCKED` + `available_at` pushed forward, so handlers run outside the claiming transaction | database-design-rules.md §14 |
 | Audit FKs | `actor_user_id` / `organization_id` get their foreign keys when `users` (Stage 4) and `organizations` (Stage 8) exist | database-design-rules.md §6 |
-| Deny by default | Until Stage 4, only `@Public()` routes are reachable; everything else returns 401 | security-and-audit.md §3 |
+| Deny by default | Until Phase 2, only `@Public()` routes are reachable; everything else returns 401 | security-and-audit.md §3 |
 | Test database | Embedded Postgres locally, service container in CI | Stage 2 |

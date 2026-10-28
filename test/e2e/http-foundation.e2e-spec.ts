@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Module, Param, Post, Query } from '@nestjs/common';
+import { RouterModule } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
 import { IsInt, IsString, Max, MaxLength, Min } from 'class-validator';
@@ -55,14 +56,17 @@ class ProbeController {
   }
 }
 
+/** Mounted under the app surface: the startup check refuses routes outside a surface (ADR-031). */
+@Module({ controllers: [ProbeController] })
+class ProbeModule {}
+
 describe('HTTP foundation (e2e)', () => {
   let app: NestExpressApplication;
 
   beforeAll(async () => {
     applyTestEnv();
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-      controllers: [ProbeController],
+      imports: [AppModule, ProbeModule, RouterModule.register([{ path: 'app/v1', module: ProbeModule }])],
     }).compile();
 
     app = moduleRef.createNestApplication<NestExpressApplication>({ bodyParser: false });
@@ -78,13 +82,13 @@ describe('HTTP foundation (e2e)', () => {
 
   describe('health', () => {
     it('answers liveness without authentication', async () => {
-      const response = await http().get('/api/v1/health');
+      const response = await http().get('/api/health');
       expect(response.status).toBe(200);
       expect(response.body).toEqual({ data: { status: 'ok' } });
     });
 
     it('reports ready when the database is reachable', async () => {
-      const response = await http().get('/api/v1/health/ready');
+      const response = await http().get('/api/health/ready');
       expect(response.status).toBe(200);
       expect(response.body).toEqual({ data: { status: 'ok' } });
     });
@@ -92,13 +96,13 @@ describe('HTTP foundation (e2e)', () => {
 
   describe('deny by default', () => {
     it('refuses a route that is not marked @Public', async () => {
-      const response = await http().get('/api/v1/probe/protected');
+      const response = await http().get('/api/app/v1/probe/protected');
       expect(response.status).toBe(401);
       expect(response.body.code).toBe('UNAUTHENTICATED');
     });
 
     it('refuses it even with a bearer token, until the identity module verifies tokens', async () => {
-      const response = await http().get('/api/v1/probe/protected').set('Authorization', 'Bearer anything');
+      const response = await http().get('/api/app/v1/probe/protected').set('Authorization', 'Bearer anything');
       expect(response.status).toBe(401);
     });
   });
@@ -106,7 +110,7 @@ describe('HTTP foundation (e2e)', () => {
   describe('error format and tracing', () => {
     it('returns { code, message, trace_id, errors } with 422 for validation failures', async () => {
       const response = await http()
-        .post('/api/v1/probe')
+        .post('/api/app/v1/probe')
         .send({ trade_name_en: 'x'.repeat(30), rating: 99 });
 
       expect(response.status).toBe(422);
@@ -116,44 +120,44 @@ describe('HTTP foundation (e2e)', () => {
     });
 
     it('rejects unknown properties (mass-assignment protection)', async () => {
-      const response = await http().post('/api/v1/probe').send({ trade_name_en: 'ok', rating: 3, is_admin: true });
+      const response = await http().post('/api/app/v1/probe').send({ trade_name_en: 'ok', rating: 3, is_admin: true });
       expect(response.status).toBe(422);
       expect(response.body.errors).toHaveProperty('is_admin');
     });
 
     it('echoes a client X-Request-Id as trace_id and response header', async () => {
-      const response = await http().get('/api/v1/probe/protected').set('X-Request-Id', 'client-trace-0001');
+      const response = await http().get('/api/app/v1/probe/protected').set('X-Request-Id', 'client-trace-0001');
       expect(response.headers['x-request-id']).toBe('client-trace-0001');
       expect(response.body.trace_id).toBe('client-trace-0001');
     });
 
     it('replaces an unsafe client request id', async () => {
-      const response = await http().get('/api/v1/health').set('X-Request-Id', '<script>');
+      const response = await http().get('/api/health').set('X-Request-Id', '<script>');
       expect(response.headers['x-request-id']).not.toBe('<script>');
     });
 
     it('rejects a malformed UUID path parameter with 422', async () => {
-      const response = await http().get('/api/v1/probe/items/not-a-uuid');
+      const response = await http().get('/api/app/v1/probe/items/not-a-uuid');
       expect(response.status).toBe(422);
       expect(response.body.errors).toEqual({ id: ['must be a UUID'] });
     });
 
     it('uses the error format for unknown routes', async () => {
-      const response = await http().get('/api/v1/does-not-exist');
+      const response = await http().get('/api/app/v1/does-not-exist');
       expect(response.status).toBe(404);
       expect(response.body.code).toBe('NOT_FOUND');
     });
 
     it('hides the details of unexpected errors', async () => {
-      const response = await http().get('/api/v1/probe/boom');
+      const response = await http().get('/api/app/v1/probe/boom');
       expect(response.status).toBe(500);
-      expect(response.body.code).toBe('INTERNAL_ERROR');
+      expect(response.body.code).toBe('SERVER_ERROR');
       expect(JSON.stringify(response.body)).not.toContain('hunter2');
     });
 
     it('answers malformed JSON with 400', async () => {
       const response = await http()
-        .post('/api/v1/probe')
+        .post('/api/app/v1/probe')
         .set('Content-Type', 'application/json')
         .send('{"trade_name_en": ');
       expect(response.status).toBe(400);
@@ -162,7 +166,7 @@ describe('HTTP foundation (e2e)', () => {
 
     it('answers an oversized body with 413', async () => {
       const response = await http()
-        .post('/api/v1/probe')
+        .post('/api/app/v1/probe')
         .set('Content-Type', 'application/json')
         .send(JSON.stringify({ trade_name_en: 'x'.repeat(300_000), rating: 1 }));
       expect(response.status).toBe(413);
@@ -172,12 +176,12 @@ describe('HTTP foundation (e2e)', () => {
 
   describe('success envelope and pagination', () => {
     it('wraps a Page as { data, meta }', async () => {
-      const response = await http().get('/api/v1/probe/items');
+      const response = await http().get('/api/app/v1/probe/items');
       expect(response.body).toEqual({ data: [{ n: 1 }], meta: { next_cursor: null, has_more: false } });
     });
 
     it('rejects a limit above 100', async () => {
-      const response = await http().get('/api/v1/probe/items?limit=500');
+      const response = await http().get('/api/app/v1/probe/items?limit=500');
       expect(response.status).toBe(422);
       expect(response.body.errors).toHaveProperty('limit');
     });
@@ -185,19 +189,19 @@ describe('HTTP foundation (e2e)', () => {
 
   describe('security headers and CORS', () => {
     it('sets security headers and hides the framework', async () => {
-      const response = await http().get('/api/v1/health');
+      const response = await http().get('/api/health');
       expect(response.headers['x-content-type-options']).toBe('nosniff');
       expect(response.headers['strict-transport-security']).toBeDefined();
       expect(response.headers['x-powered-by']).toBeUndefined();
     });
 
     it('allows a configured origin', async () => {
-      const response = await http().get('/api/v1/health').set('Origin', 'https://app.backofhouse.test');
+      const response = await http().get('/api/health').set('Origin', 'https://app.backofhouse.test');
       expect(response.headers['access-control-allow-origin']).toBe('https://app.backofhouse.test');
     });
 
     it('does not allow an unknown origin', async () => {
-      const response = await http().get('/api/v1/health').set('Origin', 'https://evil.example');
+      const response = await http().get('/api/health').set('Origin', 'https://evil.example');
       expect(response.headers['access-control-allow-origin']).toBeUndefined();
     });
   });

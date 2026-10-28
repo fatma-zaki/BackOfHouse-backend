@@ -24,6 +24,17 @@ const commaSeparated = z
       .filter((item) => item.length > 0),
   );
 
+const semver = z.string().regex(/^\d+\.\d+\.\d+$/, 'must be a version like 1.2.3');
+
+/** Compares two x.y.z versions numerically. */
+export function compareVersions(a: string, b: string): number {
+  const [x, y] = [a, b].map((v) => v.split('.').map(Number));
+  for (let i = 0; i < 3; i += 1) {
+    if (x[i] !== y[i]) return x[i] - y[i];
+  }
+  return 0;
+}
+
 const postgresUrl = z
   .string()
   .min(1)
@@ -52,6 +63,15 @@ export const envSchema = z
     OUTBOX_POLL_INTERVAL_MS: z.coerce.number().int().min(100).default(1000),
     OUTBOX_BATCH_SIZE: z.coerce.number().int().min(1).max(500).default(50),
 
+    // App surface: forced-update policy, GET /api/app/v1/meta/app-version (D11, ADR-031).
+    // Moves to settings in Phase 1; update URLs are required outside local and test.
+    APP_IOS_MIN_SUPPORTED_VERSION: semver.default('1.0.0'),
+    APP_IOS_LATEST_VERSION: semver.default('1.0.0'),
+    APP_IOS_UPDATE_URL: z.string().url().optional(),
+    APP_ANDROID_MIN_SUPPORTED_VERSION: semver.default('1.0.0'),
+    APP_ANDROID_LATEST_VERSION: semver.default('1.0.0'),
+    APP_ANDROID_UPDATE_URL: z.string().url().optional(),
+
     // Stage 4+ (optional until the identity and media modules are enabled).
     SUPABASE_URL: z.string().url().optional(),
     SUPABASE_JWT_ISSUER: z.string().url().optional(),
@@ -63,6 +83,24 @@ export const envSchema = z
     SIGNED_URL_TTL_SECONDS: z.coerce.number().int().min(30).max(3600).default(300),
   })
   .superRefine((env, ctx) => {
+    for (const platform of ['IOS', 'ANDROID'] as const) {
+      const min = env[`APP_${platform}_MIN_SUPPORTED_VERSION`];
+      const latest = env[`APP_${platform}_LATEST_VERSION`];
+      if (compareVersions(min, latest) > 0) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [`APP_${platform}_MIN_SUPPORTED_VERSION`],
+          message: `must not be above APP_${platform}_LATEST_VERSION`,
+        });
+      }
+      if ((env.APP_ENV === 'staging' || env.APP_ENV === 'production') && !env[`APP_${platform}_UPDATE_URL`]) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [`APP_${platform}_UPDATE_URL`],
+          message: 'is required in staging and production',
+        });
+      }
+    }
     if (env.APP_ENV === 'production' && env.CORS_ALLOWED_ORIGINS.length === 0) {
       ctx.addIssue({
         code: 'custom',

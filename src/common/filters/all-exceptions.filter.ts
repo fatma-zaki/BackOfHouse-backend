@@ -106,12 +106,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     return {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
-      body: { code: ErrorCode.INTERNAL_ERROR, message: 'An unexpected error occurred', trace_id },
+      body: { code: ErrorCode.SERVER_ERROR, message: 'An unexpected error occurred', trace_id },
     };
   }
 
   private codeFor(status: number): string {
-    return HTTP_STATUS_CODES[status] ?? (status >= 500 ? ErrorCode.INTERNAL_ERROR : ErrorCode.BAD_REQUEST);
+    return HTTP_STATUS_CODES[status] ?? (status >= 500 ? ErrorCode.SERVER_ERROR : ErrorCode.BAD_REQUEST);
   }
 
   private messageOf(exception: HttpException): string {

@@ -1,0 +1,9 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "..",
+  "testEnvironment": "node",
+  "testRegex": "test/architecture/.*\\.spec\\.ts$",
+  "transform": { "^.+\\.ts$": "ts-jest" },
+  "maxWorkers": 1,
+  "testTimeout": 60000
+}

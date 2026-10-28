@@ -1,11 +1,11 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppConfig } from './config/app.config';
 import { requestContextMiddleware } from './common/context/request-context.middleware';
+import { buildSurfaceDocuments } from './surfaces/surface-docs';
+import { GLOBAL_PREFIX, SWAGGER_PATHS } from './surfaces/surface-paths';
 
-export const API_PREFIX = 'api/v1';
-export const SWAGGER_PATH = 'docs';
 export const JSON_BODY_LIMIT = '256kb';
 
 /**
@@ -41,19 +41,13 @@ export function configureHttpApp(app: NestExpressApplication, config: AppConfig)
 
   app.useBodyParser('json', { limit: JSON_BODY_LIMIT });
   app.useBodyParser('urlencoded', { limit: JSON_BODY_LIMIT, extended: false });
-  app.setGlobalPrefix(API_PREFIX);
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
+  // One Swagger page per surface (ADR-031); never in production.
   if (!config.isProduction) {
-    const document = SwaggerModule.createDocument(
-      app,
-      new DocumentBuilder()
-        .setTitle('Back Of House API')
-        .setDescription('REST API. Errors: { code, message, trace_id, errors }. Validation failures: 422.')
-        .setVersion('1.0.0')
-        .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
-        .build(),
-    );
-    SwaggerModule.setup(SWAGGER_PATH, app, document);
+    const documents = buildSurfaceDocuments(app);
+    SwaggerModule.setup(SWAGGER_PATHS.app, app, documents.app);
+    SwaggerModule.setup(SWAGGER_PATHS.admin, app, documents.admin);
   }
 
   app.enableShutdownHooks();

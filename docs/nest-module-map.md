@@ -28,6 +28,8 @@
 
 ## 2. Source tree
 
+> **Amended 2026-10-11 (ADR-031, execution plan v2.2):** controllers and DTOs live in **`src/surfaces/app`** (`/api/app/v1`, Flutter app) and **`src/surfaces/admin`** (`/api/admin/v1`, back-office). They do not live in `modules/<domain>/controllers`. Domain modules hold services, policies, domain rules, repositories, events and handlers only. dependency-cruiser enforces the split (`app-surface-not-admin`, `admin-surface-not-app`, `business-logic-not-surfaces`, `surfaces-use-module-index`), and boot fails if a route sits outside a surface (`src/surfaces/surface-route-check.ts`). Where the tree below shows `controllers/` inside a module, read it as `src/surfaces/<surface>/<feature>/`.
+
 ```text
 backofhousebackend/
 ├── prisma/
@@ -74,7 +76,11 @@ backofhousebackend/
 │   │   ├── observability/              # pino logger with redaction, health checks, metrics
 │   │   └── rate-limit/                 # throttler config
 │   │
-│   └── modules/                        # business domains
+│   ├── surfaces/                       # ADR-031: HTTP only, one folder per client
+│   │   ├── app/                        # /api/app/v1 — Flutter app (members, Company Accounts)
+│   │   └── admin/                      # /api/admin/v1 — admin back-office (staff)
+│   │
+│   └── modules/                        # business domains (no controllers)
 │       ├── identity/
 │       ├── access/
 │       ├── profiles/

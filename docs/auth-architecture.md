@@ -79,6 +79,12 @@ COMPANY account    ── own login ── exactly ONE company (organizations.ac
 
 ## 1. Authentication: "Who are you?"
 
+> **Amended 2026-10-11 (execution plan v2.2).** There are two identities, one per API surface (ADR-031):
+> - **Members and Company Accounts** (app surface, `/api/app/v1`): Supabase Auth behind the API's own `/auth/*` routes (ADR-003 option b, TQ-02). They sign in with email + password, or phone + SMS code. There is no social login (BQ-78).
+> - **Staff** (admin surface, `/api/admin/v1`): Google Workspace via OIDC, then an opaque httpOnly session cookie (ADR-032). Staff are **not** `users` rows, and never use the member pool. Their MFA is Google Workspace 2-Step Verification ([runbooks/staff-access.md](runbooks/staff-access.md)).
+>
+> Where this chapter describes staff roles on `users` with `aal2` (§1.6, §2.5), ADR-032 replaces it.
+
 ### 1.1 Recommendation (ADR-003, pending confirmation of TQ-01/TQ-02)
 
 **Supabase Auth authenticates. NestJS authorizes.**
@@ -210,6 +216,8 @@ sequenceDiagram
 | Access token lifetime | Short (recommend 10 minutes, set in the Supabase project) |
 
 ### 1.6 MFA enforcement (AUTH-03)
+
+> **Superseded for staff by ADR-032 (2026-10-11).** Staff MFA is enforced by Google Workspace 2-Step Verification, not by Supabase `aal2`. The flow below is kept as a record and does not apply to staff.
 
 ```mermaid
 sequenceDiagram

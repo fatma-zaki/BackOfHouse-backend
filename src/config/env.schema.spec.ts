@@ -33,6 +33,21 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...base, APP_ENV: 'production' })).toThrow(/CORS_ALLOWED_ORIGINS/);
   });
 
+  it('defaults the app-version policy and rejects a minimum above the latest version', () => {
+    expect(parseEnv(base)).toMatchObject({
+      APP_IOS_MIN_SUPPORTED_VERSION: '1.0.0',
+      APP_ANDROID_LATEST_VERSION: '1.0.0',
+    });
+    expect(() =>
+      parseEnv({ ...base, APP_ANDROID_MIN_SUPPORTED_VERSION: '2.0.0', APP_ANDROID_LATEST_VERSION: '1.10.0' }),
+    ).toThrow(/APP_ANDROID_MIN_SUPPORTED_VERSION/);
+    expect(() => parseEnv({ ...base, APP_IOS_LATEST_VERSION: 'latest' })).toThrow(/APP_IOS_LATEST_VERSION/);
+  });
+
+  it('requires store update URLs in staging', () => {
+    expect(() => parseEnv({ ...base, APP_ENV: 'staging' })).toThrow(/APP_IOS_UPDATE_URL[\s\S]*APP_ANDROID_UPDATE_URL/);
+  });
+
   it('rejects an invalid boolean', () => {
     expect(() => parseEnv({ ...base, JOBS_ENABLED: 'yes' })).toThrow(/JOBS_ENABLED/);
   });

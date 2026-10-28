@@ -37,7 +37,7 @@ describe('AllExceptionsFilter.toResponse', () => {
   it('hides unexpected errors', () => {
     const { status, body } = inRequest(() => filter.toResponse(new Error('SELECT * FROM secrets')));
     expect(status).toBe(500);
-    expect(body).toEqual({ code: 'INTERNAL_ERROR', message: 'An unexpected error occurred', trace_id: 'trace-123' });
+    expect(body).toEqual({ code: 'SERVER_ERROR', message: 'An unexpected error occurred', trace_id: 'trace-123' });
   });
 
   it('uses "system" as trace id outside a request', () => {

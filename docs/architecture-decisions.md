@@ -10,26 +10,26 @@
 |---|---|---|
 | ADR-001 | Modular monolith in NestJS | Accepted |
 | ADR-002 | Prisma as ORM (with hand-written SQL for advanced constraints) | Accepted |
-| ADR-003 | Supabase Auth for authentication; NestJS for authorization | Proposed |
+| ADR-003 | Supabase Auth for authentication; NestJS for authorization | Proposed; amended 2026-10-11: members only, behind the API's `/auth/*` routes (D1); staff identity → ADR-032 |
 | ADR-004 | Code-defined permission catalog; organization context in the URL, not the token | Proposed (context model refined by ADR-029) |
 | ADR-005 | UUID v7 primary keys | Proposed |
 | ADR-006 | Soft delete only where justified; status-based archival preferred | Proposed |
 | ADR-007 | Dedicated `app` schema; RLS deny-all backstop; app-level authorization | Proposed |
-| ADR-008 | REST API conventions: URI versioning, error format, cursor pagination, idempotency | Accepted (REST, `/api/v1`) / Proposed (details) |
-| ADR-009 | Supabase Storage with quarantine, public and private buckets | Proposed |
-| ADR-010 | pg-boss for background jobs (no Redis) | Proposed |
+| ADR-008 | REST API conventions: URI versioning, error format, cursor pagination, idempotency | Accepted; amended 2026-10-11 by ADR-031 (prefixes, page pagination on the app surface, error catalog) |
+| ADR-009 | Supabase Storage with quarantine, public and private buckets | Accepted 2026-10-11 (D6) |
+| ADR-010 | pg-boss for background jobs (no Redis) | Accepted 2026-10-11 (D6) |
 | ADR-011 | Transactional outbox for domain events (no message broker) | Proposed |
 | ADR-012 | PostgreSQL full-text + trigram search over a public-only projection | Proposed |
 | ADR-013 | No caching layer initially | Proposed |
-| ADR-014 | Points as an append-only ledger with balance projection | Proposed |
+| ADR-014 | Points as an append-only ledger with balance projection | Proposed; amended 2026-10-11: points are spent on redeem, level from lifetime earned points (BQ-76) |
 | ADR-015 | One `organizations` table for companies and institutions | Superseded by ADR-024 |
-| ADR-016 | Audit logs written synchronously in the same transaction, append-only | Proposed |
+| ADR-016 | Audit logs written synchronously in the same transaction, append-only | Accepted 2026-10-11; no hash chain at launch (D12) |
 | ADR-017 | First-party analytics events table + provider forwarding | Proposed |
 | ADR-018 | Organization status stored as the PRD enum, derived from facts | Proposed |
-| ADR-019 | API JSON field casing | **Open** |
+| ADR-019 | API JSON field casing | Accepted 2026-10-11: snake_case on both surfaces (D2) |
 | ADR-020 | Money as integer minor units | Proposed |
 | ADR-021 | Bilingual content as paired `_ar`/`_en` columns | Proposed |
-| ADR-022 | Separate `api` and `worker` processes from one codebase | Proposed |
+| ADR-022 | Separate `api` and `worker` processes from one codebase | Accepted 2026-10-11 (D6) |
 | ADR-023 | Hosting platform for NestJS | **Open** |
 | ADR-024 | Every organization is a company (no organization types) | Accepted (business decision BQ-06) |
 | ADR-025 | Company approval, ownership and verification signals are separate | Accepted (business decisions BQ-04, BQ-05, BQ-46, BQ-47, BQ-48) |
@@ -37,7 +37,10 @@
 | ADR-027 | Unified opportunity model with separate individual applications and B2B supplier responses | Accepted (business rules §5–§9) |
 | ADR-028 | Monetization deferred; paid visibility always separate from verification | Accepted (business rules §10–§12) |
 | ADR-029 | Individual and Company accounts as separate security contexts | Accepted (BQ-60) |
-| ADR-030 | One Company Account per company; Individual members without permissions | Accepted (BQ-68, BQ-69, BQ-74) |
+| ADR-030 | One Company Account per company; Individual members without permissions | Accepted (BQ-68, BQ-69, BQ-74); confirmed for launch 2026-10-11 (P3) |
+| ADR-031 | Two API surfaces (app and admin) over shared domain modules; contract-first; one vocabulary | Accepted 2026-10-11 (D1, D3, D4, D7) |
+| ADR-032 | Staff identity: Google Workspace via OIDC, separate from the member user pool | Accepted 2026-10-11 (D5, TQ-28) |
+| ADR-033 | Performance, availability and recovery targets | Accepted 2026-10-11 (D13, BQ-32) |
 
 ---
 
@@ -104,6 +107,11 @@ Trade-offs: Vendor coupling for identity; data residency must be confirmed (BQ-3
             can't be integrated via the Send SMS hook.
 Date:       2026-09-14
 ```
+
+**Amended 2026-10-11** (execution plan v2, D1, D5):
+- Supabase Auth covers **members and Company Accounts only**. Staff never use this user pool (ADR-032).
+- D1 makes the Flutter contract the source of truth, and that contract calls the API's own `/auth/*` routes (`/auth/login`, `/auth/register`, `/auth/refresh` …). The app surface therefore uses option **(b)**: Supabase Auth behind a NestJS `/auth/*` facade. Option (a), client-direct, is dropped. This answers TQ-02.
+- **Member sign-in (BQ-78, decided 2026-10-11):** email + password, **and** phone with an SMS one-time code. There is no Google or other social login at launch, so BQ-30 stands for social; `/auth/social` is removed from `contracts/app`. Phone-code sign-in has rate limits per phone and per IP, code expiry and an attempt cap. The SMS provider for Saudi numbers is still open (TQ-04).
 
 ## ADR-004 · Permission catalog in code; organization context in the URL
 
@@ -190,6 +198,12 @@ Why:        Simple for mobile clients; stable pagination under inserts; zero fro
 Trade-offs: Cursor pagination can't jump to page N (frontend uses page numbers today, TQ-06).
 Date:       2026-09-14
 ```
+
+**Amended 2026-10-11 by ADR-031** (D1, D3, D4):
+- **Prefixes:** `/api/app/v1` and `/api/admin/v1` replace `/api/v1`. Health moves to `/api/health`.
+- **Pagination:** the app surface uses `page` / `page_size` → `meta.has_more`, as the Flutter contract does, instead of cursors. The admin surface uses `page` / `page_size` / `sort` → `meta.total`, `total_pages`.
+- **Error body:** unchanged, `{code, message, trace_id, errors}`. It is not RFC 7807. Every code is listed in one catalog, `docs/error-codes.md`. Where codes conflict, the Flutter code wins.
+- **OpenAPI:** the contract files in `contracts/` are the source of truth. The spec generated from code must match them (ADR-031).
 
 ## ADR-009 · File storage
 
@@ -292,6 +306,29 @@ Trade-offs: More tables and write logic; projection drift possible → reconcili
 Date:       2026-09-14
 ```
 
+**Amended 2026-10-11 (BQ-76, BQ-77):**
+- **Points are spent on redeem.** This supersedes BQ-08 and BQ-59.
+- **Balance** = the sum of the ledger.
+- **Level** comes from **lifetime earned points** only (the sum of positive earning entries), so spending never lowers a level. Levels: L1 0 · L2 100 · L3 500 · L4 1,500.
+- **Redemption** is one transaction:
+  1. lock the user's balance row (`SELECT … FOR UPDATE`);
+  2. check the balance, the required level and the stock;
+  3. write a negative ledger entry and the redemption.
+
+  It fails with `INSUFFICIENT_POINTS`, `LEVEL_TOO_LOW` or `OUT_OF_STOCK`.
+- **Earning rules are seeded at the design scale** (BQ-77):
+
+  | Rule | Points |
+  |---|---|
+  | Event registration | 0 (locked) |
+  | Verified event attendance | +150, editable per event |
+  | Confirmed volunteer shift | +200 |
+  | Profile completed | +50, once |
+  | Friend joins and attends | +50, max 10 a month |
+
+  These replace the 10 / 15 values in `points-architecture.md`.
+- **Reward prices** are as in the designs: 300–1,500, with Profile Highlight at 500.
+
 ## ADR-015 · Single organizations table
 
 > **Superseded by ADR-024 (2026-09-15).** Kept for history.
@@ -325,6 +362,12 @@ Trade-offs: Developers must call AuditLogger (enforced by review + tests for lis
 Date:       2026-09-14
 ```
 
+**Amended 2026-10-11** (execution plan v2, D12):
+- **Admin writes:** services still audit inside their transaction. On the admin surface, an interceptor asserts that every mutating request wrote at least one audit row. It fails the request in tests and logs an error in production.
+- **Sensitive reads** (document views, contact views, export downloads, signed private-file URLs) are marked `@AuditRead('<action>')` and fail closed if the audit row can't be written.
+- **No hash chain at launch.** Revisit if a regulator or partner requires tamper evidence. The preferred design then is a daily digest table (`audit_digests`) copied to write-once storage.
+- The points ledger gets the same revoked grants and `raise_immutable()` trigger as `audit_logs`.
+
 ## ADR-017 · Analytics storage
 
 ```text
@@ -357,7 +400,9 @@ Trade-offs: Status and facts can drift if written outside the service → only t
 Date:       2026-09-14
 ```
 
-## ADR-019 · API JSON field casing — OPEN
+## ADR-019 · API JSON field casing — ACCEPTED 2026-10-11
+
+**Decided 2026-10-11 (D2):** option (a), snake_case JSON on **both** surfaces (app and admin). The admin hand-off's camelCase spec is regenerated in snake_case. Enum values stay `UPPER_SNAKE_CASE`, as in the Flutter contract. The original record follows.
 
 ```text
 Decision:   (pending)
@@ -553,6 +598,90 @@ Trade-offs: A shared company login must be protected well (MFA recommended, per-
             no per-employee permissions. Open: membership flow (BQ-75), same identifier for both account types, type
             change and staff account type (BQ-68 remaining), ownership flow details (BQ-56).
 Date:       2026-09-17
+```
+
+**Confirmed for launch 2026-10-11 (P3):**
+- The admin hand-off's company roles (owner, recruiter, editor) are **not** built.
+- The `company` variant of the domain `Actor` carries a `permissions` list (the Flutter contract's `EDIT_PROFILE`, `MANAGE_OPPORTUNITIES` …), so roles can be added later without changing service signatures.
+- The admin company detail shows the single Company Account instead of a team list.
+- **Staff accounts are not `users` rows** (ADR-032). That answers the "staff account type" part of BQ-68.
+
+## ADR-031 · Two API surfaces over shared domain modules
+
+```text
+Decision:   One backend exposes two separate surfaces:
+              app   → /api/app/v1/*   Flutter app (members, Company Accounts); any future member website
+              admin → /api/admin/v1/* web back-office (Super admin, Reviewer, Editor, Support, Analyst)
+            Business rules live once, in src/modules/<domain> (services, policies, state machines). Each surface owns
+            its controllers, DTOs, mappers, auth guard, contract, Swagger document, tests and docs
+            (src/surfaces/app, src/surfaces/admin). The web back-office is always called "admin", never "web".
+            Contract-first: contracts/app/openapi.yaml and contracts/admin/openapi.yaml are the source of truth;
+            CI regenerates each spec from code and fails on any difference; oasdiff fails on breaking changes;
+            openapi-typescript generates the admin client types from contracts/admin.
+            Vocabulary (D1): the Flutter contract wins for app routes, and "opportunities" is used on both surfaces
+            (8 admin hand-off routes renamed from /listings). Entity names stay as in database-entities.md (D7).
+            Every service call takes an Actor (member | company | staff | system); role-dependent rules live in
+            modules/<domain>/policies, not in guards or controllers.
+Context:    Two clients with different identities, session models, languages (single vs bilingual), paging and
+            audit needs (execution-plan.md §1). Two contracts existed with different vocabulary and casing.
+Options:    (a) one API, one prefix, controllers inside domain modules (nest-module-map.md before this ADR)
+            (b) two surfaces over shared modules  (c) two backends
+Chosen:     (b)
+Why:        A DTO, guard or route can't leak from one client to the other (dependency-cruiser rules + startup route
+            check); rules hold no matter which surface, job or event handler calls a service; one database and one
+            set of transactions.
+Trade-offs: Two mappers per shared resource. No legacy /api/v1 alias: no store build calls the real API and
+            nothing is live at backofhouse.space/api (TQ-29, 2026-10-11). GET /api/app/v1/meta/app-version ships
+            before the first store release so later breaking changes can force an update.
+Date:       2026-10-11
+```
+
+## ADR-032 · Staff identity: Google Workspace via OIDC
+
+```text
+Decision:   Staff sign in with Google Workspace through OIDC (authorization code + PKCE). Staff never use the
+            member user pool (Supabase Auth, ADR-003).
+            Domain:   only accounts on our Workspace domain are accepted. The server checks BOTH the ID token's
+                      `hd` claim AND the domain of the verified `email` against STAFF_GOOGLE_WORKSPACE_DOMAIN, and
+                      rejects everything else.
+            MFA:      2-Step Verification is enforced for the staff group in the Google Workspace admin console.
+                      This is an operational control documented in docs/runbooks/staff-access.md; the backend
+                      runs no TOTP of its own.
+            Access:   app.staff_accounts holds name, work email, role and status (invited | active | disabled).
+                      A Google account with no active staff_accounts row gets 403 NOT_STAFF.
+            Invites:  a Super admin adds name + work email + role → staff_accounts row with status = invited →
+                      the first Google sign-in with that email activates it. No staff passwords, no invite tokens.
+            Routes:   GET /api/admin/v1/auth/oidc/start, GET /api/admin/v1/auth/oidc/callback,
+                      POST /api/admin/v1/auth/logout. The hand-off's login, mfa/verify, mfa/confirm,
+                      GET invites/{token} and POST invites/{token}/accept are dropped from contracts/admin.
+            Session:  after the callback, an opaque server-side session (admin_sessions) in an httpOnly, Secure,
+                      SameSite=Strict cookie (__Host-boh_admin): 30-min idle, 12 h absolute. A role change or
+                      disabling a staff_accounts row deletes that person's sessions immediately. CSRF token on
+                      unsafe methods; CORS only for the admin origin. JWTs are for the mobile app only.
+            Database: the backend is the only database client (no rights on schema app for anon /
+                      authenticated / service_role; RLS deny-all as a backstop).
+Context:    Hand-off doc 01 §13 (separate admin identity, mandatory two-step sign-in, 30-min idle timeout).
+            Supersedes the staff part of auth-architecture.md §1.6 (staff roles with aal2 on the shared pool).
+Options:    (A) Google Workspace via OIDC  (B) separate Supabase project with TOTP
+Chosen:     (A), decided 2026-10-11 (D5, TQ-28)
+Why:        Staff MFA, joiners and leavers stay in the identity provider the company already runs; no staff
+            passwords or TOTP secrets stored by us; a leaked member account can never become staff.
+Trade-offs: Depends on Google Workspace availability; 2-Step Verification is enforced outside our code, so the
+            runbook must state who checks the policy and how often. A Workspace account suspended in Google
+            keeps an existing session until idle timeout (≤ 30 min) unless staff_accounts is disabled too.
+Date:       2026-10-11
+```
+
+## ADR-033 · Performance, availability and recovery targets
+
+```text
+Decision:   App surface reads p95 < 300 ms; app surface writes p95 < 800 ms; admin tables p95 < 1 s;
+            search p95 ≤ 1 s with 2,000+ companies (§17); uptime 99.5 % monthly at launch, target 99.9 % after;
+            RPO 15 min (Supabase PITR); RTO 4 h.
+Context:    Execution plan v2 D13; answers BQ-32 (RPO/RTO).
+Chosen:     As above. k6 load tests in test/load/ carry these as thresholds; a restore drill must meet the RTO.
+Trade-offs: PITR is a paid Supabase add-on on production (and staging for drills).
+Date:       2026-10-11
 ```
 
 ---

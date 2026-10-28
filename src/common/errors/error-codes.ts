@@ -1,6 +1,8 @@
 /**
  * Stable machine-readable error codes (api-map.md §1.3). Clients localise on
- * `code`; `message` is English for logs and developers only.
+ * `code`; `message` is English for logs and developers only. Every value is
+ * listed in docs/error-codes.md (checked by error-codes.catalog.spec.ts); where
+ * the two client contracts disagreed, the Flutter code won (D3).
  *
  * Only codes the current stages can raise are listed. Domain-specific codes
  * named in api-map.md (WRONG_ACCOUNT_CONTEXT, MFA_REQUIRED, DUPLICATE_ORGANIZATION,
@@ -16,5 +18,5 @@ export enum ErrorCode {
   PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
   RATE_LIMITED = 'RATE_LIMITED',
   SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
-  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  SERVER_ERROR = 'SERVER_ERROR',
 }

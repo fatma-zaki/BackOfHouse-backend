@@ -9,15 +9,17 @@ import { DatabaseModule } from './platform/database/database.module';
 import { OutboxModule } from './platform/outbox/outbox.module';
 import { WorkerRuntimeModule } from './platform/worker-runtime/worker-runtime.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { SurfacesModule } from './surfaces/surfaces.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { EnvelopeInterceptor } from './common/interceptors/envelope.interceptor';
 import { DenyByDefaultGuard } from './common/guards/deny-by-default.guard';
 import { createValidationPipe } from './common/pipes/validation.pipe';
 
 /**
- * The `api` process (ADR-022). Stages 1–3: platform modules and audit only.
- * Domain modules are added from Stage 4 (identity) onwards, in the order of
- * backend-development-order.md.
+ * The `api` process (ADR-022). Platform modules, audit and the two API surfaces
+ * (ADR-031): every controller lives in src/surfaces/app or src/surfaces/admin,
+ * except the shared health probes. Domain modules are added phase by phase
+ * (docs/execution-plan.md).
  */
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { createValidationPipe } from './common/pipes/validation.pipe';
     OutboxModule,
     AuditModule,
     WorkerRuntimeModule,
+    SurfacesModule,
   ],
   controllers: [HealthController],
   providers: [

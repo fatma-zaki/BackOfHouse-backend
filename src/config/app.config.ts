@@ -28,6 +28,12 @@ export class AppConfig {
     outboxBatchSize: number;
   };
 
+  /** Forced-update policy per platform for the app surface (D11). */
+  readonly appVersion: Record<
+    'IOS' | 'ANDROID',
+    { minSupportedVersion: string; latestVersion: string; updateUrl: string }
+  >;
+
   readonly supabase: {
     url?: string;
     jwtIssuer?: string;
@@ -61,6 +67,19 @@ export class AppConfig {
       jobsEnabled: env.JOBS_ENABLED,
       outboxPollIntervalMs: env.OUTBOX_POLL_INTERVAL_MS,
       outboxBatchSize: env.OUTBOX_BATCH_SIZE,
+    };
+    // Store pages are placeholders for local and test only; staging and production must set them (env.schema).
+    this.appVersion = {
+      IOS: {
+        minSupportedVersion: env.APP_IOS_MIN_SUPPORTED_VERSION,
+        latestVersion: env.APP_IOS_LATEST_VERSION,
+        updateUrl: env.APP_IOS_UPDATE_URL ?? 'https://apps.apple.com/',
+      },
+      ANDROID: {
+        minSupportedVersion: env.APP_ANDROID_MIN_SUPPORTED_VERSION,
+        latestVersion: env.APP_ANDROID_LATEST_VERSION,
+        updateUrl: env.APP_ANDROID_UPDATE_URL ?? 'https://play.google.com/store/apps',
+      },
     };
     this.supabase = {
       url: env.SUPABASE_URL,

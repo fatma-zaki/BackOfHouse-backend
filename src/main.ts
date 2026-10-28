@@ -4,7 +4,8 @@ import { Logger } from 'nestjs-pino';
 import { loadLocalEnvFile } from './config/load-env-file';
 import { AppModule } from './app.module';
 import { AppConfig } from './config/app.config';
-import { API_PREFIX, configureHttpApp } from './http-app';
+import { configureHttpApp } from './http-app';
+import { SURFACE_PREFIXES } from './surfaces/surface-paths';
 
 async function bootstrap(): Promise<void> {
   loadLocalEnvFile();
@@ -20,7 +21,10 @@ async function bootstrap(): Promise<void> {
   configureHttpApp(app, config);
 
   await app.listen(config.app.port, '0.0.0.0');
-  logger.log(`API listening on :${config.app.port}/${API_PREFIX} (${config.app.appEnv})`, 'Bootstrap');
+  logger.log(
+    `API listening on :${config.app.port} (${SURFACE_PREFIXES.app}, ${SURFACE_PREFIXES.admin}; ${config.app.appEnv})`,
+    'Bootstrap',
+  );
 }
 
 void bootstrap();
