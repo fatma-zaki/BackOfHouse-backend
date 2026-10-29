@@ -44,7 +44,9 @@ export class AuditReadInterceptor implements NestInterceptor {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const entityId = request.params[options.idParam ?? 'id'];
+    // Express 5: a wildcard parameter can be an array; an entity id is always a single value.
+    const raw = request.params[options.idParam ?? 'id'];
+    const entityId = typeof raw === 'string' ? raw : undefined;
     if (!entityId || !isUuid(entityId)) {
       throw new Error(`@AuditRead(${options.action}) needs a UUID route parameter "${options.idParam ?? 'id'}"`);
     }
