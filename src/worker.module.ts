@@ -4,6 +4,8 @@ import { ObservabilityModule } from './platform/observability/observability.modu
 import { DatabaseModule } from './platform/database/database.module';
 import { OutboxModule } from './platform/outbox/outbox.module';
 import { WorkerRuntimeModule } from './platform/worker-runtime/worker-runtime.module';
+import { ClockModule } from './platform/clock/clock.module';
+import { AccessModule } from './modules/access';
 import { AuditModule } from './modules/audit/audit.module';
 
 /**
@@ -12,6 +14,16 @@ import { AuditModule } from './modules/audit/audit.module';
  * they are built.
  */
 @Module({
-  imports: [ConfigModule, ObservabilityModule, DatabaseModule, OutboxModule, AuditModule, WorkerRuntimeModule],
+  imports: [
+    ConfigModule,
+    ClockModule,
+    ObservabilityModule,
+    DatabaseModule,
+    OutboxModule,
+    AuditModule,
+    WorkerRuntimeModule,
+    // Domain modules that declare scheduled jobs (JobsService.defineCron).
+    AccessModule,
+  ],
 })
 export class WorkerModule {}

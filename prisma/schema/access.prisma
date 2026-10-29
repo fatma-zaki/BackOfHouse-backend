@@ -1,0 +1,88 @@
+// Module: access, staff side (ADR-032). Staff sign in with Google Workspace via OIDC
+// and never use the member user pool. Roles and permission keys: modules/access.
+
+enum StaffRole {
+  SUPER_ADMIN
+  REVIEWER
+  EDITOR
+  SUPPORT
+  ANALYST
+
+  @@map("staff_role")
+  @@schema("app")
+}
+
+enum StaffStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+
+  @@map("staff_status")
+  @@schema("app")
+}
+
+/// A Back of House team member. Created by an invite (INVITED); the first Google
+/// sign-in with the same work email activates it. Email is stored lowercase.
+model StaffAccount {
+  id               String         @id @default(uuid(7)) @db.Uuid
+  email            String
+  name             String
+  role             StaffRole
+  status           StaffStatus    @default(INVITED)
+  invitedByStaffId String?        @map("invited_by_staff_id") @db.Uuid
+  invitedAt        DateTime       @default(now()) @map("invited_at") @db.Timestamptz(6)
+  activatedAt      DateTime?      @map("activated_at") @db.Timestamptz(6)
+  lastSignInAt     DateTime?      @map("last_sign_in_at") @db.Timestamptz(6)
+  lastActiveAt     DateTime?      @map("last_active_at") @db.Timestamptz(6)
+  disabledAt       DateTime?      @map("disabled_at") @db.Timestamptz(6)
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  sessions         AdminSession[]
+
+  @@unique([email], map: "uq_staff_accounts__email")
+  @@index([role, status], map: "ix_staff_accounts__role_status")
+  @@map("staff_accounts")
+  @@schema("app")
+}
+
+/// Opaque admin web session (cookie __Host-boh_admin). Only hashes of the session
+/// and CSRF tokens are stored. Ends after 30 idle minutes (setting), at expires_at
+/// (12 h), or when revoked (sign-out, role change, disable).
+model AdminSession {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  staffId       String       @map("staff_id") @db.Uuid
+  tokenHash     String       @map("token_hash")
+  csrfTokenHash String       @map("csrf_token_hash")
+  lastSeenAt    DateTime     @default(now()) @map("last_seen_at") @db.Timestamptz(6)
+  expiresAt     DateTime     @map("expires_at") @db.Timestamptz(6)
+  revokedAt     DateTime?    @map("revoked_at") @db.Timestamptz(6)
+  revokeReason  String?      @map("revoke_reason")
+  ipAddress     String?      @map("ip_address") @db.Inet
+  userAgent     String?      @map("user_agent")
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  staff         StaffAccount @relation(fields: [staffId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_admin_sessions__staff_id")
+
+  @@unique([tokenHash], map: "uq_admin_sessions__token_hash")
+  @@index([staffId], map: "ix_admin_sessions__staff_id")
+  @@index([expiresAt], map: "ix_admin_sessions__expires_at")
+  @@map("admin_sessions")
+  @@schema("app")
+}
+
+/// One pending Google sign-in (state, nonce, PKCE verifier), single use, 10 minutes.
+/// Kept server-side because Google's callback is a cross-site navigation, so a
+/// SameSite=Strict cookie would not come back with it.
+model AdminOidcState {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  stateHash    String   @map("state_hash")
+  nonce        String
+  codeVerifier String   @map("code_verifier")
+  returnTo     String   @map("return_to")
+  expiresAt    DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@unique([stateHash], map: "uq_admin_oidc_states__state_hash")
+  @@index([expiresAt], map: "ix_admin_oidc_states__expires_at")
+  @@map("admin_oidc_states")
+  @@schema("app")
+}

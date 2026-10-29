@@ -22,7 +22,8 @@ Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-deve
 | 3 · Platform | `audit_logs` + `AuditLogger` + `redact()`, transactional outbox (`outbox_events`, writer, dispatcher, `@OnDomainEvent`), pg-boss jobs, storage port | Done (audit read endpoint waits for Stage 6) |
 | Phase 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`) with `GET /ping`, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, contracts in `contracts/` with `x-phase`, contract check + coverage + gap report scripts, oasdiff in CI, admin client types | Done |
 | Phase 1A · Foundations | Actor + per-surface auth guard + permission guard and matrix, locale, page types, `Idempotency-Key`, `@AuditRead` and the admin-write audit check, platform settings (`GET/PUT /api/admin/v1/settings`), CodeQL, Dependabot, squawk, schema-drift test | In progress |
-| Phase 1B+ | Taxonomy, uploads, observability, environments, identity, … | Hosting-dependent parts wait for D10 / BQ-31. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
+| Phase 2A · Staff identity | Google Workspace sign-in (OIDC), staff accounts and invites, cookie sessions + CSRF, `/api/admin/v1/me`, `/roles`, `/team`, permission-matrix e2e | In progress |
+| Next | Taxonomy (decided), member identity, uploads, … | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 
@@ -144,7 +145,9 @@ Choices made where the docs are open or silent. Each is reversible without a dat
 | Outbox retries | Event-level status: when one handler fails, all handlers for that event are retried (all must be idempotent). The docs mention per-handler records, but the catalog defines no table for them | domain-events.md §1 |
 | Outbox claiming | Lease pattern: `FOR UPDATE SKIP LOCKED` + `available_at` pushed forward, so handlers run outside the claiming transaction | database-design-rules.md §14 |
 | Audit FKs | `actor_user_id` / `organization_id` get their foreign keys when `users` (Stage 4) and `organizations` (Stage 8) exist | database-design-rules.md §6 |
-| Deny by default | Per surface (`SurfaceAuthGuard`): a route needs an actor from its own surface's resolver; until Phase 2 the resolvers return none, so only `@Public()` routes are reachable | security-and-audit.md §3, ADR-031 |
+| Deny by default | Per surface (`SurfaceAuthGuard`): a route needs an actor from its own surface's resolver. Admin: the staff session cookie (ADR-032). App: none yet (member identity), so only `@Public()` app routes are reachable | security-and-audit.md §3, ADR-031 |
+| Admin sessions | Opaque token in `__Host-boh_admin` (httpOnly, Secure, SameSite=Strict); CSRF double-submit `__Host-boh_csrf` + `X-CSRF-Token` on writes; 30-min idle (setting), 12 h max; ID tokens verified with `node:crypto` against Google's JWKS (no JWT library) | ADR-032 |
+| Staff email domain | `STAFF_GOOGLE_WORKSPACE_DOMAIN` only; the `admin_email_domain` setting shows it and cannot change it | ADR-032 |
 | Database time zone | Every app session runs `TimeZone=UTC`: the pg adapter sends dates without an offset | `test/integration/time-zone.int-spec.ts` |
 | Staff in audit rows | `actor_type = STAFF`, `actor_user_id` = the staff account id (staff are not `users`, ADR-032); that column's future foreign key must not target `users` for STAFF rows | ADR-016, ADR-032 |
 | Migrations | Each new migration sets `lock_timeout` and `statement_timeout`; squawk lints migrations added in a PR (`npm run migrations:lint`) | database-design-rules.md |

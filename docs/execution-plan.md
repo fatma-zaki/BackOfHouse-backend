@@ -407,7 +407,7 @@ No feature code.
 > - **Bug fixed along the way:** the database session now runs in UTC (`-c TimeZone=UTC`). The pg adapter sends dates without an offset, so a non-UTC Postgres shifted every timestamp comparison. A regression test covers it.
 >
 > **1B, still open:**
-> - **Taxonomy:** needs a decision on the table design. The hand-off has one `TaxonomyItem` table for cities, crafts, opportunity types and company categories; the repo design has one table per kind (`categories`, `locations`, `skills` …).
+> - **Taxonomy:** decided 2026-10-29. Each kind gets its own table: cities → `locations`, crafts → `skills`, company categories → company types. Opportunity types and news categories are fixed code lists with editable labels. The API returns `TaxonomyItem` for every kind (open-questions.md §0).
 > - **Uploads + virus scan:** waits on hosting and TQ-10.
 > - **Waits on hosting:** OpenTelemetry + Sentry, environments, backups/PITR + restore drill, container image scan, k6 load tests, PDPL retention table + breach runbook.
 > - **Can be done any time:** `jest-openapi` response-body tests, `test/architecture/module-index.spec.ts`, the event-catalog convention.
@@ -472,6 +472,20 @@ No feature code.
 - `api` and `worker` run as separate services in staging, and `/api/health/ready` reports `app_env=staging`.
 
 ### Phase 2 · Identity, sessions, notification delivery, activity tracking
+
+> **Progress (2026-10-29).** **2A, staff identity: built on branch `phase-2a-staff-identity`.**
+> - **Google Workspace sign-in** (`/auth/oidc/start`, `/auth/oidc/callback`, `/auth/logout`): state stored server-side and single use; PKCE; nonce check; `hd` **and** email domain must equal the Workspace domain; the email must be verified. Google ID tokens are verified with `node:crypto` against Google's JWKS.
+> - **Staff accounts:** an invite creates an `INVITED` account, activated by the first sign-in. `NOT_STAFF` for anyone else, and every refusal is audited.
+> - **Opaque session cookie** `__Host-boh_admin` (httpOnly, Secure, SameSite=Strict) with the double-submit CSRF token `__Host-boh_csrf` + `X-CSRF-Token`.
+>   - It ends after 30 idle minutes (a setting) or 12 hours (`ADMIN_SESSION_MAX_HOURS`).
+>   - A role change or disable ends it immediately.
+> - **Sign-in limits:** 20 a minute per IP.
+> - **Endpoints and rules:** `/me`, `/roles`, `/team`, `/team/invites`, `/team/{id}`; `LAST_SUPER_ADMIN` is enforced under a row lock.
+> - **Seeded Super admin** from env.
+> - **Scheduled job** `admin-auth.purge`; modules now declare cron jobs with `JobsService.defineCron`.
+> - **Permission-matrix e2e:** `test/authz/admin-matrix.e2e-spec.ts` (5 roles × every implemented admin op).
+>
+> **Still open:** the member side (Supabase Auth behind `/auth/*`, phone code needs **TQ-04**), notification delivery, activity tracking. Hosting is deferred while in development (open-questions.md §0, 2026-10-29).
 
 **Domain**
 - `identity`: `users`, account type, suspension, **consent records** (purpose, version, timestamp; PDPL, D10).

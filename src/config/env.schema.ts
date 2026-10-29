@@ -72,6 +72,22 @@ export const envSchema = z
     APP_ANDROID_LATEST_VERSION: semver.default('1.0.0'),
     APP_ANDROID_UPDATE_URL: z.string().url().optional(),
 
+    // Staff sign-in: Google Workspace via OIDC (ADR-032). Optional locally (sign-in then
+    // answers 503); required in staging and production.
+    STAFF_GOOGLE_WORKSPACE_DOMAIN: z
+      .string()
+      .regex(/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/, 'must be a domain like example.com')
+      .optional(),
+    STAFF_OIDC_CLIENT_ID: z.string().min(1).optional(),
+    STAFF_OIDC_CLIENT_SECRET: z.string().min(1).optional(),
+    STAFF_OIDC_REDIRECT_URI: z.string().url().optional(),
+    ADMIN_WEB_URL: z.string().url().optional(),
+    ADMIN_SESSION_MAX_HOURS: z.coerce.number().int().min(1).max(24).default(12),
+
+    // Seed: the first Super admin (database-design-rules.md §16), INVITED until first sign-in.
+    SEED_SUPER_ADMIN_EMAIL: z.string().email().optional(),
+    SEED_SUPER_ADMIN_NAME: z.string().min(1).optional(),
+
     // Stage 4+ (optional until the identity and media modules are enabled).
     SUPABASE_URL: z.string().url().optional(),
     SUPABASE_JWT_ISSUER: z.string().url().optional(),
@@ -99,6 +115,19 @@ export const envSchema = z
           path: [`APP_${platform}_UPDATE_URL`],
           message: 'is required in staging and production',
         });
+      }
+    }
+    if (env.APP_ENV === 'staging' || env.APP_ENV === 'production') {
+      for (const key of [
+        'STAFF_GOOGLE_WORKSPACE_DOMAIN',
+        'STAFF_OIDC_CLIENT_ID',
+        'STAFF_OIDC_CLIENT_SECRET',
+        'STAFF_OIDC_REDIRECT_URI',
+        'ADMIN_WEB_URL',
+      ] as const) {
+        if (!env[key]) {
+          ctx.addIssue({ code: 'custom', path: [key], message: 'is required in staging and production (ADR-032)' });
+        }
       }
     }
     if (env.APP_ENV === 'production' && env.CORS_ALLOWED_ORIGINS.length === 0) {

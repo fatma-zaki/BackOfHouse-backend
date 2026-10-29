@@ -11,6 +11,7 @@ import { WorkerRuntimeModule } from './platform/worker-runtime/worker-runtime.mo
 import { AuditModule } from './modules/audit/audit.module';
 import { SurfacesModule } from './surfaces/surfaces.module';
 import { IdempotencyInterceptor, IdempotencyModule } from './platform/idempotency';
+import { ClockModule } from './platform/clock/clock.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { EnvelopeInterceptor } from './common/interceptors/envelope.interceptor';
 import { SurfaceAuthGuard } from './surfaces/surface-auth.guard';
@@ -28,6 +29,7 @@ import { createValidationPipe } from './common/pipes/validation.pipe';
 @Module({
   imports: [
     ConfigModule,
+    ClockModule,
     ObservabilityModule,
     RateLimitModule,
     DatabaseModule,

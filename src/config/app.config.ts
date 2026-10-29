@@ -28,6 +28,16 @@ export class AppConfig {
     outboxBatchSize: number;
   };
 
+  /** Staff sign-in with Google Workspace (ADR-032). `null` when not configured (local only). */
+  readonly staffAuth: {
+    workspaceDomain?: string;
+    oidc: { clientId: string; clientSecret: string; redirectUri: string } | null;
+    adminWebUrl?: string;
+    sessionMaxHours: number;
+  };
+
+  readonly seed: { superAdminEmail?: string; superAdminName?: string };
+
   /** Forced-update policy per platform for the app surface (D11). */
   readonly appVersion: Record<
     'IOS' | 'ANDROID',
@@ -68,6 +78,20 @@ export class AppConfig {
       outboxPollIntervalMs: env.OUTBOX_POLL_INTERVAL_MS,
       outboxBatchSize: env.OUTBOX_BATCH_SIZE,
     };
+    this.staffAuth = {
+      workspaceDomain: env.STAFF_GOOGLE_WORKSPACE_DOMAIN,
+      oidc:
+        env.STAFF_OIDC_CLIENT_ID && env.STAFF_OIDC_CLIENT_SECRET && env.STAFF_OIDC_REDIRECT_URI
+          ? {
+              clientId: env.STAFF_OIDC_CLIENT_ID,
+              clientSecret: env.STAFF_OIDC_CLIENT_SECRET,
+              redirectUri: env.STAFF_OIDC_REDIRECT_URI,
+            }
+          : null,
+      adminWebUrl: env.ADMIN_WEB_URL,
+      sessionMaxHours: env.ADMIN_SESSION_MAX_HOURS,
+    };
+    this.seed = { superAdminEmail: env.SEED_SUPER_ADMIN_EMAIL, superAdminName: env.SEED_SUPER_ADMIN_NAME };
     // Store pages are placeholders for local and test only; staging and production must set them (env.schema).
     this.appVersion = {
       IOS: {

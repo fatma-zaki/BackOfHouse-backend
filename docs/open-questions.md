@@ -17,6 +17,15 @@ Legend
 
 ## 0. Decision log
 
+### 2026-10-29: Taxonomy mapping; hosting deferred during development
+
+**Decided**
+
+| ID | Decision |
+|---|---|
+| **Taxonomy (Phase 1B)** | The admin contract's taxonomy kinds map onto the repo design (one table per kind, `database-entities.md` §4), not the hand-off's single `TaxonomyItem` table. **Cities** → `locations` (city with its region). **Crafts** → `skills`. **Company categories** → company types (business rules §2). **Opportunity types** and **news categories** → fixed code lists (the opportunity type enum; `NewsTopic`) whose labels and order staff may edit, but not the values. The repo's `industries` and sector `categories` are extra kinds. The API still returns the hand-off's `TaxonomyItem` shape (`id`, `name {en, ar}`, `active`, `order`) for every kind |
+| **D10 / BQ-31 (hosting)** | **Deferred while in development.** Development continues on the current stack (Supabase in dev) until a hosting decision. Production-only items that depend on it (region, backups/PITR, environments, observability vendor, PDPL retention and breach runbook) stay open; nothing built now assumes a production region |
+
 ### 2026-10-11 (later): D5, D11, BQ-76 … BQ-80
 
 Source: `execution-plan.md` v2.2.

@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
+import { AccessModule } from '../../modules/access';
 import { SettingsModule } from '../../modules/settings';
+import { AdminAuthController } from './auth/admin-auth.controller';
+import { AdminTeamController } from './team/admin-team.controller';
 import { AdminMetaController } from './meta/admin-meta.controller';
 import { AdminSettingsController } from './settings/admin-settings.controller';
 
@@ -10,7 +13,7 @@ import { AdminSettingsController } from './settings/admin-settings.controller';
  * surfaces.module.ts.
  */
 @Module({
-  imports: [SettingsModule],
-  controllers: [AdminMetaController, AdminSettingsController],
+  imports: [SettingsModule, AccessModule],
+  controllers: [AdminMetaController, AdminSettingsController, AdminAuthController, AdminTeamController],
 })
 export class AdminSurfaceModule {}

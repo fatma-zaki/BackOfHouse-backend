@@ -1,9 +1,10 @@
 import { Actor, staffHas, StaffActor } from '../../../common/context/actor';
 import { ForbiddenError } from '../../../common/errors';
-import type { PermissionKey } from '../../access';
 
-const VIEW: PermissionKey = 'settings.view';
-const MANAGE: PermissionKey = 'settings.manage';
+// Keys from the staff permission catalog (modules/access). Plain strings here:
+// access depends on settings (session idle timeout), so settings must not import access.
+const VIEW = 'settings.view';
+const MANAGE = 'settings.manage';
 
 /**
  * Who may read and change platform settings (Super admin only, hand-off doc 02).
