@@ -4312,7 +4312,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PlatformSettings'
+              $ref: '#/components/schemas/PlatformSettingsUpdate'
       responses:
         '200':
           description: OK
@@ -8647,6 +8647,98 @@ components:
             type: array
             items:
               type: string
+    PlatformSettingsUpdate:
+      type: object
+      description: >-
+        Body of PUT /settings: the full settings as returned by GET /settings. The server validates it against
+        PlatformSettings and the product rules (D9, BQ-76) and answers 422 VALIDATION_FAILED with field errors for
+        anything missing or invalid. Kept lenient here so the request contract stays compatible; the response schema
+        PlatformSettings is the exact shape.
+      properties:
+        review_sla_hours:
+          type: integer
+        review_every_opportunity:
+          type: boolean
+          description: Must be true (D9); other values → 422
+        hide_contact_details_in_opportunities:
+          type: boolean
+        auto_flag_fee_opportunities:
+          type: boolean
+        verified_companies_skip_review:
+          type: boolean
+          description: Must be false (D9); other values → 422
+        support_first_reply_hours:
+          type: integer
+        support_points_monthly_cap:
+          type: integer
+        admin_email_domain:
+          type: string
+        admin_idle_timeout_minutes:
+          type: integer
+        push_quiet_hours:
+          type: object
+          properties:
+            start:
+              type: string
+              description: HH:MM, 24 h, Asia/Riyadh
+            end:
+              type: string
+              description: HH:MM, 24 h, Asia/Riyadh
+        levels:
+          type: array
+          items:
+            type: object
+            properties:
+              level:
+                type: integer
+              min_lifetime_points:
+                type: integer
+        app_version:
+          type: object
+          additionalProperties: false
+          description: Forced-update policy served by GET /api/app/v1/meta/app-version (D11)
+          required:
+            - ios
+            - android
+          properties:
+            ios:
+              type: object
+              additionalProperties: false
+              required:
+                - min_supported_version
+                - latest_version
+                - update_url
+              properties:
+                min_supported_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                latest_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                update_url:
+                  type: string
+                  format: uri
+            android:
+              type: object
+              additionalProperties: false
+              required:
+                - min_supported_version
+                - latest_version
+                - update_url
+              properties:
+                min_supported_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                latest_version:
+                  type: string
+                  pattern: ^\d+\.\d+\.\d+$
+                  example: 1.0.0
+                update_url:
+                  type: string
+                  format: uri
   responses:
     BadRequest:
       description: '`BAD_REQUEST`'
