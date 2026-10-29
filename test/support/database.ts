@@ -9,6 +9,10 @@ export const APP_TABLES = [
   'app.admin_sessions',
   'app.admin_oidc_states',
   'app.staff_accounts',
+  'app.locations',
+  'app.skills',
+  'app.industries',
+  'app.taxonomy_labels',
 ];
 
 /** Superuser connection to the test database (for setup and assertions). */

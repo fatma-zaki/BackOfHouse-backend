@@ -10,6 +10,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../src/generated/prisma/client';
 import { toDriverConnectionString } from '../../src/platform/database/connection-string';
 import { seedSuperAdmin } from './seeders/super-admin.seeder';
+import { seedLocations, seedSampleTaxonomy } from './seeders/taxonomy.seeder';
 
 type AppEnv = 'local' | 'test' | 'staging' | 'production';
 
@@ -20,6 +21,20 @@ export interface Seeder {
 }
 
 export const SEEDERS: readonly Seeder[] = [
+  {
+    name: 'taxonomy: Saudi regions and cities',
+    environments: ['local', 'test', 'staging', 'production'],
+    run: async (prisma) => {
+      process.stdout.write(`  locations created: ${await seedLocations(prisma)}\n`);
+    },
+  },
+  {
+    name: 'taxonomy: sample crafts and draft industries (BQ-21, RG-28)',
+    environments: ['local', 'test'],
+    run: async (prisma) => {
+      process.stdout.write(`  sample items created: ${await seedSampleTaxonomy(prisma)}\n`);
+    },
+  },
   {
     name: 'super-admin (SEED_SUPER_ADMIN_EMAIL)',
     environments: ['local', 'test', 'staging', 'production'],

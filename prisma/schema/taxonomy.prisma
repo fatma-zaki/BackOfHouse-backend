@@ -1,0 +1,82 @@
+// Module: taxonomy (database-entities.md §4; mapping decided 2026-10-29, open-questions.md §0).
+// One table per kind. Rows are deactivated, never deleted, once anything may reference them.
+
+enum LocationType {
+  REGION
+  CITY
+
+  @@map("location_type")
+  @@schema("app")
+}
+
+/// Regions and cities (admin kind `cities` = rows of type CITY). A city's parent is its region.
+model Location {
+  id          String       @id @default(uuid(7)) @db.Uuid
+  parentId    String?      @map("parent_id") @db.Uuid
+  type        LocationType
+  countryCode String       @default("SA") @map("country_code")
+  slug        String
+  nameEn      String       @map("name_en")
+  nameAr      String       @map("name_ar")
+  sortOrder   Int          @default(0) @map("sort_order")
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  parent      Location?    @relation("LocationTree", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_locations__parent_id")
+  children    Location[]   @relation("LocationTree")
+
+  @@unique([slug], map: "uq_locations__slug")
+  @@index([type, countryCode], map: "ix_locations__type_country_code")
+  @@index([parentId], map: "ix_locations__parent_id")
+  @@map("locations")
+  @@schema("app")
+}
+
+/// Skills (admin kind `crafts`): the controlled vocabulary for profiles and opportunities.
+model Skill {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  slug      String
+  nameEn    String   @map("name_en")
+  nameAr    String   @map("name_ar")
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([slug], map: "uq_skills__slug")
+  @@map("skills")
+  @@schema("app")
+}
+
+/// Industries a company serves (BQ-63). Draft list RG-28 awaits business review.
+model Industry {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  slug      String
+  nameEn    String   @map("name_en")
+  nameAr    String   @map("name_ar")
+  sortOrder Int      @default(0) @map("sort_order")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([slug], map: "uq_industries__slug")
+  @@map("industries")
+  @@schema("app")
+}
+
+/// Label and order overrides for the fixed code lists (company_types,
+/// opportunity_types, news_topics). The codes and their default labels live in
+/// code; staff may rename and reorder, never add or remove a code.
+model TaxonomyLabel {
+  kind      String
+  code      String
+  nameEn    String   @map("name_en")
+  nameAr    String   @map("name_ar")
+  sortOrder Int      @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@id([kind, code], map: "taxonomy_labels_pkey")
+  @@map("taxonomy_labels")
+  @@schema("app")
+}

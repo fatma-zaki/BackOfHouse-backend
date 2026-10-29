@@ -1,7 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiExtraModels, ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
 import { Public } from '../../../common/decorators/public.decorator';
+import { RequestContext } from '../../../common/context/request-context';
 import { SettingsService } from '../../../modules/settings';
+import { PublicTaxonomy, TaxonomyService } from '../../../modules/taxonomy';
 import { AppPingDto, AppVersionDto, AppVersionQueryDto } from './app-meta.dto';
 
 const dataOf = (model: new () => unknown) => ({
@@ -17,12 +19,25 @@ const dataOf = (model: new () => unknown) => ({
 @Public()
 @Controller()
 export class AppMetaController {
-  constructor(private readonly settings: SettingsService) {}
+  constructor(
+    private readonly settings: SettingsService,
+    private readonly taxonomy: TaxonomyService,
+  ) {}
 
   @Get('ping')
   @ApiOkResponse({ description: 'The app surface is mounted', ...dataOf(AppPingDto) })
   ping(): AppPingDto {
     return { status: 'OK', surface: 'app' };
+  }
+
+  /** Picker lists in the request language (contracts/app GET /meta/taxonomy). */
+  @Get('meta/taxonomy')
+  @ApiOkResponse({
+    description: 'Picker lists',
+    schema: { type: 'object', required: ['data'], properties: { data: { type: 'object' } } },
+  })
+  metaTaxonomy(): Promise<PublicTaxonomy> {
+    return this.taxonomy.publicCatalog(RequestContext.locale());
   }
 
   @Get('meta/app-version')
