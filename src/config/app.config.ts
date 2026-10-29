@@ -51,6 +51,9 @@ export class AppConfig {
     secretKey?: string;
   };
 
+  /** Member sign-in (ADR-003 amended). */
+  readonly memberAuth: { passwordResetUrl?: string };
+
   readonly storage: {
     publicBucket: string;
     privateBucket: string;
@@ -111,6 +114,7 @@ export class AppConfig {
       jwksUrl: env.SUPABASE_JWKS_URL,
       secretKey: env.SUPABASE_SECRET_KEY,
     };
+    this.memberAuth = { passwordResetUrl: env.MEMBER_PASSWORD_RESET_URL };
     this.storage = {
       publicBucket: env.STORAGE_BUCKET_PUBLIC,
       privateBucket: env.STORAGE_BUCKET_PRIVATE,
