@@ -407,7 +407,15 @@ No feature code.
 > - **Bug fixed along the way:** the database session now runs in UTC (`-c TimeZone=UTC`). The pg adapter sends dates without an offset, so a non-UTC Postgres shifted every timestamp comparison. A regression test covers it.
 >
 > **1B, still open:**
-> - **Taxonomy:** decided 2026-10-29. Each kind gets its own table: cities → `locations`, crafts → `skills`, company categories → company types. Opportunity types and news categories are fixed code lists with editable labels. The API returns `TaxonomyItem` for every kind (open-questions.md §0).
+> - **Taxonomy: built (branch `phase-1b-taxonomy`).**
+>   - **Tables:** `locations` (13 regions + cities, seeded everywhere), `skills` (crafts), `industries`, and `taxonomy_labels` for the fixed lists' labels and order.
+>   - **Admin:** `GET/PUT /api/admin/v1/taxonomy/{kind}` for `cities`, `crafts`, `industries`, `company_types`, `opportunity_types`, `news_topics`.
+>     - On extendable lists, items left out are deactivated, never deleted.
+>     - Fixed lists can only be renamed and reordered.
+>     - Every change is audited.
+>   - **App:** `GET /api/app/v1/meta/taxonomy`, public, in one language.
+>   - **Seeds:** crafts and the draft industries list are seeded only locally and in tests (BQ-21, RG-28).
+>   - **Contracts:** every Phase 1 operation in both contracts is implemented, so `contracts/phase.json` is now `1`.
 > - **Uploads + virus scan:** waits on hosting and TQ-10.
 > - **Waits on hosting:** OpenTelemetry + Sentry, environments, backups/PITR + restore drill, container image scan, k6 load tests, PDPL retention table + breach runbook.
 > - **Can be done any time:** `jest-openapi` response-body tests, `test/architecture/module-index.spec.ts`, the event-catalog convention.
