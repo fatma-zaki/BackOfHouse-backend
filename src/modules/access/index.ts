@@ -19,4 +19,4 @@ export {
 export { StaffSignInService, type SignInResult } from './services/staff-sign-in.service';
 export { TeamService, type AdminMeView, type AdminUserView, type RolePermissionsView } from './services/team.service';
 export { STAFF_IDENTITY_PROVIDER, type StaffIdentityProvider } from './infrastructure/staff-identity-provider';
-export type { IdTokenClaims } from './infrastructure/id-token-verifier';
+export type { IdTokenClaims } from '../../common/crypto/jwks-verifier';

@@ -1,0 +1,107 @@
+// Module: identity, member side (ADR-003 amended: Supabase Auth behind the API's /auth/*).
+// users.id equals the auth provider's user id; no cross-schema FK (ADR-007).
+
+enum AccountType {
+  INDIVIDUAL
+  COMPANY
+
+  @@map("account_type")
+  @@schema("app")
+}
+
+enum ProfileStatus {
+  PROFESSIONAL
+  STUDENT
+
+  @@map("profile_status")
+  @@schema("app")
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+
+  @@map("user_status")
+  @@schema("app")
+}
+
+/// A member or Company Account (contracts/app `AppUser`). Email is stored lowercase,
+/// phone in E.164. profile_status is set for INDIVIDUAL only (BQ-79).
+model User {
+  id              String             @id @db.Uuid
+  accountType     AccountType        @map("account_type")
+  fullName        String             @map("full_name")
+  email           String
+  phone           String?
+  emailVerifiedAt DateTime?          @map("email_verified_at") @db.Timestamptz(6)
+  phoneVerifiedAt DateTime?          @map("phone_verified_at") @db.Timestamptz(6)
+  profileStatus   ProfileStatus?     @map("profile_status")
+  status          UserStatus         @default(ACTIVE)
+  suspendedAt     DateTime?          @map("suspended_at") @db.Timestamptz(6)
+  lastSignInAt    DateTime?          @map("last_sign_in_at") @db.Timestamptz(6)
+  lastActiveAt    DateTime?          @map("last_active_at") @db.Timestamptz(6)
+  /// Access tokens issued before this time are refused (password reset ends every session).
+  sessionsRevokedAt DateTime?        @map("sessions_revoked_at") @db.Timestamptz(6)
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz(6)
+  phoneCodes      PhoneSignInCode[]
+  activityDays    UserActivityDay[]
+  company         Company?
+
+  @@unique([email], map: "uq_users__email")
+  @@unique([phone], map: "uq_users__phone")
+  @@index([status], map: "ix_users__status")
+  @@map("users")
+  @@schema("app")
+}
+
+/// One SMS sign-in code (BQ-78). Only a hash of the code is stored. A row is written
+/// for every well-formed request, with or without an account (user_id and code_hash
+/// null), so the per-phone and per-IP limits count every attempt and the answer never
+/// reveals whether the number has an account. Closed when used, replaced or burned.
+model PhoneSignInCode {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  phone       String
+  userId      String?   @map("user_id") @db.Uuid
+  codeHash    String?   @map("code_hash")
+  ipHash      String    @map("ip_hash")
+  attempts    Int       @default(0)
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz(6)
+  closedAt    DateTime? @map("closed_at") @db.Timestamptz(6)
+  closeReason String?   @map("close_reason")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_phone_sign_in_codes__user_id")
+
+  @@index([phone, createdAt], map: "ix_phone_sign_in_codes__phone_created_at")
+  @@index([ipHash, createdAt], map: "ix_phone_sign_in_codes__ip_hash_created_at")
+  @@index([userId], map: "ix_phone_sign_in_codes__user_id")
+  @@map("phone_sign_in_codes")
+  @@schema("app")
+}
+
+/// Auth sessions ended by sign-out. Access tokens live a few minutes after sign-out,
+/// so the app resolver refuses a token whose session is listed here (AUTH-02).
+/// Rows are purged once the longest access token of that session has expired.
+model RevokedMemberSession {
+  sessionId String   @id @map("session_id")
+  userId    String   @map("user_id") @db.Uuid
+  revokedAt DateTime @default(now()) @map("revoked_at") @db.Timestamptz(6)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+
+  @@index([expiresAt], map: "ix_revoked_member_sessions__expires_at")
+  @@map("revoked_member_sessions")
+  @@schema("app")
+}
+
+/// One row per member per Riyadh calendar day with at least one authenticated app
+/// request (activity tracking, execution plan Phase 2).
+model UserActivityDay {
+  userId String   @map("user_id") @db.Uuid
+  day    DateTime @db.Date
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_user_activity_days__user_id")
+
+  @@id([userId, day], map: "user_activity_days_pkey")
+  @@index([day], map: "ix_user_activity_days__day")
+  @@map("user_activity_days")
+  @@schema("app")
+}
