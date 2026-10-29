@@ -1,5 +1,5 @@
 import { generateKeyPairSync, sign, KeyObject } from 'node:crypto';
-import { JwksIdTokenVerifier } from './id-token-verifier';
+import { JwksIdTokenVerifier } from './jwks-verifier';
 
 const ISSUER = 'https://accounts.google.com';
 const AUDIENCE = 'client-123.apps.googleusercontent.com';
@@ -57,5 +57,28 @@ describe('JwksIdTokenVerifier', () => {
   it('accepts an audience list that contains the client id', async () => {
     const t = token(google.privateKey, 'k1', { ...claims, aud: ['x', AUDIENCE] });
     await expect(verifier().verify(t, options)).resolves.toBeDefined();
+  });
+
+  describe('ES256 (Supabase access tokens)', () => {
+    const { privateKey, publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+    const ecJwk = { ...publicKey.export({ format: 'jwk' }), kid: 'e1', alg: 'ES256' };
+    const esToken = (claimsOverride: object = {}) => {
+      const enc = (v: object) => Buffer.from(JSON.stringify(v)).toString('base64url');
+      const body = `${enc({ alg: 'ES256', kid: 'e1', typ: 'JWT' })}.${enc({ ...claims, ...claimsOverride })}`;
+      const signature = sign('sha256', Buffer.from(body), { key: privateKey, dsaEncoding: 'ieee-p1363' });
+      return `${body}.${signature.toString('base64url')}`;
+    };
+    const esVerifier = (algorithms: ('RS256' | 'ES256')[]) =>
+      new JwksIdTokenVerifier('https://example/jwks', clock, async () => ({ keys: [ecJwk, google.jwk] }), algorithms);
+
+    it('accepts a valid ES256 token when ES256 is allowed', async () => {
+      await expect(esVerifier(['ES256']).verify(esToken(), options)).resolves.toMatchObject({ sub: '1' });
+    });
+
+    it('refuses ES256 when only RS256 is allowed, and an RSA key presented as ES256', async () => {
+      await expect(esVerifier(['RS256']).verify(esToken(), options)).rejects.toMatchObject({ status: 401 });
+      const forged = token(google.privateKey, 'k1', claims, 'ES256');
+      await expect(esVerifier(['ES256', 'RS256']).verify(forged, options)).rejects.toMatchObject({ status: 401 });
+    });
   });
 });

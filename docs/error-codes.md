@@ -36,9 +36,9 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 
 | Code | HTTP | Surface | When | Phase |
 |---|---|---|---|---|
-| `INVALID_CREDENTIALS` | 401 | app | Wrong email or password | 2 |
-| `INVALID_CODE` | 422 | app | Wrong or expired SMS code (BQ-78) | 2 |
-| `EMAIL_TAKEN` / `PHONE_TAKEN` | 409 | app | Registering with an identifier in use | 2 |
+| `INVALID_CREDENTIALS` | 401 | app | Wrong email or password | built |
+| `INVALID_CODE` | 422 | app | Wrong or expired SMS code (BQ-78) | built |
+| `EMAIL_TAKEN` / `PHONE_TAKEN` | 409 | app | Registering with an identifier in use | built |
 | `WRONG_ACCOUNT_CONTEXT` | 403 | app | Individual token on a company route, or the reverse (ADR-029) | 2 |
 | `PERMISSION_DENIED` | 403 | app | Company Account lacks a company permission | 2 |
 | `NOT_STAFF` | 403 | admin | Google account outside the Workspace domain, or without an active `staff_accounts` row (ADR-032) | built |

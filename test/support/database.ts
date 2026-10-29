@@ -13,6 +13,11 @@ export const APP_TABLES = [
   'app.skills',
   'app.industries',
   'app.taxonomy_labels',
+  'app.companies',
+  'app.phone_sign_in_codes',
+  'app.revoked_member_sessions',
+  'app.user_activity_days',
+  'app.users',
 ];
 
 /** Superuser connection to the test database (for setup and assertions). */

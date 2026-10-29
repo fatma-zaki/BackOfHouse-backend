@@ -44,6 +44,12 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...base, APP_IOS_LATEST_VERSION: 'latest' })).toThrow(/APP_IOS_LATEST_VERSION/);
   });
 
+  it('requires Supabase Auth and the reset page in staging (member sign-in)', () => {
+    expect(() => parseEnv({ ...base, APP_ENV: 'staging' })).toThrow(
+      /SUPABASE_URL[\s\S]*SUPABASE_SECRET_KEY[\s\S]*MEMBER_PASSWORD_RESET_URL/,
+    );
+  });
+
   it('requires store update URLs in staging', () => {
     expect(() => parseEnv({ ...base, APP_ENV: 'staging' })).toThrow(/APP_IOS_UPDATE_URL[\s\S]*APP_ANDROID_UPDATE_URL/);
   });

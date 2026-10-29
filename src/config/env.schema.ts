@@ -93,6 +93,8 @@ export const envSchema = z
     SUPABASE_JWT_ISSUER: z.string().url().optional(),
     SUPABASE_JWKS_URL: z.string().url().optional(),
     SUPABASE_SECRET_KEY: z.string().min(20).optional(),
+    // Member sign-in (ADR-003 amended): the website page that opens the emailed reset link.
+    MEMBER_PASSWORD_RESET_URL: z.string().url().optional(),
     STORAGE_BUCKET_PUBLIC: z.string().default('public-media'),
     STORAGE_BUCKET_PRIVATE: z.string().default('private-documents'),
     STORAGE_BUCKET_QUARANTINE: z.string().default('quarantine'),
@@ -127,6 +129,17 @@ export const envSchema = z
       ] as const) {
         if (!env[key]) {
           ctx.addIssue({ code: 'custom', path: [key], message: 'is required in staging and production (ADR-032)' });
+        }
+      }
+    }
+    if (env.APP_ENV === 'staging' || env.APP_ENV === 'production') {
+      for (const key of ['SUPABASE_URL', 'SUPABASE_SECRET_KEY', 'MEMBER_PASSWORD_RESET_URL'] as const) {
+        if (!env[key]) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [key],
+            message: 'is required in staging and production (member sign-in)',
+          });
         }
       }
     }

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
-import { DomainError, ErrorCode, FieldErrors } from '../errors';
+import { DomainError, ErrorCode, FieldErrors, RateLimitedError } from '../errors';
 import { RequestContext } from '../context/request-context';
 import { scrubSecrets } from '../text/scrub-secrets';
 
@@ -63,6 +63,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
+    if (exception instanceof RateLimitedError) {
+      response.setHeader('Retry-After', String(Math.max(1, Math.ceil(exception.retryAfterSeconds))));
+    }
     response.status(status).json(body);
   }
 

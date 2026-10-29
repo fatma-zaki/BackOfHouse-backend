@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
+import { CompaniesModule } from '../../modules/companies';
+import { IdentityModule } from '../../modules/identity';
 import { SettingsModule } from '../../modules/settings';
 import { TaxonomyModule } from '../../modules/taxonomy';
+import { AppAuthController } from './auth/app-auth.controller';
+import { AppUserAssembler } from './auth/app-user.assembler';
 import { AppMetaController } from './meta/app-meta.controller';
 
 /**
@@ -10,7 +14,8 @@ import { AppMetaController } from './meta/app-meta.controller';
  * surfaces.module.ts.
  */
 @Module({
-  imports: [SettingsModule, TaxonomyModule],
-  controllers: [AppMetaController],
+  imports: [SettingsModule, TaxonomyModule, IdentityModule, CompaniesModule],
+  controllers: [AppMetaController, AppAuthController],
+  providers: [AppUserAssembler],
 })
 export class AppSurfaceModule {}

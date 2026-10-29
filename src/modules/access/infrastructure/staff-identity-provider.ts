@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
 import type { Clock } from '../../../common/clock/clock';
 import { DomainError, ErrorCode, UnauthenticatedError } from '../../../common/errors';
-import { IdTokenClaims, JwksIdTokenVerifier } from './id-token-verifier';
+import { IdTokenClaims, JwksIdTokenVerifier } from '../../../common/crypto/jwks-verifier';
 
 /**
  * The staff identity provider (ADR-032: Google Workspace via OIDC). A port so

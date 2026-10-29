@@ -58,3 +58,13 @@ export class BadRequestError extends DomainError {
     super(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST);
   }
 }
+
+/** 429 with `Retry-After` in seconds (security-and-audit.md §5). */
+export class RateLimitedError extends DomainError {
+  constructor(
+    readonly retryAfterSeconds: number,
+    message = 'Too many requests',
+  ) {
+    super(ErrorCode.RATE_LIMITED, message, HttpStatus.TOO_MANY_REQUESTS);
+  }
+}

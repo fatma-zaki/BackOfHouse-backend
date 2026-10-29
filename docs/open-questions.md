@@ -39,6 +39,8 @@ Source: `execution-plan.md` v2.2.
 | **BQ-31** (D10) | **Hosting region and PDPL:** region for personal data, consent records, retention per data type (BQ-33), breach procedure | **Phase 1** only |
 | **TQ-04** | **SMS provider** for Saudi numbers, with sender-ID registration, for phone-code sign-in (BQ-78) | Phase 2 |
 | **BQ-81** | **Is PROJECT an opportunity type?** Both contracts list `PROJECT` (Flutter `OpportunityType`, hand-off listing type `project`), and BQ-80 names "projects" among the types unverified companies may submit. BQ-62 says PROJECT is **not** an opportunity type, only company portfolio work. (a) PROJECT is an opportunity type (reverses BQ-62) · (b) remove `PROJECT` from both contracts | Phase 5 |
+| **BQ-82** | **Email confirmation at registration** (raised 2026-10-30 while building Phase 2B). The Flutter contract returns a signed-in Session from `POST /auth/register` (201), so the email is not confirmed by a code before the account is active; BQ-30 / AUTH-01 asked for confirmation first. Built as the contract says: `users.email_verified_at` stays null, and a phone becomes verified on the first SMS-code sign-in. (a) Keep it, and confirm the email later (a banner plus a code, before sensitive actions) · (b) change the contract: register answers 202 and sends a code, and a new `/auth/verify-email` returns the Session | Before launch |
+| **BQ-83** | **Supplier-request capability.** Who gets the `CREATE_SUPPLIER_REQUEST` company capability: every company, or by company type? Until decided, `CompanySummary.capabilities` is `[]` | Phase 5 |
 
 **Decided**
 
