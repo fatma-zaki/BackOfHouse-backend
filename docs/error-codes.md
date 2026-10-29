@@ -41,9 +41,11 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 | `EMAIL_TAKEN` / `PHONE_TAKEN` | 409 | app | Registering with an identifier in use | 2 |
 | `WRONG_ACCOUNT_CONTEXT` | 403 | app | Individual token on a company route, or the reverse (ADR-029) | 2 |
 | `PERMISSION_DENIED` | 403 | app | Company Account lacks a company permission | 2 |
-| `NOT_STAFF` | 403 | admin | Google account outside the Workspace domain, or without an active `staff_accounts` row (ADR-032) | 2 |
-| `EMAIL_DOMAIN_NOT_ALLOWED` | 422 | admin | Inviting a staff member outside the Workspace domain | 2 |
-| `LAST_SUPER_ADMIN` | 409 | admin | Removing or demoting the last active Super admin | 2 |
+| `NOT_STAFF` | 403 | admin | Google account outside the Workspace domain, or without an active `staff_accounts` row (ADR-032) | built |
+| `CSRF_TOKEN_INVALID` | 403 | admin | A POST/PUT/PATCH/DELETE without a matching `X-CSRF-Token` header (ADR-032) | built |
+| `STAFF_ALREADY_EXISTS` | 409 | admin | Inviting an email that already has a staff account | built |
+| `EMAIL_DOMAIN_NOT_ALLOWED` | 422 | admin | Inviting a staff member outside the Workspace domain | built |
+| `LAST_SUPER_ADMIN` | 409 | admin | Removing or demoting the last active Super admin | built |
 
 ## Opportunities, applications, supplier responses
 
@@ -52,7 +54,7 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 | `COMPANY_NOT_VERIFIED` | 422 | app | Submitting a JOB from an unverified company (BQ-80) | 5 |
 | `NOT_EDITABLE` | 409 | both | Editing an opportunity that is not `DRAFT` / `CHANGES_REQUESTED` (was `LISTING_NOT_EDITABLE`) | 5 |
 | `REVISION_EXISTS` | 409 | app | Starting a second revision (P2) | 5 |
-| `INVALID_TRANSITION` | 409 | both | Status change not allowed from the current status | 5 |
+| `INVALID_TRANSITION` | 409 | both | Status change not allowed from the current status (first used for staff status, Phase 2) | built |
 | `NOT_ELIGIBLE` | 403 | app | Applying or responding when not allowed; `reason` says why (e.g. `STUDENTS_ONLY`, BQ-79) | 5 |
 | `ALREADY_APPLIED` | 409 | app | Second application to the same opportunity | 5 |
 | `ALREADY_RESPONDED` | 409 | app | Second supplier response to the same request | 5 |

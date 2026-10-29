@@ -9,6 +9,7 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../src/generated/prisma/client';
 import { toDriverConnectionString } from '../../src/platform/database/connection-string';
+import { seedSuperAdmin } from './seeders/super-admin.seeder';
 
 type AppEnv = 'local' | 'test' | 'staging' | 'production';
 
@@ -18,7 +19,16 @@ export interface Seeder {
   run(prisma: PrismaClient): Promise<void>;
 }
 
-export const SEEDERS: readonly Seeder[] = [];
+export const SEEDERS: readonly Seeder[] = [
+  {
+    name: 'super-admin (SEED_SUPER_ADMIN_EMAIL)',
+    environments: ['local', 'test', 'staging', 'production'],
+    run: async (prisma) => {
+      const result = await seedSuperAdmin(prisma);
+      process.stdout.write(`  super admin: ${result}\n`);
+    },
+  },
+];
 
 async function main(): Promise<void> {
   const appEnv = (process.env['APP_ENV'] ?? 'local') as AppEnv;

@@ -55,10 +55,19 @@ export class SettingsService {
       throw new ValidationFailedError(errors);
     }
     const next = parsed.data;
+    // The staff email domain is a security boundary (ADR-032): it comes from
+    // STAFF_GOOGLE_WORKSPACE_DOMAIN and cannot be widened from the admin UI.
+    if (next.admin_email_domain !== this.workspaceDomain()) {
+      throw new ValidationFailedError({
+        admin_email_domain: ['is set by STAFF_GOOGLE_WORKSPACE_DOMAIN and cannot be changed here (ADR-032)'],
+      });
+    }
 
     return this.transactions.run(async (tx) => {
       const before = this.merge(await tx.platformSetting.findMany());
-      const changed = SETTING_KEYS.filter((key) => JSON.stringify(before[key]) !== JSON.stringify(next[key]));
+      const changed = SETTING_KEYS.filter(
+        (key) => key !== 'admin_email_domain' && JSON.stringify(before[key]) !== JSON.stringify(next[key]),
+      );
 
       for (const key of changed) {
         const value = next[key] as Prisma.InputJsonValue;
@@ -98,7 +107,12 @@ export class SettingsService {
         this.logger.warn(`Stored setting "${row.key}" is invalid; using the default`);
       }
     }
+    settings.admin_email_domain = this.workspaceDomain();
     return settings as PlatformSettings;
+  }
+
+  private workspaceDomain(): string {
+    return this.config.staffAuth.workspaceDomain?.toLowerCase() ?? '';
   }
 
   private appVersionDefaults(): PlatformSettings['app_version'] {
