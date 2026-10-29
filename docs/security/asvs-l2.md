@@ -17,14 +17,14 @@
 |---|---|---|---|
 | V1 Encoding and Sanitization | PARTIAL | JSON only; Prisma tagged-template SQL, with `$queryRawUnsafe` banned by ESLint; error bodies never echo input | Rich-text sanitising for articles (Phase 7) |
 | V2 Validation and Business Logic | PARTIAL | Global `ValidationPipe` (whitelist, forbid unknown, 422); settings schema enforces D9; business rules in domain policies (`settings.policy.ts`), tested by direct service calls with disallowed actors | Per-module rules from Phase 2 onward; anti-automation limits on auth (Phase 2) |
-| V3 Web Frontend Security | PARTIAL | Helmet (CSP `default-src 'self'`, `frame-ancestors 'none'`, no-referrer); `x-powered-by` off | Admin cookie + CSRF + admin-only CORS (Phase 2) |
+| V3 Web Frontend Security | PARTIAL | Helmet (CSP `default-src 'self'`, `frame-ancestors 'none'`, no-referrer); `x-powered-by` off; admin cookies `__Host-` + SameSite=Strict + CSRF double-submit (e2e-tested) | Admin-only CORS origin list (with the admin web deployment) |
 | V4 API and Web Service | PARTIAL | Contract-first OpenAPI per surface, checked in CI; body size limit 256 kB; deny-by-default per surface; `Idempotency-Key` store | Response-body contract tests (jest-openapi, later in Phase 1) |
 | V5 File Handling | PLANNED | Storage port with signed URLs only | Uploads with quarantine + virus scan (waits on hosting, TQ-10) |
-| V6 Authentication | PLANNED | — | Member auth via Supabase behind `/auth/*`, phone OTP limits (BQ-78); staff via Google Workspace OIDC with `hd` + email-domain check (ADR-032), Phase 2 |
-| V7 Session Management | PLANNED | — | Opaque admin session: httpOnly, Secure, SameSite=Strict, 30-min idle, 12 h max, revoked on role change (Phase 2) |
-| V8 Authorization | PARTIAL | Permission matrix in code, matching the hand-off table (unit-tested); `PermissionGuard` + domain policies; 403 for missing permission, 401 for wrong surface | Role × operation matrix e2e for every admin op (Phase 2 onward) |
+| V6 Authentication | PARTIAL | Staff: Google Workspace only; `hd` AND email domain AND `email_verified`; no staff passwords or TOTP stored; MFA enforced in Workspace (runbook control); sign-in limited to 20/min/IP; every refusal audited | Member auth via Supabase behind `/auth/*`, phone OTP limits (BQ-78, TQ-04) |
+| V7 Session Management | PARTIAL | Admin: opaque 256-bit token stored hashed; 30-min idle, 12 h absolute; revoked on sign-out, role change and disable (e2e-tested) | Member JWT refresh rotation (member identity) |
+| V8 Authorization | PARTIAL | Permission matrix in code, matching the hand-off table (unit-tested); `PermissionGuard` + domain policies checked again in services; role × operation e2e for every implemented admin op (`test/authz`); `LAST_SUPER_ADMIN` under row lock | Company context checks (member identity) |
 | V9 Self-contained Tokens | PLANNED | — | Member JWT verification via JWKS (issuer, audience, expiry), Phase 2 |
-| V10 OAuth and OIDC | PLANNED | — | Staff OIDC: code + PKCE, `state` + `nonce`, ID-token checks (Phase 2) |
+| V10 OAuth and OIDC | PARTIAL | Staff OIDC: code flow + PKCE S256; state single use, stored server-side, 10 min; nonce check; ID token RS256 against Google JWKS (issuer, audience, expiry, issued-at); `return_to` limited to admin paths (no open redirect) | Live test against Google in staging |
 | V11 Cryptography | PARTIAL | Request hashing with SHA-256 (idempotency); no custom crypto | Secrets manager (waits on hosting) |
 | V12 Secure Communication | PLANNED | — | TLS everywhere, DB `sslmode` (waits on hosting) |
 | V13 Configuration | PARTIAL | Env validated at boot (zod), fails closed; Swagger off in production; gitleaks; `npm audit` high gate; CodeQL; Dependabot; squawk on new migrations | Container image scan, environment separation (waits on hosting) |
