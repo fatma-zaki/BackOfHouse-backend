@@ -493,7 +493,36 @@ No feature code.
 > - **Scheduled job** `admin-auth.purge`; modules now declare cron jobs with `JobsService.defineCron`.
 > - **Permission-matrix e2e:** `test/authz/admin-matrix.e2e-spec.ts` (5 roles × every implemented admin op).
 >
-> **Still open:** the member side (Supabase Auth behind `/auth/*`, phone code needs **TQ-04**), notification delivery, activity tracking. Hosting is deferred while in development (open-questions.md §0, 2026-10-29).
+> **2B, member identity: built on branch `phase-2b-member-identity` (2026-10-30).**
+> - **Sign-in (`contracts/app` `/auth/*`, `GET /me`):**
+>   - email + password and phone + SMS code (BQ-78), refresh, logout, and forgot/reset password;
+>   - Supabase Auth behind a `MemberAuthProvider` port. Access tokens are verified locally against the project's JWKS (ES256/RS256, `common/crypto/jwks-verifier.ts`, shared with staff sign-in);
+>   - without Supabase, local and test keep credentials in memory. Staging and production require `SUPABASE_URL`, `SUPABASE_SECRET_KEY` and `MEMBER_PASSWORD_RESET_URL`.
+> - **Accounts:**
+>   - `users` (INDIVIDUAL with `profile_status`, BQ-79; COMPANY);
+>   - a COMPANY registration also creates its `companies` row with this account as its single Company Account (ADR-030), in the same transaction;
+>   - `EMAIL_TAKEN` and `PHONE_TAKEN`; phones are normalised to E.164.
+> - **Phone codes:**
+>   - 6 digits, 5-minute expiry, 5 wrong tries burn a code, then 429;
+>   - one code a minute and 5 an hour per number, 20 an hour per IP, plus 10 requests a minute per IP;
+>   - only hashes are stored, and the answer never shows whether a number has an account;
+>   - SMS goes through `SMS_SENDER`. The dev sender is used in local and test. Until TQ-04 picks a provider, staging and production answer 503.
+> - **Sessions:**
+>   - logout lists the session in `revoked_member_sessions`, so its access token is refused at once;
+>   - a password reset sets `users.sessions_revoked_at`, which ends every session;
+>   - the scheduled job `identity.purge` cleans up.
+> - **App actor:** `MemberTokenResolver` builds a `member` actor, or a `company` actor with its company id and permissions. It accepts Bearer only.
+> - **Activity tracking:** `user_activity_days` gets one row per user per Riyadh day, and `users.last_active_at` is updated at most hourly.
+> - **Exit tests built:**
+>   - `test/e2e/cross-surface-auth.e2e-spec.ts`;
+>   - `test/e2e/app/phone-code.e2e-spec.ts`;
+>   - `test/integration/direct-db-access.int-spec.ts`;
+>   - activity tracking in `test/integration/member-identity.int-spec.ts`.
+> - **New questions:**
+>   - BQ-82: the contract signs in at registration, so the email is not confirmed first;
+>   - BQ-83: who gets `CREATE_SUPPLIER_REQUEST` (`capabilities` is `[]` for now).
+>
+> **Still open:** notification delivery (2C); the consent records (PDPL, D10) wait for a contract field and the hosting decision; `PATCH /me/preferences` and `PUT /me/devices` are not in `contracts/app` yet (README §8 question 3). Hosting is deferred while in development (open-questions.md §0, 2026-10-29).
 
 **Domain**
 - `identity`: `users`, account type, suspension, **consent records** (purpose, version, timestamp; PDPL, D10).
