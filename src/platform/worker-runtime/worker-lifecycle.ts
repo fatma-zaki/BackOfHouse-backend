@@ -41,6 +41,7 @@ export class WorkerLifecycle implements OnApplicationBootstrap, OnApplicationShu
       const removed = await this.idempotency.purgeExpired();
       this.logger.log(`Purged ${removed} expired idempotency records`);
     });
+    await this.jobs.registerDefinedCrons();
     this.dispatcher.start();
   }
 

@@ -17,6 +17,7 @@ const PGBOSS_SCHEMA = 'pgboss';
 export class JobsService {
   private readonly logger = new Logger(JobsService.name);
   private boss: PgBoss | null = null;
+  private readonly definitions = new Map<string, { cron: string; handler: JobHandler }>();
 
   constructor(private readonly config: AppConfig) {}
 
@@ -45,6 +46,26 @@ export class JobsService {
     await boss.start();
     this.boss = boss;
     this.logger.log('Job queue started');
+  }
+
+  /**
+   * Declares a recurring job owned by a domain module. Modules call this from
+   * `onModuleInit`; the worker registers every declared job once the queue has
+   * started (`registerDefinedCrons`). In the api process (JOBS_ENABLED=false)
+   * declarations are kept but never run.
+   */
+  defineCron(name: string, cron: string, handler: JobHandler): void {
+    if (this.definitions.has(name)) {
+      throw new Error(`Job ${name} is defined twice`);
+    }
+    this.definitions.set(name, { cron, handler });
+  }
+
+  /** Registers every job declared with `defineCron`. */
+  async registerDefinedCrons(): Promise<void> {
+    for (const [name, { cron, handler }] of this.definitions) {
+      await this.registerCron(name, cron, handler);
+    }
   }
 
   /** Registers a recurring job; safe to call on every boot (schedules are upserted). */
