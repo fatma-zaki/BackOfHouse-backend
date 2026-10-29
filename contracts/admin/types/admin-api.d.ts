@@ -3224,7 +3224,7 @@ export interface components {
             name: components["schemas"]["LocalizedText"];
             /** @description Default true; fixed lists cannot be deactivated */
             active?: boolean;
-            /** @description Default: position in the array */
+            /** @description Default: position in the array. Must be 0 or more (422 otherwise) */
             order?: number;
         };
     };

@@ -8763,8 +8763,7 @@ components:
           description: Default true; fixed lists cannot be deactivated
         order:
           type: integer
-          minimum: 0
-          description: 'Default: position in the array'
+          description: 'Default: position in the array. Must be 0 or more (422 otherwise)'
       required:
         - name
   responses:
