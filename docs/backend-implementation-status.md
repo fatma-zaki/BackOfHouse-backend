@@ -14,7 +14,8 @@
 | Stages 1–3 | Project, database and platform foundation (audit, outbox, jobs, storage port) | DONE |
 | 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`), `GET /ping` on both, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, `contracts/` with `x-phase`, contract check, coverage, gap report, oasdiff job, admin client types, error-code catalog | DONE (2026-10-11) |
 | 1A · Shared foundations (hosting-independent) | Actor, surface auth + permission guards, permission matrix, i18n, page types, idempotency, `@AuditRead` + admin-write audit check, settings (`GET/PUT /api/admin/v1/settings`), CodeQL, Dependabot, squawk, drift test, ASVS checklist, DB session in UTC | IN PROGRESS (branch `phase-1a-foundations`) |
-| 1B · Shared foundations (rest) | Taxonomy (table design decision), uploads + virus scan (TQ-10), observability, environments, backups, image scan, load tests, PDPL retention + breach runbook | BLOCKED (BQ-31, taxonomy design, TQ-10) |
+| 1B · Taxonomy | `locations`, `skills`, `industries`, `taxonomy_labels`; `GET/PUT /api/admin/v1/taxonomy/{kind}`, `GET /api/app/v1/meta/taxonomy`; seeds | IN PROGRESS (branch `phase-1b-taxonomy`) |
+| 1B · Shared foundations (rest) | Uploads + virus scan (TQ-10), observability, environments, backups, image scan, load tests, PDPL retention + breach runbook | BLOCKED (TQ-10; hosting deferred) |
 | 2A · Staff identity | Google Workspace OIDC sign-in, staff accounts and invites, cookie sessions + CSRF, `/me`, `/roles`, `/team`, `LAST_SUPER_ADMIN`, seeded Super admin, permission-matrix e2e | IN PROGRESS (branch `phase-2a-staff-identity`) |
 | 2B · Member identity, notifications, activity | Supabase Auth behind `/auth/*`, phone code (TQ-04), notification delivery, activity tracking | NOT STARTED |
 | 3 – 9 | See execution-plan.md | NOT STARTED |

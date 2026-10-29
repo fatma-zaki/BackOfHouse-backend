@@ -77,12 +77,14 @@ describe('admin permission matrix (e2e)', () => {
     await resetDatabase(admin);
   });
 
-  it('covers the Phase 1–2 admin operations', () => {
+  it('covers the implemented admin operations', () => {
     expect(operations.map((o) => `${o.method.toUpperCase()} ${o.path}`).sort()).toEqual(
       [
         'DELETE /team/invites/{id}',
         'GET /roles',
         'GET /settings',
+        'GET /taxonomy/{kind}',
+        'PUT /taxonomy/{kind}',
         'GET /team',
         'PATCH /team/{id}',
         'POST /team/invites',

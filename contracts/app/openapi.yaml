@@ -91,6 +91,27 @@ paths:
                   data: { $ref: '#/components/schemas/AppVersion' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
 
+  /meta/taxonomy:
+    get:
+      x-phase: '1'
+      tags: [Meta]
+      summary: Picker lists (cities, crafts, industries, company types, opportunity types, news topics)
+      description: |
+        Active items only, in the language from Accept-Language, in staff-defined order.
+        For company_types, opportunity_types and news_topics the id is the enum code
+        (CompanyType, OpportunityType, NewsTopic). Cities carry their region.
+      security: []
+      responses:
+        '200':
+          description: Picker lists
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: '#/components/schemas/MetaTaxonomy' }
+
   # ── Auth ──────────────────────────────────────────────────────────────────
   /auth/register:
     post:
@@ -1610,6 +1631,33 @@ components:
             With `NOT_ELIGIBLE`. Applications: COMPANY_FACING,
             INDIVIDUALS_ONLY, CLOSED, STUDENTS_ONLY. Supplier responses:
             NOT_SUPPLIER_REQUEST, OWN_REQUEST, NOT_INVITED, CLOSED.
+    TaxonomyEntry:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string, description: 'In the request language' }
+    MetaTaxonomy:
+      type: object
+      required: [cities, crafts, industries, company_types, opportunity_types, news_topics]
+      properties:
+        cities:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/TaxonomyEntry'
+              - type: object
+                required: [region]
+                properties:
+                  region:
+                    oneOf:
+                      - $ref: '#/components/schemas/TaxonomyEntry'
+                      - type: 'null'
+        crafts: { type: array, items: { $ref: '#/components/schemas/TaxonomyEntry' } }
+        industries: { type: array, items: { $ref: '#/components/schemas/TaxonomyEntry' } }
+        company_types: { type: array, items: { $ref: '#/components/schemas/TaxonomyEntry' } }
+        opportunity_types: { type: array, items: { $ref: '#/components/schemas/TaxonomyEntry' } }
+        news_topics: { type: array, items: { $ref: '#/components/schemas/TaxonomyEntry' } }
     AppVersion:
       type: object
       required: [platform, min_supported_version, latest_version, update_url]

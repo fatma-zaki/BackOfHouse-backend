@@ -23,7 +23,8 @@ Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-deve
 | Phase 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`) with `GET /ping`, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, contracts in `contracts/` with `x-phase`, contract check + coverage + gap report scripts, oasdiff in CI, admin client types | Done |
 | Phase 1A · Foundations | Actor + per-surface auth guard + permission guard and matrix, locale, page types, `Idempotency-Key`, `@AuditRead` and the admin-write audit check, platform settings (`GET/PUT /api/admin/v1/settings`), CodeQL, Dependabot, squawk, schema-drift test | In progress |
 | Phase 2A · Staff identity | Google Workspace sign-in (OIDC), staff accounts and invites, cookie sessions + CSRF, `/api/admin/v1/me`, `/roles`, `/team`, permission-matrix e2e | In progress |
-| Next | Taxonomy (decided), member identity, uploads, … | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
+| Phase 1B · Taxonomy | Regions/cities, crafts, industries and the fixed lists; `GET/PUT /api/admin/v1/taxonomy/{kind}`, `GET /api/app/v1/meta/taxonomy`; all Phase 1 contract operations implemented (`contracts/phase.json` = 1) | In progress |
+| Next | Member identity, notifications, uploads, … | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 

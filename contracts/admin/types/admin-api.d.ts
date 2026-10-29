@@ -3217,6 +3217,16 @@ export interface components {
                 };
             };
         };
+        /** @description An item of PUT /taxonomy/{kind}. Omit id to add an item to a list staff can extend. */
+        TaxonomyItemUpdate: {
+            /** @description Existing item id, or the code for a fixed list */
+            id?: string;
+            name: components["schemas"]["LocalizedText"];
+            /** @description Default true; fixed lists cannot be deactivated */
+            active?: boolean;
+            /** @description Default: position in the array. Must be 0 or more (422 otherwise) */
+            order?: number;
+        };
     };
     responses: {
         /** @description `BAD_REQUEST` */
@@ -6234,6 +6244,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description One of: cities, crafts, industries (lists staff can extend; items left out of a PUT are deactivated, never deleted), company_types, opportunity_types, news_topics (fixed code lists: the id is the code; send every code; rename and reorder only). Unknown kind → 404. */
                 kind: string;
             };
             cookie?: never;
@@ -6262,13 +6273,14 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description One of: cities, crafts, industries (lists staff can extend; items left out of a PUT are deactivated, never deleted), company_types, opportunity_types, news_topics (fixed code lists: the id is the code; send every code; rename and reorder only). Unknown kind → 404. */
                 kind: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TaxonomyItem"][];
+                "application/json": components["schemas"]["TaxonomyItemUpdate"][];
             };
         };
         responses: {
@@ -6287,6 +6299,7 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            422: components["responses"]["Unprocessable"];
         };
     };
     getAdminTeam: {
