@@ -3,12 +3,21 @@ import { pkceChallenge, safeEqual } from '../crypto/tokens';
 
 describe('parseCookies', () => {
   it('reads name=value pairs, first value wins, bad encoding is skipped', () => {
-    expect(parseCookies(undefined)).toEqual({});
-    expect(parseCookies('__Host-boh_admin=abc; theme=dark; theme=light; bad=%E0%A4%A')).toEqual({
-      '__Host-boh_admin': 'abc',
-      theme: 'dark',
-    });
-    expect(parseCookies('a=b%20c; =x; novalue')).toEqual({ a: 'b c' });
+    expect(parseCookies(undefined)).toEqual(new Map());
+    expect(parseCookies('__Host-boh_admin=abc; theme=dark; theme=light; bad=%E0%A4%A')).toEqual(
+      new Map([
+        ['__Host-boh_admin', 'abc'],
+        ['theme', 'dark'],
+      ]),
+    );
+    expect(parseCookies('a=b%20c; =x; novalue')).toEqual(new Map([['a', 'b c']]));
+  });
+
+  it('cannot pollute object prototypes with client-chosen names', () => {
+    const cookies = parseCookies('__proto__=polluted; constructor=x; prototype=y');
+    expect(cookies.get('__proto__')).toBe('polluted');
+    expect(({} as Record<string, unknown>)['polluted']).toBeUndefined();
+    expect(Object.prototype).not.toHaveProperty('polluted');
   });
 });
 

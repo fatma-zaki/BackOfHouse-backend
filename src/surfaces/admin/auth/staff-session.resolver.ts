@@ -20,10 +20,10 @@ export class StaffSessionResolver implements ActorResolver {
     const cookies = parseCookies(request.headers.cookie);
     const header = request.headers[CSRF_HEADER];
     const resolved = await this.sessions.resolve({
-      token: cookies[ADMIN_SESSION_COOKIE],
+      token: cookies.get(ADMIN_SESSION_COOKIE),
       method: request.method,
       csrfHeader: Array.isArray(header) ? header[0] : header,
-      csrfCookie: cookies[ADMIN_CSRF_COOKIE],
+      csrfCookie: cookies.get(ADMIN_CSRF_COOKIE),
     });
     if (!resolved) return null;
     const { sessionId, ...actor } = resolved;
