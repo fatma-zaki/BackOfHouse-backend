@@ -10,9 +10,13 @@ import { OutboxModule } from './platform/outbox/outbox.module';
 import { WorkerRuntimeModule } from './platform/worker-runtime/worker-runtime.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { SurfacesModule } from './surfaces/surfaces.module';
+import { IdempotencyInterceptor, IdempotencyModule } from './platform/idempotency';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { EnvelopeInterceptor } from './common/interceptors/envelope.interceptor';
-import { DenyByDefaultGuard } from './common/guards/deny-by-default.guard';
+import { SurfaceAuthGuard } from './surfaces/surface-auth.guard';
+import { PermissionGuard } from './surfaces/admin/permission.guard';
+import { AuditAssertInterceptor } from './surfaces/admin/audit-assert.interceptor';
+import { AuditReadInterceptor } from './surfaces/audit-read';
 import { createValidationPipe } from './common/pipes/validation.pipe';
 
 /**
@@ -30,16 +34,24 @@ import { createValidationPipe } from './common/pipes/validation.pipe';
     OutboxModule,
     AuditModule,
     WorkerRuntimeModule,
+    IdempotencyModule,
     SurfacesModule,
   ],
   controllers: [HealthController],
   providers: [
     // Guard order: rate limit first, then authentication (security-and-audit.md §1).
     { provide: APP_GUARD, useClass: ThrottlerGuard },
-    { provide: APP_GUARD, useClass: DenyByDefaultGuard },
+    // Then deny by default per surface (actor from the surface's resolver), then admin permission keys.
+    { provide: APP_GUARD, useClass: SurfaceAuthGuard },
+    { provide: APP_GUARD, useClass: PermissionGuard },
     { provide: APP_PIPE, useFactory: createValidationPipe },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    // Order matters: the envelope wraps the idempotency interceptor, which stores raw results.
     { provide: APP_INTERCEPTOR, useClass: EnvelopeInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: IdempotencyInterceptor },
+    // Audit: sensitive reads (@AuditRead) and the every-admin-write-is-audited check.
+    { provide: APP_INTERCEPTOR, useClass: AuditReadInterceptor },
+    { provide: APP_INTERCEPTOR, useClass: AuditAssertInterceptor },
   ],
 })
 export class AppModule {}

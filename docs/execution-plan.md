@@ -231,7 +231,9 @@ CI, on every push and PR (`.github/workflows/ci.yml`):
    - a contract operation due by the current phase is not implemented;
    - an implemented operation's success status codes or path/query parameters differ.
 4. `npm run contract:types` regenerates `contracts/admin/types/admin-api.d.ts` (openapi-typescript 7.13.0). `git diff --exit-code` then fails the build when the committed types are stale.
-5. PRs only, job `contract-breaking-changes`: `tufin/oasdiff:v1.32.1 breaking <base> <head> --fail-on ERR` for each contract. Breaking app changes go to `/api/app/v2`; breaking admin changes need a release coordinated with the admin web app.
+5. PRs only, workflow `contract-breaking-changes.yml`, which re-runs when labels change: `tufin/oasdiff:v1.32.1 breaking <base> <head> --fail-on ERR` for each contract.
+   - **App:** breaking changes always fail; ship them under `/api/app/v2`.
+   - **Admin:** breaking changes pass only with the PR label **`breaking-change-approved`**, for a release coordinated with the admin web app.
 6. Phase 1 adds `jest-openapi` response validation in e2e tests, which checks request and response **bodies** against the contract. Until then, bodies are not compared.
 
 Workflow: change the YAML first, then the code, in the same PR.
@@ -390,6 +392,25 @@ No feature code.
 | Coverage | `npm run contract:coverage` exits 0 (§4) |
 
 ### Phase 1 · Shared foundations and production basics
+
+> **Progress (2026-10-28).** Hosting (D10 / BQ-31) is still open, so Phase 1 is split:
+>
+> **1A, hosting-independent: built on branch `phase-1a-foundations`.**
+> - `Actor` in `RequestContext`; `SurfaceAuthGuard` (deny by default per surface, resolvers per surface, null until Phase 2); `PermissionGuard` + `@RequirePermission`.
+> - The staff permission matrix in code (`modules/access`), unit-tested against the hand-off table.
+> - `Accept-Language` → locale; `LocalizedText`; app and admin page types.
+> - `Idempotency-Key` (table, interceptor, hourly purge job).
+> - `@AuditRead` (fail closed) and the admin-write audit check.
+> - `settings` (table, D9 defaults, rules enforced in the schema, `GET/PUT /api/admin/v1/settings`, app-version now served from settings).
+> - CI: CodeQL, Dependabot, squawk on new migrations, a schema-drift test.
+> - `docs/security/asvs-l2.md`.
+> - **Bug fixed along the way:** the database session now runs in UTC (`-c TimeZone=UTC`). The pg adapter sends dates without an offset, so a non-UTC Postgres shifted every timestamp comparison. A regression test covers it.
+>
+> **1B, still open:**
+> - **Taxonomy:** needs a decision on the table design. The hand-off has one `TaxonomyItem` table for cities, crafts, opportunity types and company categories; the repo design has one table per kind (`categories`, `locations`, `skills` …).
+> - **Uploads + virus scan:** waits on hosting and TQ-10.
+> - **Waits on hosting:** OpenTelemetry + Sentry, environments, backups/PITR + restore drill, container image scan, k6 load tests, PDPL retention table + breach runbook.
+> - **Can be done any time:** `jest-openapi` response-body tests, `test/architecture/module-index.spec.ts`, the event-catalog convention.
 
 **Domain**
 - `Actor` type and `RequestContext.actor`.

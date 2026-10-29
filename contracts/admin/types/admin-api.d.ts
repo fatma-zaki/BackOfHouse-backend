@@ -3109,24 +3109,52 @@ export interface components {
             last_run_at?: string | null;
             formats?: string[];
         };
+        /** @description Platform settings (Super admin). Defaults in code; rules fixed by product decisions are enforced: review_every_opportunity must be true and verified_companies_skip_review false (D9); levels start at L1 = 0 and rise (BQ-76). Invalid input → 422 VALIDATION_FAILED with field errors. */
         PlatformSettings: {
-            review_sla_hours?: number;
-            review_every_opportunity?: boolean;
-            hide_contact_details_in_opportunities?: boolean;
-            auto_flag_fee_opportunities?: boolean;
-            verified_companies_skip_review?: boolean;
-            support_first_reply_hours?: number;
-            support_points_monthly_cap?: number;
-            admin_email_domain?: string;
-            admin_idle_timeout_minutes?: number;
-            push_quiet_hours?: {
-                start?: string;
-                end?: string;
+            review_sla_hours: number;
+            /**
+             * @description Always true (D9)
+             * @constant
+             */
+            review_every_opportunity: true;
+            hide_contact_details_in_opportunities: boolean;
+            auto_flag_fee_opportunities: boolean;
+            /**
+             * @description Always false (D9)
+             * @constant
+             */
+            verified_companies_skip_review: false;
+            support_first_reply_hours: number;
+            support_points_monthly_cap: number;
+            admin_email_domain: string;
+            admin_idle_timeout_minutes: number;
+            push_quiet_hours: {
+                start: string;
+                end: string;
             };
-            levels?: {
-                level?: number;
-                min_lifetime_points?: number;
+            levels: {
+                level: number;
+                min_lifetime_points: number;
             }[];
+            /** @description Forced-update policy served by GET /api/app/v1/meta/app-version (D11) */
+            app_version: {
+                ios: {
+                    /** @example 1.0.0 */
+                    min_supported_version: string;
+                    /** @example 1.0.0 */
+                    latest_version: string;
+                    /** Format: uri */
+                    update_url: string;
+                };
+                android: {
+                    /** @example 1.0.0 */
+                    min_supported_version: string;
+                    /** @example 1.0.0 */
+                    latest_version: string;
+                    /** Format: uri */
+                    update_url: string;
+                };
+            };
         };
         TaxonomyItem: {
             id: string;
@@ -3144,6 +3172,49 @@ export interface components {
             /** @description Field errors keyed by request field name (422 only) */
             errors?: {
                 [key: string]: string[];
+            };
+        };
+        /** @description Body of PUT /settings: the full settings as returned by GET /settings. The server validates it against PlatformSettings and the product rules (D9, BQ-76) and answers 422 VALIDATION_FAILED with field errors for anything missing or invalid. Kept lenient here so the request contract stays compatible; the response schema PlatformSettings is the exact shape. */
+        PlatformSettingsUpdate: {
+            review_sla_hours?: number;
+            /** @description Must be true (D9); other values → 422 */
+            review_every_opportunity?: boolean;
+            hide_contact_details_in_opportunities?: boolean;
+            auto_flag_fee_opportunities?: boolean;
+            /** @description Must be false (D9); other values → 422 */
+            verified_companies_skip_review?: boolean;
+            support_first_reply_hours?: number;
+            support_points_monthly_cap?: number;
+            admin_email_domain?: string;
+            admin_idle_timeout_minutes?: number;
+            push_quiet_hours?: {
+                /** @description HH:MM, 24 h, Asia/Riyadh */
+                start?: string;
+                /** @description HH:MM, 24 h, Asia/Riyadh */
+                end?: string;
+            };
+            levels?: {
+                level?: number;
+                min_lifetime_points?: number;
+            }[];
+            /** @description Forced-update policy served by GET /api/app/v1/meta/app-version (D11) */
+            app_version?: {
+                ios: {
+                    /** @example 1.0.0 */
+                    min_supported_version: string;
+                    /** @example 1.0.0 */
+                    latest_version: string;
+                    /** Format: uri */
+                    update_url: string;
+                };
+                android: {
+                    /** @example 1.0.0 */
+                    min_supported_version: string;
+                    /** @example 1.0.0 */
+                    latest_version: string;
+                    /** Format: uri */
+                    update_url: string;
+                };
             };
         };
     };
@@ -5906,7 +5977,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PlatformSettings"];
+                "application/json": components["schemas"]["PlatformSettingsUpdate"];
             };
         };
         responses: {
@@ -5925,6 +5996,7 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            422: components["responses"]["Unprocessable"];
         };
     };
     getAdminSupplierRequests: {

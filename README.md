@@ -21,7 +21,8 @@ Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-deve
 | 2 · Database foundation | Prisma 7 multi-file schema, private `app` schema, extensions, `boh_app` role and grants, RLS deny-all helper, `raise_immutable()`, `app.normalize_ar()`, `PrismaService`, `TransactionRunner`, real-Postgres test harness, seed runner | Done |
 | 3 · Platform | `audit_logs` + `AuditLogger` + `redact()`, transactional outbox (`outbox_events`, writer, dispatcher, `@OnDomainEvent`), pg-boss jobs, storage port | Done (audit read endpoint waits for Stage 6) |
 | Phase 0 · Structure | Two surfaces (`src/surfaces/app`, `src/surfaces/admin`) with `GET /ping`, `GET /api/app/v1/meta/app-version`, two Swagger pages, boot-time route check, surface boundary rules, contracts in `contracts/` with `x-phase`, contract check + coverage + gap report scripts, oasdiff in CI, admin client types | Done |
-| Phase 1+ | Shared foundations, identity, … | Phase 1 waits for D10 / BQ-31 (hosting region, PDPL). See [docs/gap-report.md](docs/gap-report.md) |
+| Phase 1A · Foundations | Actor + per-surface auth guard + permission guard and matrix, locale, page types, `Idempotency-Key`, `@AuditRead` and the admin-write audit check, platform settings (`GET/PUT /api/admin/v1/settings`), CodeQL, Dependabot, squawk, schema-drift test | In progress |
+| Phase 1B+ | Taxonomy, uploads, observability, environments, identity, … | Hosting-dependent parts wait for D10 / BQ-31. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 
@@ -73,6 +74,7 @@ Swagger UI: `http://localhost:3000/docs/app` and `http://localhost:3000/docs/adm
 npm run contracts          # x-phase coverage, generate specs from code, compare with contracts/
 npm run contract:types     # regenerate contracts/admin/types/admin-api.d.ts
 npm run gap-report         # regenerate docs/gap-report.md
+npm run migrations:lint    # squawk on migrations added since origin/main
 ```
 
 Change the contract first, then the code, in the same PR. When a phase is done, raise `current_phase` in `contracts/phase.json`.
@@ -142,5 +144,8 @@ Choices made where the docs are open or silent. Each is reversible without a dat
 | Outbox retries | Event-level status: when one handler fails, all handlers for that event are retried (all must be idempotent). The docs mention per-handler records, but the catalog defines no table for them | domain-events.md §1 |
 | Outbox claiming | Lease pattern: `FOR UPDATE SKIP LOCKED` + `available_at` pushed forward, so handlers run outside the claiming transaction | database-design-rules.md §14 |
 | Audit FKs | `actor_user_id` / `organization_id` get their foreign keys when `users` (Stage 4) and `organizations` (Stage 8) exist | database-design-rules.md §6 |
-| Deny by default | Until Phase 2, only `@Public()` routes are reachable; everything else returns 401 | security-and-audit.md §3 |
+| Deny by default | Per surface (`SurfaceAuthGuard`): a route needs an actor from its own surface's resolver; until Phase 2 the resolvers return none, so only `@Public()` routes are reachable | security-and-audit.md §3, ADR-031 |
+| Database time zone | Every app session runs `TimeZone=UTC`: the pg adapter sends dates without an offset | `test/integration/time-zone.int-spec.ts` |
+| Staff in audit rows | `actor_type = STAFF`, `actor_user_id` = the staff account id (staff are not `users`, ADR-032); that column's future foreign key must not target `users` for STAFF rows | ADR-016, ADR-032 |
+| Migrations | Each new migration sets `lock_timeout` and `statement_timeout`; squawk lints migrations added in a PR (`npm run migrations:lint`) | database-design-rules.md |
 | Test database | Embedded Postgres locally, service container in CI | Stage 2 |

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { SettingsModule } from '../../modules/settings';
 import { AppMetaController } from './meta/app-meta.controller';
 
 /**
@@ -8,6 +9,7 @@ import { AppMetaController } from './meta/app-meta.controller';
  * surfaces.module.ts.
  */
 @Module({
+  imports: [SettingsModule],
   controllers: [AppMetaController],
 })
 export class AppSurfaceModule {}

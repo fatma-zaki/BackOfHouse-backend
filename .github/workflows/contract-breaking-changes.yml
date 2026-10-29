@@ -1,0 +1,51 @@
+# Breaking changes to a contract (ADR-031, execution-plan.md §1.6), on every PR:
+#   app   → never allowed: installed app builds cannot be coordinated; ship /api/app/v2 instead.
+#   admin → allowed only with the PR label `breaking-change-approved`, for a release
+#           coordinated with the admin web app.
+# Separate from ci.yml so that adding or removing the label re-runs only this check.
+name: contract-breaking-changes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  oasdiff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: oasdiff breaking (base branch → this PR)
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+          ADMIN_BREAKING_APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'breaking-change-approved') }}
+        run: |
+          mkdir -p base
+          failed=0
+          for surface in app admin; do
+            echo "::group::$surface"
+            if ! git show "$BASE_REF:contracts/$surface/openapi.yaml" > "base/$surface.yaml" 2>/dev/null; then
+              echo "contracts/$surface/openapi.yaml is new in this PR; nothing to compare"
+              echo "::endgroup::"
+              continue
+            fi
+            if docker run --rm -v "$PWD:/specs" tufin/oasdiff:v1.32.1 breaking \
+                "/specs/base/$surface.yaml" "/specs/contracts/$surface/openapi.yaml" --fail-on ERR; then
+              echo "$surface: no breaking changes"
+            elif [ "$surface" = "admin" ] && [ "$ADMIN_BREAKING_APPROVED" = "true" ]; then
+              echo "::warning::admin contract has breaking changes, approved by the 'breaking-change-approved' label"
+            else
+              if [ "$surface" = "app" ]; then
+                echo "::error::app contract has breaking changes; ship them under /api/app/v2"
+              else
+                echo "::error::admin contract has breaking changes; add the 'breaking-change-approved' label once the admin web release is coordinated"
+              fi
+              failed=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $failed
