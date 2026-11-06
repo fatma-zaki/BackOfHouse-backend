@@ -17,8 +17,8 @@
 | 1B · Taxonomy | `locations`, `skills`, `industries`, `taxonomy_labels`; `GET/PUT /api/admin/v1/taxonomy/{kind}`, `GET /api/app/v1/meta/taxonomy`; seeds | DONE (merged, PR #15) |
 | 1B · Shared foundations (rest) | Uploads + virus scan (TQ-10), observability, environments, backups, image scan, load tests, PDPL retention + breach runbook | BLOCKED (TQ-10; hosting deferred) |
 | 2A · Staff identity | Google Workspace OIDC sign-in, staff accounts and invites, cookie sessions + CSRF, `/me`, `/roles`, `/team`, `LAST_SUPER_ADMIN`, seeded Super admin, permission-matrix e2e | DONE (merged, PR #13) |
-| 2B · Member identity, activity | Supabase Auth behind `/auth/*` (email + password, phone code with a dev SMS sender until TQ-04), refresh, logout, password reset, `GET /api/app/v1/me`, `users` + `companies` (company created at registration), app actor resolver, activity tracking, cross-surface and direct-DB-access tests; `contracts/phase.json` = 2 | IN PROGRESS (branch `phase-2b-member-identity`) |
-| 2C · Notification delivery | In-app store, FCM and email adapters, templates, preferences, quiet hours | NOT STARTED |
+| 2B · Member identity, activity | Supabase Auth behind `/auth/*` (email + password, phone code with a dev SMS sender until TQ-04), refresh, logout, password reset, `GET /api/app/v1/me`, `users` + `companies` (company created at registration), app actor resolver, activity tracking, cross-surface and direct-DB-access tests; `contracts/phase.json` = 2 | DONE (merged, PR #16) |
+| 2C · Notification delivery | `notifications`, `notification_deliveries`, `notification_preferences`, `member_devices`; catalog with bilingual templates; FCM HTTP v1 adapter + fake; email port (dev sender until TQ-30); quiet hours (`common/time/quiet-hours.ts`); `notifications.deliver` job with retries; first type `account.password_changed` from `user.password.changed`; worker now runs identity and notifications | IN PROGRESS (branch `phase-2c-notifications`) |
 | 3 – 9 | See execution-plan.md | NOT STARTED |
 
 ---

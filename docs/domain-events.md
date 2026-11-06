@@ -87,6 +87,7 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 | `user.suspended` | identity | SRC (hide profile), NTF (none by default) | `user_id`, `reason_code` | Remove from public surfaces | async |
 | `user.reinstated` | identity | SRC | `user_id` | Restore visibility | async |
 | `user.sessions.revoked` | identity | — (audit only) | `user_id`, `scope` | Traceability | — |
+| `user.password.changed` | identity (password reset) | NTF (security alert `account.password_changed`: push + email, cannot be turned off) | `user_id` | Tell the member at once if someone else changed it (added 2026-11-06, Phase 2C) | async |
 | `consent.changed` | identity | ANL (stop linking events if withdrawn) | `user_id`, `purpose`, `granted` | §16.1 consent-based linking | async |
 | `invitation.created` | access | NTF (email/SMS to invitee) | `invitation_id`, `organization_id`, `role`, `channel` | AUTH-05 | async |
 | `invitation.accepted` | access | NTF (inform owner) | `invitation_id`, `organization_id`, `user_id`, `role` | | async |
