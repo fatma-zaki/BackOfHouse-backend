@@ -95,6 +95,16 @@ export const envSchema = z
     SUPABASE_SECRET_KEY: z.string().min(20).optional(),
     // Member sign-in (ADR-003 amended): the website page that opens the emailed reset link.
     MEMBER_PASSWORD_RESET_URL: z.string().url().optional(),
+    // Push notifications: a Firebase service account for FCM HTTP v1. All three or none;
+    // without them push is faked in local and test and skipped elsewhere.
+    FCM_PROJECT_ID: z.string().min(1).optional(),
+    FCM_CLIENT_EMAIL: z.string().email().optional(),
+    // PEM; `\n` escapes are accepted for one-line secrets.
+    FCM_PRIVATE_KEY: z
+      .string()
+      .transform((value) => value.replace(/\\n/g, '\n'))
+      .refine((value) => value.includes('PRIVATE KEY'), 'must be a PEM private key')
+      .optional(),
     STORAGE_BUCKET_PUBLIC: z.string().default('public-media'),
     STORAGE_BUCKET_PRIVATE: z.string().default('private-documents'),
     STORAGE_BUCKET_QUARANTINE: z.string().default('quarantine'),
@@ -141,6 +151,12 @@ export const envSchema = z
             message: 'is required in staging and production (member sign-in)',
           });
         }
+      }
+    }
+    const fcm = ['FCM_PROJECT_ID', 'FCM_CLIENT_EMAIL', 'FCM_PRIVATE_KEY'] as const;
+    if (fcm.some((key) => env[key]) && !fcm.every((key) => env[key])) {
+      for (const key of fcm.filter((k) => !env[k])) {
+        ctx.addIssue({ code: 'custom', path: [key], message: 'is required when any FCM_* variable is set' });
       }
     }
     if (env.APP_ENV === 'production' && env.CORS_ALLOWED_ORIGINS.length === 0) {

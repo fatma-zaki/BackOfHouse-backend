@@ -24,8 +24,9 @@ Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-deve
 | Phase 1A · Foundations | Actor + per-surface auth guard + permission guard and matrix, locale, page types, `Idempotency-Key`, `@AuditRead` and the admin-write audit check, platform settings (`GET/PUT /api/admin/v1/settings`), CodeQL, Dependabot, squawk, schema-drift test | Done |
 | Phase 2A · Staff identity | Google Workspace sign-in (OIDC), staff accounts and invites, cookie sessions + CSRF, `/api/admin/v1/me`, `/roles`, `/team`, permission-matrix e2e | Done |
 | Phase 1B · Taxonomy | Regions/cities, crafts, industries and the fixed lists; `GET/PUT /api/admin/v1/taxonomy/{kind}`, `GET /api/app/v1/meta/taxonomy`; all Phase 1 contract operations implemented | Done |
-| Phase 2B · Member identity | `/api/app/v1/auth/*` (email + password, phone SMS code, refresh, logout, password reset) and `GET /me` over Supabase Auth (in memory locally without Supabase), company created at registration, activity tracking; all Phase 2 contract operations implemented (`contracts/phase.json` = 2) | In progress |
-| Next | Member identity, notifications, uploads, … | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
+| Phase 2B · Member identity | `/api/app/v1/auth/*` (email + password, phone SMS code, refresh, logout, password reset) and `GET /me` over Supabase Auth (in memory locally without Supabase), company created at registration, activity tracking; all Phase 2 contract operations implemented (`contracts/phase.json` = 2) | Done |
+| Phase 2C · Notification delivery | In-app notifications with push (FCM) and email deliveries in the member's language, preferences, quiet hours, retries; fed only by outbox events | In progress |
+| Next | Profiles (3a), uploads, … | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 

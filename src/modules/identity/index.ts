@@ -7,7 +7,7 @@ export {
   type RegisterInput,
 } from './services/member-auth.service';
 export { PhoneSignInService } from './services/phone-sign-in.service';
-export { MembersService, type MemberView } from './services/members.service';
+export { MembersService, type MemberContact, type MemberView } from './services/members.service';
 export { ActivityService } from './services/activity.service';
 export { MEMBER_AUTH_PROVIDER, type AuthTokens, type MemberAuthProvider } from './infrastructure/member-auth-provider';
 export { InMemoryMemberAuthProvider } from './infrastructure/in-memory-member-auth.provider';

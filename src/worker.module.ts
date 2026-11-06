@@ -7,6 +7,8 @@ import { WorkerRuntimeModule } from './platform/worker-runtime/worker-runtime.mo
 import { ClockModule } from './platform/clock/clock.module';
 import { AccessModule } from './modules/access';
 import { AuditModule } from './modules/audit/audit.module';
+import { IdentityModule } from './modules/identity';
+import { NotificationsModule } from './modules/notifications';
 
 /**
  * The `worker` process (ADR-022): outbox dispatcher and scheduled jobs, no HTTP.
@@ -22,8 +24,10 @@ import { AuditModule } from './modules/audit/audit.module';
     OutboxModule,
     AuditModule,
     WorkerRuntimeModule,
-    // Domain modules that declare scheduled jobs (JobsService.defineCron).
+    // Domain modules that declare scheduled jobs (JobsService.defineCron) or consume events.
     AccessModule,
+    IdentityModule,
+    NotificationsModule,
   ],
 })
 export class WorkerModule {}

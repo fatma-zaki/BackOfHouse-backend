@@ -28,25 +28,30 @@ enum UserStatus {
 /// A member or Company Account (contracts/app `AppUser`). Email is stored lowercase,
 /// phone in E.164. profile_status is set for INDIVIDUAL only (BQ-79).
 model User {
-  id              String             @id @db.Uuid
-  accountType     AccountType        @map("account_type")
-  fullName        String             @map("full_name")
-  email           String
-  phone           String?
-  emailVerifiedAt DateTime?          @map("email_verified_at") @db.Timestamptz(6)
-  phoneVerifiedAt DateTime?          @map("phone_verified_at") @db.Timestamptz(6)
-  profileStatus   ProfileStatus?     @map("profile_status")
-  status          UserStatus         @default(ACTIVE)
-  suspendedAt     DateTime?          @map("suspended_at") @db.Timestamptz(6)
-  lastSignInAt    DateTime?          @map("last_sign_in_at") @db.Timestamptz(6)
-  lastActiveAt    DateTime?          @map("last_active_at") @db.Timestamptz(6)
+  id                      String                   @id @db.Uuid
+  accountType             AccountType              @map("account_type")
+  fullName                String                   @map("full_name")
+  email                   String
+  phone                   String?
+  emailVerifiedAt         DateTime?                @map("email_verified_at") @db.Timestamptz(6)
+  phoneVerifiedAt         DateTime?                @map("phone_verified_at") @db.Timestamptz(6)
+  profileStatus           ProfileStatus?           @map("profile_status")
+  status                  UserStatus               @default(ACTIVE)
+  suspendedAt             DateTime?                @map("suspended_at") @db.Timestamptz(6)
+  lastSignInAt            DateTime?                @map("last_sign_in_at") @db.Timestamptz(6)
+  lastActiveAt            DateTime?                @map("last_active_at") @db.Timestamptz(6)
   /// Access tokens issued before this time are refused (password reset ends every session).
-  sessionsRevokedAt DateTime?        @map("sessions_revoked_at") @db.Timestamptz(6)
-  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz(6)
-  phoneCodes      PhoneSignInCode[]
-  activityDays    UserActivityDay[]
-  company         Company?
+  sessionsRevokedAt       DateTime?                @map("sessions_revoked_at") @db.Timestamptz(6)
+  /// Language for notifications: the request language at the last sign-in or refresh.
+  locale                  String                   @default("ar")
+  createdAt               DateTime                 @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(6)
+  phoneCodes              PhoneSignInCode[]
+  activityDays            UserActivityDay[]
+  company                 Company?
+  notifications           Notification[]
+  notificationPreferences NotificationPreference[]
+  devices                 MemberDevice[]
 
   @@unique([email], map: "uq_users__email")
   @@unique([phone], map: "uq_users__phone")

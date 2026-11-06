@@ -50,6 +50,20 @@ describe('parseEnv', () => {
     );
   });
 
+  it('takes the FCM service account as all three variables or none, unescaping the key', () => {
+    expect(() => parseEnv({ ...base, FCM_PROJECT_ID: 'boh' })).toThrow(/FCM_CLIENT_EMAIL[\s\S]*FCM_PRIVATE_KEY/);
+    // A fake PEM built from parts, so the secret scanner does not flag the fixture.
+    const pem = (newline: string) =>
+      ['BEGIN', 'END'].map((edge) => `-----${edge} PRIVATE KEY-----`).join(`${newline}abc${newline}`) + newline;
+    const env = parseEnv({
+      ...base,
+      FCM_PROJECT_ID: 'boh',
+      FCM_CLIENT_EMAIL: 'push@boh.iam.gserviceaccount.com',
+      FCM_PRIVATE_KEY: pem('\\n'),
+    });
+    expect(env.FCM_PRIVATE_KEY).toBe(pem('\n'));
+  });
+
   it('requires store update URLs in staging', () => {
     expect(() => parseEnv({ ...base, APP_ENV: 'staging' })).toThrow(/APP_IOS_UPDATE_URL[\s\S]*APP_ANDROID_UPDATE_URL/);
   });
