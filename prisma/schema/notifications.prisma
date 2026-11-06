@@ -1,0 +1,111 @@
+// Module: notifications (nest-module-map.md §4.12). A leaf consumer: rows are written only
+// by outbox handlers (module-dependency-map.md C-8). Text is not stored; templates are
+// rendered in the recipient's language at send time (and at read time for the feed, 3b).
+
+enum NotificationChannel {
+  PUSH
+  EMAIL
+
+  @@map("notification_channel")
+  @@schema("app")
+}
+
+enum DeliveryStatus {
+  QUEUED
+  SENT
+  FAILED
+  SKIPPED
+
+  @@map("delivery_status")
+  @@schema("app")
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+
+  @@map("device_platform")
+  @@schema("app")
+}
+
+/// An in-app notification and the parent of its push and email deliveries. One per
+/// (source event, recipient, type): a redelivered event never notifies twice
+/// (domain-events.md §2 consumer idempotency).
+model Notification {
+  id              String                 @id @default(uuid(7)) @db.Uuid
+  recipientUserId String                 @map("recipient_user_id") @db.Uuid
+  /// Catalog code (src/modules/notifications/domain/catalog.ts), e.g. `account.password_changed`.
+  type            String
+  sourceEventId   String                 @map("source_event_id") @db.Uuid
+  /// Template variables: ids and minimal facts, never contact details.
+  payload         Json                   @default("{}") @db.JsonB
+  targetType      String?                @map("target_type")
+  targetId        String?                @map("target_id")
+  readAt          DateTime?              @map("read_at") @db.Timestamptz(6)
+  createdAt       DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  recipient       User                   @relation(fields: [recipientUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_notifications__recipient_user_id")
+  deliveries      NotificationDelivery[]
+
+  @@unique([sourceEventId, recipientUserId, type], map: "uq_notifications__source_event_recipient_type")
+  @@index([recipientUserId, readAt, createdAt(sort: Desc)], map: "ix_notifications__recipient_read_created")
+  @@map("notifications")
+  @@schema("app")
+}
+
+/// One push or email send for a notification. QUEUED rows are sent by the handler that
+/// created them and retried by the `notifications.deliver` job; a push due inside quiet
+/// hours waits in QUEUED until `next_attempt_at`. Destinations are stored masked only.
+model NotificationDelivery {
+  id                String              @id @default(uuid(7)) @db.Uuid
+  notificationId    String              @map("notification_id") @db.Uuid
+  channel           NotificationChannel
+  status            DeliveryStatus      @default(QUEUED)
+  attempts          Int                 @default(0)
+  nextAttemptAt     DateTime            @default(now()) @map("next_attempt_at") @db.Timestamptz(6)
+  provider          String?
+  providerMessageId String?             @map("provider_message_id")
+  destinationMasked String?             @map("destination_masked")
+  lastError         String?             @map("last_error")
+  sentAt            DateTime?           @map("sent_at") @db.Timestamptz(6)
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  notification      Notification        @relation(fields: [notificationId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_notification_deliveries__notification_id")
+
+  @@unique([notificationId, channel], map: "uq_notification_deliveries__notification_channel")
+  @@index([status, nextAttemptAt], map: "ix_notification_deliveries__status_next_attempt_at")
+  @@map("notification_deliveries")
+  @@schema("app")
+}
+
+/// A member's choice for one notification type and channel. No row means the catalog
+/// default (on). Mandatory types (security) ignore a disabled row (service rule).
+model NotificationPreference {
+  userId           String              @map("user_id") @db.Uuid
+  notificationType String              @map("notification_type")
+  channel          NotificationChannel
+  enabled          Boolean
+  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_notification_preferences__user_id")
+
+  @@id([userId, notificationType, channel], map: "notification_preferences_pkey")
+  @@map("notification_preferences")
+  @@schema("app")
+}
+
+/// An FCM registration token of a member's phone. A token belongs to one member at a
+/// time (signing in as someone else on the same phone moves it). Tokens FCM reports as
+/// unregistered are deleted.
+model MemberDevice {
+  id         String         @id @default(uuid(7)) @db.Uuid
+  userId     String         @map("user_id") @db.Uuid
+  token      String
+  platform   DevicePlatform
+  lastSeenAt DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz(6)
+  createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_member_devices__user_id")
+
+  @@unique([token], map: "uq_member_devices__token")
+  @@index([userId], map: "ix_member_devices__user_id")
+  @@map("member_devices")
+  @@schema("app")
+}

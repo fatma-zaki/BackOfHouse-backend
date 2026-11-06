@@ -4,6 +4,7 @@ import { CLOCK } from '../../src/common/clock/clock';
 import { ConfigModule } from '../../src/config/config.module';
 import { DatabaseModule } from '../../src/platform/database/database.module';
 import { ClockModule } from '../../src/platform/clock/clock.module';
+import { OutboxModule } from '../../src/platform/outbox';
 import { AuditModule } from '../../src/modules/audit/audit.module';
 import {
   ActivityService,
@@ -40,7 +41,7 @@ describe('Member identity (real Postgres)', () => {
     applyTestEnv();
     clock = new FakeClock();
     moduleRef = await Test.createTestingModule({
-      imports: [ConfigModule, ClockModule, DatabaseModule, AuditModule, IdentityModule],
+      imports: [ConfigModule, ClockModule, DatabaseModule, OutboxModule, AuditModule, IdentityModule],
     })
       .overrideProvider(CLOCK)
       .useValue(clock)

@@ -33,6 +33,13 @@ module.exports = {
       from: { path: '^src/modules/[^/]+/domain/' },
       to: { path: '(@nestjs|generated/prisma|@prisma)' },
     },
+    {
+      name: 'notifications-is-a-leaf',
+      comment: 'Business modules reach notifications only through outbox events (module-dependency-map.md C-8)',
+      severity: 'error',
+      from: { path: '^src/modules/', pathNot: '^src/modules/notifications/' },
+      to: { path: '^src/modules/notifications/' },
+    },
     // ── API surfaces (ADR-031, execution-plan.md §1.5) ──────────────────────
     {
       name: 'app-surface-not-admin',
@@ -70,7 +77,12 @@ module.exports = {
       to: { path: '^src/surfaces/' },
     },
     { name: 'no-legacy', severity: 'error', from: { path: '^src/' }, to: { path: '^legacy/' } },
-    { name: 'no-test-code-in-src', severity: 'error', from: { path: '^src/', pathNot: '\.spec\.ts$' }, to: { path: '^test/' } },
+    {
+      name: 'no-test-code-in-src',
+      severity: 'error',
+      from: { path: '^src/', pathNot: '\.spec\.ts$' },
+      to: { path: '^test/' },
+    },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },

@@ -2,6 +2,7 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { CLOCK, Clock } from '../../../common/clock/clock';
 import type { Actor } from '../../../common/context/actor';
+import { RequestContext } from '../../../common/context/request-context';
 import {
   ConflictError,
   DomainError,
@@ -12,6 +13,7 @@ import {
 } from '../../../common/errors';
 import { Prisma } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner, Tx } from '../../../platform/database';
+import { OutboxWriter } from '../../../platform/outbox';
 import { AuditActorType, AuditLogger } from '../../audit';
 import { normalizePhone } from '../domain/phone-code';
 import { AuthTokens, MEMBER_AUTH_PROVIDER, MemberAuthProvider } from '../infrastructure/member-auth-provider';
@@ -107,6 +109,7 @@ export class MemberAuthService {
     private readonly prisma: PrismaService,
     private readonly transactions: TransactionRunner,
     private readonly audit: AuditLogger,
+    private readonly outbox: OutboxWriter,
     @Inject(MEMBER_AUTH_PROVIDER) private readonly provider: MemberAuthProvider,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
@@ -135,6 +138,7 @@ export class MemberAuthService {
             email: data.email,
             phone: data.phone,
             profileStatus: data.account_type === 'INDIVIDUAL' ? (data.profile_status ?? 'PROFESSIONAL') : null,
+            locale: RequestContext.locale(),
           },
         });
         await onRegistered?.(tx, { id: created.userId }, data);
@@ -144,6 +148,13 @@ export class MemberAuthService {
           entityType: 'user',
           entityId: created.userId,
           changes: { after: { account_type: data.account_type } },
+        });
+        await this.outbox.emit({
+          name: 'user.registered',
+          aggregateType: 'user',
+          aggregateId: created.userId,
+          actor: { type: 'USER', user_id: created.userId },
+          data: { user_id: created.userId, channel: 'email' },
         });
       });
     } catch (error) {
@@ -183,6 +194,7 @@ export class MemberAuthService {
       await this.provider.signOut(tokens.accessToken);
       throw new UnauthenticatedError();
     }
+    await this.prisma.user.updateMany({ where: { id: tokens.userId }, data: { locale: RequestContext.locale() } });
     return tokens;
   }
 
@@ -203,7 +215,10 @@ export class MemberAuthService {
     if (user?.status === 'ACTIVE') await this.provider.sendPasswordReset(data.email);
   }
 
-  /** Sets a new password from the emailed link and ends every session (security-and-audit §2). */
+  /**
+   * Sets a new password from the emailed link and ends every session (security-and-audit
+   * §2). `user.password.changed` sends the member a security alert.
+   */
   async resetPassword(input: unknown): Promise<void> {
     const data = parse(resetSchema, input);
     const result = await this.provider.resetPassword(data.token, data.password);
@@ -215,6 +230,13 @@ export class MemberAuthService {
         action: 'user.password.reset',
         entityType: 'user',
         entityId: result.userId,
+      });
+      await this.outbox.emit({
+        name: 'user.password.changed',
+        aggregateType: 'user',
+        aggregateId: result.userId,
+        actor: { type: 'USER', user_id: result.userId },
+        data: { user_id: result.userId },
       });
     });
   }
@@ -280,7 +302,11 @@ export class MemberAuthService {
     }
   }
 
+  /** Records the sign-in and the request language, which notifications are sent in. */
   private async touchSignIn(userId: string): Promise<void> {
-    await this.prisma.user.updateMany({ where: { id: userId }, data: { lastSignInAt: this.clock.now() } });
+    await this.prisma.user.updateMany({
+      where: { id: userId },
+      data: { lastSignInAt: this.clock.now(), locale: RequestContext.locale() },
+    });
   }
 }
