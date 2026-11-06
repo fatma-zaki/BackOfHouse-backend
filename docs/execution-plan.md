@@ -522,7 +522,17 @@ No feature code.
 >   - BQ-82: the contract signs in at registration, so the email is not confirmed first;
 >   - BQ-83: who gets `CREATE_SUPPLIER_REQUEST` (`capabilities` is `[]` for now).
 >
-> **Still open:** notification delivery (2C); the consent records (PDPL, D10) wait for a contract field and the hosting decision; `PATCH /me/preferences` and `PUT /me/devices` are not in `contracts/app` yet (README §8 question 3). Hosting is deferred while in development (open-questions.md §0, 2026-10-29).
+> **2C, notification delivery: built on branch `phase-2c-notifications` (2026-11-06).**
+> - **Tables:** `notifications` (unique per source event, recipient and type, so a redelivered event notifies once), `notification_deliveries` (PUSH/EMAIL, QUEUED/SENT/FAILED/SKIPPED, masked destination), `notification_preferences`, `member_devices` (FCM tokens), and `users.locale` (the request language at the last sign-in or refresh).
+> - **Catalog** (`modules/notifications/domain/catalog.ts`): type, category, channels, mandatory, quiet hours, and `{{name}}` templates in Arabic and English, checked by a unit test. First type: `account.password_changed`, fed by the new event `user.password.changed`.
+> - **Senders:** FCM HTTP v1 (service account signed with node:crypto) behind `PUSH_SENDER`; `EMAIL_SENDER` with a dev sender until **TQ-30** picks a provider. In staging and production an unconfigured channel is SKIPPED with an alert log.
+> - **Quiet hours:** `common/time/quiet-hours.ts`, from settings `push_quiet_hours`; a push inside the window waits until it ends, email never waits.
+> - **Delivery:** sent right after the handler commits, then by the `notifications.deliver` job each minute: leased rows (SKIP LOCKED), 5 tries with backoff, unregistered tokens deleted.
+> - **Boundaries:** dependency-cruiser rule `notifications-is-a-leaf`. The worker now imports `IdentityModule` (its `identity.purge` job was not running there) and `NotificationsModule`.
+> - **Exit test:** `test/integration/notifications.int-spec.ts`.
+> - **New questions:** TQ-30 (email provider), BQ-84 (devices and preferences routes for the Flutter contract).
+>
+> **Still open:** the consent records (PDPL, D10) wait for a contract field and the hosting decision; `PATCH /me/preferences` and `PUT /me/devices` are not in `contracts/app` yet (README §8 question 3). Hosting is deferred while in development (open-questions.md §0, 2026-10-29).
 
 **Domain**
 - `identity`: `users`, account type, suspension, **consent records** (purpose, version, timestamp; PDPL, D10).

@@ -296,6 +296,8 @@ Anything beyond these columns must go through the owning module's query service.
 
 `notifications` imports only `identity` and `access` (to resolve recipients). Every producer reaches it **only through events**. If a module ever calls `NotificationsService` directly, a cycle risk appears. That is forbidden by lint (`notifications` is not exported for business modules).
 
+*Built (Phase 2C, 2026-11-06):* `notifications` imports `identity` (recipient contact and language) and `settings` (`push_quiet_hours`); the dependency-cruiser rule `notifications-is-a-leaf` fails the build when any other module imports it.
+
 ### C-9 · `moderation` ⟷ modules it acts on
 
 `moderation` reads targets (moderation → organizations, projects, …). Corrective actions are done by the owning modules, either through admin endpoints or by consuming `appeal.upheld` / `abuse_report.resolved`. Moderation never calls a mutating service of a module above or beside it.
