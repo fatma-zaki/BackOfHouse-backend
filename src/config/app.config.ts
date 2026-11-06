@@ -54,6 +54,9 @@ export class AppConfig {
   /** Member sign-in (ADR-003 amended). */
   readonly memberAuth: { passwordResetUrl?: string };
 
+  /** Push through FCM, or null (faked in local and test, skipped elsewhere). */
+  readonly notifications: { fcm: { projectId: string; clientEmail: string; privateKey: string } | null };
+
   readonly storage: {
     publicBucket: string;
     privateBucket: string;
@@ -115,6 +118,12 @@ export class AppConfig {
       secretKey: env.SUPABASE_SECRET_KEY,
     };
     this.memberAuth = { passwordResetUrl: env.MEMBER_PASSWORD_RESET_URL };
+    this.notifications = {
+      fcm:
+        env.FCM_PROJECT_ID && env.FCM_CLIENT_EMAIL && env.FCM_PRIVATE_KEY
+          ? { projectId: env.FCM_PROJECT_ID, clientEmail: env.FCM_CLIENT_EMAIL, privateKey: env.FCM_PRIVATE_KEY }
+          : null,
+    };
     this.storage = {
       publicBucket: env.STORAGE_BUCKET_PUBLIC,
       privateBucket: env.STORAGE_BUCKET_PRIVATE,

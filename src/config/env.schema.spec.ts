@@ -50,6 +50,17 @@ describe('parseEnv', () => {
     );
   });
 
+  it('takes the FCM service account as all three variables or none, unescaping the key', () => {
+    expect(() => parseEnv({ ...base, FCM_PROJECT_ID: 'boh' })).toThrow(/FCM_CLIENT_EMAIL[\s\S]*FCM_PRIVATE_KEY/);
+    const env = parseEnv({
+      ...base,
+      FCM_PROJECT_ID: 'boh',
+      FCM_CLIENT_EMAIL: 'push@boh.iam.gserviceaccount.com',
+      FCM_PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----\\n',
+    });
+    expect(env.FCM_PRIVATE_KEY).toBe('-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n');
+  });
+
   it('requires store update URLs in staging', () => {
     expect(() => parseEnv({ ...base, APP_ENV: 'staging' })).toThrow(/APP_IOS_UPDATE_URL[\s\S]*APP_ANDROID_UPDATE_URL/);
   });
