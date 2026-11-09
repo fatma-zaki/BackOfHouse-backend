@@ -589,6 +589,17 @@ No feature code.
 
 ### Phase 3a · Profiles, companies, A–Z index, follows
 
+> **Progress (2026-11-09): built on branch `phase-3a-profiles`.** All 17 Phase 3a operations of `contracts/app`; `contracts/phase.json` = `3a`.
+> - **Profiles** (new module): `profiles` (headline, city, about, interests, contact sharing, availability, field) created on the first edit; name and profile status stay on `users`. `contact-visibility.policy.ts`: email and phone are private by default and reach a company only when shared and from the CONTACT stage (Phase 5 supplies the stage).
+> - **Professionals:** directory of active individuals (filters PRODUCERS, DESIGNERS, TECHNICAL, STUDENTS), one-sided connections (BQ-85).
+> - **Companies:** profile columns on `companies`, `company_follows` with `followers_count` in the same transaction, `company_projects`, `company_profile_views` (one per viewer per Riyadh day; `/company/stats` counts 30 days against the previous 30). Listing and applicant counts are 0 until Phase 5.
+> - **Account context:** `AppAccountGuard` with `@IndividualsOnly()` / `@CompanyAccountOnly(permission)`, and the same checks in the services. The wrong account type gets 403 `FORBIDDEN`, as the Flutter contract says (D3), not `WRONG_ACCOUNT_CONTEXT`; a missing company permission gets 403 `PERMISSION_DENIED`.
+> - **Arabic A–Z:** `users.full_name_normalized` and `companies.name_normalized` (app.normalize_ar rules) with GIN trigram indexes; names sort with `ar-x-icu` / `en-x-icu` by request language. The letter rail has no contract field (BQ-87).
+> - **Exit tests built:** `test/integration/contact-privacy.int-spec.ts`, `test/e2e/app/company-context.e2e-spec.ts` (403 `FORBIDDEN` instead of `WRONG_ACCOUNT_CONTEXT`), `test/integration/arabic-index.int-spec.ts` (53 real names). `test/e2e/app/directory.e2e-spec.ts` also checks every response body against `contracts/app` (ajv, `test/support/contract.ts`).
+> - **Not built:** the k6 load test (needs a hosted environment, D10), `/search` (no operation in `contracts/app` yet), saved items (later phases).
+> - **New questions:** BQ-85 (profile content editing, connection acceptance), BQ-86 (which companies the directory lists), BQ-87 (letter rail).
+
+
 **Domain**
 - `profiles`:
   - contact sharing, private by default (`contact-visibility.policy.ts`);

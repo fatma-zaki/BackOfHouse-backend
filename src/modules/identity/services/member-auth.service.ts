@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { CLOCK, Clock } from '../../../common/clock/clock';
 import type { Actor } from '../../../common/context/actor';
 import { RequestContext } from '../../../common/context/request-context';
+import { normalizeArabic } from '../../../common/text';
 import {
   ConflictError,
   DomainError,
@@ -135,6 +136,7 @@ export class MemberAuthService {
             id: created.userId,
             accountType: data.account_type,
             fullName: data.full_name,
+            fullNameNormalized: normalizeArabic(data.full_name),
             email: data.email,
             phone: data.phone,
             profileStatus: data.account_type === 'INDIVIDUAL' ? (data.profile_status ?? 'PROFESSIONAL') : null,

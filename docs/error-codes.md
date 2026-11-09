@@ -39,8 +39,8 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 | `INVALID_CREDENTIALS` | 401 | app | Wrong email or password | built |
 | `INVALID_CODE` | 422 | app | Wrong or expired SMS code (BQ-78) | built |
 | `EMAIL_TAKEN` / `PHONE_TAKEN` | 409 | app | Registering with an identifier in use | built |
-| `WRONG_ACCOUNT_CONTEXT` | 403 | app | Individual token on a company route, or the reverse (ADR-029) | 2 |
-| `PERMISSION_DENIED` | 403 | app | Company Account lacks a company permission | 2 |
+| `WRONG_ACCOUNT_CONTEXT` | 403 | app | ⛔ **Not used (2026-11-07, D3):** the Flutter contract answers the wrong account type with `FORBIDDEN` (docs/app/README.md §2 "Who may call what") and has no such code | — |
+| `PERMISSION_DENIED` | 403 | app | Company Account lacks a company permission (`EDIT_PROFILE`, `MANAGE_PROJECTS`, …) | built |
 | `NOT_STAFF` | 403 | admin | Google account outside the Workspace domain, or without an active `staff_accounts` row (ADR-032) | built |
 | `CSRF_TOKEN_INVALID` | 403 | admin | A POST/PUT/PATCH/DELETE without a matching `X-CSRF-Token` header (ADR-032) | built |
 | `STAFF_ALREADY_EXISTS` | 409 | admin | Inviting an email that already has a staff account | built |

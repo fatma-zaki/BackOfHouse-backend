@@ -35,4 +35,6 @@ export enum ErrorCode {
   INVALID_CODE = 'INVALID_CODE',
   EMAIL_TAKEN = 'EMAIL_TAKEN',
   PHONE_TAKEN = 'PHONE_TAKEN',
+  // Company workspace (contracts/app, ADR-030)
+  PERMISSION_DENIED = 'PERMISSION_DENIED',
 }

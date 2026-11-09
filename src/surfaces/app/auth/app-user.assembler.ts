@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CompaniesService, CompanyMembershipView } from '../../../modules/companies';
 import { AuthTokens, MembersService } from '../../../modules/identity';
+import { ProfilesService } from '../../../modules/profiles';
 
 /** contracts/app `AppUser`. */
 export interface AppUserDto {
@@ -26,14 +27,15 @@ export interface SessionDto {
 
 /**
  * Builds `AppUser` from identity (the account) and companies (the membership).
- * Headline and avatar arrive with profiles (Phase 3a); individual verification with
- * Phase 3b. A Company Account shows its company's verification.
+ * The headline comes from the profile; the avatar with uploads (1B); individual
+ * verification with Phase 3b/4. A Company Account shows its company's verification.
  */
 @Injectable()
 export class AppUserAssembler {
   constructor(
     private readonly members: MembersService,
     private readonly companies: CompaniesService,
+    private readonly profiles: ProfilesService,
   ) {}
 
   async user(userId: string): Promise<AppUserDto> {
@@ -46,7 +48,7 @@ export class AppUserAssembler {
       phone: member.phone,
       account_type: member.accountType,
       profile_status: member.accountType === 'INDIVIDUAL' ? member.profileStatus : null,
-      headline: null,
+      headline: member.accountType === 'INDIVIDUAL' ? await this.profiles.headlineOf(userId) : null,
       avatar_url: null,
       is_verified: membership?.company.is_verified ?? false,
       membership,

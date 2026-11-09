@@ -1,0 +1,76 @@
+// Module: profiles (nest-module-map.md). An individual's public profile and connections.
+// The name and profile status live on users (identity); everything else here. The row is
+// created on the first edit; until then the profile shows its defaults.
+
+enum Availability {
+  AVAILABLE
+  IN_PRODUCTION
+  FULLY_BOOKED
+
+  @@map("availability")
+  @@schema("app")
+}
+
+enum ProfessionalField {
+  PRODUCTION
+  DESIGN
+  TECHNICAL
+  OTHER
+
+  @@map("professional_field")
+  @@schema("app")
+}
+
+enum ProfileInterest {
+  TECH_INNOVATION
+  MARKETING
+  DESIGN
+  BUSINESS
+  NETWORKING
+  PRODUCTION
+
+  @@map("profile_interest")
+  @@schema("app")
+}
+
+/// An individual's profile (contracts/app `Profile`). Contact sharing is private by
+/// default (contact-visibility.policy.ts): companies see email or phone only when shared,
+/// and only from the CONTACT stage of an application (Phase 5).
+model Profile {
+  userId            String            @id @map("user_id") @db.Uuid
+  headline          String            @default("")
+  city              String            @default("")
+  about             String            @default("")
+  industry          String?
+  /// Current employer, display only.
+  currentCompany    String?           @map("current_company")
+  availability      Availability      @default(AVAILABLE)
+  /// Free text shown on the profile, e.g. "Available for Q3/Q4 cultural projects".
+  availabilityNote  String?           @map("availability_note")
+  professionalField ProfessionalField @default(OTHER) @map("professional_field")
+  interests         ProfileInterest[] @default([])
+  shareEmail        Boolean           @default(false) @map("share_email")
+  sharePhone        Boolean           @default(false) @map("share_phone")
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_profiles__user_id")
+
+  @@index([professionalField], map: "ix_profiles__professional_field")
+  @@map("profiles")
+  @@schema("app")
+}
+
+/// "Connect" from one individual to another (contracts/app PUT /professionals/{id}/connection).
+/// One-sided until acceptance is decided (BQ-85).
+model ProfessionalConnection {
+  requesterUserId String   @map("requester_user_id") @db.Uuid
+  targetUserId    String   @map("target_user_id") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  requester       User     @relation("ConnectionsMade", fields: [requesterUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_professional_connections__requester_user_id")
+  target          User     @relation("ConnectionsReceived", fields: [targetUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_professional_connections__target_user_id")
+
+  @@id([requesterUserId, targetUserId], map: "professional_connections_pkey")
+  @@index([targetUserId], map: "ix_professional_connections__target_user_id")
+  @@map("professional_connections")
+  @@schema("app")
+}
