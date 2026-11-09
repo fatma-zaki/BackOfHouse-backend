@@ -589,7 +589,7 @@ No feature code.
 
 ### Phase 3a · Profiles, companies, A–Z index, follows
 
-> **Progress (2026-11-09): built on branch `phase-3a-profiles`.** All 17 Phase 3a operations of `contracts/app`; `contracts/phase.json` = `3a`.
+> **Progress (2026-11-09): built on branch `phase-3a-profiles`.** All Phase 3a operations of `contracts/app`; `contracts/phase.json` = `3a`.
 > - **Profiles** (new module): `profiles` (headline, city, about, interests, contact sharing, availability, field) created on the first edit; name and profile status stay on `users`. `contact-visibility.policy.ts`: email and phone are private by default and reach a company only when shared and from the CONTACT stage (Phase 5 supplies the stage).
 > - **Professionals:** directory of active individuals (filters PRODUCERS, DESIGNERS, TECHNICAL, STUDENTS), one-sided connections (BQ-85).
 > - **Companies:** profile columns on `companies`, `company_follows` with `followers_count` in the same transaction, `company_projects`, `company_profile_views` (one per viewer per Riyadh day; `/company/stats` counts 30 days against the previous 30). Listing and applicant counts are 0 until Phase 5.
@@ -598,6 +598,8 @@ No feature code.
 > - **Exit tests built:** `test/integration/contact-privacy.int-spec.ts`, `test/e2e/app/company-context.e2e-spec.ts` (403 `FORBIDDEN` instead of `WRONG_ACCOUNT_CONTEXT`), `test/integration/arabic-index.int-spec.ts` (53 real names). `test/e2e/app/directory.e2e-spec.ts` also checks every response body against `contracts/app` (ajv, `test/support/contract.ts`).
 > - **Not built:** the k6 load test (needs a hosted environment, D10), `/search` (no operation in `contracts/app` yet), saved items (later phases).
 > - **New questions:** BQ-85 (profile content editing, connection acceptance), BQ-86 (which companies the directory lists), BQ-87 (letter rail).
+>
+> **Follow-up (2026-11-09), branch `phase-3a-profile-content`:** profile projects (`profile_projects`, at most 50, year 1950 to next year) and skills (`profile_skills`, from the taxonomy `crafts`, at most 30, in the member's order) with `POST/PATCH/DELETE /me/projects` and `PUT /me/skills`, added to `contracts/app` (21 Phase 3a operations). BQ-85 keeps experience entries and connection acceptance open.
 
 
 **Domain**
@@ -883,7 +885,7 @@ OK: every operation maps to exactly one phase
 |---|---|---|
 | 0 | 2 | `GET /ping`, `GET /meta/app-version` |
 | 2 | 9 | `POST /auth/register`, `POST /auth/login`, `POST /auth/phone/code`, `POST /auth/phone/verify`, `POST /auth/refresh`, `POST /auth/logout`, `POST /auth/forgot-password`, `POST /auth/reset-password`, `GET /me` |
-| 3a | 17 | `GET /me/profile`, `PATCH /me/profile`, `GET /companies`, `GET /companies/{id}`, `PUT /companies/{id}/follow`, `DELETE /companies/{id}/follow`, `GET /companies/{id}/projects`, `GET /professionals`, `PUT /professionals/{id}/connection`, `DELETE /professionals/{id}/connection`, `GET /company`, `PATCH /company`, `GET /company/stats`, `GET /company/projects`, `POST /company/projects`, `PATCH /company/projects/{id}`, `DELETE /company/projects/{id}` |
+| 3a | 21 | `GET /me/profile`, `PATCH /me/profile`, `POST /me/projects`, `PATCH /me/projects/{id}`, `DELETE /me/projects/{id}`, `PUT /me/skills`, `GET /companies`, `GET /companies/{id}`, `PUT /companies/{id}/follow`, `DELETE /companies/{id}/follow`, `GET /companies/{id}/projects`, `GET /professionals`, `PUT /professionals/{id}/connection`, `DELETE /professionals/{id}/connection`, `GET /company`, `PATCH /company`, `GET /company/stats`, `GET /company/projects`, `POST /company/projects`, `PATCH /company/projects/{id}`, `DELETE /company/projects/{id}` |
 | 3b | 6 | `GET /me/verification`, `POST /me/verification/documents`, `POST /me/verification/submit`, `GET /me/notifications`, `POST /me/notifications/{id}/read`, `POST /me/notifications/read-all` |
 | 5 | 27 | `GET /me/applications`, `POST /me/applications`, `POST /me/applications/{id}/withdraw`, `GET /opportunities`, `GET /opportunities/{id}`, `GET /companies/{id}/opportunities`, `GET /company/opportunities`, `POST /company/opportunities`, `GET /company/opportunities/{id}`, `PATCH /company/opportunities/{id}`, `POST /company/opportunities/{id}/submit`, `POST /company/opportunities/{id}/return-to-draft`, `POST /company/opportunities/{id}/close`, `POST /company/opportunities/{id}/revision`, `PATCH /company/opportunities/{id}/revision`, `POST /company/opportunities/{id}/revision/submit`, `GET /company/opportunities/{id}/applicants`, `GET /company/applicants/recent`, `GET /company/applicants/{id}`, `POST /company/applicants/{id}/status`, `GET /company/supplier-requests/invited`, `GET /company/supplier-requests/{id}`, `GET /company/supplier-requests/{id}/responses`, `GET /company/supplier-responses`, `POST /company/supplier-responses`, `GET /company/supplier-responses/{id}`, `POST /company/supplier-responses/{id}/status` |
 | 6 | 10 | `GET /me/points`, `GET /me/points/transactions`, `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
