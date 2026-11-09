@@ -21,6 +21,8 @@ export const APP_TABLES = [
   'app.company_projects',
   'app.company_follows',
   'app.professional_connections',
+  'app.profile_skills',
+  'app.profile_projects',
   'app.profiles',
   'app.companies',
   'app.phone_sign_in_codes',

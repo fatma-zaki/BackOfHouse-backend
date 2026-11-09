@@ -1,6 +1,6 @@
 // Public API of the profiles module (nest-module-map.md §2.1 rule 1).
 export { ProfilesModule } from './profiles.module';
-export { ProfilesService, type ProfileView } from './services/profiles.service';
+export { ProfilesService, type ProfileProjectView, type ProfileView } from './services/profiles.service';
 export {
   ProfessionalsService,
   type ProfessionalListQuery,
