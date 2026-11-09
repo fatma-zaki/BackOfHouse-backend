@@ -337,6 +337,9 @@ response schemas are in `contracts/app/openapi.yaml`.
 | Method | Path | Purpose |
 |---|---|---|
 | GET, PATCH | `/me/profile` | Profile / edit |
+| POST | `/me/projects` | Add a profile project (added 2026-11-09) |
+| PATCH, DELETE | `/me/projects/{id}` | Edit / delete a profile project |
+| PUT | `/me/skills` | Replace the profile's skills (`crafts` ids from `/meta/taxonomy`) |
 | GET | `/me/verification` | Verification request |
 | POST | `/me/verification/documents` | Upload `IDENTITY` or `EXPERIENCE` (multipart) |
 | POST | `/me/verification/submit` | Send for review |
@@ -442,7 +445,10 @@ and the app will start using them without any contract change.
 
 ## 9. Open questions for the backend team
 
-1. **Profile content editing:** the app edits name, headline, city, about,
+1. ✅ **Partly answered 2026-11-09:** projects and skills are entered in the app
+   with `POST/PATCH/DELETE /me/projects` and `PUT /me/skills` (skills are
+   picked from `crafts` in `/meta/taxonomy`). Experience entries are still
+   open (BQ-85). *Original:* **Profile content editing:** the app edits name, headline, city, about,
    status, interests and privacy. Experience, skills and portfolio projects
    are read-only today. Where are they entered: the website, or new
    `/me/experience` and `/me/projects` endpoints?

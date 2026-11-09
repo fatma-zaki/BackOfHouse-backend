@@ -338,6 +338,90 @@ paths:
                   data: { $ref: '#/components/schemas/Profile' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
 
+  /me/projects:
+    post:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Add a project to the profile portfolio
+      description: |
+        Added 2026-11-09 (BQ-85). At most 50 projects per profile. The profile
+        lists them newest year first. Images arrive with uploads.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileProjectInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ProfileProject' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me/projects/{id}:
+    patch:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Edit a profile project
+      description: Send the whole project. Another member's project answers 404.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileProjectInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/ProfileProject' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+    delete:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Delete a profile project
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /me/skills:
+    put:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Replace the profile's skills
+      description: |
+        Added 2026-11-09 (BQ-85). `skill_ids` are `crafts` ids from
+        `GET /meta/taxonomy`, in the order to show them; at most 30. Send the
+        whole list (an empty list clears it). `Profile.skills` returns their
+        names in the request language. The response is the whole profile.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileSkillsUpdate' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Profile' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
   /me/verification:
     get:
       x-phase: '3b'
@@ -2057,6 +2141,24 @@ components:
         title: { type: string }
         role: { type: string, example: Lead Producer · 120k attendees }
         image_url: { $ref: '#/components/schemas/ImageUrl' }
+    ProfileProjectInput:
+      type: object
+      required: [year, category, title, role]
+      properties:
+        year: { type: integer, minimum: 1950, description: 'Not after next year' }
+        category: { type: string, minLength: 1, maxLength: 100, example: Concerts }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        role: { type: string, minLength: 1, maxLength: 200, example: Lead Producer · 120k attendees }
+    ProfileSkillsUpdate:
+      type: object
+      required: [skill_ids]
+      properties:
+        skill_ids:
+          type: array
+          uniqueItems: true
+          maxItems: 30
+          items: { type: string }
+          description: '`crafts` ids from GET /meta/taxonomy'
     ProfileBadge:
       type: object
       required: [title, issuer]

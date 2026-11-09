@@ -55,6 +55,8 @@ model User {
   notificationPreferences NotificationPreference[]
   devices                 MemberDevice[]
   profile                 Profile?
+  profileProjects         ProfileProject[]
+  profileSkills           ProfileSkill[]
   connectionsMade         ProfessionalConnection[] @relation("ConnectionsMade")
   connectionsReceived     ProfessionalConnection[] @relation("ConnectionsReceived")
   companyFollows          CompanyFollow[]

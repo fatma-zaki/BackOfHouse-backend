@@ -74,3 +74,36 @@ model ProfessionalConnection {
   @@map("professional_connections")
   @@schema("app")
 }
+
+/// An individual's own work shown on the profile (contracts/app `ProfileProject`), not a
+/// CompanyProject. At most 50 per member (service rule).
+model ProfileProject {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  year      Int
+  category  String
+  title     String
+  role      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_profile_projects__user_id")
+
+  @@index([userId, year(sort: Desc)], map: "ix_profile_projects__user_year")
+  @@map("profile_projects")
+  @@schema("app")
+}
+
+/// A member's skills, from the taxonomy (admin kind `crafts`), in display order. Replaced as
+/// a whole by PUT /me/skills. A skill staff deactivate stays on profiles that have it.
+model ProfileSkill {
+  userId    String @map("user_id") @db.Uuid
+  skillId   String @map("skill_id") @db.Uuid
+  sortOrder Int    @map("sort_order")
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_profile_skills__user_id")
+  skill     Skill  @relation(fields: [skillId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_profile_skills__skill_id")
+
+  @@id([userId, skillId], map: "profile_skills_pkey")
+  @@index([skillId], map: "ix_profile_skills__skill_id")
+  @@map("profile_skills")
+  @@schema("app")
+}

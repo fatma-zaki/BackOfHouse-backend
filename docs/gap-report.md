@@ -7,14 +7,14 @@
 
 An operation is **implemented** when the spec generated from code (`npm run contract:generate`) contains it.
 
-### App surface (`/api/app/v1`): 29 of 82 implemented
+### App surface (`/api/app/v1`): 33 of 86 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
 | 0 | 2 | 2 | — |
 | 1 | 1 | 1 | — |
 | 2 | 9 | 9 | — |
-| 3a | 17 | 17 | — |
+| 3a | 21 | 21 | — |
 | 3b | 6 | 0 | `GET /me/verification`, `POST /me/verification/documents`, `POST /me/verification/submit`, `GET /me/notifications`, `POST /me/notifications/{id}/read`, `POST /me/notifications/read-all` |
 | 5 | 27 | 0 | 27 operations |
 | 6 | 10 | 0 | `GET /me/points`, `GET /me/points/transactions`, `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |

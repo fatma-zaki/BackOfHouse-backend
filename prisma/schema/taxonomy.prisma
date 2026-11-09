@@ -34,14 +34,15 @@ model Location {
 
 /// Skills (admin kind `crafts`): the controlled vocabulary for profiles and opportunities.
 model Skill {
-  id        String   @id @default(uuid(7)) @db.Uuid
+  id        String         @id @default(uuid(7)) @db.Uuid
   slug      String
-  nameEn    String   @map("name_en")
-  nameAr    String   @map("name_ar")
-  sortOrder Int      @default(0) @map("sort_order")
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  nameEn    String         @map("name_en")
+  nameAr    String         @map("name_ar")
+  sortOrder Int            @default(0) @map("sort_order")
+  isActive  Boolean        @default(true) @map("is_active")
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  profiles  ProfileSkill[]
 
   @@unique([slug], map: "uq_skills__slug")
   @@map("skills")

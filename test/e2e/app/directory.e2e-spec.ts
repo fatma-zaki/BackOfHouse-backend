@@ -94,6 +94,105 @@ describe('Profiles and directories (e2e)', () => {
     });
   });
 
+  describe('/me/projects', () => {
+    const project = { year: 2025, category: 'Concerts', title: 'MDLBEAST Soundstorm', role: 'Stage manager' };
+
+    it('adds, edits and deletes projects, which the profile lists newest year first', async () => {
+      const created = await appRequest(app, 'post', '/me/projects', sara).send(project);
+      expectContract(created, 'post', '/me/projects', 201);
+      expect(created.body.data).toEqual({ id: expect.any(String), ...project, image_url: null });
+      const older = await appRequest(app, 'post', '/me/projects', sara).send({ ...project, year: 2019, title: 'Expo' });
+      const id = created.body.data.id as string;
+
+      const edited = await appRequest(app, 'patch', `/me/projects/${id}`, sara).send({ ...project, role: 'Producer' });
+      expectContract(edited, 'patch', '/me/projects/{id}', 200);
+      expect(edited.body.data.role).toBe('Producer');
+
+      const profile = await appRequest(app, 'get', '/me/profile', sara);
+      expectContract(profile, 'get', '/me/profile', 200);
+      expect(profile.body.data.projects.map((p: { id: string }) => p.id)).toEqual([id, older.body.data.id]);
+
+      const removed = await appRequest(app, 'delete', `/me/projects/${id}`, sara);
+      expect(removed.status).toBe(204);
+      expect((await appRequest(app, 'get', '/me/profile', sara)).body.data.projects).toHaveLength(1);
+    });
+
+    it("answers 404 for another member's project and leaves it alone", async () => {
+      const created = await appRequest(app, 'post', '/me/projects', sara).send(project);
+      const id = created.body.data.id as string;
+      expect((await appRequest(app, 'patch', `/me/projects/${id}`, omar).send(project)).status).toBe(404);
+      expect((await appRequest(app, 'delete', `/me/projects/${id}`, omar)).status).toBe(404);
+      expect((await appRequest(app, 'get', '/me/profile', sara)).body.data.projects).toHaveLength(1);
+    });
+
+    it('validates the project', async () => {
+      const res = await appRequest(app, 'post', '/me/projects', sara).send({
+        year: 1900,
+        category: ' ',
+        title: 'x'.repeat(201),
+        role: 'Producer',
+      });
+      expect(res.status).toBe(422);
+      expect(Object.keys(res.body.errors).sort()).toEqual(['category', 'title', 'year']);
+      const future = await appRequest(app, 'post', '/me/projects', sara).send({ ...project, year: 2100 });
+      expect(future.body.errors.year).toEqual([expect.stringMatching(/or earlier$/)]);
+    });
+
+    it('is for individuals only', async () => {
+      const res = await appRequest(app, 'post', '/me/projects', stagecraft).send(project);
+      expect({ status: res.status, code: res.body.code }).toEqual({ status: 403, code: 'FORBIDDEN' });
+    });
+  });
+
+  describe('/me/skills', () => {
+    let rigging: string;
+    let lighting: string;
+    let retired: string;
+
+    beforeEach(async () => {
+      const insert = async (slug: string, en: string, ar: string, active = true) =>
+        (
+          await admin.query(
+            `INSERT INTO app.skills (id, slug, name_en, name_ar, is_active, updated_at)
+             VALUES (gen_random_uuid(), $1, $2, $3, $4, now()) RETURNING id`,
+            [slug, en, ar, active],
+          )
+        ).rows[0].id as string;
+      rigging = await insert('rigging', 'Rigging', 'تعليق المعدات');
+      lighting = await insert('lighting', 'Lighting', 'الإضاءة');
+      retired = await insert('pyro', 'Pyrotechnics', 'الألعاب النارية', false);
+    });
+
+    it('replaces the skills in the given order, named in the request language', async () => {
+      const res = await appRequest(app, 'put', '/me/skills', sara).send({ skill_ids: [lighting, rigging] });
+      expectContract(res, 'put', '/me/skills', 200);
+      expect(res.body.data.skills).toEqual(['Lighting', 'Rigging']);
+
+      const ar = await appRequest(app, 'get', '/me/profile', sara, 'ar');
+      expect(ar.body.data.skills).toEqual(['الإضاءة', 'تعليق المعدات']);
+
+      const cleared = await appRequest(app, 'put', '/me/skills', sara).send({ skill_ids: [] });
+      expect(cleared.body.data.skills).toEqual([]);
+    });
+
+    it('refuses unknown, retired and repeated skills', async () => {
+      const unknown = await appRequest(app, 'put', '/me/skills', sara).send({
+        skill_ids: [rigging, '00000000-0000-7000-8000-000000000000', retired],
+      });
+      expect(unknown.status).toBe(422);
+      expect(unknown.body.errors.skill_ids[0]).toContain(retired);
+      const repeated = await appRequest(app, 'put', '/me/skills', sara).send({ skill_ids: [rigging, rigging] });
+      expect(repeated.body.errors).toEqual({ skill_ids: ['must not repeat a skill'] });
+      expect((await appRequest(app, 'get', '/me/profile', sara)).body.data.skills).toEqual([]);
+    });
+
+    it('keeps a skill on the profile after staff retire it', async () => {
+      await appRequest(app, 'put', '/me/skills', sara).send({ skill_ids: [rigging] });
+      await admin.query(`UPDATE app.skills SET is_active = false WHERE id = $1`, [rigging]);
+      expect((await appRequest(app, 'get', '/me/profile', sara)).body.data.skills).toEqual(['Rigging']);
+    });
+  });
+
   describe('/companies', () => {
     it('lists companies with paging and finds them by name', async () => {
       await registerAccount(app, { name: 'Zeta Owner', company: { name: 'Zeta Sound', company_type: 'SUPPLIER' } });

@@ -18,6 +18,7 @@ import {
 } from '../domain/kinds';
 
 // Keys from the staff permission catalog (modules/access); plain strings keep taxonomy at layer L0.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const VIEW = 'settings.view';
 const MANAGE = 'settings.manage';
 
@@ -155,6 +156,18 @@ export class TaxonomyService {
       opportunity_types: await active('opportunity_types'),
       news_topics: await active('news_topics'),
     };
+  }
+
+  /**
+   * Skills (`crafts`) by id, with both names and whether staff still offer them. Unknown
+   * ids are left out. Profiles validate picks against `active` and show `name` in the
+   * request language.
+   */
+  async skillsByIds(ids: readonly string[]): Promise<{ id: string; name: LocalizedText; active: boolean }[]> {
+    const uuids = ids.filter((id) => UUID.test(id));
+    if (uuids.length === 0) return [];
+    const rows = await this.prisma.skill.findMany({ where: { id: { in: uuids } } });
+    return rows.map((r) => ({ id: r.id, name: { en: r.nameEn, ar: r.nameAr }, active: r.isActive }));
   }
 
   private requireKind(kind: string): TaxonomyKind {

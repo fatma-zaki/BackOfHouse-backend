@@ -1,5 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Put, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import type { Actor } from '../../../common/context/actor';
 import { RequestContext } from '../../../common/context/request-context';
 import { CurrentActor } from '../../../common/decorators/current-actor.decorator';
@@ -8,7 +15,13 @@ import { CompanyDirectoryService } from '../../../modules/companies';
 import { ProfessionalsService, ProfilesService } from '../../../modules/profiles';
 import { IndividualsOnly } from '../account-context';
 import { CompanyListQueryDto, ProfessionalListQueryDto } from './app-directory.dto';
-import { presentCompany, presentProfessional, presentProfile, presentProject } from './app-presenters';
+import {
+  presentCompany,
+  presentProfessional,
+  presentProfile,
+  presentProfileProject,
+  presentProject,
+} from './app-presenters';
 
 const OK = { description: 'OK', schema: { type: 'object', properties: { data: {} } } };
 
@@ -17,7 +30,7 @@ const pageOf = <T>(items: T[], hasMore: boolean, query: { page: number; page_siz
 
 /**
  * The individual's profile and Discover directories (contracts/app /me/profile,
- * /companies*, /professionals*). Individuals only; companies get 403 `FORBIDDEN`.
+ * /me/projects*, /me/skills, /companies*, /professionals*). Individuals only; companies get 403 `FORBIDDEN`.
  */
 @ApiTags('Discover')
 @ApiBearerAuth()
@@ -33,14 +46,42 @@ export class AppDiscoverController {
   @Get('me/profile')
   @ApiOkResponse(OK)
   async profile(@CurrentActor() actor: Actor | undefined) {
-    return presentProfile(await this.profiles.get(actor));
+    return presentProfile(await this.profiles.get(actor, RequestContext.locale()));
   }
 
   @Patch('me/profile')
   @ApiBody({ schema: { type: 'object' } })
   @ApiOkResponse(OK)
   async updateProfile(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
-    return presentProfile(await this.profiles.update(actor, body));
+    return presentProfile(await this.profiles.update(actor, body, RequestContext.locale()));
+  }
+
+  @Post('me/projects')
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiCreatedResponse(OK)
+  async createProject(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
+    return presentProfileProject(await this.profiles.createProject(actor, body));
+  }
+
+  @Patch('me/projects/:id')
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiOkResponse(OK)
+  async updateProject(@CurrentActor() actor: Actor | undefined, @Param('id') id: string, @Body() body: unknown) {
+    return presentProfileProject(await this.profiles.updateProject(actor, id, body));
+  }
+
+  @Delete('me/projects/:id')
+  @HttpCode(204)
+  @ApiNoContentResponse({ description: 'Deleted' })
+  async deleteProject(@CurrentActor() actor: Actor | undefined, @Param('id') id: string): Promise<void> {
+    await this.profiles.deleteProject(actor, id);
+  }
+
+  @Put('me/skills')
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiOkResponse(OK)
+  async setSkills(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
+    return presentProfile(await this.profiles.setSkills(actor, body, RequestContext.locale()));
   }
 
   @Get('companies')

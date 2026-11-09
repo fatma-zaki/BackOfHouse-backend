@@ -1,5 +1,5 @@
 import type { CompanyProjectView, CompanyStatsView, CompanyView } from '../../../modules/companies';
-import type { ProfessionalView, ProfileView } from '../../../modules/profiles';
+import type { ProfessionalView, ProfileProjectView, ProfileView } from '../../../modules/profiles';
 
 /** contracts/app `Company` (CompanySummary + profile). Images arrive with uploads (1B). */
 export function presentCompany(c: CompanyView) {
@@ -56,7 +56,12 @@ export function presentStats(s: CompanyStatsView) {
   };
 }
 
-/** contracts/app `Profile`. Experience, projects, skills and badges are empty until BQ-85. */
+/** contracts/app `ProfileProject`. Images arrive with uploads (1B). */
+export function presentProfileProject(p: ProfileProjectView) {
+  return { id: p.id, year: p.year, category: p.category, title: p.title, role: p.role, image_url: null };
+}
+
+/** contracts/app `Profile`. Experience and badges are empty until BQ-85 and Phase 6. */
 export function presentProfile(p: ProfileView) {
   return {
     name: p.name,
@@ -74,8 +79,8 @@ export function presentProfile(p: ProfileView) {
     events_attended: 0,
     attendance_points: 0,
     experience: [] as unknown[],
-    projects: [] as unknown[],
-    skills: [] as string[],
+    projects: p.projects.map(presentProfileProject),
+    skills: p.skills,
     badges: [] as unknown[],
     interests: p.interests,
     contact_privacy: { share_email: p.contactPrivacy.shareEmail, share_phone: p.contactPrivacy.sharePhone },
