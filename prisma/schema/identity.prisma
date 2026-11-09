@@ -31,6 +31,8 @@ model User {
   id                      String                   @id @db.Uuid
   accountType             AccountType              @map("account_type")
   fullName                String                   @map("full_name")
+  /// app.normalize_ar(full_name), written by the app (common/text normalizeArabic); directory search.
+  fullNameNormalized      String                   @default("") @map("full_name_normalized")
   email                   String
   phone                   String?
   emailVerifiedAt         DateTime?                @map("email_verified_at") @db.Timestamptz(6)
@@ -52,10 +54,15 @@ model User {
   notifications           Notification[]
   notificationPreferences NotificationPreference[]
   devices                 MemberDevice[]
+  profile                 Profile?
+  connectionsMade         ProfessionalConnection[] @relation("ConnectionsMade")
+  connectionsReceived     ProfessionalConnection[] @relation("ConnectionsReceived")
+  companyFollows          CompanyFollow[]
 
   @@unique([email], map: "uq_users__email")
   @@unique([phone], map: "uq_users__phone")
   @@index([status], map: "ix_users__status")
+  @@index([fullNameNormalized(ops: raw("gin_trgm_ops"))], type: Gin, map: "ix_users__full_name_normalized_trgm")
   @@map("users")
   @@schema("app")
 }

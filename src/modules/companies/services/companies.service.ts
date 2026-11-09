@@ -1,18 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { normalizeArabic } from '../../../common/text';
 import { PrismaService } from '../../../platform/database';
 import { AuthTokens, MemberAuthService } from '../../identity';
-
-/**
- * Company permissions (contracts/app `CompanyPermission`). ADR-030: the single Company
- * Account holds all of them; the server checks a permission, never the role name.
- */
-export const COMPANY_PERMISSIONS = [
-  'EDIT_PROFILE',
-  'MANAGE_PROJECTS',
-  'MANAGE_OPPORTUNITIES',
-  'REVIEW_APPLICANTS',
-  'RESPOND_TO_SUPPLIER_REQUESTS',
-] as const;
+import { COMPANY_PERMISSIONS } from '../policies/company-actor.policy';
 
 /** contracts/app `CompanyMembership`. */
 export interface CompanyMembershipView {
@@ -31,7 +21,7 @@ export interface CompanyMembershipView {
 
 /**
  * Companies (ADR-030: one Company Account per company). Phase 2 creates the company at
- * registration and serves its summary; the profile arrives in Phase 3a.
+ * registration and serves its summary (the profile is in CompanyWorkspaceService).
  */
 @Injectable()
 export class CompaniesService {
@@ -44,7 +34,12 @@ export class CompaniesService {
   register(input: unknown): Promise<AuthTokens> {
     return this.memberAuth.register(input, async (tx, user, data) => {
       await tx.company.create({
-        data: { accountUserId: user.id, name: data.company!.name, companyType: data.company!.company_type },
+        data: {
+          accountUserId: user.id,
+          name: data.company!.name,
+          nameNormalized: normalizeArabic(data.company!.name),
+          companyType: data.company!.company_type,
+        },
       });
     });
   }

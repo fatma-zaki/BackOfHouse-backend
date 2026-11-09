@@ -36,6 +36,4 @@ export function normalizePhone(input: string): string | null {
 }
 
 /** "Asia/Riyadh" is UTC+3 all year (no daylight saving), so the Riyadh day is UTC + 3 h. */
-export function riyadhDay(at: Date): string {
-  return new Date(at.getTime() + 3 * 3600_000).toISOString().slice(0, 10);
-}
+export { riyadhDay } from '../../../common/time/riyadh';

@@ -16,6 +16,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { EnvelopeInterceptor } from './common/interceptors/envelope.interceptor';
 import { SurfaceAuthGuard } from './surfaces/surface-auth.guard';
 import { PermissionGuard } from './surfaces/admin/permission.guard';
+import { AppAccountGuard } from './surfaces/app/account-context';
 import { AuditAssertInterceptor } from './surfaces/admin/audit-assert.interceptor';
 import { AuditReadInterceptor } from './surfaces/audit-read';
 import { createValidationPipe } from './common/pipes/validation.pipe';
@@ -46,6 +47,8 @@ import { createValidationPipe } from './common/pipes/validation.pipe';
     // Then deny by default per surface (actor from the surface's resolver), then admin permission keys.
     { provide: APP_GUARD, useClass: SurfaceAuthGuard },
     { provide: APP_GUARD, useClass: PermissionGuard },
+    // App routes: individuals vs Company Accounts, and company permissions.
+    { provide: APP_GUARD, useClass: AppAccountGuard },
     { provide: APP_PIPE, useFactory: createValidationPipe },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     // Order matters: the envelope wraps the idempotency interceptor, which stores raw results.

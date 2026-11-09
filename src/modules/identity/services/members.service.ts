@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CLOCK, Clock } from '../../../common/clock/clock';
 import { NotFoundError } from '../../../common/errors';
 import type { Locale } from '../../../common/i18n/locale';
-import { PrismaService } from '../../../platform/database';
+import { normalizeArabic } from '../../../common/text';
+import { PrismaService, Tx } from '../../../platform/database';
 
 /** The account fields of contracts/app `AppUser` that identity owns. */
 export interface MemberView {
@@ -60,6 +61,31 @@ export class MembersService {
       locale: user.locale === 'ar' ? 'ar' : 'en',
       isActive: user.status === 'ACTIVE',
     };
+  }
+
+  /**
+   * Name and profile status of an individual, edited from the profile (contracts/app
+   * PATCH /me/profile) inside the caller's transaction. Returns the previous status.
+   */
+  async updateIndividual(
+    tx: Tx,
+    userId: string,
+    data: { fullName: string; profileStatus: 'PROFESSIONAL' | 'STUDENT' },
+  ): Promise<{ previousProfileStatus: 'PROFESSIONAL' | 'STUDENT' | null }> {
+    const before = await tx.user.findUnique({
+      where: { id: userId },
+      select: { accountType: true, profileStatus: true },
+    });
+    if (before?.accountType !== 'INDIVIDUAL') throw new NotFoundError('Account not found');
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        fullName: data.fullName,
+        fullNameNormalized: normalizeArabic(data.fullName),
+        profileStatus: data.profileStatus,
+      },
+    });
+    return { previousProfileStatus: before.profileStatus };
   }
 
   /** The ids among `userIds` that belong to ACTIVE accounts. */
