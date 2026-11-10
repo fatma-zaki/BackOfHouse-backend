@@ -36,7 +36,7 @@ below, so it shows the expected behaviour: see `lib/features/*/data/`.
 | Nulls | Optional fields may be `null` or absent. Lists are never `null`; send `[]`. |
 | Images | Absolute HTTPS URLs in `*_url` fields. The app never uploads images, except verification documents. |
 | Money and durations | Display strings, not numbers (`"SAR 28k – 34k / mo"`, `"4 months"`, `"2 days on site"`) |
-| Toggles | `PUT` turns a toggle on and `DELETE` turns it off (follow, like, save, registration, connection). Both are idempotent and return the updated resource. |
+| Toggles | `PUT` turns a toggle on and `DELETE` turns it off (follow, like, save, registration). Both are idempotent and return the updated resource. |
 
 ### Headers the app sends
 
@@ -337,6 +337,8 @@ response schemas are in `contracts/app/openapi.yaml`.
 | Method | Path | Purpose |
 |---|---|---|
 | GET, PATCH | `/me/profile` | Profile / edit |
+| POST | `/me/experience` | Add an experience entry (added 2026-11-10) |
+| PATCH, DELETE | `/me/experience/{id}` | Edit / delete an experience entry |
 | POST | `/me/projects` | Add a profile project (added 2026-11-09) |
 | PATCH, DELETE | `/me/projects/{id}` | Edit / delete a profile project |
 | PUT | `/me/skills` | Replace the profile's skills (`crafts` ids from `/meta/taxonomy`) |
@@ -357,7 +359,7 @@ response schemas are in `contracts/app/openapi.yaml`.
 | GET | `/companies/{id}/projects`, `/companies/{id}/opportunities` | Portfolio / open listings |
 | PUT, DELETE | `/companies/{id}/follow` | Follow / unfollow |
 | GET | `/professionals` | Directory |
-| PUT, DELETE | `/professionals/{id}/connection` | Connect / withdraw |
+| PUT, DELETE | `/professionals/{id}/connection` | ⛔ Deprecated (2026-11-10): connections are not offered; changes nothing, `connected` is always false. Hide the button |
 | GET | `/rewards`, `/rewards/{id}` | Catalog |
 | POST | `/rewards/{id}/redeem` | Redeem |
 
@@ -445,10 +447,10 @@ and the app will start using them without any contract change.
 
 ## 9. Open questions for the backend team
 
-1. ✅ **Partly answered 2026-11-09:** projects and skills are entered in the app
-   with `POST/PATCH/DELETE /me/projects` and `PUT /me/skills` (skills are
-   picked from `crafts` in `/meta/taxonomy`). Experience entries are still
-   open (BQ-85). *Original:* **Profile content editing:** the app edits name, headline, city, about,
+1. ✅ **Answered 2026-11-09 and 2026-11-10:** experience, projects and skills
+   are entered in the app with `POST/PATCH/DELETE /me/experience`,
+   `POST/PATCH/DELETE /me/projects` and `PUT /me/skills` (skills are picked
+   from `crafts` in `/meta/taxonomy`). *Original:* **Profile content editing:** the app edits name, headline, city, about,
    status, interests and privacy. Experience, skills and portfolio projects
    are read-only today. Where are they entered: the website, or new
    `/me/experience` and `/me/projects` endpoints?
@@ -457,7 +459,9 @@ and the app will start using them without any contract change.
    The contract has only `DRAFT` and `IN_REVIEW` today.
 3. **Push notifications:** is there a device-token endpoint (FCM/APNs)? The
    app only reads the inbox today.
-4. **Connections:** `PUT /professionals/{id}/connection` sends a request.
+4. ✅ **Answered 2026-11-10:** connections are not offered in the MVP. The
+   two routes stay in v1, deprecated, and change nothing; `connected` is
+   always false. *Original:* **Connections:** `PUT /professionals/{id}/connection` sends a request.
    Does it need acceptance by the other member, and is there a pending
    state?
 5. **Token lifetimes** for access and refresh tokens, and whether

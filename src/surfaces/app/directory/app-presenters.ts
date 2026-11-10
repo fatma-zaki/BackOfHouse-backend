@@ -1,5 +1,5 @@
 import type { CompanyProjectView, CompanyStatsView, CompanyView } from '../../../modules/companies';
-import type { ProfessionalView, ProfileProjectView, ProfileView } from '../../../modules/profiles';
+import type { ExperienceView, ProfessionalView, ProfileProjectView, ProfileView } from '../../../modules/profiles';
 
 /** contracts/app `Company` (CompanySummary + profile). Images arrive with uploads (1B). */
 export function presentCompany(c: CompanyView) {
@@ -56,12 +56,17 @@ export function presentStats(s: CompanyStatsView) {
   };
 }
 
+/** contracts/app `Experience`. */
+export function presentExperience(e: ExperienceView) {
+  return { id: e.id, role: e.role, company: e.company, start: e.start, end: e.end };
+}
+
 /** contracts/app `ProfileProject`. Images arrive with uploads (1B). */
 export function presentProfileProject(p: ProfileProjectView) {
   return { id: p.id, year: p.year, category: p.category, title: p.title, role: p.role, image_url: null };
 }
 
-/** contracts/app `Profile`. Experience and badges are empty until BQ-85 and Phase 6. */
+/** contracts/app `Profile`. Badges and attendance arrive with Phase 6. */
 export function presentProfile(p: ProfileView) {
   return {
     name: p.name,
@@ -75,10 +80,10 @@ export function presentProfile(p: ProfileView) {
     verified: p.verified,
     verification_level: p.verificationLevel,
     ...(p.availabilityNote ? { availability: p.availabilityNote } : {}),
-    years_experience: 0,
+    years_experience: p.yearsExperience,
     events_attended: 0,
     attendance_points: 0,
-    experience: [] as unknown[],
+    experience: p.experience.map(presentExperience),
     projects: p.projects.map(presentProfileProject),
     skills: p.skills,
     badges: [] as unknown[],

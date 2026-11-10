@@ -59,6 +59,9 @@ describe('Company context (e2e)', () => {
   const individualRoutes: [Method, string][] = [
     ['get', '/me/profile'],
     ['patch', '/me/profile'],
+    ['post', '/me/experience'],
+    ['post', '/me/projects'],
+    ['put', '/me/skills'],
     ['get', '/companies'],
     ['get', '/companies/{company}'],
     ['put', '/companies/{company}/follow'],

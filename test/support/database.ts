@@ -20,7 +20,7 @@ export const APP_TABLES = [
   'app.company_profile_views',
   'app.company_projects',
   'app.company_follows',
-  'app.professional_connections',
+  'app.profile_experiences',
   'app.profile_skills',
   'app.profile_projects',
   'app.profiles',
