@@ -107,6 +107,20 @@ export class TeamService {
     private readonly config: AppConfig,
   ) {}
 
+  /**
+   * Ids of ACTIVE staff whose role holds `permission`, for system recipients such as the
+   * admin bell (notifications). Not an endpoint; no actor needed.
+   */
+  async activeStaffIdsWith(permission: PermissionKey): Promise<string[]> {
+    const roles = STAFF_ROLES.filter((role) => permissionsForRole(role).includes(permission));
+    const staff = await this.prisma.staffAccount.findMany({
+      where: { status: 'ACTIVE', role: { in: [...roles] } },
+      select: { id: true },
+      orderBy: { id: 'asc' },
+    });
+    return staff.map((s) => s.id);
+  }
+
   async me(actor: Actor | undefined): Promise<AdminMeView> {
     if (actor?.kind !== 'staff') throw new ForbiddenError();
     const staff = await this.prisma.staffAccount.findUnique({ where: { id: actor.staffId } });

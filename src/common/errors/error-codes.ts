@@ -37,4 +37,8 @@ export enum ErrorCode {
   PHONE_TAKEN = 'PHONE_TAKEN',
   // Company workspace (contracts/app, ADR-030)
   PERMISSION_DENIED = 'PERMISSION_DENIED',
+  // Verification requests (contracts/app /me/verification)
+  VERIFICATION_LOCKED = 'VERIFICATION_LOCKED',
+  VERIFICATION_INCOMPLETE = 'VERIFICATION_INCOMPLETE',
+  FILE_TOO_LARGE = 'FILE_TOO_LARGE',
 }

@@ -641,6 +641,14 @@ No feature code.
 
 ### Phase 3b · Verification requests, claims, notification feeds
 
+> **Progress (2026-11-10): built on branch `phase-3b-notification-feeds`.** All Phase 3b operations of both contracts; `contracts/phase.json` = `3b`.
+> - **Verification** (new module): `verification_requests` (DRAFT → IN_REVIEW, one per member) and `verification_documents` (one per type, replaced on re-upload). An upload is checked by its first bytes (PDF, JPEG, PNG; the name is never trusted), limited to 10 MB (413 `FILE_TOO_LARGE`), scanned, and only then stored in the private bucket. Submit needs both documents (409 `VERIFICATION_INCOMPLETE`); a submitted request is locked (409 `VERIFICATION_LOCKED`) and emits `verification.submitted`. `VerificationService.documentUrl` is the only way to a file: a signed URL for staff with `verification.view`, each one audited (the admin route comes with Phase 4).
+> - **Scanning and storage:** `platform/scanning` `MALWARE_SCANNER`: a dev scanner (EICAR only) in local and test; staging and production answer 503 until **TQ-10** picks a scanner. Files are scanned before they are stored, so the quarantine bucket is not used yet. `StoragePort.upload` added; local and test without Supabase keep objects in memory.
+> - **Feeds:** `/me/notifications` (paged, newest first, request language), mark one read, read all; individuals only. Admin bell `GET /notifications` (cursor) from `staff_notifications`, fed by `verification.submitted` for active staff whose role holds `verification.view` (Reviewer, Super admin); staff catalog in `notifications/domain/staff-catalog.ts`.
+> - **Exit tests built:** `test/e2e/app/verification-request.e2e-spec.ts`; `test/integration/verification-review.int-spec.ts` (signed URLs audited; bell for Reviewer and Super admin only); `test/e2e/app/notifications-feed.e2e-spec.ts`.
+> - **Not built:** company claims (`POST /companies/{id}/claims` is not in `contracts/app`, BQ-88).
+
+
 **Domain**
 - `verification` requests with private, virus-scanned documents (Phase 1 pipeline). `IDENTITY` accepts a National ID, an Iqama or a **student ID** (BQ-79).
 - `claims` requests.

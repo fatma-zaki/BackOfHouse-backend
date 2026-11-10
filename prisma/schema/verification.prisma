@@ -1,0 +1,57 @@
+// Module: verification (nest-module-map.md). Phase 3b: an individual's request with its
+// documents; decisions (approve, more info, reject) arrive with Phase 4. Documents live in
+// the private bucket and are reached only through short-lived signed URLs, each audited.
+
+enum VerificationRequestStatus {
+  DRAFT
+  IN_REVIEW
+
+  @@map("verification_request_status")
+  @@schema("app")
+}
+
+enum VerificationDocumentType {
+  IDENTITY
+  EXPERIENCE
+
+  @@map("verification_document_type")
+  @@schema("app")
+}
+
+/// An individual's verification request (contracts/app `VerificationRequest`). One per
+/// member for now; it never grants verification by itself (Phase 4 decides).
+model VerificationRequest {
+  id          String                    @id @default(uuid(7)) @db.Uuid
+  userId      String                    @map("user_id") @db.Uuid
+  status      VerificationRequestStatus @default(DRAFT)
+  submittedAt DateTime?                 @map("submitted_at") @db.Timestamptz(6)
+  createdAt   DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user        User                      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_verification_requests__user_id")
+  documents   VerificationDocument[]
+
+  @@unique([userId], map: "uq_verification_requests__user_id")
+  @@index([status, submittedAt], map: "ix_verification_requests__status_submitted_at")
+  @@map("verification_requests")
+  @@schema("app")
+}
+
+/// One uploaded document per type and request; a new upload of the same type replaces it.
+/// Stored only after the virus scan passed. The file name is the member's, for display.
+model VerificationDocument {
+  id          String                   @id @default(uuid(7)) @db.Uuid
+  requestId   String                   @map("request_id") @db.Uuid
+  document    VerificationDocumentType
+  fileName    String                   @map("file_name")
+  contentType String                   @map("content_type")
+  sizeBytes   Int                      @map("size_bytes")
+  sha256      String
+  bucket      String
+  path        String
+  uploadedAt  DateTime                 @default(now()) @map("uploaded_at") @db.Timestamptz(6)
+  request     VerificationRequest      @relation(fields: [requestId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_verification_documents__request_id")
+
+  @@unique([requestId, document], map: "uq_verification_documents__request_document")
+  @@map("verification_documents")
+  @@schema("app")
+}

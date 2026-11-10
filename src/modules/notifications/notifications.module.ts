@@ -3,16 +3,20 @@ import { CLOCK, Clock } from '../../common/clock/clock';
 import { AppConfig } from '../../config/app.config';
 import { JobsModule } from '../../platform/jobs/jobs.module';
 import { JobsService } from '../../platform/jobs/jobs.service';
+import { AccessModule } from '../access';
 import { IdentityModule } from '../identity';
 import { SettingsModule } from '../settings';
 import { AccountEventsHandler } from './handlers/account-events.handler';
+import { VerificationEventsHandler } from './handlers/verification-events.handler';
 import { DevEmailSender, EMAIL_SENDER, EmailSender, NotConfiguredEmailSender } from './infrastructure/email-sender';
 import { FcmPushSender } from './infrastructure/fcm-push-sender';
 import { FakePushSender, NotConfiguredPushSender, PUSH_SENDER, PushSender } from './infrastructure/push-sender';
 import { DeliveryService } from './services/delivery.service';
 import { DevicesService } from './services/devices.service';
+import { MemberFeedService } from './services/member-feed.service';
 import { NotificationsService } from './services/notifications.service';
 import { PreferencesService } from './services/preferences.service';
+import { StaffBellService } from './services/staff-bell.service';
 
 /** Every minute: due pushes after quiet hours, and retries. */
 const DELIVER_CRON = '* * * * *';
@@ -27,13 +31,16 @@ const isLocalOrTest = (config: AppConfig) => config.app.appEnv === 'local' || co
  * unconfigured channel is SKIPPED with an alert log.
  */
 @Module({
-  imports: [JobsModule, IdentityModule, SettingsModule],
+  imports: [JobsModule, IdentityModule, AccessModule, SettingsModule],
   providers: [
     NotificationsService,
     DeliveryService,
     DevicesService,
     PreferencesService,
+    MemberFeedService,
+    StaffBellService,
     AccountEventsHandler,
+    VerificationEventsHandler,
     {
       provide: PUSH_SENDER,
       inject: [AppConfig, CLOCK],
@@ -51,7 +58,7 @@ const isLocalOrTest = (config: AppConfig) => config.app.appEnv === 'local' || co
         isLocalOrTest(config) ? new DevEmailSender(config.app.appEnv === 'local') : new NotConfiguredEmailSender(),
     },
   ],
-  exports: [DevicesService, PreferencesService, DeliveryService],
+  exports: [DevicesService, PreferencesService, DeliveryService, MemberFeedService, StaffBellService],
 })
 export class NotificationsModule implements OnModuleInit {
   private readonly logger = new Logger(NotificationsModule.name);

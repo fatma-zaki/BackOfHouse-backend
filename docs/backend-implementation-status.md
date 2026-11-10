@@ -20,7 +20,8 @@
 | 2B · Member identity, activity | Supabase Auth behind `/auth/*` (email + password, phone code with a dev SMS sender until TQ-04), refresh, logout, password reset, `GET /api/app/v1/me`, `users` + `companies` (company created at registration), app actor resolver, activity tracking, cross-surface and direct-DB-access tests; `contracts/phase.json` = 2 | DONE (merged, PR #16) |
 | 2C · Notification delivery | `notifications`, `notification_deliveries`, `notification_preferences`, `member_devices`; catalog with bilingual templates; FCM HTTP v1 adapter + fake; email port (dev sender until TQ-30); quiet hours (`common/time/quiet-hours.ts`); `notifications.deliver` job with retries; first type `account.password_changed` from `user.password.changed`; worker now runs identity and notifications | DONE (merged, PR #20) |
 | 3a · Profiles and directories | `profiles`, `profile_experiences`, company profile, `company_follows`, `company_projects`, `company_profile_views`; `/me/profile`, `/me/experience*`, `/me/projects*`, `/me/skills`, `/companies*`, `/professionals*`, `/company*`; `profile_projects`, `profile_skills`; `AppAccountGuard`; ICU A–Z sort and normalised trigram search; `contracts/phase.json` = 3a | DONE (merged, PRs #21 and #22; experience and connection removal on branch `profile-experience-no-connections`) |
-| 3b – 9 | See execution-plan.md | NOT STARTED |
+| 3b · Verification requests and feeds | `verification_requests`, `verification_documents` (type sniffing, 10 MB, scan via `MALWARE_SCANNER`, private bucket, audited signed URLs), `/me/verification*`; `/me/notifications*`; admin bell `GET /notifications` with `staff_notifications`; `contracts/phase.json` = 3b. Scanner is a dev stand-in until TQ-10 (503 in staging and production) | IN PROGRESS (branch `phase-3b-notification-feeds`) |
+| 4 – 9 | See execution-plan.md | NOT STARTED |
 
 ---
 
