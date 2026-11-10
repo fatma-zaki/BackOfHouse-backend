@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AccessModule } from '../../modules/access';
+import { NotificationsModule } from '../../modules/notifications';
 import { SettingsModule } from '../../modules/settings';
 import { TaxonomyModule } from '../../modules/taxonomy';
 import { AdminTaxonomyController } from './settings/admin-taxonomy.controller';
@@ -7,6 +8,7 @@ import { AdminAuthController } from './auth/admin-auth.controller';
 import { AdminTeamController } from './team/admin-team.controller';
 import { AdminMetaController } from './meta/admin-meta.controller';
 import { AdminSettingsController } from './settings/admin-settings.controller';
+import { AdminNotificationsController } from './notifications/admin-notifications.controller';
 
 /**
  * Admin surface (ADR-031): the back-office API under /api/admin/v1. Staff sign in
@@ -15,13 +17,14 @@ import { AdminSettingsController } from './settings/admin-settings.controller';
  * surfaces.module.ts.
  */
 @Module({
-  imports: [SettingsModule, AccessModule, TaxonomyModule],
+  imports: [SettingsModule, AccessModule, TaxonomyModule, NotificationsModule],
   controllers: [
     AdminMetaController,
     AdminSettingsController,
     AdminAuthController,
     AdminTeamController,
     AdminTaxonomyController,
+    AdminNotificationsController,
   ],
 })
 export class AdminSurfaceModule {}

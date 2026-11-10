@@ -5,19 +5,27 @@ import { AppModule } from '../../src/app.module';
 import { CLOCK } from '../../src/common/clock/clock';
 import { AppConfig } from '../../src/config/app.config';
 import { configureHttpApp } from '../../src/http-app';
+import { ADMIN_ACTOR_RESOLVER } from '../../src/surfaces/actor-resolver';
 import { applyTestEnv } from './database';
 import { FakeClock } from './fake-staff-idp';
+import { TestHeaderActorResolver } from './test-actors';
 
 export const APP_PREFIX = '/api/app/v1';
 
-/** The whole api process over HTTP, with a fake clock (e2e and HTTP-level integration tests). */
-export async function bootApp(): Promise<{ app: NestExpressApplication; clock: FakeClock }> {
+/**
+ * The whole api process over HTTP, with a fake clock (e2e and HTTP-level integration tests).
+ * `testStaff` lets admin requests act as staff with `x-test-actor: staff:<ROLE>`.
+ */
+export async function bootApp(
+  options: { testStaff?: boolean } = {},
+): Promise<{ app: NestExpressApplication; clock: FakeClock }> {
   applyTestEnv();
   const clock = new FakeClock();
-  const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
+  let builder = Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(CLOCK)
-    .useValue(clock)
-    .compile();
+    .useValue(clock);
+  if (options.testStaff) builder = builder.overrideProvider(ADMIN_ACTOR_RESOLVER).useClass(TestHeaderActorResolver);
+  const moduleRef = await builder.compile();
   const app = moduleRef.createNestApplication<NestExpressApplication>({ bodyParser: false });
   configureHttpApp(app, app.get(AppConfig));
   app.set('trust proxy', true); // test only: each registration uses its own client IP

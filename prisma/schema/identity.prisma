@@ -58,6 +58,7 @@ model User {
   profileProjects         ProfileProject[]
   profileExperiences      ProfileExperience[]
   profileSkills           ProfileSkill[]
+  verificationRequest     VerificationRequest?
   companyFollows          CompanyFollow[]
 
   @@unique([email], map: "uq_users__email")

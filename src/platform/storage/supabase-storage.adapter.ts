@@ -8,6 +8,14 @@ import { SignedUpload, StoragePort, assertSafeObjectPath } from './storage.port'
 export class SupabaseStorageAdapter implements StoragePort {
   constructor(private readonly client: SupabaseClient) {}
 
+  async upload(bucket: string, path: string, bytes: Buffer, contentType: string): Promise<void> {
+    assertSafeObjectPath(path);
+    const { error } = await this.client.storage.from(bucket).upload(path, bytes, { contentType, upsert: false });
+    if (error) {
+      throw new Error(`Could not upload the object: ${error.message}`);
+    }
+  }
+
   async createSignedUploadUrl(bucket: string, path: string): Promise<SignedUpload> {
     assertSafeObjectPath(path);
     const { data, error } = await this.client.storage.from(bucket).createSignedUploadUrl(path);

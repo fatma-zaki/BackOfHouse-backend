@@ -241,6 +241,9 @@ describe('Worker process wiring', () => {
       expect(registry.handlersFor('user.password.changed').map((h) => h.name)).toEqual([
         'AccountEventsHandler.passwordChanged',
       ]);
+      expect(registry.handlersFor('verification.submitted').map((h) => h.name)).toEqual([
+        'VerificationEventsHandler.submitted',
+      ]);
       const jobs = moduleRef.get(JobsService) as unknown as { definitions: Map<string, unknown> };
       expect([...jobs.definitions.keys()]).toEqual(expect.arrayContaining(['identity.purge', 'notifications.deliver']));
     } finally {

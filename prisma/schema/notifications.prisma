@@ -109,3 +109,22 @@ model MemberDevice {
   @@map("member_devices")
   @@schema("app")
 }
+
+/// A staff notification in the admin bell (contracts/admin GET /notifications). Fed only by
+/// outbox handlers, one per (source event, staff member, type). Text is rendered in the
+/// request language when read.
+model StaffNotification {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  recipientStaffId String       @map("recipient_staff_id") @db.Uuid
+  type             String
+  sourceEventId    String       @map("source_event_id") @db.Uuid
+  payload          Json         @default("{}") @db.JsonB
+  readAt           DateTime?    @map("read_at") @db.Timestamptz(6)
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  recipient        StaffAccount @relation(fields: [recipientStaffId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_staff_notifications__recipient_staff_id")
+
+  @@unique([sourceEventId, recipientStaffId, type], map: "uq_staff_notifications__source_event_recipient_type")
+  @@index([recipientStaffId, createdAt(sort: Desc), id(sort: Desc)], map: "ix_staff_notifications__recipient_created")
+  @@map("staff_notifications")
+  @@schema("app")
+}

@@ -10,6 +10,8 @@ export interface SignedUpload {
 }
 
 export interface StoragePort {
+  /** Stores bytes the API received itself (e.g. a scanned verification document). */
+  upload(bucket: string, path: string, bytes: Buffer, contentType: string): Promise<void>;
   createSignedUploadUrl(bucket: string, path: string): Promise<SignedUpload>;
   createSignedDownloadUrl(bucket: string, path: string, ttlSeconds: number): Promise<string>;
   move(fromBucket: string, fromPath: string, toBucket: string, toPath: string): Promise<void>;
