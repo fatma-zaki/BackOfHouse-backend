@@ -35,7 +35,7 @@ export const APP_RULES = [
   ['0', /^GET \/(ping|meta\/app-version)$/],
   ['2', /^\w+ \/auth\//],
   ['2', /^GET \/me$/],
-  ['3a', /^\w+ \/me\/(profile|projects(\/\{id\})?|skills)$/],
+  ['3a', /^\w+ \/me\/(profile|(projects|experience)(\/\{id\})?|skills)$/],
   ['3a', /^\w+ \/professionals/],
   ['3a', /^\w+ \/companies(\/\{id\}(\/(follow|projects))?)?$/],
   ['3a', /^\w+ \/company(\/(stats|projects.*))?$/],

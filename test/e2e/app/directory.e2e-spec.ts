@@ -94,6 +94,69 @@ describe('Profiles and directories (e2e)', () => {
     });
   });
 
+  describe('/me/experience', () => {
+    const job = { role: 'Stage manager', company: 'Riyadh Season', start: '2019-01-01', end: '2021-12-31' };
+
+    it('adds, edits and deletes entries; the profile orders them and counts the years', async () => {
+      const created = await appRequest(app, 'post', '/me/experience', sara).send(job);
+      expectContract(created, 'post', '/me/experience', 201);
+      expect(created.body.data).toEqual({ id: expect.any(String), ...job });
+      const current = await appRequest(app, 'post', '/me/experience', sara).send({
+        role: 'Producer',
+        company: 'MDLBEAST',
+        start: '2021-01-01',
+      });
+      expect(current.body.data.end).toBeNull();
+
+      const profile = await appRequest(app, 'get', '/me/profile', sara);
+      expectContract(profile, 'get', '/me/profile', 200);
+      expect(profile.body.data.experience.map((e: { company: string }) => e.company)).toEqual([
+        'MDLBEAST',
+        'Riyadh Season',
+      ]);
+      // 2019-01-01 to today (2026-10-29 on the fake clock), overlap counted once: 7 years.
+      expect(profile.body.data).toMatchObject({ years_experience: 7, company: 'MDLBEAST' });
+      const card = (await appRequest(app, 'get', '/professionals', omar)).body.data[0];
+      expect(card).toMatchObject({ name: 'Sara Al-Qahtani', years_experience: 7, company: 'MDLBEAST' });
+
+      const id = created.body.data.id as string;
+      const edited = await appRequest(app, 'patch', `/me/experience/${id}`, sara).send({ ...job, role: 'Lead' });
+      expectContract(edited, 'patch', '/me/experience/{id}', 200);
+      expect(edited.body.data.role).toBe('Lead');
+
+      expect((await appRequest(app, 'delete', `/me/experience/${id}`, sara)).status).toBe(204);
+      expect((await appRequest(app, 'get', '/me/profile', sara)).body.data.experience).toHaveLength(1);
+    });
+
+    it('validates dates', async () => {
+      const bad = await appRequest(app, 'post', '/me/experience', sara).send({
+        role: 'Rigger',
+        company: ' ',
+        start: '2024-02-30',
+        end: '2020-01-01',
+      });
+      expect(bad.status).toBe(422);
+      expect(Object.keys(bad.body.errors).sort()).toEqual(['company', 'end', 'start']);
+      const backwards = await appRequest(app, 'post', '/me/experience', sara).send({ ...job, end: '2018-01-01' });
+      expect(backwards.body.errors).toEqual({ end: ['must not be before start'] });
+      const future = await appRequest(app, 'post', '/me/experience', sara).send({
+        ...job,
+        start: '2030-01-01',
+        end: null,
+      });
+      expect(future.body.errors).toEqual({ start: ['must not be in the future'] });
+    });
+
+    it("answers 404 for another member's entry, and 403 for a Company Account", async () => {
+      const created = await appRequest(app, 'post', '/me/experience', sara).send(job);
+      const id = created.body.data.id as string;
+      expect((await appRequest(app, 'patch', `/me/experience/${id}`, omar).send(job)).status).toBe(404);
+      expect((await appRequest(app, 'delete', `/me/experience/${id}`, omar)).status).toBe(404);
+      const company = await appRequest(app, 'post', '/me/experience', stagecraft).send(job);
+      expect({ status: company.status, code: company.body.code }).toEqual({ status: 403, code: 'FORBIDDEN' });
+    });
+  });
+
   describe('/me/projects', () => {
     const project = { year: 2025, category: 'Concerts', title: 'MDLBEAST Soundstorm', role: 'Stage manager' };
 
@@ -239,7 +302,7 @@ describe('Profiles and directories (e2e)', () => {
   });
 
   describe('/professionals', () => {
-    it('lists other individuals, filters students and connects idempotently', async () => {
+    it('lists other individuals and filters students; connecting is deprecated and changes nothing', async () => {
       const list = await appRequest(app, 'get', '/professionals', sara);
       expectContract(list, 'get', '/professionals', 200);
       expect(list.body.data.map((p: { name: string }) => p.name)).toEqual(['Omar Haddad']);
@@ -252,17 +315,17 @@ describe('Profiles and directories (e2e)', () => {
 
       const connected = await appRequest(app, 'put', `/professionals/${omar.userId}/connection`, sara);
       expectContract(connected, 'put', '/professionals/{id}/connection', 200);
-      expect(connected.body.data.connected).toBe(true);
-      expect((await appRequest(app, 'put', `/professionals/${omar.userId}/connection`, sara)).status).toBe(200);
+      expect(connected.body.data.connected).toBe(false);
+      expect((await appRequest(app, 'get', '/professionals', sara)).body.data[0].connected).toBe(false);
 
       const withdrawn = await appRequest(app, 'delete', `/professionals/${omar.userId}/connection`, sara);
       expectContract(withdrawn, 'delete', '/professionals/{id}/connection', 200);
       expect(withdrawn.body.data.connected).toBe(false);
     });
 
-    it('does not list or connect to companies or yourself', async () => {
+    it('answers 404 for companies and yourself on the deprecated routes', async () => {
       expect((await appRequest(app, 'put', `/professionals/${stagecraft.userId}/connection`, sara)).status).toBe(404);
-      expect((await appRequest(app, 'put', `/professionals/${sara.userId}/connection`, sara)).status).toBe(422);
+      expect((await appRequest(app, 'put', `/professionals/${sara.userId}/connection`, sara)).status).toBe(404);
     });
   });
 

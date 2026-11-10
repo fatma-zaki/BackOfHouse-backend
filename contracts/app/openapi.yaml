@@ -338,6 +338,66 @@ paths:
                   data: { $ref: '#/components/schemas/Profile' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
 
+  /me/experience:
+    post:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Add an experience entry to the profile
+      description: |
+        Added 2026-11-10 (BQ-85). At most 30 entries. The profile lists current
+        roles (no `end`) first, then by start date, newest first.
+        `years_experience` counts the covered years without double-counting
+        overlaps, and `company` on the profile is the current role's company.
+        Applications pick entries by id (`experience_ids`, Phase 5).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExperienceInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Experience' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /me/experience/{id}:
+    patch:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Edit an experience entry
+      description: Send the whole entry. Another member's entry answers 404.
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ExperienceInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: '#/components/schemas/Experience' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+    delete:
+      x-phase: '3a'
+      tags: [Me]
+      summary: Delete an experience entry
+      parameters: [{ $ref: '#/components/parameters/Id' }]
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
   /me/projects:
     post:
       x-phase: '3a'
@@ -906,11 +966,16 @@ paths:
     put:
       x-phase: '3a'
       tags: [Discover]
-      summary: Send a connection request
+      summary: Send a connection request (deprecated, not offered)
+      deprecated: true
+      description: |
+        Not offered (2026-11-10): connections were dropped from the MVP. Kept
+        so the v1 contract stays compatible; it changes nothing and answers the
+        professional with `connected: false`. Removed in v2.
       parameters: [{ $ref: '#/components/parameters/Id' }]
       responses:
         '200':
-          description: The professional with `connected` updated
+          description: The professional, `connected` always false
           content:
             application/json:
               schema:
@@ -920,11 +985,16 @@ paths:
     delete:
       x-phase: '3a'
       tags: [Discover]
-      summary: Withdraw a connection
+      summary: Withdraw a connection (deprecated, not offered)
+      deprecated: true
+      description: |
+        Not offered (2026-11-10): connections were dropped from the MVP. Kept
+        so the v1 contract stays compatible; it changes nothing and answers the
+        professional with `connected: false`. Removed in v2.
       parameters: [{ $ref: '#/components/parameters/Id' }]
       responses:
         '200':
-          description: The professional with `connected` updated
+          description: The professional, `connected` always false
           content:
             application/json:
               schema:
@@ -2141,6 +2211,17 @@ components:
         title: { type: string }
         role: { type: string, example: Lead Producer · 120k attendees }
         image_url: { $ref: '#/components/schemas/ImageUrl' }
+    ExperienceInput:
+      type: object
+      required: [role, company, start]
+      properties:
+        role: { type: string, minLength: 1, maxLength: 120 }
+        company: { type: string, minLength: 1, maxLength: 200 }
+        start: { type: string, format: date, description: 'Not in the future' }
+        end:
+          type: [string, 'null']
+          format: date
+          description: 'Null or absent while current; not before start, not in the future'
     ProfileProjectInput:
       type: object
       required: [year, category, title, role]
@@ -2402,7 +2483,7 @@ components:
         availability: { $ref: '#/components/schemas/Availability' }
         avatar_url: { $ref: '#/components/schemas/ImageUrl' }
         verified: { type: boolean }
-        connected: { type: boolean }
+        connected: { type: boolean, description: 'Always false: connections are not offered (2026-11-10)' }
         field: { $ref: '#/components/schemas/ProfessionalField' }
         student: { type: boolean, description: 'Individual with STUDENT status' }
         highlighted: { type: boolean, description: 'Active Profile Highlight (points reward). Not verification, not paid.' }

@@ -1,6 +1,6 @@
-// Module: profiles (nest-module-map.md). An individual's public profile and connections.
-// The name and profile status live on users (identity); everything else here. The row is
-// created on the first edit; until then the profile shows its defaults.
+// Module: profiles (nest-module-map.md). An individual's public profile, experience,
+// projects and skills. The name and profile status live on users (identity); everything
+// else here. The row is created on the first edit; until then the profile shows defaults.
 
 enum Availability {
   AVAILABLE
@@ -60,18 +60,21 @@ model Profile {
   @@schema("app")
 }
 
-/// "Connect" from one individual to another (contracts/app PUT /professionals/{id}/connection).
-/// One-sided until acceptance is decided (BQ-85).
-model ProfessionalConnection {
-  requesterUserId String   @map("requester_user_id") @db.Uuid
-  targetUserId    String   @map("target_user_id") @db.Uuid
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  requester       User     @relation("ConnectionsMade", fields: [requesterUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_professional_connections__requester_user_id")
-  target          User     @relation("ConnectionsReceived", fields: [targetUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_professional_connections__target_user_id")
+/// A role the member held (contracts/app `Experience`). At most 30 per member (service
+/// rule). `end_date` is null while current. Applications pick entries by id (Phase 5).
+model ProfileExperience {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  role      String
+  company   String
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_profile_experiences__user_id")
 
-  @@id([requesterUserId, targetUserId], map: "professional_connections_pkey")
-  @@index([targetUserId], map: "ix_professional_connections__target_user_id")
-  @@map("professional_connections")
+  @@index([userId, startDate(sort: Desc)], map: "ix_profile_experiences__user_start")
+  @@map("profile_experiences")
   @@schema("app")
 }
 

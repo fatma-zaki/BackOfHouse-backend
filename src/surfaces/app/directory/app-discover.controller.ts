@@ -5,6 +5,7 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import type { Actor } from '../../../common/context/actor';
@@ -17,6 +18,7 @@ import { IndividualsOnly } from '../account-context';
 import { CompanyListQueryDto, ProfessionalListQueryDto } from './app-directory.dto';
 import {
   presentCompany,
+  presentExperience,
   presentProfessional,
   presentProfile,
   presentProfileProject,
@@ -30,7 +32,7 @@ const pageOf = <T>(items: T[], hasMore: boolean, query: { page: number; page_siz
 
 /**
  * The individual's profile and Discover directories (contracts/app /me/profile,
- * /me/projects*, /me/skills, /companies*, /professionals*). Individuals only; companies get 403 `FORBIDDEN`.
+ * /me/experience*, /me/projects*, /me/skills, /companies*, /professionals*). Individuals only; companies get 403 `FORBIDDEN`.
  */
 @ApiTags('Discover')
 @ApiBearerAuth()
@@ -54,6 +56,27 @@ export class AppDiscoverController {
   @ApiOkResponse(OK)
   async updateProfile(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
     return presentProfile(await this.profiles.update(actor, body, RequestContext.locale()));
+  }
+
+  @Post('me/experience')
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiCreatedResponse(OK)
+  async createExperience(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
+    return presentExperience(await this.profiles.createExperience(actor, body));
+  }
+
+  @Patch('me/experience/:id')
+  @ApiBody({ schema: { type: 'object' } })
+  @ApiOkResponse(OK)
+  async updateExperience(@CurrentActor() actor: Actor | undefined, @Param('id') id: string, @Body() body: unknown) {
+    return presentExperience(await this.profiles.updateExperience(actor, id, body));
+  }
+
+  @Delete('me/experience/:id')
+  @HttpCode(204)
+  @ApiNoContentResponse({ description: 'Deleted' })
+  async deleteExperience(@CurrentActor() actor: Actor | undefined, @Param('id') id: string): Promise<void> {
+    await this.profiles.deleteExperience(actor, id);
   }
 
   @Post('me/projects')
@@ -122,13 +145,17 @@ export class AppDiscoverController {
     return pageOf(items.map(presentProfessional), hasMore, query);
   }
 
+  /** Deprecated: connections are not offered (2026-11-10). */
   @Put('professionals/:id/connection')
+  @ApiOperation({ deprecated: true })
   @ApiOkResponse(OK)
   async connect(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
     return presentProfessional(await this.professionals.connect(actor, id));
   }
 
+  /** Deprecated: connections are not offered (2026-11-10). */
   @Delete('professionals/:id/connection')
+  @ApiOperation({ deprecated: true })
   @ApiOkResponse(OK)
   async disconnect(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
     return presentProfessional(await this.professionals.disconnect(actor, id));

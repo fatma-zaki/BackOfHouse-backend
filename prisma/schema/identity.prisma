@@ -56,9 +56,8 @@ model User {
   devices                 MemberDevice[]
   profile                 Profile?
   profileProjects         ProfileProject[]
+  profileExperiences      ProfileExperience[]
   profileSkills           ProfileSkill[]
-  connectionsMade         ProfessionalConnection[] @relation("ConnectionsMade")
-  connectionsReceived     ProfessionalConnection[] @relation("ConnectionsReceived")
   companyFollows          CompanyFollow[]
 
   @@unique([email], map: "uq_users__email")

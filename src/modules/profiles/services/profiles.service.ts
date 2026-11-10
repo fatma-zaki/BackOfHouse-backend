@@ -6,11 +6,12 @@ import { NotFoundError, ValidationFailedError } from '../../../common/errors';
 import { Locale, pickText } from '../../../common/i18n/locale';
 import { riyadhDay } from '../../../common/time/riyadh';
 import { parseInput } from '../../../common/validation/parse-input';
-import type { Profile, ProfileProject } from '../../../generated/prisma/client';
+import type { Profile, ProfileExperience, ProfileProject } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner } from '../../../platform/database';
 import { AuditActorType, AuditLogger } from '../../audit';
 import { MembersService } from '../../identity';
 import { TaxonomyService } from '../../taxonomy';
+import { compareExperience, currentCompany, yearsOfExperience } from '../domain/experience';
 
 const INTERESTS = ['TECH_INNOVATION', 'MARKETING', 'DESIGN', 'BUSINESS', 'NETWORKING', 'PRODUCTION'] as const;
 
@@ -32,6 +33,7 @@ const updateSchema = z
   .strict();
 
 const MAX_PROJECTS = 50;
+const MAX_EXPERIENCE = 30;
 const MAX_SKILLS = 30;
 const FIRST_YEAR = 1950;
 
@@ -45,6 +47,22 @@ const skillsSchema = z
       .refine((ids) => new Set(ids).size === ids.length, 'must not repeat a skill'),
   })
   .strict();
+
+const isoDate = (value: Date) => value.toISOString().slice(0, 10);
+
+const date = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, 'must be a date like 2024-03-01')
+  .refine((value) => isoDate(new Date(`${value}T00:00:00Z`)) === value, 'must be a real date');
+
+/** An experience entry (contracts/app `Experience`). */
+export interface ExperienceView {
+  id: string;
+  role: string;
+  company: string;
+  start: string;
+  end: string | null;
+}
 
 /** A project on the profile (contracts/app `ProfileProject`). */
 export interface ProfileProjectView {
@@ -70,6 +88,10 @@ export interface ProfileView {
   availabilityNote: string | null;
   interests: string[];
   contactPrivacy: { shareEmail: boolean; sharePhone: boolean };
+  /** Current roles first, then newest start first. */
+  experience: ExperienceView[];
+  /** Whole years covered by the experience entries, overlaps counted once. */
+  yearsExperience: number;
   /** Newest year first. */
   projects: ProfileProjectView[];
   /** Skill names in the request language, in the member's order. */
@@ -77,9 +99,9 @@ export interface ProfileView {
 }
 
 /**
- * Profiles (contracts/app /me/profile, /me/projects, /me/skills). Name and profile status
- * are identity's; the rest is here. Skills come from the taxonomy (`crafts`). Experience
- * has no editing route yet (BQ-85), so it is an empty list.
+ * Profiles (contracts/app /me/profile, /me/experience, /me/projects, /me/skills). Name and
+ * profile status are identity's; the rest is here. Skills come from the taxonomy
+ * (`crafts`). `company` on the profile is the current role's company.
  */
 @Injectable()
 export class ProfilesService {
@@ -133,6 +155,43 @@ export class ProfilesService {
     return this.view(userId, locale);
   }
 
+  /** Adds an experience entry; at most 30 per profile. */
+  async createExperience(actor: Actor | undefined, input: unknown): Promise<ExperienceView> {
+    const { userId } = requireMember(actor);
+    const data = parseInput(this.experienceSchema(), input);
+    const entry = await this.transactions.run(async (tx) => {
+      if ((await tx.profileExperience.count({ where: { userId } })) >= MAX_EXPERIENCE) {
+        throw new ValidationFailedError({ '(body)': [`A profile holds at most ${MAX_EXPERIENCE} experience entries`] });
+      }
+      const created = await tx.profileExperience.create({ data: { userId, ...data } });
+      await this.recordEntry(userId, 'user.profile.experience.create', 'profile_experience', created.id);
+      return created;
+    });
+    return experienceView(entry);
+  }
+
+  /** The whole entry is sent. Another member's entry is not found (404). */
+  async updateExperience(actor: Actor | undefined, entryId: string, input: unknown): Promise<ExperienceView> {
+    const { userId } = requireMember(actor);
+    await this.requireOwn('experience', userId, entryId);
+    const data = parseInput(this.experienceSchema(), input);
+    const entry = await this.transactions.run(async (tx) => {
+      const updated = await tx.profileExperience.update({ where: { id: entryId }, data });
+      await this.recordEntry(userId, 'user.profile.experience.update', 'profile_experience', entryId);
+      return updated;
+    });
+    return experienceView(entry);
+  }
+
+  async deleteExperience(actor: Actor | undefined, entryId: string): Promise<void> {
+    const { userId } = requireMember(actor);
+    await this.requireOwn('experience', userId, entryId);
+    await this.transactions.run(async (tx) => {
+      await tx.profileExperience.delete({ where: { id: entryId } });
+      await this.recordEntry(userId, 'user.profile.experience.delete', 'profile_experience', entryId);
+    });
+  }
+
   /** Adds a project; at most 50 per profile. */
   async createProject(actor: Actor | undefined, input: unknown): Promise<ProfileProjectView> {
     const { userId } = requireMember(actor);
@@ -142,7 +201,7 @@ export class ProfilesService {
         throw new ValidationFailedError({ '(body)': [`A profile holds at most ${MAX_PROJECTS} projects`] });
       }
       const created = await tx.profileProject.create({ data: { userId, ...data } });
-      await this.recordProject(userId, 'user.profile.project.create', created.id);
+      await this.recordEntry(userId, 'user.profile.project.create', 'profile_project', created.id);
       return created;
     });
     return projectView(project);
@@ -151,11 +210,11 @@ export class ProfilesService {
   /** The whole project is sent. Another member's project is not found (404). */
   async updateProject(actor: Actor | undefined, projectId: string, input: unknown): Promise<ProfileProjectView> {
     const { userId } = requireMember(actor);
-    await this.requireOwnProject(userId, projectId);
+    await this.requireOwn('project', userId, projectId);
     const data = parseInput(this.projectSchema(), input);
     const project = await this.transactions.run(async (tx) => {
       const updated = await tx.profileProject.update({ where: { id: projectId }, data });
-      await this.recordProject(userId, 'user.profile.project.update', projectId);
+      await this.recordEntry(userId, 'user.profile.project.update', 'profile_project', projectId);
       return updated;
     });
     return projectView(project);
@@ -163,10 +222,10 @@ export class ProfilesService {
 
   async deleteProject(actor: Actor | undefined, projectId: string): Promise<void> {
     const { userId } = requireMember(actor);
-    await this.requireOwnProject(userId, projectId);
+    await this.requireOwn('project', userId, projectId);
     await this.transactions.run(async (tx) => {
       await tx.profileProject.delete({ where: { id: projectId } });
-      await this.recordProject(userId, 'user.profile.project.delete', projectId);
+      await this.recordEntry(userId, 'user.profile.project.delete', 'profile_project', projectId);
     });
   }
 
@@ -212,29 +271,52 @@ export class ProfilesService {
       .strict();
   }
 
-  private async recordProject(userId: string, action: string, projectId: string): Promise<void> {
-    await this.audit.record({
-      actor: { type: AuditActorType.USER, userId },
-      action,
-      entityType: 'profile_project',
-      entityId: projectId,
-    });
+  /** Start and end are not in the future (Riyadh time); the end is not before the start. */
+  private experienceSchema() {
+    const today = riyadhDay(this.clock.now());
+    const notFuture = date.refine((value) => value <= today, 'must not be in the future');
+    return z
+      .object({
+        role: text(120),
+        company: text(200),
+        start: notFuture,
+        end: notFuture.nullable().optional(),
+      })
+      .strict()
+      .refine((e) => !e.end || e.end >= e.start, { path: ['end'], message: 'must not be before start' })
+      .transform((e) => ({
+        role: e.role,
+        company: e.company,
+        startDate: new Date(`${e.start}T00:00:00Z`),
+        endDate: e.end ? new Date(`${e.end}T00:00:00Z`) : null,
+      }));
   }
 
-  private async requireOwnProject(userId: string, projectId: string): Promise<void> {
-    const found =
-      z.string().uuid().safeParse(projectId).success &&
-      (await this.prisma.profileProject.count({ where: { id: projectId, userId } })) > 0;
-    if (!found) throw new NotFoundError('Project not found');
+  private async recordEntry(userId: string, action: string, entityType: string, entityId: string): Promise<void> {
+    await this.audit.record({ actor: { type: AuditActorType.USER, userId }, action, entityType, entityId });
+  }
+
+  /** Another member's entry answers 404, never 403, so ids do not leak. */
+  private async requireOwn(kind: 'experience' | 'project', userId: string, id: string): Promise<void> {
+    const valid = z.string().uuid().safeParse(id).success;
+    const count = !valid
+      ? 0
+      : kind === 'experience'
+        ? await this.prisma.profileExperience.count({ where: { id, userId } })
+        : await this.prisma.profileProject.count({ where: { id, userId } });
+    if (count === 0)
+      throw new NotFoundError(kind === 'experience' ? 'Experience entry not found' : 'Project not found');
   }
 
   private async view(userId: string, locale: Locale): Promise<ProfileView> {
-    const [member, profile, projects, skillRows] = await Promise.all([
+    const [member, profile, experienceRows, projects, skillRows] = await Promise.all([
       this.members.view(userId),
       this.prisma.profile.findUnique({ where: { userId } }),
+      this.prisma.profileExperience.findMany({ where: { userId } }),
       this.prisma.profileProject.findMany({ where: { userId }, orderBy: [{ year: 'desc' }, { createdAt: 'desc' }] }),
       this.prisma.profileSkill.findMany({ where: { userId }, orderBy: { sortOrder: 'asc' } }),
     ]);
+    const experience = experienceRows.map(experienceView);
     const skills = new Map(
       (await this.taxonomy.skillsByIds(skillRows.map((r) => r.skillId))).map((s) => [s.id, pickText(s.name, locale)]),
     );
@@ -242,7 +324,7 @@ export class ProfilesService {
     return {
       name: member.fullName,
       headline: p.headline ?? '',
-      company: p.currentCompany ?? null,
+      company: p.currentCompany ?? currentCompany(experience),
       city: p.city ?? '',
       industry: p.industry ?? null,
       about: p.about ?? '',
@@ -252,10 +334,22 @@ export class ProfilesService {
       availabilityNote: p.availabilityNote ?? null,
       interests: p.interests ?? [],
       contactPrivacy: { shareEmail: p.shareEmail ?? false, sharePhone: p.sharePhone ?? false },
+      experience: [...experience].sort(compareExperience),
+      yearsExperience: yearsOfExperience(experience, riyadhDay(this.clock.now())),
       projects: projects.map(projectView),
       skills: skillRows.map((r) => skills.get(r.skillId)).filter((name): name is string => name !== undefined),
     };
   }
+}
+
+function experienceView(entry: ProfileExperience): ExperienceView {
+  return {
+    id: entry.id,
+    role: entry.role,
+    company: entry.company,
+    start: isoDate(entry.startDate),
+    end: entry.endDate ? isoDate(entry.endDate) : null,
+  };
 }
 
 function projectView(project: ProfileProject): ProfileProjectView {
