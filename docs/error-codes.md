@@ -64,9 +64,9 @@ Where the Flutter contract and the admin hand-off used different codes for the s
 
 | Code | HTTP | Surface | When | Phase |
 |---|---|---|---|---|
-| `VERIFICATION_LOCKED` | 409 | app | Uploading after submitting | 3b |
-| `VERIFICATION_INCOMPLETE` | 409 | app | Submitting without both documents | 3b |
-| `FILE_TOO_LARGE` | 413 | app | Upload over the size limit | 1 |
+| `VERIFICATION_LOCKED` | 409 | app | Uploading after submitting, or submitting twice | built |
+| `VERIFICATION_INCOMPLETE` | 409 | app | Submitting without both documents | built |
+| `FILE_TOO_LARGE` | 413 | app | Upload over the size limit (verification documents: 10 MB) | built |
 | `ENGAGEMENT_NOT_ALLOWED` | 403 | app | A company likes or comments on news, or deletes someone else's comment | 7 |
 | `TRANSLATION_MISSING` | 422 | admin | Publishing or scheduling news without both languages | 7 |
 
