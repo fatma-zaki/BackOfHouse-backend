@@ -8,3 +8,8 @@ export {
   type VerificationRequestView,
 } from './services/verification.service';
 export { MAX_DOCUMENT_BYTES } from './domain/document-file';
+export {
+  VerificationReviewService,
+  type ReviewRequestView,
+  type UserVerificationStatus,
+} from './services/verification-review.service';

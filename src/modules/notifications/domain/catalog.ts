@@ -65,6 +65,97 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
       },
     },
   },
+  {
+    // Fed by `verification.approved` (a reviewer approved the member's documents).
+    type: 'verification.approved',
+    category: 'CREDENTIALS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: [],
+    templates: {
+      en: {
+        title: 'You are verified',
+        body: 'Your documents were approved. Your profile now shows the verified badge.',
+        emailSubject: 'Your Back of House profile is verified',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Your verification documents were approved, and your profile now shows the verified badge.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'تم توثيق حسابك',
+        body: 'تمت الموافقة على مستنداتك، ويظهر الآن شعار التوثيق في ملفك.',
+        emailSubject: 'تم توثيق ملفك في Back of House',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'تمت الموافقة على مستندات التوثيق، ويظهر الآن شعار التوثيق في ملفك.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `verification.info_requested`; `message` is the reviewer's request to the member.
+    type: 'verification.info_requested',
+    category: 'CREDENTIALS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['message'],
+    templates: {
+      en: {
+        title: 'More information needed',
+        body: 'Your verification needs more information: {{message}}',
+        emailSubject: 'Your Back of House verification needs more information',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'The reviewer needs more information to verify you:\n\n{{message}}\n\n' +
+          'Upload the documents again from the app and send the request.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'مطلوب معلومات إضافية',
+        body: 'يحتاج طلب التوثيق إلى معلومات إضافية: {{message}}',
+        emailSubject: 'طلب التوثيق في Back of House يحتاج إلى معلومات إضافية',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'يحتاج المراجع إلى معلومات إضافية لتوثيق حسابك:\n\n{{message}}\n\n' +
+          'ارفع المستندات من التطبيق مرة أخرى وأرسل الطلب.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `verification.rejected`; `message` is the reviewer's reason.
+    type: 'verification.rejected',
+    category: 'CREDENTIALS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['message'],
+    templates: {
+      en: {
+        title: 'Verification not approved',
+        body: 'Your verification was not approved: {{message}}',
+        emailSubject: 'Your Back of House verification was not approved',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Your verification was not approved:\n\n{{message}}\n\n' +
+          'You can upload new documents from the app and send the request again.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'لم تتم الموافقة على التوثيق',
+        body: 'لم تتم الموافقة على طلب التوثيق: {{message}}',
+        emailSubject: 'لم تتم الموافقة على طلب التوثيق في Back of House',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'لم تتم الموافقة على طلب التوثيق:\n\n{{message}}\n\n' +
+          'يمكنك رفع مستندات جديدة من التطبيق وإرسال الطلب مرة أخرى.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
 ];
 
 const BY_TYPE = new Map(NOTIFICATION_CATALOG.map((entry) => [entry.type, entry]));

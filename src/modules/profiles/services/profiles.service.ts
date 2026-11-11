@@ -82,9 +82,6 @@ export interface ProfileView {
   industry: string | null;
   about: string;
   profileStatus: 'PROFESSIONAL' | 'STUDENT';
-  /** Verification arrives with Phase 3b/4. */
-  verified: boolean;
-  verificationLevel: number;
   availabilityNote: string | null;
   interests: string[];
   contactPrivacy: { shareEmail: boolean; sharePhone: boolean };
@@ -329,8 +326,6 @@ export class ProfilesService {
       industry: p.industry ?? null,
       about: p.about ?? '',
       profileStatus: member.profileStatus ?? 'PROFESSIONAL',
-      verified: false,
-      verificationLevel: 0,
       availabilityNote: p.availabilityNote ?? null,
       interests: p.interests ?? [],
       contactPrivacy: { shareEmail: p.shareEmail ?? false, sharePhone: p.sharePhone ?? false },

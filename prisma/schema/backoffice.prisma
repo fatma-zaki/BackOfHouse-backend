@@ -1,0 +1,26 @@
+// Module: backoffice (module-dependency-map.md `admin`). Staff-only records about members
+// and companies. Never shown on the app surface.
+
+enum NoteSubject {
+  USER
+  COMPANY
+
+  @@map("note_subject")
+  @@schema("app")
+}
+
+/// An internal staff note on a user or a company (contracts/admin /{subject}/{id}/notes).
+/// Append-only: notes are never edited.
+model StaffNote {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  subjectType   NoteSubject  @map("subject_type")
+  subjectId     String       @map("subject_id") @db.Uuid
+  body          String
+  authorStaffId String       @map("author_staff_id") @db.Uuid
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  author        StaffAccount @relation(fields: [authorStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_staff_notes__author_staff_id")
+
+  @@index([subjectType, subjectId, createdAt(sort: Desc)], map: "ix_staff_notes__subject_created")
+  @@map("staff_notes")
+  @@schema("app")
+}

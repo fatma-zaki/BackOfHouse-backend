@@ -66,10 +66,12 @@ export function adminPage<T>(
 /**
  * A page of results. Returning an instance from a controller makes the
  * envelope interceptor render `{ data: items, meta }` instead of `{ data }`.
+ * `extra` adds top-level fields a contract defines next to them (e.g. `counts`).
  */
 export class Page<T, M extends CursorPageMeta | AppPageMeta | OffsetPageMeta = CursorPageMeta> {
   constructor(
     readonly items: T[],
     readonly meta: M,
+    readonly extra?: Record<string, unknown>,
   ) {}
 }

@@ -67,7 +67,7 @@ export function presentProfileProject(p: ProfileProjectView) {
 }
 
 /** contracts/app `Profile`. Badges and attendance arrive with Phase 6. */
-export function presentProfile(p: ProfileView) {
+export function presentProfile(p: ProfileView, verified: boolean) {
   return {
     name: p.name,
     headline: p.headline,
@@ -77,8 +77,9 @@ export function presentProfile(p: ProfileView) {
     about: p.about,
     profile_status: p.profileStatus,
     avatar_url: null,
-    verified: p.verified,
-    verification_level: p.verificationLevel,
+    verified,
+    // Verification state only: 1 once a reviewer approved (points and payment never change it).
+    verification_level: verified ? 1 : 0,
     ...(p.availabilityNote ? { availability: p.availabilityNote } : {}),
     years_experience: p.yearsExperience,
     events_attended: 0,
@@ -93,7 +94,7 @@ export function presentProfile(p: ProfileView) {
 }
 
 /** contracts/app `Professional`. */
-export function presentProfessional(p: ProfessionalView) {
+export function presentProfessional(p: ProfessionalView, verified: boolean) {
   return {
     id: p.id,
     name: p.name,
@@ -104,7 +105,7 @@ export function presentProfessional(p: ProfessionalView) {
     skills: p.skills,
     availability: p.availability,
     avatar_url: null,
-    verified: p.verified,
+    verified,
     connected: p.connected,
     field: p.field,
     student: p.student,

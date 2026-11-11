@@ -7,6 +7,7 @@ import { InMemoryMemberAuthProvider } from './infrastructure/in-memory-member-au
 import { MEMBER_AUTH_PROVIDER, MemberAuthProvider } from './infrastructure/member-auth-provider';
 import { DevSmsSender, NotConfiguredSmsSender, SMS_SENDER, SmsSender } from './infrastructure/sms-sender';
 import { SupabaseMemberAuthProvider } from './infrastructure/supabase-member-auth.provider';
+import { AccountStatusService } from './services/account-status.service';
 import { ActivityService } from './services/activity.service';
 import { MemberAuthService } from './services/member-auth.service';
 import { MembersService } from './services/members.service';
@@ -29,6 +30,7 @@ const IDENTITY_PURGE_CRON = '45 * * * *';
     PhoneSignInService,
     MembersService,
     ActivityService,
+    AccountStatusService,
     {
       provide: MEMBER_AUTH_PROVIDER,
       inject: [AppConfig, CLOCK],
@@ -55,7 +57,7 @@ const IDENTITY_PURGE_CRON = '45 * * * *';
           : new NotConfiguredSmsSender(),
     },
   ],
-  exports: [MemberAuthService, PhoneSignInService, MembersService, ActivityService],
+  exports: [MemberAuthService, PhoneSignInService, MembersService, ActivityService, AccountStatusService],
 })
 export class IdentityModule implements OnModuleInit {
   private readonly logger = new Logger(IdentityModule.name);

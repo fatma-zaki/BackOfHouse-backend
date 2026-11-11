@@ -39,7 +39,6 @@ export interface ProfessionalView {
   yearsExperience: number;
   skills: string[];
   availability: 'AVAILABLE' | 'IN_PRODUCTION' | 'FULLY_BOOKED';
-  verified: boolean;
   /** Always false: connections are not offered (2026-11-10). */
   connected: boolean;
   field: 'PRODUCTION' | 'DESIGN' | 'TECHNICAL' | 'OTHER';
@@ -160,7 +159,6 @@ export class ProfessionalsService {
         yearsExperience: yearsOfExperience(experience, today),
         skills: [],
         availability: row.availability ?? 'AVAILABLE',
-        verified: false,
         connected: false,
         field: row.professional_field ?? 'OTHER',
         student: row.profile_status === 'STUDENT',

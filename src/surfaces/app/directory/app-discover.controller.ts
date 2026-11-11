@@ -14,6 +14,7 @@ import { CurrentActor } from '../../../common/decorators/current-actor.decorator
 import { AppPageMeta, Page } from '../../../common/pagination';
 import { CompanyDirectoryService } from '../../../modules/companies';
 import { ProfessionalsService, ProfilesService } from '../../../modules/profiles';
+import { VerificationReviewService } from '../../../modules/verification';
 import { IndividualsOnly } from '../account-context';
 import { CompanyListQueryDto, ProfessionalListQueryDto } from './app-directory.dto';
 import {
@@ -43,19 +44,31 @@ export class AppDiscoverController {
     private readonly profiles: ProfilesService,
     private readonly professionals: ProfessionalsService,
     private readonly companies: CompanyDirectoryService,
+    private readonly verification: VerificationReviewService,
   ) {}
+
+  /** `verified` comes from the verification decision only (verification-state.ts). */
+  private async isVerified(userId: string): Promise<boolean> {
+    return (await this.verification.verifiedUserIds([userId])).has(userId);
+  }
 
   @Get('me/profile')
   @ApiOkResponse(OK)
   async profile(@CurrentActor() actor: Actor | undefined) {
-    return presentProfile(await this.profiles.get(actor, RequestContext.locale()));
+    return presentProfile(
+      await this.profiles.get(actor, RequestContext.locale()),
+      await this.isVerified(actor!.kind === 'member' ? actor!.userId : ''),
+    );
   }
 
   @Patch('me/profile')
   @ApiBody({ schema: { type: 'object' } })
   @ApiOkResponse(OK)
   async updateProfile(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
-    return presentProfile(await this.profiles.update(actor, body, RequestContext.locale()));
+    return presentProfile(
+      await this.profiles.update(actor, body, RequestContext.locale()),
+      await this.isVerified(actor!.kind === 'member' ? actor!.userId : ''),
+    );
   }
 
   @Post('me/experience')
@@ -104,7 +117,10 @@ export class AppDiscoverController {
   @ApiBody({ schema: { type: 'object' } })
   @ApiOkResponse(OK)
   async setSkills(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
-    return presentProfile(await this.profiles.setSkills(actor, body, RequestContext.locale()));
+    return presentProfile(
+      await this.profiles.setSkills(actor, body, RequestContext.locale()),
+      await this.isVerified(actor!.kind === 'member' ? actor!.userId : ''),
+    );
   }
 
   @Get('companies')
@@ -142,7 +158,12 @@ export class AppDiscoverController {
   @ApiOkResponse(OK)
   async listProfessionals(@CurrentActor() actor: Actor | undefined, @Query() query: ProfessionalListQueryDto) {
     const { items, hasMore } = await this.professionals.list(actor, query, RequestContext.locale());
-    return pageOf(items.map(presentProfessional), hasMore, query);
+    const verified = await this.verification.verifiedUserIds(items.map((p) => p.id));
+    return pageOf(
+      items.map((p) => presentProfessional(p, verified.has(p.id))),
+      hasMore,
+      query,
+    );
   }
 
   /** Deprecated: connections are not offered (2026-11-10). */
@@ -150,7 +171,8 @@ export class AppDiscoverController {
   @ApiOperation({ deprecated: true })
   @ApiOkResponse(OK)
   async connect(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
-    return presentProfessional(await this.professionals.connect(actor, id));
+    const professional = await this.professionals.connect(actor, id);
+    return presentProfessional(professional, await this.isVerified(professional.id));
   }
 
   /** Deprecated: connections are not offered (2026-11-10). */
@@ -158,6 +180,7 @@ export class AppDiscoverController {
   @ApiOperation({ deprecated: true })
   @ApiOkResponse(OK)
   async disconnect(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
-    return presentProfessional(await this.professionals.disconnect(actor, id));
+    const professional = await this.professionals.disconnect(actor, id);
+    return presentProfessional(professional, await this.isVerified(professional.id));
   }
 }

@@ -9,6 +9,7 @@ export {
 export { PhoneSignInService } from './services/phone-sign-in.service';
 export { MembersService, type MemberContact, type MemberView } from './services/members.service';
 export { ActivityService } from './services/activity.service';
+export { AccountStatusService } from './services/account-status.service';
 export { MEMBER_AUTH_PROVIDER, type AuthTokens, type MemberAuthProvider } from './infrastructure/member-auth-provider';
 export { InMemoryMemberAuthProvider } from './infrastructure/in-memory-member-auth.provider';
 export { SMS_SENDER, DevSmsSender, type SmsSender } from './infrastructure/sms-sender';

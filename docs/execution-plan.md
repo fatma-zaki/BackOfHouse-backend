@@ -669,6 +669,14 @@ No feature code.
 
 ### Phase 4 · Trust and review
 
+> **Progress (2026-11-11): 4A built on branch `phase-4a-verification-users`** (verification decisions, users, notes: 14 of the 26 admin operations). 4B (companies, claims, moderation) is next; `contracts/phase.json` stays `3b` until all 26 are in.
+> - **Verification decisions:** `verification/domain/verification-state.ts` is the only way between states (DRAFT → IN_REVIEW → APPROVED / MORE_INFO / REJECTED; APPROVED → REJECTED on removal; resubmission from MORE_INFO and REJECTED), with every transition unit-tested. A member is verified exactly while their request is APPROVED: `AppUser.is_verified`, `Profile.verified` (and `verification_level` 1) and `Professional.verified` read that, nothing stores a separate flag. `due_at` is 3 working days (Sun–Thu, Riyadh; public holidays not yet counted). Decisions are kept in `verification_decisions`, audited, and emitted (`verification.approved`, `.info_requested`, `.rejected`, `.removed`); the member gets a push, email and in-app notification that cannot be turned off, with the reviewer's message. The request detail issues 5-minute signed URLs, each audited as `verification.view_document`.
+> - **App status mapping:** `contracts/app` has only DRAFT and IN_REVIEW, so MORE_INFO and REJECTED show as DRAFT (the member may upload again) and APPROVED as IN_REVIEW (locked; the outcome is `is_verified`).
+> - **Users** (`backoffice` module, the `admin` module of the dependency map): table with filters, `counts`, masked email; detail with email and phone only for `users.contact.view` (each such view audited) and `allowed_actions`; suspend (ends every session at once, `user.suspended`), unsuspend, reset link (staff never set a password), remove verification. Bulk SUSPEND runs in the worker through the outbox (202 + `job_id`); MESSAGE, TAG and EXPORT answer 422 until Phases 7 and 8.
+> - **Notes:** `staff_notes`, append-only (a trigger refuses edits), on users and companies.
+> - **Exit tests built:** `verification-state.spec.ts`; `test/integration/policies/verified-only-by-decision.int-spec.ts`; `admin-matrix` covers every 4A operation; `test/e2e/admin/verification-review.e2e-spec.ts` and `users-admin.e2e-spec.ts` check bodies against `contracts/admin`.
+
+
 **Domain**
 - Verification decisions (approve, more info, reject), `due_at` 3 working days out. `verification-decision.policy.ts` is the only path to verified.
 - Claim decisions: ownership moves; the company is not verified by this.
