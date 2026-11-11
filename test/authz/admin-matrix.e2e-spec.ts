@@ -103,6 +103,18 @@ describe('admin permission matrix (e2e)', () => {
         'POST /users/{id}/verification/remove',
         'GET /{subject}/{id}/notes',
         'POST /{subject}/{id}/notes',
+        'GET /companies',
+        'GET /companies/{id}',
+        'PATCH /companies/{id}',
+        'POST /companies/{id}/suspend',
+        'GET /companies/{id}/team',
+        'POST /companies/{id}/verification/remove',
+        'GET /claims',
+        'POST /claims/{id}/approve',
+        'POST /claims/{id}/reject',
+        'GET /moderation/cases',
+        'GET /moderation/cases/{id}',
+        'POST /moderation/cases/{id}/actions',
       ].sort(),
     );
   });

@@ -10,6 +10,8 @@ import { AuditModule } from './modules/audit/audit.module';
 import { IdentityModule } from './modules/identity';
 import { NotificationsModule } from './modules/notifications';
 import { BackofficeModule } from './modules/backoffice';
+import { CompaniesModule } from './modules/companies';
+import { ProfilesModule } from './modules/profiles';
 
 /**
  * The `worker` process (ADR-022): outbox dispatcher and scheduled jobs, no HTTP.
@@ -30,6 +32,9 @@ import { BackofficeModule } from './modules/backoffice';
     IdentityModule,
     NotificationsModule,
     BackofficeModule,
+    // Owning modules carry out moderation removals (@OnDomainEvent).
+    CompaniesModule,
+    ProfilesModule,
   ],
 })
 export class WorkerModule {}

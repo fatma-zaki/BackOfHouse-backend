@@ -5,3 +5,7 @@ export { CompanyDirectoryService, NAME_COLLATION, type CompanyListQuery } from '
 export { CompanyWorkspaceService, type CompanyStatsView } from './services/company-workspace.service';
 export type { CompanyView, CompanyProjectView } from './services/company-views';
 export { COMPANY_PERMISSIONS, requireCompanyActor, type CompanyPermission } from './policies/company-actor.policy';
+export { CompaniesAdminService, type CompanyAdminView, type Kpi } from './services/companies-admin.service';
+export { ClaimsService, type ClaimView } from './services/claims.service';
+export { requireFeaturePermission } from './policies/featured.policy';
+export { companySlug } from './domain/slug';

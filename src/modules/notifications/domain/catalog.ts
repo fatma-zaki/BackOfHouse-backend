@@ -156,6 +156,66 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
       },
     },
   },
+  {
+    // Fed by `moderation.case.resolved` with WARNED; `message` is the staff member's.
+    type: 'moderation.warning',
+    category: 'CREDENTIALS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['message'],
+    templates: {
+      en: {
+        title: 'A warning about your account',
+        body: '{{message}}',
+        emailSubject: 'A warning about your Back of House account',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Our team reviewed a report about your account and is sending this warning:\n\n{{message}}\n\n' +
+          'Please keep to the community rules. Repeated reports can lead to suspension.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'تنبيه بخصوص حسابك',
+        body: '{{message}}',
+        emailSubject: 'تنبيه بخصوص حسابك في Back of House',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'راجع فريقنا بلاغًا عن حسابك ويرسل لك هذا التنبيه:\n\n{{message}}\n\n' +
+          'يرجى الالتزام بقواعد المجتمع، فتكرار البلاغات قد يؤدي إلى إيقاف الحساب.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `moderation.case.resolved` with CONTENT_REMOVED; `message` may be empty.
+    type: 'moderation.content_removed',
+    category: 'CREDENTIALS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['message'],
+    templates: {
+      en: {
+        title: 'Content removed',
+        body: 'We removed one of your projects after a report. {{message}}',
+        emailSubject: 'We removed content from your Back of House profile',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'After reviewing a report, our team removed one of your projects.\n\n{{message}}\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'تمت إزالة محتوى',
+        body: 'أزلنا أحد مشاريعك بعد مراجعة بلاغ. {{message}}',
+        emailSubject: 'أزلنا محتوى من ملفك في Back of House',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'بعد مراجعة بلاغ، أزال فريقنا أحد مشاريعك.\n\n{{message}}\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
 ];
 
 const BY_TYPE = new Map(NOTIFICATION_CATALOG.map((entry) => [entry.type, entry]));

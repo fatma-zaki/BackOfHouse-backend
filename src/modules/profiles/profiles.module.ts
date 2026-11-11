@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { IdentityModule } from '../identity';
 import { TaxonomyModule } from '../taxonomy';
+import { ModerationRemovalHandler } from './handlers/moderation-removal.handler';
 import { ProfessionalsService } from './services/professionals.service';
 import { ProfilesService } from './services/profiles.service';
 
@@ -12,7 +13,7 @@ import { ProfilesService } from './services/profiles.service';
  */
 @Module({
   imports: [IdentityModule, TaxonomyModule],
-  providers: [ProfilesService, ProfessionalsService],
+  providers: [ProfilesService, ProfessionalsService, ModerationRemovalHandler],
   exports: [ProfilesService, ProfessionalsService],
 })
 export class ProfilesModule {}

@@ -245,6 +245,15 @@ export class ProfilesService {
     return this.view(userId, locale);
   }
 
+  /** For moderation: a profile project's title and its owner, or null. */
+  async describeProject(
+    projectId: string,
+  ): Promise<{ title: string; ownerUserId: string; preview: string | null } | null> {
+    if (!z.string().uuid().safeParse(projectId).success) return null;
+    const project = await this.prisma.profileProject.findUnique({ where: { id: projectId } });
+    return project ? { title: project.title, ownerUserId: project.userId, preview: project.role } : null;
+  }
+
   /** For `AppUser.headline` (GET /me); null until the member writes one. */
   async headlineOf(userId: string): Promise<string | null> {
     const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { headline: true } });

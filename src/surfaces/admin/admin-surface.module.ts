@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AccessModule } from '../../modules/access';
 import { BackofficeModule } from '../../modules/backoffice';
+import { CompaniesModule } from '../../modules/companies';
+import { ModerationModule } from '../../modules/moderation';
 import { IdentityModule } from '../../modules/identity';
 import { VerificationModule } from '../../modules/verification';
 import { NotificationsModule } from '../../modules/notifications';
@@ -12,6 +14,9 @@ import { AdminTeamController } from './team/admin-team.controller';
 import { AdminMetaController } from './meta/admin-meta.controller';
 import { AdminSettingsController } from './settings/admin-settings.controller';
 import { AdminNotificationsController } from './notifications/admin-notifications.controller';
+import { AdminClaimsController } from './companies/admin-claims.controller';
+import { AdminCompaniesController } from './companies/admin-companies.controller';
+import { AdminModerationController } from './moderation/admin-moderation.controller';
 import { AdminNotesController } from './users/admin-notes.controller';
 import { AdminUsersController } from './users/admin-users.controller';
 import { AdminVerificationController } from './verification/admin-verification.controller';
@@ -31,6 +36,8 @@ import { AdminVerificationController } from './verification/admin-verification.c
     IdentityModule,
     VerificationModule,
     BackofficeModule,
+    CompaniesModule,
+    ModerationModule,
   ],
   controllers: [
     AdminMetaController,
@@ -42,6 +49,9 @@ import { AdminVerificationController } from './verification/admin-verification.c
     AdminVerificationController,
     AdminUsersController,
     AdminNotesController,
+    AdminCompaniesController,
+    AdminClaimsController,
+    AdminModerationController,
   ],
 })
 export class AdminSurfaceModule {}
