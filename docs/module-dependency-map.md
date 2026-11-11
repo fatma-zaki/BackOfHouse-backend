@@ -50,6 +50,7 @@ flowchart BT
     verification --> media
     verification --> access
     verification --> audit
+    verification --> identity
     content --> media
     analytics --> access
     notifications --> identity

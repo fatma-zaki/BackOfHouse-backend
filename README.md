@@ -27,8 +27,9 @@ Built: **Stages 1–3** of [docs/backend-development-order.md](docs/backend-deve
 | Phase 2B · Member identity | `/api/app/v1/auth/*` (email + password, phone SMS code, refresh, logout, password reset) and `GET /me` over Supabase Auth (in memory locally without Supabase), company created at registration, activity tracking; all Phase 2 contract operations implemented (`contracts/phase.json` = 2) | Done |
 | Phase 2C · Notification delivery | In-app notifications with push (FCM) and email deliveries in the member's language, preferences, quiet hours, retries; fed only by outbox events | Done |
 | Phase 3a · Profiles and directories | Individual profile with private-by-default contact sharing, experience, projects and skills, professionals directory, company directory (Arabic A–Z sort, alef-insensitive search), follows, company workspace (profile, stats, portfolio projects); all Phase 3a contract operations implemented | Done |
-| Phase 3b · Verification and feeds | Verification requests with scanned, private documents (dev scanner until TQ-10), the member notification feed, and the admin bell; all Phase 3b contract operations implemented | In progress |
-| Next | Trust and review (4): verification decisions, claims, moderation | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
+| Phase 3b · Verification and feeds | Verification requests with scanned, private documents (dev scanner until TQ-10), the member notification feed, and the admin bell; all Phase 3b contract operations implemented | Done |
+| Phase 4A · Verification decisions and users | Reviewers approve, ask for more information or reject; members are verified only by approval. Admin users table and detail (masked contact), suspend, reset link, bulk suspend, internal notes | In progress |
+| Next | 4B: companies, claims and moderation in the back office | Hosting deferred while in development. See [docs/execution-plan.md](docs/execution-plan.md) and [docs/gap-report.md](docs/gap-report.md) |
 
 ## Layout
 

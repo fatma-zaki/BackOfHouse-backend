@@ -135,7 +135,9 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 | `verification.submitted` | verification | ADM | `verification_id`, `type`, `due_at` | Queue and SLA | async |
 | `verification.info_requested` | verification | NTF (applicant) | `verification_id`, `type`, `subject_ref` | §5.1 status visibility | async |
 | `verification.approved` | verification | NTF, ENG (TRUST/EXPERIENCE points, P2), SRC | `verification_id`, `type`, `subject_ref` | Trust derivation | async (subject state already changed in TX) |
-| `verification.rejected` | verification | NTF | `verification_id`, `type`, `subject_ref` | | async |
+| `verification.rejected` | verification | NTF | `verification_id`, `type`, `subject_ref`, `message` | | async |
+| `verification.removed` | verification (staff removes a verification) | SRC (later) | `verification_id`, `type`, `subject_ref` | Added 2026-11-11 (Phase 4A) | async |
+| `users.bulk_action.requested` | backoffice | backoffice worker (`BulkUserActionsHandler`) | `action`, `user_ids`, `staff_id` | Runs a staff bulk action in the worker; the event id is the `job_id` (added 2026-11-11) | async |
 | `verification.expired` | verification (job) | NTF, ENG (reverse trust points), SRC | `verification_id`, `type`, `subject_ref` | BQ-23 | async |
 
 `subject_ref` = `{ kind: "organization" | "user" | "project" | "credential" | "experience", id }`.

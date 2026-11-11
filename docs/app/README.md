@@ -454,7 +454,12 @@ and the app will start using them without any contract change.
    status, interests and privacy. Experience, skills and portfolio projects
    are read-only today. Where are they entered: the website, or new
    `/me/experience` and `/me/projects` endpoints?
-2. **Verification outcome:** should a declined request come back as a new
+2. ⚠️ **Built 2026-11-11 within the current contract:** after "more information"
+   or a rejection, `GET /me/verification` shows `DRAFT` again so the member
+   can re-upload and resubmit; the reviewer's message arrives as a notification.
+   An approved request shows `IN_REVIEW` (locked) and `is_verified` is true. A
+   `CHANGES_REQUESTED` status with the note would be clearer for the app.
+   *Original:* **Verification outcome:** should a declined request come back as a new
    status with a note (e.g. `CHANGES_REQUESTED`) so the member can re-upload?
    The contract has only `DRAFT` and `IN_REVIEW` today.
 3. **Push notifications:** is there a device-token endpoint (FCM/APNs)? The
