@@ -1,0 +1,83 @@
+// Module: moderation (nest-module-map.md). Reports on one target join one open case;
+// staff dismiss, warn, remove the content or suspend the account. Corrective actions are
+// carried out by the owning module through events; moderation writes only its own tables.
+
+enum ModerationTargetType {
+  USER
+  COMPANY
+  COMPANY_PROJECT
+  PROFILE_PROJECT
+
+  @@map("moderation_target_type")
+  @@schema("app")
+}
+
+enum ModerationSource {
+  MEMBERS
+  AUTO_FILTER
+
+  @@map("moderation_source")
+  @@schema("app")
+}
+
+enum ModerationStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+
+  @@map("moderation_status")
+  @@schema("app")
+}
+
+enum ModerationResolution {
+  DISMISSED
+  WARNED
+  CONTENT_REMOVED
+  ACCOUNT_SUSPENDED
+
+  @@map("moderation_resolution")
+  @@schema("app")
+}
+
+/// One case per target while open (contracts/admin `ModerationCase`).
+model ModerationCase {
+  id                String                @id @default(uuid(7)) @db.Uuid
+  targetType        ModerationTargetType  @map("target_type")
+  targetId          String                @map("target_id") @db.Uuid
+  /// The account answerable for the target (the member, or the Company Account).
+  ownerUserId       String?               @map("owner_user_id") @db.Uuid
+  source            ModerationSource
+  status            ModerationStatus      @default(OPEN)
+  resolution        ModerationResolution?
+  /// Shown to the owner for warn, remove and suspend.
+  resolutionMessage String?               @map("resolution_message")
+  resolvedByStaffId String?               @map("resolved_by_staff_id") @db.Uuid
+  resolvedAt        DateTime?             @map("resolved_at") @db.Timestamptz(6)
+  createdAt         DateTime              @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime              @updatedAt @map("updated_at") @db.Timestamptz(6)
+  owner             User?                 @relation(fields: [ownerUserId], references: [id], onDelete: SetNull, onUpdate: Restrict, map: "fk_moderation_cases__owner_user_id")
+  resolvedBy        StaffAccount?         @relation(fields: [resolvedByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_moderation_cases__resolved_by_staff_id")
+  reports           ModerationReport[]
+
+  @@index([status, createdAt], map: "ix_moderation_cases__status_created_at")
+  @@index([targetType, targetId], map: "ix_moderation_cases__target")
+  @@index([ownerUserId], map: "ix_moderation_cases__owner_user_id")
+  @@map("moderation_cases")
+  @@schema("app")
+}
+
+/// A member's report, one per member per case.
+model ModerationReport {
+  id             String         @id @default(uuid(7)) @db.Uuid
+  caseId         String         @map("case_id") @db.Uuid
+  reporterUserId String         @map("reporter_user_id") @db.Uuid
+  reason         String
+  details        String?
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  case           ModerationCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_moderation_reports__case_id")
+  reporter       User           @relation("ReportsMade", fields: [reporterUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_moderation_reports__reporter_user_id")
+
+  @@unique([caseId, reporterUserId], map: "uq_moderation_reports__case_reporter")
+  @@map("moderation_reports")
+  @@schema("app")
+}

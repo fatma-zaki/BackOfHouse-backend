@@ -59,6 +59,9 @@ model User {
   profileExperiences      ProfileExperience[]
   profileSkills           ProfileSkill[]
   verificationRequest     VerificationRequest?
+  pageClaims              PageClaim[]
+  moderationCases         ModerationCase[]
+  moderationReports       ModerationReport[]       @relation("ReportsMade")
   companyFollows          CompanyFollow[]
 
   @@unique([email], map: "uq_users__email")

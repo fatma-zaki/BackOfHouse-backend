@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { IdentityModule } from '../identity';
+import { ModerationRemovalHandler } from './handlers/moderation-removal.handler';
+import { ClaimsService } from './services/claims.service';
+import { CompaniesAdminService } from './services/companies-admin.service';
 import { CompaniesService } from './services/companies.service';
 import { CompanyDirectoryService } from './services/company-directory.service';
 import { CompanyWorkspaceService } from './services/company-workspace.service';
@@ -10,7 +13,14 @@ import { CompanyWorkspaceService } from './services/company-workspace.service';
  */
 @Module({
   imports: [IdentityModule],
-  providers: [CompaniesService, CompanyDirectoryService, CompanyWorkspaceService],
-  exports: [CompaniesService, CompanyDirectoryService, CompanyWorkspaceService],
+  providers: [
+    CompaniesService,
+    CompanyDirectoryService,
+    CompanyWorkspaceService,
+    CompaniesAdminService,
+    ClaimsService,
+    ModerationRemovalHandler,
+  ],
+  exports: [CompaniesService, CompanyDirectoryService, CompanyWorkspaceService, CompaniesAdminService, ClaimsService],
 })
 export class CompaniesModule {}

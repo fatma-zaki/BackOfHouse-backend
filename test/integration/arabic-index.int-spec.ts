@@ -35,8 +35,9 @@ describe('Arabic A–Z and search (real Postgres, ICU)', () => {
          FROM unnest($1::text[]) WITH ORDINALITY AS t(n, i)
          RETURNING id, full_name
        )
-       INSERT INTO app.companies (id, account_user_id, name, name_normalized, company_type, updated_at)
-       SELECT gen_random_uuid(), id, full_name, app.normalize_ar(full_name), 'OTHER', now() FROM accounts`,
+       INSERT INTO app.companies (id, slug, account_user_id, name, name_normalized, company_type, updated_at)
+       SELECT gen_random_uuid(), 'company-' || left(id::text, 8), id, full_name, app.normalize_ar(full_name), 'OTHER', now()
+       FROM accounts`,
       [SAUDI_COMPANY_NAMES],
     );
   });

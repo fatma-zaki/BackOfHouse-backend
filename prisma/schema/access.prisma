@@ -42,6 +42,9 @@ model StaffAccount {
   verificationDecisions VerificationDecision[]
   decidedVerifications  VerificationRequest[]
   notes                 StaffNote[]
+  verifiedCompanies     Company[]              @relation("CompanyVerifiedBy")
+  claimDecisions        PageClaim[]
+  resolvedCases         ModerationCase[]
 
   @@unique([email], map: "uq_staff_accounts__email")
   @@index([role, status], map: "ix_staff_accounts__role_status")

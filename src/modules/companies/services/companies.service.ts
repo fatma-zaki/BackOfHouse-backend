@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { uuidv7 } from '../../../common/ids/uuid-v7';
 import { normalizeArabic } from '../../../common/text';
 import { PrismaService } from '../../../platform/database';
 import { AuthTokens, MemberAuthService } from '../../identity';
+import { companySlug } from '../domain/slug';
 import { COMPANY_PERMISSIONS } from '../policies/company-actor.policy';
 
 /** contracts/app `CompanyMembership`. */
@@ -33,8 +35,11 @@ export class CompaniesService {
   /** contracts/app POST /auth/register for `account_type = COMPANY`: account and company in one transaction. */
   register(input: unknown): Promise<AuthTokens> {
     return this.memberAuth.register(input, async (tx, user, data) => {
+      const id = uuidv7();
       await tx.company.create({
         data: {
+          id,
+          slug: companySlug(data.company!.name, id),
           accountUserId: user.id,
           name: data.company!.name,
           nameNormalized: normalizeArabic(data.company!.name),
@@ -42,6 +47,32 @@ export class CompaniesService {
         },
       });
     });
+  }
+
+  /** For moderation: a company's name and the account answerable for it, or null. */
+  async describe(companyId: string): Promise<{ title: string; ownerUserId: string; preview: string | null } | null> {
+    if (!/^[0-9a-f-]{36}$/i.test(companyId)) return null;
+    const company = await this.prisma.company.findUnique({
+      where: { id: companyId },
+      select: { name: true, accountUserId: true, description: true },
+    });
+    return company
+      ? { title: company.name, ownerUserId: company.accountUserId, preview: company.description || null }
+      : null;
+  }
+
+  /** For moderation: a portfolio project's title and the Company Account that owns it, or null. */
+  async describeProject(
+    projectId: string,
+  ): Promise<{ title: string; ownerUserId: string; preview: string | null } | null> {
+    if (!/^[0-9a-f-]{36}$/i.test(projectId)) return null;
+    const project = await this.prisma.companyProject.findUnique({
+      where: { id: projectId },
+      select: { title: true, description: true, company: { select: { accountUserId: true } } },
+    });
+    return project
+      ? { title: project.title, ownerUserId: project.company.accountUserId, preview: project.description.slice(0, 280) }
+      : null;
   }
 
   /** Whether a company with this id exists (any status). */
