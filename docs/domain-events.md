@@ -137,6 +137,8 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 | `verification.approved` | verification | NTF, ENG (TRUST/EXPERIENCE points, P2), SRC | `verification_id`, `type`, `subject_ref` | Trust derivation | async (subject state already changed in TX) |
 | `verification.rejected` | verification | NTF | `verification_id`, `type`, `subject_ref`, `message` | | async |
 | `verification.removed` | verification (staff removes a verification) | SRC (later) | `verification_id`, `type`, `subject_ref` | Added 2026-11-11 (Phase 4A) | async |
+| `moderation.case.resolved` | moderation | NTF (owner: warning, removal), companies and profiles (delete a removed project) | `case_id`, `resolution`, `target_type`, `target_id`, `owner_user_id`, `message` | Corrective actions by the owning module (added 2026-11-11) | async |
+| `organization.verification_removed` | companies (staff) | — (SRC later) | `organization_id` | Added 2026-11-11 | async |
 | `users.bulk_action.requested` | backoffice | backoffice worker (`BulkUserActionsHandler`) | `action`, `user_ids`, `staff_id` | Runs a staff bulk action in the worker; the event id is the `job_id` (added 2026-11-11) | async |
 | `verification.expired` | verification (job) | NTF, ENG (reverse trust points), SRC | `verification_id`, `type`, `subject_ref` | BQ-23 | async |
 
