@@ -20,7 +20,7 @@ export class EnvelopeInterceptor implements NestInterceptor {
           return undefined;
         }
         if (payload instanceof Page) {
-          return { data: payload.items, meta: payload.meta };
+          return { ...payload.extra, data: payload.items, meta: payload.meta };
         }
         return { data: payload };
       }),

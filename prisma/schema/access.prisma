@@ -24,21 +24,24 @@ enum StaffStatus {
 /// A Back of House team member. Created by an invite (INVITED); the first Google
 /// sign-in with the same work email activates it. Email is stored lowercase.
 model StaffAccount {
-  id               String              @id @default(uuid(7)) @db.Uuid
-  email            String
-  name             String
-  role             StaffRole
-  status           StaffStatus         @default(INVITED)
-  invitedByStaffId String?             @map("invited_by_staff_id") @db.Uuid
-  invitedAt        DateTime            @default(now()) @map("invited_at") @db.Timestamptz(6)
-  activatedAt      DateTime?           @map("activated_at") @db.Timestamptz(6)
-  lastSignInAt     DateTime?           @map("last_sign_in_at") @db.Timestamptz(6)
-  lastActiveAt     DateTime?           @map("last_active_at") @db.Timestamptz(6)
-  disabledAt       DateTime?           @map("disabled_at") @db.Timestamptz(6)
-  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
-  sessions         AdminSession[]
-  notifications    StaffNotification[]
+  id                    String                 @id @default(uuid(7)) @db.Uuid
+  email                 String
+  name                  String
+  role                  StaffRole
+  status                StaffStatus            @default(INVITED)
+  invitedByStaffId      String?                @map("invited_by_staff_id") @db.Uuid
+  invitedAt             DateTime               @default(now()) @map("invited_at") @db.Timestamptz(6)
+  activatedAt           DateTime?              @map("activated_at") @db.Timestamptz(6)
+  lastSignInAt          DateTime?              @map("last_sign_in_at") @db.Timestamptz(6)
+  lastActiveAt          DateTime?              @map("last_active_at") @db.Timestamptz(6)
+  disabledAt            DateTime?              @map("disabled_at") @db.Timestamptz(6)
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt             DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
+  sessions              AdminSession[]
+  notifications         StaffNotification[]
+  verificationDecisions VerificationDecision[]
+  decidedVerifications  VerificationRequest[]
+  notes                 StaffNote[]
 
   @@unique([email], map: "uq_staff_accounts__email")
   @@index([role, status], map: "ix_staff_accounts__role_status")

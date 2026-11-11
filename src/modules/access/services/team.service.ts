@@ -108,6 +108,17 @@ export class TeamService {
   ) {}
 
   /**
+   * The actor for an ACTIVE staff member, as their session would build it, or null. For
+   * work the worker does on a staff member's behalf (bulk actions), so permissions are
+   * checked as they are now, not as they were when the work was requested.
+   */
+  async actorFor(staffId: string): Promise<StaffActor | null> {
+    const staff = await this.prisma.staffAccount.findUnique({ where: { id: staffId } });
+    if (staff?.status !== 'ACTIVE') return null;
+    return { kind: 'staff', staffId: staff.id, role: staff.role, permissions: permissionsForRole(staff.role) };
+  }
+
+  /**
    * Ids of ACTIVE staff whose role holds `permission`, for system recipients such as the
    * admin bell (notifications). Not an endpoint; no actor needed.
    */

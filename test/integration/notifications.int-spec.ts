@@ -224,10 +224,12 @@ describe('Notification delivery (real Postgres)', () => {
     await expect(preferences.set(userId, 'account.password_changed', 'EMAIL', false)).rejects.toMatchObject({
       code: 'VALIDATION_FAILED',
     });
-    expect(await preferences.list(userId)).toEqual([
+    const list = await preferences.list(userId);
+    expect(list.filter((p) => p.type === 'account.password_changed')).toEqual([
       { type: 'account.password_changed', channel: 'PUSH', enabled: true, mandatory: true },
       { type: 'account.password_changed', channel: 'EMAIL', enabled: true, mandatory: true },
     ]);
+    expect(list.every((p) => p.enabled)).toBe(true);
   });
 });
 

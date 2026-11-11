@@ -40,6 +40,13 @@ module.exports = {
       from: { path: '^src/modules/', pathNot: '^src/modules/notifications/' },
       to: { path: '^src/modules/notifications/' },
     },
+    {
+      name: 'backoffice-is-a-leaf',
+      comment: 'The back office read models are used by surfaces and the worker only (module-dependency-map.md admin)',
+      severity: 'error',
+      from: { path: '^src/modules/', pathNot: '^src/modules/backoffice/' },
+      to: { path: '^src/modules/backoffice/' },
+    },
     // ── API surfaces (ADR-031, execution-plan.md §1.5) ──────────────────────
     {
       name: 'app-surface-not-admin',

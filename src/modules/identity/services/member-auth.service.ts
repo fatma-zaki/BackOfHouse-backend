@@ -1,7 +1,7 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { CLOCK, Clock } from '../../../common/clock/clock';
-import type { Actor } from '../../../common/context/actor';
+import { Actor, staffHas } from '../../../common/context/actor';
 import { RequestContext } from '../../../common/context/request-context';
 import { normalizeArabic } from '../../../common/text';
 import {
@@ -9,13 +9,15 @@ import {
   DomainError,
   ErrorCode,
   FieldErrors,
+  ForbiddenError,
+  NotFoundError,
   UnauthenticatedError,
   ValidationFailedError,
 } from '../../../common/errors';
 import { Prisma } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner, Tx } from '../../../platform/database';
 import { OutboxWriter } from '../../../platform/outbox';
-import { AuditActorType, AuditLogger } from '../../audit';
+import { AuditActorType, AuditLogger, auditActorOf } from '../../audit';
 import { normalizePhone } from '../domain/phone-code';
 import { AuthTokens, MEMBER_AUTH_PROVIDER, MemberAuthProvider } from '../infrastructure/member-auth-provider';
 
@@ -215,6 +217,28 @@ export class MemberAuthService {
     const data = parse(forgotSchema, input);
     const user = await this.prisma.user.findUnique({ where: { email: data.email }, select: { status: true } });
     if (user?.status === 'ACTIVE') await this.provider.sendPasswordReset(data.email);
+  }
+
+  /**
+   * Staff support action (contracts/admin POST /users/{id}/password-reset,
+   * `users.support_actions`): emails the member a reset link. The member chooses the new
+   * password; staff never see or set it.
+   */
+  async sendResetLinkFor(actor: Actor | undefined, userId: string): Promise<void> {
+    if (!staffHas(actor, 'users.support_actions')) throw new ForbiddenError();
+    const user = z.string().uuid().safeParse(userId).success
+      ? await this.prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+      : null;
+    if (!user) throw new NotFoundError('User not found');
+    await this.provider.sendPasswordReset(user.email);
+    await this.transactions.run(() =>
+      this.audit.record({
+        actor: auditActorOf(actor),
+        action: 'user.password_reset.send',
+        entityType: 'user',
+        entityId: userId,
+      }),
+    );
   }
 
   /**

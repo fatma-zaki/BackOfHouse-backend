@@ -148,7 +148,7 @@ describe('Verification review: bell and document access (real Postgres)', () => 
 
       const { rows: audit } = await admin.query(
         `SELECT actor_type::text, actor_user_id, entity_id FROM app.audit_logs
-         WHERE action = 'verification.document.url_issued'`,
+         WHERE action = 'verification.view_document'`,
       );
       expect(audit).toEqual([
         { actor_type: 'STAFF', actor_user_id: staff.reviewer, entity_id: docs[0].id },

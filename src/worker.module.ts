@@ -9,6 +9,7 @@ import { AccessModule } from './modules/access';
 import { AuditModule } from './modules/audit/audit.module';
 import { IdentityModule } from './modules/identity';
 import { NotificationsModule } from './modules/notifications';
+import { BackofficeModule } from './modules/backoffice';
 
 /**
  * The `worker` process (ADR-022): outbox dispatcher and scheduled jobs, no HTTP.
@@ -28,6 +29,7 @@ import { NotificationsModule } from './modules/notifications';
     AccessModule,
     IdentityModule,
     NotificationsModule,
+    BackofficeModule,
   ],
 })
 export class WorkerModule {}

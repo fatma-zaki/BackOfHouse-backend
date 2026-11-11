@@ -44,6 +44,12 @@ export class CompaniesService {
     });
   }
 
+  /** Whether a company with this id exists (any status). */
+  async exists(companyId: string): Promise<boolean> {
+    if (!/^[0-9a-f-]{36}$/i.test(companyId)) return false;
+    return (await this.prisma.company.count({ where: { id: companyId } })) > 0;
+  }
+
   async companyIdFor(accountUserId: string): Promise<string | null> {
     const company = await this.prisma.company.findUnique({ where: { accountUserId }, select: { id: true } });
     return company?.id ?? null;
