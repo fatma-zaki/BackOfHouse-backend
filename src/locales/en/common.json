@@ -1,0 +1,3296 @@
+{
+  "appName": "Back of House Admin",
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "confirm": "Confirm",
+    "close": "Close",
+    "retry": "Retry"
+  },
+  "states": {
+    "loading": "Loading…"
+  },
+  "breadcrumbs": {
+    "navLabel": "Breadcrumb"
+  },
+  "dateRange": {
+    "label": "Date range",
+    "placeholder": "Select date range",
+    "clear": "Clear"
+  },
+  "pagination": {
+    "navLabel": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {{page}}",
+    "pageSize": "Rows per page",
+    "summary": "{{from}}–{{to}} of {{total}}"
+  },
+  "filters": {
+    "label": "Filters",
+    "clear": "Clear filters"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "settings": "Settings"
+  },
+  "language": {
+    "en": "English",
+    "ar": "Arabic"
+  },
+  "nav": {
+    "sections": {
+      "myWork": "My work",
+      "main": "Main",
+      "marketplace": "Marketplace",
+      "people": "People",
+      "content": "Content",
+      "trustSupport": "Trust & Support",
+      "system": "System"
+    },
+    "items": {
+      "myQueue": "My queue",
+      "myDesk": "My desk",
+      "myTickets": "My tickets",
+      "analystHome": "Home",
+      "overview": "Overview",
+      "analytics": "Analytics",
+      "reports": "Reports & exports",
+      "listings": "Listings review",
+      "applications": "Applications",
+      "supplierRequests": "Supplier requests",
+      "users": "Users",
+      "companies": "Companies",
+      "verification": "Verification",
+      "claimsImports": "Claims & imports",
+      "events": "Events",
+      "news": "News",
+      "rewards": "Rewards & points",
+      "moderation": "Moderation",
+      "support": "Support inbox",
+      "broadcasts": "Broadcasts",
+      "team": "Team & roles",
+      "audit": "Audit log",
+      "settings": "Settings"
+    }
+  },
+  "shell": {
+    "closeNavigation": "Close navigation menu",
+    "adminNavigation": "Admin navigation",
+    "primaryNav": "Primary",
+    "demoCount": "Demo count",
+    "languageLabel": "Language"
+  },
+  "theme": {
+    "label": "Color theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "header": {
+    "openMenu": "Open navigation menu",
+    "searchPlaceholder": "Search users, companies, listings...",
+    "noSearchResults": "No results for “{{q}}”",
+    "searchGroupPages": "Pages",
+    "notifications": "Notifications",
+    "notificationsEmpty": "You’re all caught up.",
+    "markAllAsRead": "Mark all as read",
+    "userMenu": "Account menu",
+    "userInitials": "NQ",
+    "userName": "Nora Al-Qahtani",
+    "userRole": "Super admin",
+    "switchRoleDemo": "Switch role (demo)",
+    "signOut": "Sign out",
+    "notices": {
+      "listingReview": "Saudi Events Group submitted “Stage Manager” for review",
+      "listingReported": "Listing “Quick cash promoters” reported as spam",
+      "pointsMissing": "Points missing for Riyadh Tech Summit",
+      "verificationRequests": "Verification requests",
+      "monthlyOverview": "Monthly overview · August",
+      "times": {
+        "twelveMinutes": "12m",
+        "sixHours": "6h",
+        "threeHours": "3h",
+        "oneDay": "1d",
+        "twoDays": "2d"
+      }
+    }
+  },
+  "overview": {
+    "description": "Here's what's happening across Back of House this month.",
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}",
+      "night": "Hello, {{name}}"
+    },
+    "actions": {
+      "exportReport": "Export report",
+      "exportDisabledHint": "Export is unavailable until an export contract is available."
+    },
+    "kpis": {
+      "sectionLabel": "Key metrics",
+      "totalUsers": "Total users",
+      "companies": "Companies",
+      "liveListings": "Live listings",
+      "applications": "Applications",
+      "supplierRequests": "Supplier requests",
+      "secondary": {
+        "percentVsPreviousMonth": "+{{value}}% vs {{month}}",
+        "verifiedCount": "{{count}} verified",
+        "deltaThisMonth": "+{{value}} this month"
+      }
+    },
+    "signups": {
+      "title": "New sign-ups · daily",
+      "openAnalytics": "Open analytics",
+      "summary": "{{total}} new sign-ups this month · peak {{peak}} on {{date}}",
+      "summaryTotalOnly": "{{total}} new sign-ups in this period",
+      "tooltipCount": "{{count}} sign-ups",
+      "seriesName": "Sign-ups",
+      "empty": "No sign-up data for the selected date range.",
+      "emptyDescription": "No sign-up data available."
+    },
+    "attention": {
+      "title": "Needs your attention",
+      "empty": "Nothing needs attention right now.",
+      "items": {
+        "listingsAwaitingReview": {
+          "title": "Listings awaiting review",
+          "detail": "Oldest waiting {{oldestWaitingHours}}h · SLA {{slaHours}}h"
+        },
+        "verificationRequests": {
+          "title": "Verification requests",
+          "detail": "{{individuals}} individuals · {{companies}} companies"
+        },
+        "reportedContent": {
+          "title": "Reported content",
+          "detail": "{{highPriority}} high priority"
+        },
+        "openSupportTickets": {
+          "title": "Open support tickets",
+          "detail": "{{unassigned}} unassigned"
+        }
+      }
+    },
+    "funnel": {
+      "title": "Opportunity funnel · last 28 days",
+      "conversion": "{{rate}}% of listing views became a submitted application.",
+      "emptyTitle": "No funnel data",
+      "emptyDescription": "Funnel stages will appear here when data is available.",
+      "stages": {
+        "listingViews": "Listing views",
+        "applicationsStarted": "Applications started",
+        "submitted": "Submitted",
+        "shortlisted": "Shortlisted",
+        "selected": "Selected"
+      }
+    },
+    "activity": {
+      "title": "Recent activity",
+      "viewAll": "View all",
+      "viewAllDisabledHint": "The full activity view is not available yet.",
+      "emptyTitle": "No recent activity",
+      "emptyDescription": "Activity in the selected range will show up here.",
+      "toneLabel": "Category: {{tone}}",
+      "tones": {
+        "primary": "Update",
+        "info": "Information",
+        "success": "Success",
+        "warning": "Warning",
+        "destructive": "Alert"
+      },
+      "relative": {
+        "minutes": "{{count}}m",
+        "hours": "{{count}}h",
+        "days": "{{count}}d",
+        "unknown": "—"
+      },
+      "entities": {
+        "saudiEventsGroup": "Saudi Events Group",
+        "fatmaZaki": "Fatma Zaki",
+        "riyadhFrontEvents": "Riyadh Front Events",
+        "listing": "Listing",
+        "stageManager": "Stage Manager",
+        "eventProducer": "Event Producer",
+        "stageAndLighting": "Stage & lighting",
+        "quickCashPromoters": "Quick cash promoters"
+      },
+      "items": {
+        "act1": "{{actor}} submitted “{{target}}” for review",
+        "act2": "{{actor}} applied to {{target}}",
+        "act3": "{{actor}} opened a supplier request: {{target}}",
+        "act4": "{{actor}} “{{target}}” reported as spam",
+        "fallback": "{{actor}}"
+      }
+    },
+    "states": {
+      "loading": "Loading overview…",
+      "errorTitle": "Couldn't load overview",
+      "errorDescription": "Something went wrong while loading the overview. Please try again.",
+      "ready": "Overview data loaded."
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "How the community, marketplace, events and rewards are performing.",
+    "actions": {
+      "exportReport": "Export report",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "downloadCsv": "Download CSV"
+    },
+    "tabs": {
+      "label": "Analytics sections",
+      "overview": "Overview",
+      "users": "Users",
+      "marketplace": "Marketplace",
+      "events": "Events",
+      "rewards": "Rewards"
+    },
+    "kpis": {
+      "sectionLabel": "Key metrics",
+      "activeUsers": "Active users · 30 days",
+      "applicationsPerListing": "Applications per listing",
+      "eventAttendance": "Event attendance verified",
+      "medianReviewTime": "Median review time",
+      "pointsAwarded": "Points awarded · Sep",
+      "pointsRedeemed": "Points redeemed · Sep",
+      "redemptions": "Redemptions",
+      "waitingFulfillment": "Waiting to be fulfilled",
+      "months": {
+        "aug": "Aug"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}% vs {{month}}",
+        "pointsVsMonth": "{{sign}}{{value}} vs {{month}}",
+        "ptsVsMonth": "{{sign}}{{value}} pts vs {{month}}",
+        "targetUnderHours": "Target under {{hours}} h",
+        "oldestDays": "Oldest {{days}} days"
+      }
+    },
+    "weeklyActive": {
+      "title": "Weekly active users",
+      "subtitle": "Up from 6,940 to 9,812 over 12 weeks. The peak followed Riyadh Season sign-ups.",
+      "seriesName": "Active users",
+      "weekLabel": "Week {{week}}",
+      "tooltip": "{{count}} active users",
+      "xTicks": {
+        "w1": "Jul 7",
+        "w4": "Jul 28",
+        "w7": "Aug 18",
+        "w10": "Sep 8",
+        "w12": "Sep 22"
+      }
+    },
+    "membersByCity": {
+      "title": "Members by city",
+      "subtitle": "Riyadh has almost half of all members."
+    },
+    "applicationsByType": {
+      "title": "Applications by listing type",
+      "subtitle": "Jobs get the most applications. Supplier requests get responses, not applications."
+    },
+    "topListings": {
+      "title": "Top listings this month",
+      "allListings": "All listings",
+      "conversionLabel": "{{value}}%",
+      "columns": {
+        "listing": "Listing",
+        "views": "Views",
+        "applications": "Applications",
+        "conversion": "Conversion"
+      },
+      "items": {
+        "eventCoordinator": {
+          "title": "Event Coordinator",
+          "company": "Riyadh Season"
+        },
+        "summerCoop": {
+          "title": "Summer Co-op Program",
+          "company": "Saudi Events Group"
+        },
+        "expoCrew": {
+          "title": "Expo Crew Volunteers",
+          "company": "Creative Expo Co."
+        }
+      }
+    },
+    "eventAttendance": {
+      "title": "Verified attendance by event",
+      "subtitle": "Share of registered members whose check-in was verified."
+    },
+    "redemptionsByReward": {
+      "title": "Redemptions by reward",
+      "subtitle": "This month, all members."
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alula": "AlUla",
+      "other": "Other"
+    },
+    "listingTypes": {
+      "jobs": "Jobs",
+      "coop": "Co-op",
+      "volunteering": "Volunteering",
+      "projects": "Projects"
+    },
+    "events": {
+      "riyadhTechSummit": "Riyadh Tech Summit",
+      "jeddahDesignWeek": "Jeddah Design Week",
+      "crewMeetupRigging": "Crew Meetup: Rigging 101",
+      "alulaNightConcert": "AlUla Night Concert crew",
+      "expoBuildWeekend": "Expo Build Weekend",
+      "womenInEventsForum": "Women in Events Forum"
+    },
+    "rewards": {
+      "profileHighlight": "Profile Highlight · 7 days",
+      "vipPass": "VIP pass · Riyadh Season",
+      "riggingCourse": "Rigging safety course",
+      "crewJacket": "Crew jacket",
+      "coffeeOnUs": "Coffee on us"
+    },
+    "states": {
+      "loading": "Loading analytics…",
+      "errorTitle": "Couldn't load analytics",
+      "errorDescription": "Something went wrong while loading analytics. Please try again.",
+      "emptyChart": "No chart data for the selected range.",
+      "emptyMeters": "No distribution data available.",
+      "emptyTable": "No listings to show."
+    }
+  },
+  "reports": {
+    "title": "Reports & exports",
+    "description": "Download any part of the platform as CSV, Excel or PDF, or schedule it to arrive by email.",
+    "actions": {
+      "scheduledExports": "Scheduled exports · {{count}}"
+    },
+    "scheduled": {
+      "empty": "No scheduled exports yet."
+    },
+    "modules": {
+      "all": "All",
+      "allTrigger": "All modules",
+      "people": "People",
+      "marketplace": "Marketplace",
+      "content": "Content",
+      "trustSupport": "Trust & support",
+      "system": "System"
+    },
+    "formatLabels": {
+      "CSV": "CSV",
+      "Excel": "Excel",
+      "PDF": "PDF"
+    },
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel (.xlsx)",
+      "pdf": "PDF"
+    },
+    "catalog": {
+      "title": "Report catalog",
+      "subtitle": "Each report uses the date range and filters you choose.",
+      "moduleFilter": "Filter by module",
+      "moduleActive": "Module: {{value}}",
+      "empty": "No reports match this module.",
+      "columns": {
+        "report": "Report",
+        "rows": "Rows",
+        "download": "Download"
+      },
+      "items": {
+        "usersMembers": {
+          "title": "Users & members",
+          "description": "Sign-ups, profile type, city, verification, points"
+        },
+        "companies": {
+          "title": "Companies",
+          "description": "Profiles, verification, listings and response rates"
+        },
+        "listings": {
+          "title": "Listings",
+          "description": "Jobs, co-op, projects, volunteering; review outcomes"
+        },
+        "applications": {
+          "title": "Applications",
+          "description": "Every application and its status history"
+        },
+        "supplierRequests": {
+          "title": "Supplier requests",
+          "description": "Requests, responses and awarded suppliers"
+        },
+        "eventsAttendance": {
+          "title": "Events & attendance",
+          "description": "Registrations, verified attendance, no-shows"
+        },
+        "pointsLedger": {
+          "title": "Points ledger",
+          "description": "Points earned, redeemed and adjusted, with reasons"
+        },
+        "verificationDecisions": {
+          "title": "Verification decisions",
+          "description": "Requests, reviewer, decision and time to decide"
+        },
+        "moderationReports": {
+          "title": "Moderation & reports",
+          "description": "Reported content, actions taken and outcomes"
+        },
+        "supportTickets": {
+          "title": "Support tickets",
+          "description": "Tickets, categories and time to first reply"
+        },
+        "auditLog": {
+          "title": "Audit log",
+          "description": "Every admin action, including exports"
+        }
+      }
+    },
+    "builder": {
+      "title": "Custom export",
+      "columnsLabel": "Columns",
+      "formatLabel": "Format",
+      "locked": "locked",
+      "generate": "Generate export",
+      "schedule": "Schedule",
+      "fields": {
+        "dataSet": "Data set",
+        "dateRange": "Date range",
+        "city": "City",
+        "listingType": "Listing type"
+      },
+      "options": {
+        "dataSet": {
+          "applications": "Applications",
+          "usersMembers": "Users & members",
+          "companies": "Companies",
+          "listings": "Listings"
+        },
+        "dateRange": {
+          "sep2026": "Sep 1 – 28, 2026"
+        },
+        "city": {
+          "all": "All cities",
+          "riyadh": "Riyadh",
+          "jeddah": "Jeddah",
+          "dammam": "Dammam",
+          "alula": "AlUla"
+        },
+        "listingType": {
+          "jobsCoop": "Jobs, Co-op"
+        }
+      },
+      "columns": {
+        "applicant": "Applicant",
+        "listing": "Listing",
+        "company": "Company",
+        "status": "Status",
+        "appliedOn": "Applied on",
+        "city": "City",
+        "email": "Email",
+        "phone": "Phone"
+      },
+      "callout": {
+        "superAdmin": "Email and phone columns are only available to Super admins. Every export is recorded in the audit log.",
+        "restricted": "Your role can’t export email or phone numbers. Ask a Super admin if you need them. Every export is recorded in the audit log."
+      }
+    },
+    "schedules": {
+      "everyDay": "Every day at 8:00",
+      "sundays": "Sundays 8:00",
+      "firstOfMonth": "Every 1st of the month"
+    },
+    "recent": {
+      "title": "Recent & scheduled",
+      "actions": {
+        "download": "Download",
+        "edit": "Edit",
+        "stop": "Stop schedule"
+      },
+      "titles": {
+        "applicationsSep": "Applications · Sep 1–28",
+        "monthlyOverview": "Monthly overview · August",
+        "pointsWeekly": "Points ledger · weekly",
+        "usersDaily": "Users & members · daily",
+        "dynamicScheduled": "{{dataset}} · {{schedule}}",
+        "dynamicDownloaded": "{{dataset}}"
+      },
+      "meta": {
+        "youJustNow": "You · 2 min ago · {{rows}} rows",
+        "everyFirst": "Every 1st of the month · to 3 people",
+        "sundaysFinance": "Sundays 8:00 · to finance@",
+        "everyDayNora": "Every day at 8:00 · to nora@",
+        "dynamicScheduleMeta": "{{schedule}}"
+      }
+    },
+    "exportReady": {
+      "title": "Your export is ready",
+      "subtitle": "{{title}} · {{range}} · {{format}}",
+      "rows": "Rows",
+      "columns": "Columns",
+      "filters": "Filters",
+      "allColumns": "All columns",
+      "close": "Close",
+      "download": "Download",
+      "contactsOmitted": "Email and phone columns were left out for your role. This download is recorded in the audit log and the link expires in 24 hours.",
+      "sampleCsvNote": "Sample download is a CSV file. Excel and PDF files are generated by the server."
+    },
+    "toasts": {
+      "pickColumn": "Pick at least one column.",
+      "scheduled": "Scheduled: {{title}}",
+      "scheduleUpdated": "Schedule updated",
+      "scheduleRemoved": "Scheduled export removed"
+    },
+    "states": {
+      "loading": "Loading reports…",
+      "errorTitle": "Couldn't load reports",
+      "errorDescription": "Something went wrong while loading reports. Please try again.",
+      "emptyRecent": "No recent or scheduled exports yet."
+    }
+  },
+  "listings": {
+    "title": "Listings review",
+    "description": "Every job, project, co-op, volunteering role and supplier request is reviewed before it goes live.",
+    "verified": "Verified company",
+    "submittedMeta": "Submitted {{when}}",
+    "defaultChangeMessage": "Thanks for updating the working hours. Two more things before this goes live: • Please add the pay or a pay range, or choose “Discussed at interview”. • “Rest days” says two per week, but the dates are three days in a row. Please confirm the schedule.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "reject": "Reject",
+      "requestChanges": "Request changes",
+      "approve": "Approve & publish"
+    },
+    "tabs": {
+      "label": "Listing status",
+      "pending": "Pending · {{count}}",
+      "changesRequested": "Changes requested · {{count}}",
+      "live": "Live · {{count}}",
+      "rejected": "Rejected · {{count}}",
+      "closed": "Closed"
+    },
+    "filters": {
+      "allTypes": "All types",
+      "allCities": "All cities",
+      "company": "Company"
+    },
+    "sorts": {
+      "oldest": "Oldest first",
+      "newest": "Newest first"
+    },
+    "columns": {
+      "listing": "Listing",
+      "type": "Type",
+      "submitted": "Submitted",
+      "sla": "Review SLA",
+      "status": "Status"
+    },
+    "types": {
+      "job": "JOB",
+      "coop": "CO-OP",
+      "supplier": "SUPPLIER REQ.",
+      "volunteer": "VOLUNTEER",
+      "project": "PROJECT"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "resubmitted": "Resubmitted",
+      "autoFlagged": "Auto-flagged",
+      "changesRequested": "Changes requested",
+      "live": "Live",
+      "rejected": "Rejected",
+      "closed": "Closed"
+    },
+    "statusDetail": {
+      "pending": "Pending",
+      "resubmitted": "Resubmitted · changes made",
+      "autoFlagged": "Auto-flagged",
+      "changesRequested": "Changes requested",
+      "live": "Live",
+      "rejected": "Rejected",
+      "closed": "Closed"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alula": "AlUla"
+    },
+    "companies": {
+      "saudiEventsGroup": "Saudi Events Group",
+      "riyadhFrontEvents": "Riyadh Front Events",
+      "creativeExpo": "Creative Expo Co.",
+      "liveTech": "LiveTech Solutions",
+      "desertStage": "Desert Stage",
+      "unverified": "Unverified account",
+      "riyadhSeason": "Riyadh Season"
+    },
+    "items": {
+      "stageManager": "Stage Manager",
+      "summerCoop": "Summer Co-op Program",
+      "stageLighting": "Stage & lighting, 3-day summit",
+      "expoCrew": "Expo Crew Volunteers",
+      "avTech": "AV Technician",
+      "brandActivation": "Brand activation project",
+      "quickCash": "Quick cash promoters",
+      "weekendStageHand": "Weekend stage hand",
+      "eventProducer": "Event Producer",
+      "eventCoordinator": "Event Coordinator",
+      "promotersWanted": "Promoters wanted",
+      "registrationDesk": "Registration desk crew"
+    },
+    "submitted": {
+      "h26": "26h ago",
+      "h20": "20h ago",
+      "h14": "14h ago",
+      "h9": "9h ago",
+      "h6": "6h ago",
+      "h3": "3h ago",
+      "h1": "1h ago",
+      "d2": "2 days ago",
+      "d5": "5 days ago",
+      "w1": "1 week ago",
+      "yesterday": "Yesterday",
+      "m1": "1 month ago"
+    },
+    "sla": {
+      "overdue2h": "2h overdue",
+      "left4h": "4h left",
+      "left10h": "10h left",
+      "left15h": "15h left",
+      "left18h": "18h left",
+      "left21h": "21h left",
+      "left23h": "23h left",
+      "done": "—"
+    },
+    "facts": {
+      "city": "City",
+      "contract": "Contract",
+      "closes": "Closes",
+      "setup": "Setup",
+      "eventDates": "Event dates",
+      "budgetShown": "Budget shown"
+    },
+    "factValues": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alula": "AlUla",
+      "months3": "3 months",
+      "months6": "6 months",
+      "weeks8": "8 weeks",
+      "weeks2": "2 weeks",
+      "days4": "4 days",
+      "days2": "2 days",
+      "fullTime": "Full time",
+      "flexible": "Flexible",
+      "weekends": "Weekends",
+      "oct30": "Oct 30",
+      "oct15": "Oct 15",
+      "oct3": "Oct 3",
+      "oct12": "Oct 12",
+      "oct20": "Oct 20",
+      "oct9": "Oct 9",
+      "oct5": "Oct 5",
+      "oct18": "Oct 18",
+      "oct21to23": "Oct 21 – 23",
+      "sar40to60": "SAR 40k – 60k",
+      "onsite": "On-site",
+      "hybrid": "Hybrid",
+      "remote": "Remote",
+      "dash": "—",
+      "closed": "Closed"
+    },
+    "descriptions": {
+      "stageManager": "Run stage operations for a three-day technology summit, coordinating crew, cues and suppliers. Working hours: 8 AM – 8 PM on show days, with two rest days per week.",
+      "summerCoop": "Eight-week paid co-op for students in event management, rotating through production, guest experience and operations.",
+      "stageLighting": "Looking for a supplier to provide staging, truss and lighting for a three-day summit, including crew for setup and teardown.",
+      "expoCrew": "Volunteers to welcome visitors and guide them around a four-day exhibition. Meals and transport provided; points awarded per confirmed shift.",
+      "avTech": "Set up and run sound and video for corporate events and concerts across Jeddah. Two years of AV experience preferred.",
+      "brandActivation": "Freelance team to design and run a two-week brand activation at a desert festival, from concept to build.",
+      "quickCash": "Earn 5,000 SAR a week promoting events! No experience. Message us on WhatsApp to start today and pay the 200 SAR training fee.",
+      "weekendStageHand": "Weekend crew to help build and strike stages at outdoor events. Phone number removed after review.",
+      "eventProducer": "Lead production for conferences and launches, from budget and suppliers to show calling on the day.",
+      "eventCoordinator": "Coordinate crews and schedules across Riyadh Season venues during the season.",
+      "promotersWanted": "Removed: asked applicants to pay a registration fee.",
+      "registrationDesk": "Volunteers to run the registration desk at a two-day conference."
+    },
+    "checks": {
+      "title": "Automated checks",
+      "items": {
+        "verifiedCompany": "Company is verified",
+        "unverifiedCompany": "Company is not verified",
+        "noContact": "No phone numbers or emails in the description",
+        "workingHoursAdded": "Working hours added (requested on Sep 25)",
+        "workingHoursListed": "Working hours are listed",
+        "payRangeListed": "Pay range is listed",
+        "noSalaryOptional": "No salary range — optional, but improves applications",
+        "budgetListed": "Budget range is listed",
+        "asksFee": "Asks applicants to pay a fee",
+        "offPlatformContact": "Off-platform contact in the description",
+        "phoneInDescription": "Phone number in description"
+      }
+    },
+    "note": {
+      "label": "Note to company (required for changes or rejection)",
+      "placeholder": "Explain what needs to change…"
+    },
+    "changeReasons": {
+      "payNotClear": "Pay not clear",
+      "scheduleMismatch": "Schedule doesn’t add up",
+      "contactInText": "Contact details in text",
+      "wrongCategory": "Wrong category",
+      "missingHours": "Missing working hours",
+      "other": "Other"
+    },
+    "dialogs": {
+      "close": "Close",
+      "reject": {
+        "title": "Reject “{{title}}”?",
+        "description": "The company sees your note and the listing won’t go live."
+      },
+      "requestChanges": {
+        "title": "Request changes",
+        "subtitle": "Send notes for “{{title}}”.",
+        "reasons": "Reasons",
+        "message": "Message to company",
+        "confirm": "Send request"
+      },
+      "approved": {
+        "title": "Listing approved",
+        "subtitle": "“{{title}}” is live.",
+        "reviewNext": "Review next"
+      }
+    },
+    "toasts": {
+      "noteRequired": "Add a note to the company before rejecting.",
+      "changesRequired": "Select at least one reason or add a message before requesting changes.",
+      "rejected": "Listing rejected",
+      "changesRequested": "Changes requested"
+    },
+    "states": {
+      "loading": "Loading listings…",
+      "errorTitle": "Couldn't load listings",
+      "errorDescription": "Something went wrong while loading listings. Please try again.",
+      "emptyList": "No listings here.",
+      "pickListing": "Pick a listing to review it."
+    }
+  },
+  "applications": {
+    "title": "Applications",
+    "description": "Every application across all listings, with its status history.",
+    "infoBanner": "Companies make the hiring decisions. Admins can view applications and step in on reports, but don't change their status.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "view": "View"
+    },
+    "tabs": {
+      "label": "Application status",
+      "all": "All",
+      "applied": "Applied",
+      "inReview": "In review",
+      "shortlisted": "Shortlisted",
+      "decision": "Decision"
+    },
+    "filters": {
+      "listingType": "Listing type",
+      "company": "Company",
+      "city": "City"
+    },
+    "columns": {
+      "applicant": "Applicant",
+      "listing": "Listing",
+      "applied": "Applied",
+      "status": "Status",
+      "timeInStage": "Time in stage",
+      "actions": "Actions"
+    },
+    "kpis": {
+      "sectionLabel": "Application summary",
+      "applications": "Applications",
+      "inReview": "In review",
+      "shortlisted": "Shortlisted",
+      "selected": "Selected",
+      "months": {
+        "aug": "Aug"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}% vs {{month}}",
+        "percentOfApplications": "{{value}}% of applications"
+      }
+    },
+    "statuses": {
+      "applied": "Applied",
+      "inReview": "In review",
+      "shortlisted": "Shortlisted",
+      "selected": "Selected",
+      "notSelected": "Not selected"
+    },
+    "listingTypes": {
+      "job": "Job",
+      "coop": "Co-op",
+      "volunteer": "Volunteer",
+      "project": "Project",
+      "supplier": "Supplier request"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam"
+    },
+    "personas": {
+      "student": "Student",
+      "freelancer": "Freelancer",
+      "professional": "Professional"
+    },
+    "companies": {
+      "riyadhSeason": "Riyadh Season",
+      "liveTech": "LiveTech Solutions",
+      "creativeExpo": "Creative Expo Co.",
+      "desertStage": "Desert Stage",
+      "saudiEventsGroup": "Saudi Events Group",
+      "riyadhFrontEvents": "Riyadh Front Events"
+    },
+    "applicants": {
+      "reemAlharbi": "Reem Alharbi",
+      "faisalAlmutairi": "Faisal Almutairi",
+      "nouraAlqahtani": "Noura Alqahtani",
+      "khalidAlotaibi": "Khalid Alotaibi",
+      "saraAlshehri": "Sara Alshehri",
+      "omarAlenezi": "Omar Alenezi",
+      "linaAlzahrani": "Lina Alzahrani",
+      "hudaAlshahrani": "Huda Alshahrani",
+      "yousefAlamri": "Yousef Alamri",
+      "mahaAlfarsi": "Maha Alfarsi",
+      "tariqAlotaibi": "Tariq Alotaibi",
+      "danaAlharbi": "Dana Alharbi",
+      "bassamAlghamdi": "Bassam Alghamdi",
+      "raniaAlqahtani": "Rania Alqahtani"
+    },
+    "listings": {
+      "eventCoordinator": "Event Coordinator",
+      "avTechnician": "AV Technician",
+      "summerCoop": "Summer Co-op Programme",
+      "eventProducer": "Event Producer",
+      "stageManager": "Stage Manager",
+      "expoCrew": "Expo Crew Volunteer",
+      "brandActivation": "Brand Activation Project",
+      "registrationDesk": "Registration Desk Crew",
+      "weekendStageHand": "Weekend Stage Hand",
+      "stageLighting": "Stage & Lighting, 3-day Summit",
+      "promotersWanted": "Promoters Wanted"
+    },
+    "applied": {
+      "sep27": "Sep 27",
+      "sep26": "Sep 26",
+      "sep25": "Sep 25",
+      "sep24": "Sep 24",
+      "sep23": "Sep 23",
+      "sep22": "Sep 22",
+      "sep21": "Sep 21",
+      "sep20": "Sep 20",
+      "sep19": "Sep 19",
+      "sep18": "Sep 18",
+      "sep17": "Sep 17",
+      "sep16": "Sep 16",
+      "sep15": "Sep 15",
+      "sep14": "Sep 14"
+    },
+    "timeInStage": {
+      "d2": "2 days",
+      "d3": "3 days",
+      "d4": "4 days",
+      "d5": "5 days",
+      "d6": "6 days",
+      "d7": "7 days",
+      "d8": "8 days",
+      "d9": "9 days",
+      "d10": "10 days",
+      "d11": "11 days",
+      "d12": "12 days",
+      "d13": "13 days",
+      "d14": "14 days",
+      "d15": "15 days"
+    },
+    "dialogs": {
+      "close": "Close",
+      "view": {
+        "title": "Application details",
+        "description": "Read-only view. Companies own hiring decisions; admins cannot change application status."
+      }
+    },
+    "states": {
+      "loading": "Loading applications…",
+      "errorTitle": "Couldn't load applications",
+      "errorDescription": "Something went wrong while loading applications. Please try again.",
+      "emptyList": "No applications match these filters."
+    }
+  },
+  "login": {
+    "title": "Admin sign in",
+    "subtitle": "Only invited Back of House team members can sign in.",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordToast": "If {{email}} is on the team, a reset link is on its way.",
+    "auditNote": "Sign-ins are recorded in the audit log. You’ll be signed out after 30 minutes without activity.",
+    "fields": {
+      "email": "Work email",
+      "emailPlaceholder": "admin@backofhouse.sa",
+      "password": "Password",
+      "otp": "Two-step code",
+      "otpHint": "From your authenticator app.",
+      "otpDigit": "Two-step code digit {{n}}"
+    },
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "branding": {
+      "regionLabel": "Back of House branding",
+      "logoAlt": "Back of House Admin",
+      "headline": "The back-office for\nSaudi Arabia’s events\ncommunity.",
+      "supporting": "Review listings, verify companies, keep the community\nsafe and export the numbers that matter."
+    },
+    "errors": {
+      "emailRequired": "Work email is required.",
+      "emailInvalid": "Enter a valid work email address.",
+      "emailDomain": "Use your @backofhouse.sa work email.",
+      "passwordRequired": "Password is required.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "otpRequired": "Enter the 6-digit code from your authenticator app.",
+      "otpInvalid": "Enter the 6-digit code from your authenticator app.",
+      "mockDisabled": "Demo sign-in is not enabled. Set VITE_MOCK_AUTH_ENABLED=true for local development only."
+    }
+  },
+  "supplierRequests": {
+    "title": "Supplier requests",
+    "description": "Requests companies post for suppliers, and every response they receive.",
+    "table": {
+      "label": "Supplier requests list"
+    },
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "exportResponses": "Export responses",
+      "reportIssue": "Report issue",
+      "openListing": "Open listing"
+    },
+    "tabs": {
+      "label": "Request status",
+      "open": "Open",
+      "awarded": "Awarded",
+      "closed": "Closed"
+    },
+    "filters": {
+      "category": "Category",
+      "city": "City",
+      "allCategories": "All categories",
+      "allCities": "All cities"
+    },
+    "columns": {
+      "request": "Request",
+      "closes": "Closes",
+      "responses": "Responses",
+      "status": "Status"
+    },
+    "kpis": {
+      "sectionLabel": "Supplier request summary",
+      "openRequests": "Open requests",
+      "responsesThisMonth": "Responses this month",
+      "responsesPerRequest": "Responses per request",
+      "noResponseAfter5Days": "No response after 5 days",
+      "months": {
+        "aug": "Aug"
+      },
+      "footnotes": {
+        "percentVsMonth": "+{{value}}% vs {{month}}",
+        "needsNudge": "Needs a nudge"
+      }
+    },
+    "statuses": {
+      "open": "Open",
+      "noResponses": "No responses",
+      "awarded": "Awarded",
+      "closed": "Closed"
+    },
+    "categories": {
+      "stagingLighting": "Staging & lighting",
+      "catering": "Catering",
+      "brandActivation": "Brand activation",
+      "venueAv": "Venue AV",
+      "ledScreens": "LED screens",
+      "security": "Security",
+      "transport": "Transport",
+      "merchandise": "Merchandise"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "alUla": "AlUla"
+    },
+    "companies": {
+      "riyadhFrontEvents": "Riyadh Front Events",
+      "saudiEventsGroup": "Saudi Events Group",
+      "creativeExpoCo": "Creative Expo Co.",
+      "riyadhSeason": "Riyadh Season",
+      "desertStage": "Desert Stage",
+      "liveTechSolutions": "LiveTech Solutions"
+    },
+    "items": {
+      "stageLightingSummit": "Stage & lighting, 3-day summit",
+      "catering1200": "Catering for 1,200 guests",
+      "brandActivationKit": "Brand activation kit",
+      "venueAvPackage": "Venue AV package",
+      "ledScreensRental": "LED screens rental",
+      "eventSecurityStaff": "Event security staff",
+      "shuttleBusesAlula": "Shuttle buses · AlUla",
+      "brandedMerchandise": "Branded merchandise",
+      "summitCateringClosed": "Summit catering package",
+      "expoLightingClosed": "Expo lighting package"
+    },
+    "dates": {
+      "closes": {
+        "oct3": "Oct 3",
+        "oct5": "Oct 5",
+        "oct8": "Oct 8",
+        "oct12": "Oct 12",
+        "oct1": "Oct 1",
+        "sep30": "Sep 30",
+        "sep20": "Sep 20",
+        "sep15": "Sep 15",
+        "aug30": "Aug 30",
+        "aug25": "Aug 25"
+      },
+      "posted": {
+        "sep20": "Sep 20",
+        "sep18": "Sep 18",
+        "sep22": "Sep 22",
+        "sep15": "Sep 15",
+        "sep12": "Sep 12",
+        "sep10": "Sep 10",
+        "aug28": "Aug 28",
+        "aug20": "Aug 20",
+        "aug5": "Aug 5",
+        "jul30": "Jul 30"
+      },
+      "replied": {
+        "h3": "3 h",
+        "d1": "1 day",
+        "d2": "2 days",
+        "d3": "3 days",
+        "d4": "4 days",
+        "d5": "5 days"
+      }
+    },
+    "facts": {
+      "category": "Category",
+      "city": "City",
+      "eventDates": "Event dates",
+      "budget": "Budget shown"
+    },
+    "factValues": {
+      "stagingLighting": "Staging & lighting",
+      "catering": "Catering",
+      "brandActivation": "Brand activation",
+      "venueAv": "Venue AV",
+      "ledScreens": "LED screens",
+      "security": "Security",
+      "transport": "Transport",
+      "merchandise": "Merchandise",
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "alUla": "AlUla",
+      "oct21to23": "Oct 21 – 23",
+      "oct10": "Oct 10",
+      "nov2to4": "Nov 2 – 4",
+      "oct28": "Oct 28",
+      "oct15": "Oct 15",
+      "oct5to7": "Oct 5 – 7",
+      "sep25to27": "Sep 25 – 27",
+      "oct1": "Oct 1",
+      "sep8": "Sep 8",
+      "sep12": "Sep 12",
+      "sar40to60k": "SAR 40k – 60k",
+      "sar120kPlus": "SAR 120k+",
+      "sar25to35k": "SAR 25k – 35k",
+      "sar15to25k": "SAR 15k – 25k",
+      "sar30to45k": "SAR 30k – 45k",
+      "sar18to22k": "SAR 18k – 22k",
+      "sar50to70k": "SAR 50k – 70k",
+      "sar12to18k": "SAR 12k – 18k",
+      "sar80k": "SAR 80k",
+      "sar20to30k": "SAR 20k – 30k"
+    },
+    "suppliers": {
+      "lumenStageCo": "Lumen Stage Co.",
+      "neonBeamAv": "Neon Beam AV",
+      "desertRigHire": "Desert Rig Hire",
+      "najdBackline": "Najd Backline",
+      "riggingProKsa": "Rigging Pro KSA",
+      "arabianLights": "Arabian Lights",
+      "summitRigCo": "Summit Rig Co.",
+      "pulseAv": "Pulse AV",
+      "horizonStage": "Horizon Stage"
+    },
+    "responseStatuses": {
+      "shortlisted": "Shortlisted",
+      "new": "New",
+      "declined": "Declined"
+    },
+    "responses": {
+      "sectionTitle": "Responses",
+      "empty": "No responses yet.",
+      "verified": "Verified",
+      "replied": "replied in {{when}}"
+    },
+    "detail": {
+      "statusOpen": "Open · {{count}} responses",
+      "statusNoResponses": "No responses",
+      "status": {
+        "awarded": "Awarded · {{count}} responses",
+        "closed": "Closed · {{count}} responses"
+      },
+      "postedMeta": "{{company}} · posted {{posted}}"
+    },
+    "toasts": {
+      "exportResponses": "Export responses is not available yet.",
+      "reportIssue": "Issue report flow is not available yet.",
+      "openListing": "Open listing is not available yet."
+    },
+    "states": {
+      "loading": "Loading supplier requests…",
+      "errorTitle": "Couldn't load supplier requests",
+      "errorDescription": "Something went wrong while loading supplier requests. Please try again.",
+      "emptyList": "No requests match these filters.",
+      "pickRequest": "Pick a request to review it."
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Everyone on Back of House: individuals, students and company accounts.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "importUsers": "Import users",
+      "importDisabledHint": "Import is unavailable until an import contract is available.",
+      "view": "View",
+      "exportUserData": "Export user data",
+      "exportUserDisabledHint": "User data export is unavailable until an export contract is available.",
+      "sendMessage": "Send message",
+      "downloadCsv": "Download CSV",
+      "downloadCsvDisabledHint": "CSV download is unavailable until an export contract is available."
+    },
+    "tabs": {
+      "label": "User type",
+      "all": "All · {{count}}",
+      "individuals": "Individuals · {{count}}",
+      "companies": "Companies · {{count}}",
+      "suspended": "Suspended · {{count}}"
+    },
+    "filters": {
+      "city": "City",
+      "allCities": "All cities",
+      "verified": "Verified",
+      "verifiedYes": "Verified",
+      "verifiedNo": "Not verified",
+      "students": "Students",
+      "studentsOnly": "Students only",
+      "nonStudents": "Non-students",
+      "joined": "Joined",
+      "joinedLast30": "Last 30 days",
+      "joinedLast90": "Last 90 days",
+      "joinedLastYear": "Last year"
+    },
+    "columns": {
+      "user": "User",
+      "type": "Type",
+      "city": "City",
+      "points": "Points",
+      "verification": "Verification",
+      "joined": "Joined",
+      "lastActive": "Last active",
+      "actions": "Actions"
+    },
+    "types": {
+      "individual": "Individual",
+      "company": "Company",
+      "student": "Student"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alUla": "AlUla"
+    },
+    "verification": {
+      "verified": "Verified",
+      "notVerified": "Not verified"
+    },
+    "people": {
+      "reemAlharbi": "Reem Alharbi",
+      "faisalAlotaibi": "Faisal Alotaibi",
+      "saudiEventsGroup": "Saudi Events Group",
+      "nouraAlshehri": "Noura Alshehri",
+      "omarAlghamdi": "Omar Alghamdi",
+      "laylaHassan": "Layla Hassan",
+      "gulfProduceCo": "Gulf Produce Co.",
+      "yousefAlmalki": "Yousef Almalki",
+      "halaAlfarsi": "Hala Alfarsi",
+      "redSeaEvents": "Red Sea Events",
+      "khalidSuspended": "Khalid Almutairi",
+      "saraAlzahrani": "Sara Alzahrani",
+      "genericUser": "User"
+    },
+    "emails": {
+      "reemEmail": "reem.h@example.com",
+      "faisalEmail": "faisal.a@example.com",
+      "saudiEventsEmail": "ops@saudieventsgroup.example",
+      "nouraEmail": "noura.s@example.com",
+      "omarEmail": "omar.g@example.com",
+      "laylaEmail": "layla.h@example.com",
+      "gulfProduceEmail": "hello@gulfproduce.example",
+      "yousefEmail": "yousef.m@example.com",
+      "halaEmail": "hala.f@example.com",
+      "redSeaEmail": "team@redseaevents.example",
+      "khalidEmail": "khalid.m@example.com",
+      "saraEmail": "sara.z@example.com",
+      "genericEmail": "user@example.com"
+    },
+    "phones": {
+      "reemPhone": "+966 5·· ··· 4412",
+      "genericPhone": "+966 5·· ··· 0000"
+    },
+    "universities": {
+      "reemUniversity": "King Saud University"
+    },
+    "joined": {
+      "mar2025": "Mar 12, 2025",
+      "feb2025": "Feb 3, 2025",
+      "jan2025": "Jan 18, 2025",
+      "sep2025": "Sep 1, 2025",
+      "aug2025": "Aug 14, 2025",
+      "jul2025": "Jul 22, 2025",
+      "jun2025": "Jun 9, 2025",
+      "may2025": "May 2, 2025",
+      "apr2025": "Apr 19, 2025",
+      "dec2024": "Dec 11, 2024"
+    },
+    "lastActive": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "d1": "1 day ago",
+      "d2": "2 days ago",
+      "d3": "3 days ago",
+      "d5": "5 days ago",
+      "d7": "7 days ago",
+      "w1": "1 week ago",
+      "w2": "2 weeks ago",
+      "w3": "3 weeks ago",
+      "m1": "1 month ago"
+    },
+    "selection": {
+      "count": "{{count}} selected",
+      "sendMessage": "Send message",
+      "addTag": "Add tag",
+      "exportSelected": "Export selected",
+      "suspend": "Suspend",
+      "clear": "Clear"
+    },
+    "table": {
+      "selectAll": "Select all users on this page",
+      "selectRow": "Select {{name}}",
+      "pointsDash": "—"
+    },
+    "toasts": {
+      "sendMessage": "Messaging is not available yet.",
+      "addTag": "Tags are not available yet.",
+      "exportSelected": "Export selected is not available yet.",
+      "suspendSelected": "Suspend selected is not available yet (demo).",
+      "suspendConfirmTitle": "Suspend {{count}} selected users?",
+      "suspendConfirmDescription": "They will lose access until an admin restores the accounts. This is a demo confirmation only.",
+      "admin": {
+        "adjustPoints": "Adjust points is not available yet.",
+        "resetPassword": "Reset password link is not available yet.",
+        "removeVerification": "Verification removed (demo).",
+        "dataRequest": "Data request is not available yet.",
+        "suspendAccount": "Account suspended (demo)."
+      }
+    },
+    "adminActions": {
+      "adjustPoints": "Adjust points",
+      "resetPassword": "Reset password link",
+      "removeVerification": "Remove verification",
+      "dataRequest": "Data request",
+      "suspendAccount": "Suspend account"
+    },
+    "dialogs": {
+      "suspend": {
+        "title": "Suspend {{name}}?",
+        "description": "They will lose access until an admin restores the account."
+      },
+      "removeVerification": {
+        "title": "Remove verification for {{name}}?",
+        "description": "Their verified badge will be removed."
+      }
+    },
+    "admins": {
+      "faisalAdmin": "Faisal A."
+    },
+    "detail": {
+      "backToUsers": "Users",
+      "memberSince": "member since {{date}}",
+      "adminActionsTitle": "Admin actions",
+      "privacyNote": "Email and phone are private. Companies only see them if {{name}} chooses to share them.",
+      "fields": {
+        "email": "Email",
+        "phone": "Phone",
+        "university": "University",
+        "verified": "Verified",
+        "lastActive": "Last active"
+      },
+      "reemVerifiedMeta": "Jun 4, 2026 · by Faisal A.",
+      "reemLastActive": "Today, 9:40",
+      "d3": "3 days ago",
+      "tabs": {
+        "label": "User activity",
+        "points": "Points",
+        "applications": "Applications",
+        "events": "Events",
+        "reports": "Reports",
+        "devices": "Devices"
+      },
+      "tabPlaceholder": "{{tab}} activity will appear here when available.",
+      "kpis": {
+        "pointsBalance": "Points balance",
+        "applications": "Applications",
+        "eventsAttended": "Events attended",
+        "reportsAgainst": "Reports against"
+      },
+      "pointsColumns": {
+        "date": "Date",
+        "activity": "Activity",
+        "source": "Source",
+        "points": "Points"
+      },
+      "emptyPoints": "No points activity yet.",
+      "pointDates": {
+        "sep26": "Sep 26",
+        "sep20": "Sep 20",
+        "sep5": "Sep 5",
+        "aug28": "Aug 28",
+        "aug14": "Aug 14"
+      },
+      "pointActivities": {
+        "attendedRiyadhTech": "Attended Riyadh Tech Summit",
+        "redeemedHighlight": "Redeemed Profile Highlight · 7 days",
+        "manualSep5Event": "Attended Jeddah Design Week",
+        "profileComplete": "Completed profile",
+        "companyReferral": "Volunteer shift confirmed · Expo Crew"
+      },
+      "pointSources": {
+        "checkInScan": "Check-in scan",
+        "reward": "Reward",
+        "manualFaisal": "Manual · Faisal A.",
+        "system": "System",
+        "company": "Company"
+      },
+      "internalNotesTitle": "Internal notes",
+      "internalNotesHint": "Only visible to admins",
+      "addNotePlaceholder": "Add a note…",
+      "addNote": "Add",
+      "noteDates": {
+        "sep12": "Sep 12"
+      },
+      "noteBodies": {
+        "reemNoteSep12": "Manual +200 for Jeddah Design Week — attendance confirmed offline."
+      }
+    },
+    "states": {
+      "loading": "Loading users…",
+      "loadingDetail": "Loading user…",
+      "errorTitle": "Couldn't load users",
+      "errorDescription": "Something went wrong while loading users. Please try again.",
+      "emptyList": "No users match these filters.",
+      "notFoundTitle": "User not found",
+      "notFoundDescription": "This user is not in the directory, or the link is invalid.",
+      "missingIdTitle": "Missing user",
+      "missingIdDescription": "Open a user from the directory to view their profile."
+    }
+  },
+  "companies": {
+    "title": "Companies",
+    "description": "Company accounts, their listings and how well they respond to applicants.",
+    "verifiedBadge": "Verified company",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "import": "Import companies",
+      "importDisabledHint": "Import is unavailable until an import contract is available.",
+      "view": "View"
+    },
+    "tabs": {
+      "label": "Verification status",
+      "all": "All",
+      "verified": "Verified",
+      "pendingVerification": "Pending verification · {{count}}",
+      "notVerified": "Not verified",
+      "suspended": "Suspended"
+    },
+    "filters": {
+      "city": "City",
+      "industry": "Industry",
+      "sort": "Most active"
+    },
+    "sorts": {
+      "mostActive": "Most active",
+      "leastActive": "Least active",
+      "name": "Name"
+    },
+    "columns": {
+      "company": "Company",
+      "city": "City",
+      "liveListings": "Live listings",
+      "applications": "Applications",
+      "respondsToApplicants": "Responds to applicants",
+      "verification": "Verification",
+      "actions": "Actions"
+    },
+    "kpis": {
+      "sectionLabel": "Company summary",
+      "accounts": "Company accounts",
+      "verified": "Verified",
+      "postingThisMonth": "Posting this month",
+      "avgResponse": "Avg. response to applicants",
+      "months": {
+        "aug": "Aug"
+      },
+      "deltas": {
+        "countThisMonth": "{{sign}}{{value}} this month",
+        "percentOfAccounts": "{{value}}%",
+        "slowerThanMonth": "Slower than {{month}}"
+      }
+    },
+    "verification": {
+      "verified": "Verified",
+      "pending": "Pending",
+      "notVerified": "Not verified",
+      "suspended": "Suspended"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alula": "AlUla"
+    },
+    "industries": {
+      "eventProduction": "Event production",
+      "entertainment": "Entertainment",
+      "avTechnical": "AV & technical",
+      "exhibitions": "Exhibitions",
+      "experiential": "Experiential",
+      "venues": "Venues",
+      "staffing": "Staffing"
+    },
+    "names": {
+      "saudiEventsGroup": "Saudi Events Group",
+      "riyadhSeason": "Riyadh Season",
+      "liveTech": "LiveTech Solutions",
+      "creativeExpo": "Creative Expo Co.",
+      "desertStage": "Desert Stage",
+      "riyadhFrontEvents": "Riyadh Front Events",
+      "quickCrewKsa": "Quick Crew KSA",
+      "gulfExperienceCo": "Gulf Experience Co.",
+      "redSeaProductions": "Red Sea Productions",
+      "easternProvinceEvents": "Eastern Province Events",
+      "alulaCultural": "AlUla Cultural",
+      "stagecraftKsa": "Stagecraft KSA",
+      "nomadStaffing": "Nomad Staffing",
+      "heritageExpo": "Heritage Expo"
+    },
+    "dialogs": {
+      "close": "Close",
+      "view": {
+        "title": "Company details",
+        "description": "Read-only view of this company account."
+      }
+    },
+    "states": {
+      "loading": "Loading companies…",
+      "errorTitle": "Couldn't load companies",
+      "errorDescription": "Something went wrong while loading companies. Please try again.",
+      "emptyList": "No companies match these filters."
+    }
+  },
+  "rewards": {
+    "title": "Rewards & points",
+    "description": "Manage the rewards catalog, redemptions, and manual point adjustments for members.",
+    "tabs": {
+      "label": "Rewards sections",
+      "catalog": "Catalog",
+      "redemptions": "Redemptions · {{count}}",
+      "ledger": "Points ledger"
+    },
+    "actions": {
+      "addReward": "Add reward",
+      "exportLedger": "Export ledger",
+      "exportLedgerDisabledHint": "Export is unavailable until an export contract is available."
+    },
+    "states": {
+      "loading": "Loading rewards…",
+      "errorTitle": "Couldn't load rewards",
+      "errorDescription": "Something went wrong while loading rewards. Please try again.",
+      "redemptionsPlaceholder": "Redemptions queue will appear here once connected.",
+      "ledgerPlaceholder": "Points ledger will appear here once connected.",
+      "emptyCatalog": "No rewards in the catalog yet."
+    },
+    "kpis": {
+      "sectionLabel": "Rewards summary",
+      "pointsAwarded": "Points awarded · {{month}}",
+      "pointsRedeemed": "Points redeemed · {{month}}",
+      "redemptions": "Redemptions",
+      "waitingFulfillment": "Waiting fulfillment",
+      "months": {
+        "aug": "Aug",
+        "sep": "Sep"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}% vs {{month}}",
+        "oldestDays": "Oldest {{count}} days"
+      }
+    },
+    "columns": {
+      "reward": "Reward",
+      "cost": "Cost",
+      "left": "Left",
+      "redeemed": "Redeemed",
+      "live": "Live"
+    },
+    "catalog": {
+      "stockUnlimited": "Unlimited",
+      "stockLimited": "{{left}} / {{total}}",
+      "costPoints": "{{count}} pts",
+      "toggleLive": "Toggle live for {{name}}"
+    },
+    "items": {
+      "profileHighlight": "Profile Highlight · 7 days",
+      "profileHighlightSub": "Boost visibility on member profiles",
+      "vipPass": "VIP pass · Riyadh Season",
+      "vipPassSub": "Access pass for select Season venues",
+      "riggingCourse": "Rigging safety course",
+      "riggingCourseSub": "Certified half-day workshop",
+      "crewJacket": "Crew jacket",
+      "crewJacketSub": "Branded jacket · limited sizes",
+      "coffeeOnUs": "Coffee on us",
+      "coffeeOnUsSub": "Voucher at partner cafés",
+      "eventTicket": "Event ticket credit",
+      "eventTicketSub": "Redeem toward partner events"
+    },
+    "earnRules": {
+      "title": "How members earn points",
+      "editRules": "Edit rules",
+      "pointsPositive": "+{{count}} pts",
+      "pointsZero": "0 pts",
+      "items": {
+        "eventRegister": "Register for an event",
+        "verifiedAttendance": "Verified event attendance",
+        "volunteerShift": "Complete a volunteer shift",
+        "profileComplete": "Complete profile to 100%",
+        "friendReferral": "Refer a friend who joins"
+      }
+    },
+    "manualAdjustment": {
+      "title": "Manual adjustment",
+      "memberLabel": "Member",
+      "pointsLabel": "Points (+/−)",
+      "reasonLabel": "Reason (internal)",
+      "helper": "Adjustments are logged and visible to super admins only.",
+      "apply": "Apply adjustment",
+      "memberOption": "{{name}} · {{points}} pts",
+      "reasons": {
+        "scannerOffline": "Scanner offline at check-in — goodwill credit"
+      }
+    },
+    "members": {
+      "reemAlharbi": "Reem Alharbi",
+      "faisalAlmutairi": "Faisal Almutairi",
+      "nouraAlqahtani": "Noura Al-Qahtani"
+    },
+    "toasts": {
+      "adjustmentApplied": "Point adjustment applied.",
+      "editRules": "Earn rules editor is not connected yet.",
+      "addReward": "Add reward flow is not connected yet."
+    }
+  },
+  "news": {
+    "title": "News",
+    "description": "Editorial stories written by the Back of House team. Members don't post news.",
+    "listLabel": "Stories",
+    "tabs": {
+      "label": "Story status",
+      "all": "All",
+      "published": "Published",
+      "scheduled": "Scheduled",
+      "drafts": "Drafts"
+    },
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "newStory": "New story",
+      "preview": "Preview",
+      "schedule": "Schedule",
+      "publish": "Publish"
+    },
+    "states": {
+      "loading": "Loading stories…",
+      "errorTitle": "Couldn't load news",
+      "errorDescription": "Something went wrong while loading news. Please try again.",
+      "emptyList": "No stories match this tab.",
+      "pickStory": "Select a story to edit."
+    },
+    "stories": {
+      "riyadhSeason2026": "Riyadh Season 2026 opens 1,200 crew roles",
+      "jeddahDesignWeek": "Jeddah Design Week wraps with 4,200 check-ins",
+      "volunteerSpotlight": "Volunteer of the month: Noura Alshehri",
+      "safetyBriefing": "Safety briefing: night-time load-in",
+      "supplierSpotlight": "Supplier spotlight: Desert Stage AV",
+      "untitledStory": "Untitled story"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "published": "Published",
+      "scheduled": "Scheduled"
+    },
+    "meta": {
+      "authorNora": "Nora Q.",
+      "publishedSep22Reads": "Sep 22 · 3,410 reads",
+      "publishedSep18Reads": "Sep 18 · 890 reads",
+      "scheduledOct3": "Oct 3 · 09:00",
+      "authorKhalid": "Khalid A.",
+      "authorYou": "You"
+    },
+    "editor": {
+      "languageLabel": "Editor language",
+      "locales": {
+        "en": "English",
+        "ar": "العربية"
+      },
+      "savedAgo": "Draft saved 2 min ago",
+      "coverAlt": "Story cover",
+      "changeCover": "Change cover",
+      "headline": "Headline",
+      "category": "Category",
+      "linkTo": "Link to",
+      "notify": "Notify",
+      "story": "Story",
+      "toolbarLabel": "Formatting",
+      "body": "Body",
+      "publishHint": "Both English and Arabic are needed before publishing.",
+      "tools": {
+        "bold": "Bold",
+        "italic": "Italic",
+        "heading": "Heading",
+        "quote": "Quote",
+        "list": "List",
+        "link": "Link"
+      }
+    },
+    "categories": {
+      "opportunities": "Opportunities",
+      "culture": "Culture",
+      "safety": "Safety",
+      "community": "Community"
+    },
+    "linkTo": {
+      "eventCoordinatorListing": "Event Coordinator listing",
+      "designWeekHub": "Design Week hub",
+      "safetyTraining": "Safety training",
+      "volunteerProgram": "Volunteer program",
+      "supplierPortal": "Supplier portal",
+      "arenaTour": "Arena tour",
+      "none": "None"
+    },
+    "notify": {
+      "pushRiyadhMembers": "Push to Riyadh members",
+      "pushAllMembers": "Push to all members",
+      "none": "No notification"
+    },
+    "toasts": {
+      "newDraft": "New draft created.",
+      "changeCover": "Cover upload is not connected yet.",
+      "preview": "Preview is not connected yet.",
+      "schedule": "Schedule flow is not connected yet.",
+      "publish": "Publish flow is not connected yet."
+    }
+  },
+  "broadcasts": {
+    "title": "Broadcasts",
+    "description": "Send push, email or in-app messages to a group of members.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "sendTest": "Send test",
+      "schedule": "Schedule"
+    },
+    "newBroadcast": {
+      "title": "New broadcast",
+      "audienceLabel": "Audience",
+      "channelsLabel": "Channels",
+      "messageLabel": "Message",
+      "scheduleHint": "Sends Oct 1 at 10:00. Push isn't sent between 11 PM and 8 AM."
+    },
+    "audience": {
+      "and": "and",
+      "addRule": "+ Add rule",
+      "removeRule": "Remove rule",
+      "matchBannerRest": "members match. Members who turned off marketing messages are left out.",
+      "fields": {
+        "city": "City",
+        "account": "Account",
+        "interestedIn": "Interested in"
+      },
+      "operators": {
+        "is": "is",
+        "anyOf": "any of"
+      },
+      "values": {
+        "riyadh": "Riyadh",
+        "individual": "Individual",
+        "stageAvHospitality": "Stage, AV, Hospitality"
+      }
+    },
+    "channels": {
+      "push": "Push",
+      "email": "Email",
+      "inApp": "In-app"
+    },
+    "editor": {
+      "languageLabel": "Message language",
+      "locales": {
+        "en": "EN",
+        "ar": "ع"
+      },
+      "title": "Title",
+      "body": "Body"
+    },
+    "sentScheduled": {
+      "title": "Sent & scheduled",
+      "downloadCsv": "Download CSV"
+    },
+    "columns": {
+      "broadcast": "Broadcast",
+      "sentTo": "Sent to",
+      "opened": "Opened",
+      "status": "Status"
+    },
+    "table": {
+      "sentToEmpty": "—",
+      "openedEmpty": "—",
+      "openedAria": "{{percent}}% opened"
+    },
+    "statuses": {
+      "scheduled": "Scheduled",
+      "sent": "Sent",
+      "draft": "Draft"
+    },
+    "rows": {
+      "crewRolesOpened": "1,200 crew roles just opened",
+      "jeddahDesignWeekLastCall": "Jeddah Design Week: last call",
+      "rewardsCatalog": "New: rewards catalog",
+      "verifyCompany": "Verify your company",
+      "crewMeetupDammam": "Crew Meetup Dammam",
+      "profileHighlight": "Profile Highlight is here"
+    },
+    "rowMeta": {
+      "pushEmailRiyadh": "Push · Email · Riyadh",
+      "pushJeddah": "Push · Jeddah",
+      "inAppEveryone": "In-app · everyone",
+      "emailUnverifiedCompanies": "Email · unverified companies",
+      "pushDammam": "Push · Dammam",
+      "emailPointsOver500": "Email · points over 500"
+    },
+    "states": {
+      "loading": "Loading broadcasts…",
+      "errorTitle": "Couldn't load broadcasts",
+      "errorDescription": "Something went wrong while loading broadcasts. Please try again.",
+      "emptyList": "No sent or scheduled broadcasts yet."
+    },
+    "toasts": {
+      "sendTest": "Test send is not connected yet.",
+      "schedule": "Schedule flow is not connected yet.",
+      "downloadCsv": "CSV download is not connected yet.",
+      "addRule": "Audience rules are not connected yet."
+    }
+  },
+  "events": {
+    "title": "Events",
+    "description": "Track registrations, verified attendance, and points awards for every event.",
+    "tabs": {
+      "label": "Event lifecycle",
+      "past": "Past · {{count}}",
+      "upcoming": "Upcoming · {{count}}",
+      "drafts": "Drafts · {{count}}"
+    },
+    "filters": {
+      "city": "City",
+      "allCities": "All cities"
+    },
+    "cities": {
+      "riyadh": "Riyadh",
+      "jeddah": "Jeddah",
+      "dammam": "Dammam",
+      "alUla": "AlUla"
+    },
+    "table": {
+      "label": "Events list"
+    },
+    "columns": {
+      "event": "Event",
+      "dates": "Dates",
+      "registered": "Registered",
+      "checkedIn": "Checked in",
+      "points": "Points"
+    },
+    "kpis": {
+      "sectionLabel": "Events summary",
+      "upcomingEvents": "Upcoming events",
+      "registrationsSep": "Registrations · Sep",
+      "attendanceVerified": "Attendance verified",
+      "pointsAwardedSep": "Points awarded · Sep",
+      "months": {
+        "aug": "Aug"
+      },
+      "footnotes": {
+        "percentVsMonth": "{{sign}}{{value}}% vs {{month}}"
+      }
+    },
+    "items": {
+      "riyadhTechSummit": "Riyadh Tech Summit",
+      "jeddahDesignWeek": "Jeddah Design Week",
+      "crewMeetupRigging": "Crew Meetup: Rigging 101",
+      "alulaNightConcert": "AlUla Night Concert crew",
+      "expoBuildWeekend": "Expo Build Weekend",
+      "womenInEventsForum": "Women in Events Forum",
+      "draftHospitalitySummit": "Hospitality Summit (draft)"
+    },
+    "venues": {
+      "riyadhFront": "Riyadh Front",
+      "jeddahSuperdome": "Jeddah Superdome",
+      "industrialHub": "Industrial Hub",
+      "marayaHall": "Maraya Hall",
+      "riyadhExhibition": "Riyadh Exhibition Center",
+      "kafdConference": "KAFD Conference Center",
+      "draftVenueTbd": "Venue TBD"
+    },
+    "dates": {
+      "sep24to26": "Sep 24–26",
+      "aug29": "Aug 29",
+      "aug22": "Aug 22",
+      "sep12": "Sep 12",
+      "oct18to19": "Oct 18–19",
+      "nov4": "Nov 4",
+      "decTbd": "Dec · TBD"
+    },
+    "detailMeta": {
+      "riyadhTechSummitMeta": "Riyadh Front · Sep 24–26 · QR check-in",
+      "jeddahDesignWeekMeta": "Jeddah Superdome · Aug 29 · Points awarded",
+      "crewMeetupRiggingMeta": "Industrial Hub · Aug 22 · Manual list",
+      "alulaNightConcertMeta": "Maraya Hall · Sep 12 · Points awarded",
+      "expoBuildWeekendMeta": "Riyadh Exhibition · Oct 18–19",
+      "womenInEventsForumMeta": "KAFD · Nov 4",
+      "draftHospitalitySummitMeta": "Jeddah · Draft · not published"
+    },
+    "pointsStatuses": {
+      "awaitingCheckIns": "Awaiting check-ins",
+      "pointsAwarded": "Points awarded",
+      "partlyAwarded": "Partly awarded"
+    },
+    "checkInMethods": {
+      "qrAtDoor": "QR at door",
+      "manualList": "Manual list"
+    },
+    "detail": {
+      "attendanceSection": "Attendance",
+      "verifiedAttendance": "Verified attendance",
+      "verifiedOfRegistered": "{{verified}} of {{registered}} registered",
+      "registeredLabel": "Registered",
+      "checkInMethodLabel": "Check-in method",
+      "notYetMatchedLabel": "Not yet matched",
+      "unmatchedScans": "{{count}} scans",
+      "pointsCallout": "Award points only after attendance is verified. Unmatched scans need review before points go out."
+    },
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "newEvent": "New event",
+      "importCheckIns": "Import check-ins",
+      "awardPoints": "Award {{count}} × {{points}} pts"
+    },
+    "toasts": {
+      "importCheckIns": "Check-in import is not connected yet.",
+      "newEvent": "New event flow is not connected yet.",
+      "awardPoints": "Would award {{count}} members {{points}} pts each."
+    },
+    "states": {
+      "loading": "Loading events…",
+      "errorTitle": "Couldn't load events",
+      "errorDescription": "Something went wrong while loading events. Please try again.",
+      "emptyList": "No events match these filters.",
+      "pickEvent": "Select an event to view attendance and points."
+    }
+  },
+  "claimsImports": {
+    "title": "Claims & imports",
+    "description": "Companies claiming pages that were added for them, and bulk data imports.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "review": "Review",
+      "view": "View"
+    },
+    "pageClaims": {
+      "title": "Page claims",
+      "description": "Someone says they run a company page that we created from an import.",
+      "importMeta": "Imported {{month}} · {{count}} listings",
+      "tabs": {
+        "label": "Claim status",
+        "open": "Open - {{count}}",
+        "decided": "Decided"
+      },
+      "guidance": {
+        "checkEmail": {
+          "title": "Check the email",
+          "description": "Work email on the same domain as the company page is strong evidence."
+        },
+        "askDocuments": {
+          "title": "Ask for documents",
+          "description": "CR extract or an authorization letter on company letterhead."
+        },
+        "handOver": {
+          "title": "Hand over the page",
+          "description": "Approved claimants become page admins; rejected claimants stay blocked."
+        }
+      }
+    },
+    "columns": {
+      "companyPage": "Company page",
+      "claimedBy": "Claimed by",
+      "evidence": "Evidence",
+      "submitted": "Submitted",
+      "actions": "Actions"
+    },
+    "importData": {
+      "title": "Import data",
+      "dropzoneTitle": "Drop a CSV or Excel file here",
+      "dropzoneHint": "Up to 5,000 rows. You'll see a preview before anything is saved.",
+      "templatesLabel": "Download a template",
+      "templates": {
+        "companies": "Companies",
+        "events": "Events",
+        "users": "Users",
+        "attendance": "Attendance"
+      }
+    },
+    "recentImports": {
+      "title": "Recent imports",
+      "downloadErrorReport": "Download error report"
+    },
+    "states": {
+      "errorTitle": "Couldn't load claims & imports",
+      "errorDescription": "Something went wrong while loading claims and imports. Please try again.",
+      "loadingImports": "Loading imports…",
+      "loadingClaims": "Loading claims…",
+      "emptyClaims": "No claims in this tab.",
+      "emptyImports": "No recent imports yet."
+    },
+    "companies": {
+      "arabianVenues": "Arabian Venues",
+      "jeddahSoundHire": "Jeddah Sound Hire",
+      "najdProductions": "Najd Productions",
+      "eventlinkKsa": "Eventlink KSA"
+    },
+    "claimants": {
+      "mahaAlsubaie": "Maha Alsubaie",
+      "omarAlharbi": "Omar Alharbi",
+      "nouraAlqahtani": "Noura Al-Qahtani",
+      "faisalAlotaibi": "Faisal Alotaibi"
+    },
+    "emails": {
+      "mahaAlsubaieEmail": "maha@arabianvenues.sa",
+      "omarAlharbiEmail": "omar@jeddahsound.sa",
+      "nouraAlqahtaniEmail": "noura@najdproductions.sa",
+      "faisalAlotaibiEmail": "faisal@eventlink.sa"
+    },
+    "evidence": {
+      "domainMatches": "Domain matches",
+      "needsDocuments": "Needs documents",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "dates": {
+      "sep27": "Sep 27",
+      "sep26": "Sep 26",
+      "sep20": "Sep 20",
+      "sep18": "Sep 18"
+    },
+    "importMonths": {
+      "aug14": "Aug 14",
+      "jul22": "Jul 22",
+      "aug2": "Aug 2"
+    },
+    "files": {
+      "riyadhTechSummit": "Riyadh Tech Summit - attendance.csv",
+      "venuesDirectoryAug": "Venues directory - Aug.xlsx",
+      "jeddahDesignWeek": "Jeddah Design Week - attendance.csv"
+    },
+    "importStatus": {
+      "processing": "Processing",
+      "doneWithErrors": "Done with errors",
+      "done": "Done"
+    },
+    "importDetails": {
+      "riyadhTechSummitDetail": "1,280 of 2,000 rows",
+      "venuesDirectoryAugDetail": "240 added · 3 skipped",
+      "jeddahDesignWeekDetail": "880 attendees · points sent"
+    },
+    "dialogs": {
+      "close": "Close",
+      "review": {
+        "title": "Review claim",
+        "description": "Confirm evidence before handing over this company page."
+      },
+      "view": {
+        "title": "Claim decision",
+        "description": "Read-only summary of this decided claim."
+      }
+    },
+    "toasts": {
+      "dropzone": "File upload is not connected yet.",
+      "fileReceived": "Received “{{filename}}” (demo only — import is not connected).",
+      "template": {
+        "companies": "Companies template download is not connected yet.",
+        "events": "Events template download is not connected yet.",
+        "users": "Users template download is not connected yet.",
+        "attendance": "Attendance template download is not connected yet."
+      },
+      "errorReport": "Error report download is not connected yet."
+    }
+  },
+  "verification": {
+    "title": "Verification",
+    "description": "Review company, pro, and student verification requests before they get a verified badge.",
+    "infoBanner": "Decisions are logged. Approved applicants receive a verified badge; rejected applicants can reapply after 30 days.",
+    "tabs": {
+      "label": "Verification queue",
+      "waiting": "Waiting · {{count}}",
+      "moreInfo": "More info · {{count}}",
+      "decided": "Decided · {{count}}"
+    },
+    "list": {
+      "label": "Verification requests",
+      "roleDocuments": "{{role}} · {{count}} documents",
+      "documentsCity": "{{count}} documents · {{city}}"
+    },
+    "listSubtitles": {
+      "lightingDesigner": "Lighting designer",
+      "studentIdDoc": "Student ID",
+      "stageManager": "Stage manager",
+      "avTechnician": "AV technician"
+    },
+    "types": {
+      "company": "Company",
+      "pro": "Pro",
+      "student": "Student"
+    },
+    "applicantLabels": {
+      "company": "Company",
+      "pro": "Pro",
+      "student": "Student"
+    },
+    "actions": {
+      "exportDecisions": "Export decisions",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "reject": "Reject",
+      "askMoreInfo": "Ask for more info",
+      "approve": "Approve"
+    },
+    "detail": {
+      "requestedMeta": "{{type}} verification · requested by {{requester}}{{role}} · submitted {{submitted}}"
+    },
+    "checks": {
+      "title": "Automated checks",
+      "items": {
+        "crValid": "Commercial registration is valid",
+        "requesterEmailDomain": "Requester email matches company domain",
+        "noOpenReports": "No open trust & safety reports",
+        "authorizationNotStamped": "Authorization letter not stamped",
+        "idMatchesName": "ID name matches applicant",
+        "portfolioLinked": "Portfolio link verified",
+        "addressPending": "National address pending confirmation",
+        "studentIdValid": "Student ID is valid",
+        "enrollmentConfirmed": "Enrollment confirmed for current term",
+        "experienceLetterMissing": "Experience letter missing",
+        "nationalAddressMismatch": "National address mismatch",
+        "idExpired": "ID appears expired",
+        "documentsIllegible": "Documents illegible"
+      }
+    },
+    "documents": {
+      "sectionTitle": "Documents",
+      "previewPlaceholder": "Document preview placeholder — files are not loaded in this demo.",
+      "files": {
+        "commercialRegistrationPdf": "commercial_registration.pdf",
+        "nationalAddressPdf": "national_address.pdf",
+        "authorizationLetterJpg": "authorization_letter.jpg",
+        "nationalIdPdf": "national_id.pdf",
+        "portfolioPdf": "portfolio.pdf",
+        "studentIdPdf": "student_id.pdf"
+      },
+      "sizes": {
+        "kb420": "420 KB",
+        "kb180": "180 KB",
+        "mb11": "1.1 MB",
+        "kb240": "240 KB",
+        "mb2": "2.0 MB",
+        "kb390": "390 KB",
+        "kb160": "160 KB",
+        "kb310": "310 KB",
+        "kb220": "220 KB",
+        "kb400": "400 KB",
+        "mb09": "0.9 MB",
+        "kb410": "410 KB",
+        "kb175": "175 KB",
+        "mb10": "1.0 MB",
+        "kb430": "430 KB",
+        "kb200": "200 KB"
+      },
+      "captions": {
+        "commercialRegistrationPage1": "Commercial registration · page 1",
+        "nationalAddressPage1": "National address · page 1",
+        "authorizationLetterPage1": "Authorization letter · page 1",
+        "nationalIdPage1": "National ID · page 1",
+        "portfolioPage1": "Portfolio · page 1",
+        "studentIdPage1": "Student ID · page 1"
+      }
+    },
+    "names": {
+      "creativeExpo": "Creative Expo Co.",
+      "hassanAlmalki": "Hassan Almalki",
+      "desertStage": "Desert Stage",
+      "nouraAlshehri": "Noura Alshehri",
+      "majedAlbishi": "Majed Albishi",
+      "gulfExperienceCo": "Gulf Experience Co.",
+      "redSeaEvents": "Red Sea Events",
+      "saudiEventsGroup": "Saudi Events Group",
+      "yousefAlmalki": "Yousef Almalki"
+    },
+    "people": {
+      "hindAlzahrani": "Hind Alzahrani",
+      "hassanAlmalki": "Hassan Almalki",
+      "omarAlghamdi": "Omar Alghamdi",
+      "nouraAlshehri": "Noura Alshehri",
+      "majedAlbishi": "Majed Albishi",
+      "laylaHassan": "Layla Hassan",
+      "halaAlfarsi": "Hala Alfarsi",
+      "faisalAlotaibi": "Faisal Alotaibi",
+      "yousefAlmalki": "Yousef Almalki"
+    },
+    "requesterRoles": {
+      "operationsLead": "Operations lead",
+      "founder": "Founder",
+      "financeLead": "Finance lead"
+    },
+    "facts": {
+      "commercialRegistration": "CR number",
+      "legalName": "Legal name",
+      "city": "City",
+      "accountCreated": "Account created",
+      "listingsPosted": "Listings posted",
+      "profession": "Profession",
+      "university": "University"
+    },
+    "factValues": {
+      "creativeExpoCr": "1010987654",
+      "creativeExpoLegal": "Creative Expo Co.",
+      "dammam": "Dammam",
+      "feb22025": "Feb 22, 2025",
+      "nine": "9",
+      "lightingDesigner": "Lighting designer",
+      "riyadh": "Riyadh",
+      "jan182025": "Jan 18, 2025",
+      "four": "4",
+      "desertStageCr": "1010456123",
+      "desertStageLegal": "Desert Stage LLC",
+      "alUla": "AlUla",
+      "aug142025": "Aug 14, 2025",
+      "three": "3",
+      "ksu": "King Saud University",
+      "sep12025": "Sep 1, 2025",
+      "zero": "0",
+      "stageManager": "Stage manager",
+      "jeddah": "Jeddah",
+      "jul222025": "Jul 22, 2025",
+      "two": "2",
+      "gulfExperienceCr": "1010112233",
+      "gulfExperienceLegal": "Gulf Experience Co.",
+      "may22025": "May 2, 2025",
+      "six": "6",
+      "redSeaCr": "1010778899",
+      "redSeaLegal": "Red Sea Events",
+      "apr192025": "Apr 19, 2025",
+      "eleven": "11",
+      "saudiEventsCr": "1010334455",
+      "saudiEventsLegal": "Saudi Events Group",
+      "dec112024": "Dec 11, 2024",
+      "twentyFour": "24",
+      "avTechnician": "AV technician",
+      "jun92025": "Jun 9, 2025",
+      "one": "1"
+    },
+    "cities": {
+      "dammam": "Dammam",
+      "riyadh": "Riyadh",
+      "alUla": "AlUla",
+      "jeddah": "Jeddah"
+    },
+    "sla": {
+      "d1Left": "1d left",
+      "d2Left": "2d left",
+      "d3Left": "3d left",
+      "d4Left": "4d left",
+      "waitingOnApplicant": "Waiting on applicant",
+      "decidedApproved": "Approved",
+      "decidedRejected": "Rejected"
+    },
+    "decided": {
+      "approved": "This request was approved.",
+      "rejected": "This request was rejected.",
+      "moreInfo": "Waiting for more information from the applicant."
+    },
+    "dialogs": {
+      "reject": {
+        "title": "Reject {{name}}?",
+        "description": "They will not receive a verified badge and can reapply after 30 days."
+      },
+      "moreInfo": {
+        "title": "Ask {{name}} for more info?",
+        "description": "They will get an email listing what to upload or fix."
+      },
+      "approve": {
+        "title": "Approve {{name}}?",
+        "description": "They will receive a verified badge immediately."
+      }
+    },
+    "toasts": {
+      "rejected": "Verification rejected.",
+      "moreInfoRequested": "More info requested.",
+      "approved": "Verification approved."
+    },
+    "states": {
+      "loading": "Loading verification queue…",
+      "errorTitle": "Couldn't load verification",
+      "errorDescription": "Something went wrong while loading verification. Please try again.",
+      "emptyList": "No requests in this tab.",
+      "pickRequest": "Select a request to review documents and decide."
+    },
+    "dates": {
+      "submitted": {
+        "sep26": "Sep 26",
+        "sep25": "Sep 25",
+        "sep24": "Sep 24",
+        "sep23": "Sep 23",
+        "sep22": "Sep 22",
+        "sep18": "Sep 18",
+        "sep15": "Sep 15",
+        "sep10": "Sep 10",
+        "sep8": "Sep 8"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Platform rules, categories and review settings.",
+    "descriptionDirty": "You have unsaved changes.",
+    "actions": {
+      "saveChanges": "Save changes"
+    },
+    "nav": {
+      "label": "Settings",
+      "sections": {
+        "general": "General",
+        "pointsRules": "Points rules",
+        "categoriesCities": "Categories & cities",
+        "reviewSafety": "Review & safety",
+        "notifications": "Notifications",
+        "legalPrivacy": "Legal & privacy",
+        "languages": "Languages"
+      }
+    },
+    "placeholder": {
+      "description": "This section is not connected yet.",
+      "body": "Configuration for this area will appear here when the backend contract is ready."
+    },
+    "general": {
+      "title": "General",
+      "description": "How Back of House presents itself to members.",
+      "fields": {
+        "platformName": "Platform name",
+        "supportEmail": "Support email",
+        "timezone": "Time zone"
+      },
+      "timezones": {
+        "riyadh": "Riyadh (GMT+3)"
+      }
+    },
+    "pointsRules": {
+      "title": "Points rules",
+      "description": "Registering for an event is fixed at 0 points and can’t be changed.",
+      "columns": {
+        "activity": "Activity",
+        "points": "Points",
+        "limit": "Limit",
+        "on": "On"
+      },
+      "activities": {
+        "registerEvent": "Registering for an event",
+        "verifiedAttendance": "Verified event attendance",
+        "volunteerShift": "Confirmed volunteer shift",
+        "completeProfile": "Completing your profile",
+        "friendJoins": "Friend joins and attends"
+      },
+      "limits": {
+        "locked": "Locked",
+        "perEvent": "Per event",
+        "confirmedByCompany": "Confirmed by the company",
+        "once": "Once",
+        "maxTenPerMonth": "Max 10 a month"
+      },
+      "toggleActivity": "Toggle {{activity}}",
+      "pointsFor": "Points: {{activity}}"
+    },
+    "categories": {
+      "title": "Categories & cities",
+      "add": "+ Add",
+      "addSubmit": "Add",
+      "removeItem": "Remove {{item}}",
+      "groups": {
+        "listingTypes": "Listing types",
+        "crafts": "Crafts",
+        "cities": "Cities"
+      },
+      "items": {
+        "listingTypes": {
+          "job": "Job",
+          "coOp": "Co-op",
+          "project": "Project",
+          "volunteering": "Volunteering",
+          "supplierRequest": "Supplier request"
+        },
+        "crafts": {
+          "stage": "Stage",
+          "lighting": "Lighting",
+          "av": "AV",
+          "rigging": "Rigging",
+          "hospitality": "Hospitality",
+          "production": "Production"
+        },
+        "cities": {
+          "riyadh": "Riyadh",
+          "jeddah": "Jeddah",
+          "dammam": "Dammam",
+          "alUla": "AlUla",
+          "abha": "Abha"
+        }
+      }
+    },
+    "reviewSafety": {
+      "title": "Review & safety",
+      "columns": {
+        "setting": "Setting",
+        "on": "On"
+      },
+      "items": {
+        "review-new-listing": {
+          "title": "Review every new listing",
+          "description": "Target: within 24 hours"
+        },
+        "hide-contact": {
+          "title": "Hide phone numbers and emails in listings",
+          "description": "Flags them for review"
+        },
+        "auto-flag-fees": {
+          "title": "Auto-flag listings that ask for fees",
+          "description": "Sends them to Moderation"
+        },
+        "verified-skip-review": {
+          "title": "Let verified companies skip review",
+          "description": "Off: every listing is reviewed"
+        }
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "What members and admins hear about, and how.",
+      "items": {
+        "new-listing-submitted": {
+          "title": "New listing submitted",
+          "description": "Email reviewers when the queue passes 10 listings"
+        },
+        "verification-request": {
+          "title": "Verification request",
+          "description": "Notify reviewers in the app"
+        },
+        "ticket-waiting": {
+          "title": "Ticket waiting over 4 hours",
+          "description": "Email the support lead"
+        },
+        "weekly-summary": {
+          "title": "Weekly summary",
+          "description": "Sunday email to Super admins"
+        }
+      }
+    },
+    "legal": {
+      "title": "Legal & privacy",
+      "description": "Documents members accept when they sign up.",
+      "edit": "Edit",
+      "docs": {
+        "termsOfUse": "Terms of use",
+        "privacyPolicy": "Privacy policy",
+        "communityGuidelines": "Community guidelines"
+      },
+      "updated": {
+        "updatedAug2026": "Updated Aug 1, 2026"
+      }
+    },
+    "languages": {
+      "title": "Languages",
+      "description": "Every member-facing text needs English and Arabic.",
+      "defaultLanguage": "Default language for new members",
+      "english": {
+        "title": "English",
+        "description": "Always on"
+      },
+      "arabic": {
+        "title": "العربية",
+        "description": "Right-to-left layout"
+      },
+      "options": {
+        "english": "English",
+        "arabic": "العربية"
+      }
+    },
+    "states": {
+      "loading": "Loading settings…",
+      "errorTitle": "Couldn't load settings",
+      "errorDescription": "Something went wrong while loading settings. Please try again."
+    },
+    "toasts": {
+      "saved": "Settings saved",
+      "editDocument": "Opening the editor for {{doc}}…"
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "description": "Every admin action on Back of House, searchable and exportable.",
+    "filters": {
+      "admin": "Admin",
+      "action": "Action"
+    },
+    "tabs": {
+      "label": "Audit categories",
+      "all": "All",
+      "decisions": "Decisions",
+      "points": "Points",
+      "exports": "Exports",
+      "access": "Access"
+    },
+    "columns": {
+      "when": "When",
+      "admin": "Admin",
+      "action": "Action",
+      "target": "Target",
+      "details": "Details"
+    },
+    "states": {
+      "loading": "Loading audit log…",
+      "errorTitle": "Couldn't load audit log",
+      "errorDescription": "Something went wrong while loading the audit log. Please try again.",
+      "emptyList": "No entries match these filters."
+    },
+    "admins": {
+      "noraAlQahtani": "Nora Al-Qahtani",
+      "hessaAlmarri": "Hessa Almarri",
+      "faisalAlanazi": "Faisal Alanazi",
+      "yousefAlsaleh": "Yousef Alsaleh",
+      "turkiAlamri": "Turki Alamri",
+      "danaAlkhaldi": "Dana Alkhaldi"
+    },
+    "actions": {
+      "exportLog": "Export log",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "exportedData": "Exported data",
+      "requestedChanges": "Requested changes",
+      "adjustedPoints": "Adjusted points",
+      "approvedVerification": "Approved verification",
+      "suspendedAccount": "Suspended account",
+      "publishedStory": "Published story",
+      "changedRole": "Changed role",
+      "signedIn": "Signed in"
+    },
+    "targets": {
+      "applicationsSepExcel": "Applications · Sep export",
+      "listingSummerCoop": "Listing · Summer co-op",
+      "userReemAlharbi": "User · Reem Alharbi",
+      "companyRiyadhFrontEvents": "Company · Riyadh Front Events",
+      "companyQuickCrewKsa": "Company · Quick Crew KSA",
+      "newsJeddahDesignWeek": "News · Jeddah Design Week",
+      "adminRanaAlbassam": "Admin · Rana Albassam",
+      "backOffice": "Back office"
+    },
+    "details": {
+      "rows4870": "4,870 rows",
+      "addWorkingHours": "Asked to add working hours",
+      "plus150ScannerOffline": "+150 pts · scanner offline",
+      "documentsChecked3": "3 documents checked",
+      "reports7UnpaidCrew": "7 reports · unpaid crew",
+      "invitedAsAnalyst": "Invited as analyst",
+      "riyadhChrome2Step": "Riyadh · Chrome · 2-step"
+    },
+    "when": {
+      "sep28_1042": "Sep 28 · 10:42",
+      "sep28_1015": "Sep 28 · 10:15",
+      "sep28_0958": "Sep 28 · 09:58",
+      "sep28_0930": "Sep 28 · 09:30",
+      "sep28_0902": "Sep 28 · 09:02",
+      "sep27_1820": "Sep 27 · 18:20",
+      "sep27_1705": "Sep 27 · 17:05",
+      "sep27_1648": "Sep 27 · 16:48"
+    }
+  },
+  "team": {
+    "title": "Team & roles",
+    "description": "Who can use the back-office, and what each role is allowed to do.",
+    "actions": {
+      "inviteTeammate": "Invite teammate",
+      "edit": "Edit",
+      "previewInvite": "Preview invite"
+    },
+    "states": {
+      "loading": "Loading team…",
+      "errorTitle": "Couldn't load team",
+      "errorDescription": "Something went wrong while loading team data. Please try again.",
+      "emptyAdmins": "No admins yet.",
+      "emptyPermissions": "No permissions to show."
+    },
+    "toasts": {
+      "inviteTeammate": "Invite flow is not connected yet.",
+      "editAdmin": "Edit {{name}} is not connected yet.",
+      "previewInvite": "Invite preview is not connected yet."
+    },
+    "roles": {
+      "superAdmin": "Super admin",
+      "reviewer": "Reviewer",
+      "editor": "Editor",
+      "support": "Support",
+      "analyst": "Analyst"
+    },
+    "admins": {
+      "title": "Admins · {{count}}",
+      "tableLabel": "Team admins",
+      "columns": {
+        "admin": "Admin",
+        "role": "Role",
+        "lastActive": "Last active",
+        "actions": "Actions"
+      },
+      "inviteSent": "Invite sent {{date}}",
+      "names": {
+        "noraAlQahtani": "Nora Al-Qahtani",
+        "faisalAlanazi": "Faisal Alanazi",
+        "hessaAlmarri": "Hessa Almarri",
+        "yousefAlsaleh": "Yousef Alsaleh",
+        "danaAlkhaldi": "Dana Alkhaldi",
+        "turkiAlamri": "Turki Alamri",
+        "ranaAlbassam": "Rana Albassam"
+      },
+      "emails": {
+        "noraEmail": "admin@backofhouse.sa",
+        "faisalEmail": "faisal@backofhouse.sa",
+        "hessaEmail": "hessa@backofhouse.sa",
+        "yousefEmail": "yousef@backofhouse.sa",
+        "danaEmail": "dana@backofhouse.sa",
+        "turkiEmail": "turki@backofhouse.sa",
+        "ranaEmail": "rana@backofhouse.sa"
+      },
+      "dates": {
+        "sep26": "Sep 26"
+      },
+      "lastActive": {
+        "none": "—",
+        "now": "Now",
+        "h1": "1 h ago",
+        "today": "Today",
+        "yesterday": "Yesterday"
+      }
+    },
+    "permissions": {
+      "title": "Role permissions",
+      "subtitle": "Changes apply the next time someone signs in.",
+      "tableLabel": "Role permissions",
+      "legend": "✓ allowed · • view only. Staff sign in with Google Workspace; two-step verification is required.",
+      "columns": {
+        "permission": "Permission"
+      },
+      "access": {
+        "none": "No access",
+        "allowed": "Allowed",
+        "viewOnly": "View only"
+      },
+      "items": {
+        "reviewListings": "Review listings",
+        "verificationDecisions": "Verification decisions",
+        "moderationActions": "Moderation actions",
+        "publishNews": "Publish news",
+        "broadcasts": "Broadcasts",
+        "adjustPoints": "Adjust points",
+        "replyToSupport": "Reply to support",
+        "analyticsReports": "Analytics & reports",
+        "exportPersonalData": "Export personal data",
+        "suspendAccounts": "Suspend accounts",
+        "manageTeamSettings": "Manage team & settings"
+      }
+    }
+  },
+  "support": {
+    "title": "Support inbox",
+    "description": "Reply to members, adjust points, and close tickets from one place.",
+    "actions": {
+      "exportTickets": "Export tickets",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "assign": "Assign",
+      "assignTo": "Assign to {{name}}",
+      "close": "Close ticket",
+      "send": "Send",
+      "sendAndSolve": "Send & solve",
+      "openProfile": "Open profile",
+      "adjustPoints": "Adjust points"
+    },
+    "tabs": {
+      "label": "Ticket queue",
+      "open": "Open · {{count}}",
+      "mine": "Mine · {{count}}",
+      "closed": "Closed · {{count}}"
+    },
+    "categories": {
+      "points": "Points",
+      "company": "Company",
+      "verification": "Verification",
+      "account": "Account"
+    },
+    "states": {
+      "loading": "Loading tickets…",
+      "errorTitle": "Couldn't load support inbox",
+      "errorDescription": "Something went wrong while loading tickets. Please try again.",
+      "emptyList": "No tickets in this tab.",
+      "pickTicket": "Select a ticket to read the conversation.",
+      "noMessages": "No messages yet.",
+      "closedTicket": "This ticket is closed."
+    },
+    "toasts": {
+      "replyRequired": "Write a reply before sending.",
+      "sent": "Reply sent (demo only).",
+      "sentAndSolved": "Reply sent and ticket marked solved.",
+      "closed": "Ticket closed (demo only).",
+      "assigned": "Assignee updated (demo only).",
+      "openProfile": "Open profile is not connected yet.",
+      "adjustPoints": "Adjust points is not connected yet."
+    },
+    "meta": {
+      "opened": "#{{number}} · {{sender}} · opened {{when}}"
+    },
+    "senders": {
+      "faisalAlotaibi": "Faisal Alotaibi",
+      "saudiEventsGroup": "Saudi Events Group",
+      "anonymousUser": "Anonymous user",
+      "hananAlQahtani": "Hanan Al-Qahtani",
+      "gulfStagesLlc": "Gulf Stages LLC",
+      "omarAlHarbi": "Omar Alharbi",
+      "liveTechSolutions": "LiveTech Solutions",
+      "nouraAlDossary": "Noura Al-Dossary",
+      "riyadhFrontEvents": "Riyadh Front Events",
+      "yousefAlMutairi": "Yousef Al-Mutairi",
+      "desertStage": "Desert Stage"
+    },
+    "subjects": {
+      "pointsMissingRiyadhTech": "Points missing · Riyadh Tech Summit",
+      "verifyCompanyDocs": "Verify company documents",
+      "passwordResetLink": "Password reset link expired",
+      "coopHoursProfile": "Co-op hours on profile",
+      "wrongCompanyLogo": "Wrong company logo",
+      "verificationPending": "Verification still pending",
+      "duplicateCompanyPage": "Duplicate company page",
+      "eventPointsDelay": "Event points delayed",
+      "supplierBadgeIssue": "Supplier badge issue",
+      "accountLocked": "Account locked",
+      "listingVisibility": "Listing not visible",
+      "priorBadgeQuestion": "Prior badge question",
+      "closedVerification": "Closed verification question"
+    },
+    "age": {
+      "h3": "3h ago",
+      "h4": "4h ago",
+      "d1": "1d ago",
+      "d2": "2d ago",
+      "d3": "3d ago",
+      "d4": "4d ago",
+      "d5": "5d ago",
+      "d6": "6d ago",
+      "closed": "Closed",
+      "aug3": "Aug 3",
+      "jul28": "Jul 28"
+    },
+    "sla": {
+      "left1h": "1h left",
+      "left2h": "2h left",
+      "overdue": "Overdue"
+    },
+    "assignees": {
+      "nora": "Nora",
+      "sam": "Sam",
+      "unassigned": "Unassigned"
+    },
+    "authors": {
+      "faisal": "Faisal",
+      "nora": "Nora"
+    },
+    "times": {
+      "t912": "9:12 AM",
+      "t1040": "10:40 AM",
+      "t1042": "10:42 AM"
+    },
+    "messages": {
+      "faisalOpening": "Hi — I checked in at Riyadh Tech Summit but only got 75 of 150 points. My QR scan shows in the app.",
+      "noraReplyPoints": "Thanks Faisal. I'm checking the check-in import now and will adjust if the scan matched.",
+      "linkedCheckInImport": "Linked to check-in import · riyadh_tech_summit_attendees.csv",
+      "quickPointsTimingBody": "Points usually appear within 24 hours after attendance is verified. I'll follow up if yours are still missing tomorrow.",
+      "quickVerificationDocsBody": "Please upload your CR extract or authorization letter on company letterhead so we can verify your page.",
+      "quickResetPasswordBody": "I sent a fresh password reset link to your email. It expires in 30 minutes."
+    },
+    "quickReplies": {
+      "quickPointsTiming": "Points timing",
+      "quickVerificationDocs": "Verification docs",
+      "quickResetPassword": "Reset password"
+    },
+    "profileTypes": {
+      "individualJeddah": "Individual · Jeddah",
+      "companyRiyadh": "Company · Riyadh",
+      "individualUnknown": "Individual",
+      "individualRiyadh": "Individual · Riyadh",
+      "companyDammam": "Company · Dammam",
+      "individualDammam": "Individual · Dammam",
+      "companyAlUla": "Company · AlUla"
+    },
+    "sidebar": {
+      "points": "Points",
+      "eventsAttended": "Events attended",
+      "pastTickets": "Past tickets",
+      "related": "Related"
+    },
+    "related": {
+      "riyadhTechSummit": "Riyadh Tech Summit",
+      "scanFoundPartial": "Scan found · partial points",
+      "ticket4410": "Ticket #4410",
+      "closedAug3": "Closed Aug 3"
+    },
+    "reply": {
+      "placeholder": "Write a reply…"
+    }
+  },
+  "moderation": {
+    "title": "Moderation",
+    "description": "Review reports and auto-flagged content before it hurts trust on the platform.",
+    "actions": {
+      "export": "Export",
+      "exportDisabledHint": "Export is unavailable until an export contract is available.",
+      "dismiss": "Dismiss",
+      "warn": "Warn",
+      "removeListing": "Remove listing",
+      "suspend": "Suspend account"
+    },
+    "filters": {
+      "allContentTypes": "All types",
+      "contentType": "Type",
+      "allReasons": "All reasons",
+      "reason": "Reason"
+    },
+    "tabs": {
+      "label": "Moderation queue",
+      "open": "Open · {{count}}",
+      "autoFlagged": "Auto-flagged · {{count}}",
+      "resolved": "Resolved · {{count}}"
+    },
+    "columns": {
+      "reportedContent": "Reported content",
+      "type": "Type",
+      "reports": "Reports",
+      "when": "When",
+      "status": "Status"
+    },
+    "contentTypes": {
+      "listing": "Listing",
+      "profile": "Profile",
+      "response": "Response",
+      "company": "Company"
+    },
+    "statuses": {
+      "open": "Open",
+      "autoFlagged": "Auto-flagged",
+      "resolvedWarned": "Warned",
+      "resolvedDismissed": "Dismissed",
+      "resolvedRemoved": "Removed",
+      "resolvedSuspended": "Suspended"
+    },
+    "states": {
+      "loading": "Loading queue…",
+      "errorTitle": "Couldn't load moderation",
+      "errorDescription": "Something went wrong while loading moderation. Please try again.",
+      "emptyList": "No reports match these filters.",
+      "pickReport": "Select a report to review details and take action."
+    },
+    "toasts": {
+      "dismiss": "Report dismissed (demo only).",
+      "warn": "Warning sent (demo only).",
+      "remove": "Listing removed (demo only).",
+      "suspend": "Account suspended (demo only)."
+    },
+    "items": {
+      "quickCashPromoters": "Quick Cash Promoters KSA",
+      "majedBProfilePhoto": "Majed B. · profile photo",
+      "arabianLightsQuote": "Arabian Lights · quote response",
+      "quickCrewKsa": "Quick Crew KSA",
+      "stageHandWeekend": "Stage hand · weekend gig",
+      "omarGMessage": "Omar G. · message"
+    },
+    "subtitles": {
+      "asksApplicantsFee": "Asks applicants for a fee",
+      "inappropriateImage": "Inappropriate image",
+      "contactInResponse": "Phone number in response",
+      "companyDidntPay": "Company didn't pay crew",
+      "phoneInDescription": "Phone in description",
+      "harassment": "Harassment"
+    },
+    "meta": {
+      "unverifiedSep28": "Unverified listing · Sep 28",
+      "profilePhotoMeta": "Profile photo · reported twice",
+      "responseMeta": "Application response · auto-flagged",
+      "companyReportMeta": "Company page · 7 reports",
+      "autoFlaggedListingMeta": "Listing · auto-flagged contact",
+      "messageMeta": "Direct message · 1 report"
+    },
+    "quotes": {
+      "quickCashPromotersQuote": "Pay SAR 200 training fee upfront to secure your spot. WhatsApp 05xxxxxxxx.",
+      "majedBQuote": "Profile photo reported as inappropriate by two members.",
+      "arabianLightsQuoteBody": "Call me on 05xxxxxxxx if you want the shift — faster than messaging here.",
+      "quickCrewKsaQuote": "We worked the Jeddah festival weekend and still haven't been paid.",
+      "stageHandWeekendQuote": "Need stage hands — text 05xxxxxxxx tonight for details.",
+      "omarGQuote": "Message content withheld · harassment report."
+    },
+    "reasons": {
+      "scamOrFee": "Scam or upfront fee",
+      "misleadingPay": "Misleading pay",
+      "offPlatformContact": "Off-platform contact",
+      "inappropriateImage": "Inappropriate image",
+      "unpaidWork": "Unpaid work",
+      "harassment": "Harassment"
+    },
+    "reporterQuotes": {
+      "reporter1": "They asked me to pay before I even got an interview.",
+      "reporter2": "Same fee request — feels like a scam.",
+      "majedReporter1": "This photo isn't appropriate for a professional network.",
+      "crewReporter1": "We finished the gig and never got paid.",
+      "omarReporter1": "He sent threatening messages after I declined the shift."
+    },
+    "reporterAttribution": {
+      "applicantJeddah": "Applicant · Jeddah",
+      "applicantRiyadh": "Applicant · Riyadh",
+      "memberRiyadh": "Member · Riyadh",
+      "crewMemberJeddah": "Crew member · Jeddah",
+      "memberDammam": "Member · Dammam"
+    },
+    "accountHistory": {
+      "quickCashAccountHistory": "Account created Sep 27 · 0 verified hires · 5 reports in 24h",
+      "majedAccountHistory": "Member since 2024 · 1 prior warning · profile complete",
+      "arabianLightsAccountHistory": "Verified company · 12 listings · no prior reports",
+      "quickCrewAccountHistory": "Company page · 7 open reports · payment disputes",
+      "stageHandAccountHistory": "New listing · auto-flag triggered on phone number",
+      "omarAccountHistory": "Member since 2023 · 1 prior harassment report · warned in May"
+    },
+    "when": {
+      "h1": "1h ago",
+      "h5": "5h ago",
+      "h9": "9h ago",
+      "d1": "1d ago",
+      "d1b": "1d ago",
+      "d3": "3d ago"
+    },
+    "detail": {
+      "reportsBadge": "{{count}} reports",
+      "whyReported": "Why reported",
+      "fromReporters": "From reporters"
+    }
+  },
+  "myWork": {
+    "states": {
+      "errorTitle": "Couldn’t load this page",
+      "errorDescription": "Something went wrong loading your work home. Try again."
+    },
+    "queue": {
+      "title": "Good morning, {{name}}",
+      "description": "Everything waiting for a reviewer, oldest deadline first.",
+      "actions": {
+        "startReviewing": "Start reviewing",
+        "review": "Review"
+      },
+      "tabs": {
+        "all": "All · 17",
+        "listings": "Listings · 7",
+        "verification": "Verification · 5",
+        "reports": "Reports · 3"
+      },
+      "columns": {
+        "item": "Item",
+        "queue": "Queue",
+        "deadline": "Deadline",
+        "open": "Open"
+      },
+      "kpis": {
+        "waiting": "Waiting for review",
+        "dueToday": "Due today",
+        "reviewedWeek": "You reviewed this week",
+        "medianTime": "Your median time",
+        "values": {
+          "waiting": "17",
+          "dueToday": "4",
+          "reviewedWeek": "38",
+          "medianTime": "6.2 h"
+        },
+        "secondary": {
+          "oneOverdue": "1 overdue",
+          "plusSixVsLastWeek": "+6 vs last week",
+          "targetUnder24h": "Target under 24 h"
+        }
+      },
+      "upNext": {
+        "title": "Up next",
+        "description": "Listings, verification, page claims and reports in one list.",
+        "empty": "Nothing waiting in this queue."
+      },
+      "queues": {
+        "listing": "Listing",
+        "report": "Report",
+        "verification": "Verification",
+        "claim": "Claim",
+        "supplierReq": "Supplier req."
+      },
+      "sla": {
+        "twoHOverdue": "2h overdue",
+        "oneHLeft": "1h left",
+        "oneDayLeft": "1 day left",
+        "fourHLeft": "4h left",
+        "twoDaysLeft": "2 days left",
+        "tenHLeft": "10h left"
+      },
+      "items": {
+        "stageManager": "Stage Manager",
+        "stageManagerMeta": "Saudi Events Group · resubmitted",
+        "quickCash": "Quick cash promoters",
+        "quickCashMeta": "5 reports · asks for a fee",
+        "creativeExpo": "Creative Expo Co.",
+        "creativeExpoMeta": "Company · 3 documents",
+        "summerCoop": "Summer Co-op Program",
+        "summerCoopMeta": "Saudi Events Group",
+        "arabianVenues": "Arabian Venues",
+        "arabianVenuesMeta": "Page claim · domain matches",
+        "stageLighting": "Stage & lighting, 3-day summit",
+        "stageLightingMeta": "Riyadh Front Events"
+      },
+      "guidelines": {
+        "title": "Review guidelines",
+        "checkCompany": "Check the company.",
+        "checkCompanyBody": "Unverified accounts get a closer look.",
+        "noFees": "No fees, ever.",
+        "noFeesBody": "Reject listings that charge applicants.",
+        "contactInApp": "Contact stays in the app.",
+        "contactInAppBody": "Phone numbers and emails come out of descriptions.",
+        "beSpecific": "Be specific.",
+        "beSpecificBody": "Say exactly what to change so the company can fix it in one go."
+      },
+      "decisions": {
+        "title": "Your recent decisions",
+        "outcomes": {
+          "approved": "Approved",
+          "verified": "Verified",
+          "changesRequested": "Changes requested",
+          "rejected": "Rejected"
+        },
+        "items": {
+          "avTechnician": "AV Technician",
+          "avTechnicianMeta": "LiveTech Solutions · 25 min ago",
+          "riyadhFront": "Riyadh Front Events",
+          "riyadhFrontMeta": "Verification · 1 h ago",
+          "weekendStage": "Weekend stage hand",
+          "weekendStageMeta": "Desert Stage · 2 h ago",
+          "promotersWanted": "Promoters wanted",
+          "promotersWantedMeta": "Unverified account · yesterday"
+        }
+      }
+    },
+    "desk": {
+      "title": "My desk",
+      "description": "Your drafts, what’s scheduled this week and how stories are doing.",
+      "actions": {
+        "newStory": "New story",
+        "open": "Open"
+      },
+      "columns": {
+        "story": "Story",
+        "languages": "Languages",
+        "edited": "Edited",
+        "open": "Open"
+      },
+      "kpis": {
+        "drafts": "Drafts",
+        "scheduled": "Scheduled",
+        "publishedSep": "Published · Sep",
+        "avgReads": "Average reads",
+        "values": {
+          "drafts": "3",
+          "scheduled": "2",
+          "publishedSep": "14",
+          "avgReads": "3,210"
+        },
+        "secondary": {
+          "plusFourVsAug": "+4 vs Aug",
+          "plusEighteenVsAug": "+18% vs Aug"
+        }
+      },
+      "week": {
+        "title": "This week",
+        "note": "Stories publish at 10:00 Riyadh time unless you pick another time.",
+        "days": {
+          "sun28": "Sun 28",
+          "mon29": "Mon 29",
+          "tue30": "Tue 30",
+          "wed1": "Wed 1",
+          "thu2": "Thu 2",
+          "fri3": "Fri 3",
+          "sat4": "Sat 4"
+        },
+        "items": {
+          "riyadhSeasonDraft": "Riyadh Season crew roles · draft",
+          "safetyOfficers": "Safety officers · 9:00",
+          "crewOfMonth": "Crew of the month · 10:00"
+        }
+      },
+      "drafts": {
+        "title": "Continue writing",
+        "items": {
+          "riyadhSeason": "Riyadh Season 2026 opens 1,200 crew roles",
+          "riggingCrew": "A day with the rigging crew",
+          "womenLeading": "Women leading event production"
+        },
+        "categories": {
+          "opportunities": "Opportunities",
+          "crewStories": "Crew stories",
+          "features": "Features"
+        },
+        "languages": {
+          "enArReady": "English ✓ · Arabic ✓",
+          "enReadyArMissing": "English ✓ · Arabic missing",
+          "arReadyEnMissing": "Arabic ✓ · English missing"
+        },
+        "readiness": {
+          "readyToSchedule": "Ready to schedule",
+          "bothLanguagesNeeded": "Both languages are needed"
+        },
+        "edited": {
+          "twoMinAgo": "2 min ago",
+          "yesterday": "Yesterday",
+          "sep24": "Sep 24"
+        }
+      },
+      "mostRead": {
+        "title": "Most read this month",
+        "description": "Reads in the app, English and Arabic together.",
+        "items": {
+          "alula": "AlUla night concerts",
+          "jeddah": "Jeddah Design Week build",
+          "fiveRigging": "Five rigging skills",
+          "crewMeetup": "Crew Meetup recap"
+        }
+      }
+    },
+    "tickets": {
+      "title": "My tickets",
+      "description": "Tickets assigned to you and the shared queue. First reply target: 4 working hours.",
+      "actions": {
+        "openNext": "Open next ticket",
+        "open": "Open"
+      },
+      "tabs": {
+        "mine": "Mine · 4",
+        "shared": "Shared · 7",
+        "waiting": "Waiting on member"
+      },
+      "columns": {
+        "from": "From",
+        "topic": "Topic",
+        "deadline": "Deadline",
+        "open": "Open"
+      },
+      "list": {
+        "title": "My tickets",
+        "sorted": "Closest to deadline first",
+        "empty": "No tickets here."
+      },
+      "kpis": {
+        "assigned": "Assigned to me",
+        "shared": "Shared queue",
+        "closeDeadline": "Close to deadline",
+        "firstReply": "Your first reply",
+        "values": {
+          "assigned": "4",
+          "shared": "7",
+          "closeDeadline": "2",
+          "firstReply": "2.1 h"
+        },
+        "secondary": {
+          "oneOverdue": "1 overdue",
+          "targetFourH": "Target 4 h"
+        }
+      },
+      "topics": {
+        "company": "Company",
+        "points": "Points",
+        "verification": "Verification"
+      },
+      "sla": {
+        "overdue20": "Overdue 20 min",
+        "oneHLeft": "1 h left",
+        "threeHLeft": "3 h left",
+        "waitingMember": "Waiting on member"
+      },
+      "from": {
+        "saudiEvents": "Saudi Events Group",
+        "faisal": "Faisal Alotaibi",
+        "noura": "Noura Alshehri",
+        "lama": "Lama Albaqami"
+      },
+      "items": {
+        "secondRecruiter": "How do we add a second recruiter?",
+        "pointsMissing": "Points missing for Riyadh Tech Summit",
+        "studentId": "My student ID was rejected",
+        "redeemedCode": "Redeemed code not working"
+      },
+      "capabilities": {
+        "title": "What Support can do",
+        "items": {
+          "reply": "Reply to members and companies",
+          "adjustPoints": "Add up to 500 points per member a month, with a reason",
+          "resendEmails": "Resend verification and password emails",
+          "suspend": "Suspend accounts or grant verification: ask a Reviewer or Super admin",
+          "exportPii": "Export personal data"
+        }
+      },
+      "byTopic": {
+        "title": "This week by topic",
+        "description": "Points questions are up after the Riyadh Tech Summit.",
+        "items": {
+          "points": "Points",
+          "account": "Account",
+          "verification": "Verification",
+          "company": "Company",
+          "other": "Other"
+        }
+      }
+    },
+    "analyst": {
+      "title": "Welcome back, {{name}}",
+      "description": "Your saved reports, what’s scheduled and this month’s headline numbers.",
+      "actions": {
+        "newReport": "New report"
+      },
+      "columns": {
+        "report": "Report",
+        "schedule": "Schedule",
+        "lastRun": "Last run",
+        "formats": "Formats"
+      },
+      "kpis": {
+        "activeUsers": "Active users · 30 days",
+        "applicationsSep": "Applications · Sep",
+        "attendance": "Attendance verified",
+        "pointsRedeemed": "Points redeemed",
+        "values": {
+          "activeUsers": "9,812",
+          "applicationsSep": "4,870",
+          "attendance": "71%",
+          "pointsRedeemed": "41,200"
+        },
+        "secondary": {
+          "plusTwelve": "+12%",
+          "plusEighteen": "+18%",
+          "minusThreePts": "−3 pts"
+        }
+      },
+      "reports": {
+        "title": "Saved reports",
+        "all": "All reports",
+        "items": {
+          "monthlyOverview": "Monthly overview",
+          "leadership": "For the leadership team",
+          "applicationsFunnel": "Applications funnel",
+          "byTypeCity": "By listing type and city",
+          "eventAttendance": "Event attendance",
+          "registeredVsVerified": "Registered vs verified",
+          "pointsEconomy": "Points economy",
+          "earnedRedeemed": "Earned, redeemed, balance",
+          "companyResponse": "Company response times",
+          "timeToFirstReply": "Time to first reply to applicants"
+        },
+        "schedules": {
+          "firstOfMonth": "1st of the month",
+          "weeklySun": "Weekly · Sun",
+          "afterEachEvent": "After each event",
+          "monthly": "Monthly",
+          "notScheduled": "Not scheduled"
+        },
+        "lastRuns": {
+          "sep1": "Sep 1",
+          "today": "Today",
+          "sep27": "Sep 27",
+          "sep14": "Sep 14"
+        }
+      },
+      "chart": {
+        "title": "Applications per week",
+        "description": "1,420 last week, the highest since launch.",
+        "axis": "Jul 21 → Sep 21"
+      },
+      "access": {
+        "title": "Your data access",
+        "items": {
+          "allDashboards": "All dashboards and reports",
+          "exportsNoContact": "Exports without contact details",
+          "piiWithSuperAdmin": "Email and phone numbers stay with Super admins"
+        }
+      }
+    }
+  }
+}
