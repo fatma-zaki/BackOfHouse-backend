@@ -49,6 +49,35 @@ export class CompaniesService {
     });
   }
 
+  /** For news checks: the company exists and its Company Account is active (it is listed). */
+  async isLive(companyId: string): Promise<boolean> {
+    if (!/^[0-9a-f-]{36}$/i.test(companyId)) return false;
+    const company = await this.prisma.company.findUnique({
+      where: { id: companyId },
+      select: { accountUser: { select: { status: true } } },
+    });
+    return company?.accountUser.status === 'ACTIVE';
+  }
+
+  /**
+   * For news checks: names of listed companies that appear in the text (case-insensitive,
+   * names of at least 4 characters so short words do not match), at most `limit`.
+   */
+  async namedIn(text: string, limit = 5): Promise<string[]> {
+    if (!text.trim()) return [];
+    const rows = await this.prisma.$queryRaw<{ name: string }[]>`
+      SELECT c.name
+      FROM app.companies c
+      JOIN app.users u ON u.id = c.account_user_id
+      WHERE u.status = 'ACTIVE'
+        AND char_length(btrim(c.name)) >= 4
+        AND strpos(lower(${text}), lower(btrim(c.name))) > 0
+      ORDER BY c.name
+      LIMIT ${limit}
+    `;
+    return rows.map((r) => r.name);
+  }
+
   /** For moderation: a company's name and the account answerable for it, or null. */
   async describe(companyId: string): Promise<{ title: string; ownerUserId: string; preview: string | null } | null> {
     if (!/^[0-9a-f-]{36}$/i.test(companyId)) return null;

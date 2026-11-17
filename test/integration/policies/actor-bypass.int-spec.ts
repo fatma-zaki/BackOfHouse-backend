@@ -2,6 +2,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Client } from 'pg';
 import { NotesService, UsersAdminService } from '../../../src/modules/backoffice';
 import { ClaimsService, CompaniesAdminService } from '../../../src/modules/companies';
+import { ArticlesService, NewsService } from '../../../src/modules/content';
 import { AccountStatusService } from '../../../src/modules/identity';
 import { ModerationService } from '../../../src/modules/moderation';
 import { VerificationReviewService } from '../../../src/modules/verification';
@@ -75,6 +76,12 @@ describe('Service-level permission checks (actor bypass)', () => {
     [
       'a Support agent acting on a case',
       () => get(ModerationService).act(staffActor('SUPPORT'), owner.userId, { action: 'DISMISS' }),
+    ],
+    ['a Reviewer writing news', () => get(ArticlesService).create(staffActor('REVIEWER'), { category: 'MARKET' })],
+    ['a Support agent publishing news', () => get(ArticlesService).schedule(staffActor('SUPPORT'), owner.userId, {})],
+    [
+      'staff reading the member news feed',
+      () => get(NewsService).list(staffActor('EDITOR'), { page: 1, page_size: 20 }, 'en'),
     ],
     ['no actor at all', () => get(CompaniesAdminService).list(undefined, { page: 1, page_size: 20 })],
   ])('refuses %s', async (_, call) => {

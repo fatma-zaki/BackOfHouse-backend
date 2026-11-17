@@ -13,13 +13,20 @@ const SURFACES = { app: '/api/app/v1', admin: '/api/admin/v1' };
 
 // ---------------------------------------------------------------- model map (hand-off → repo)
 // status: built (table exists) · designed (in database-entities.md, not built) · differs · missing
-const BUILT_TABLES = new Set(['audit_logs', 'outbox_events']);
+const BUILT_TABLES = new Set([
+  'audit_logs',
+  'outbox_events',
+  'articles',
+  'article_likes',
+  'article_saves',
+  'article_comments',
+]);
 const MODEL_MAP = {
   User: ['users, profiles', 'designed', 'Students kept as a profile flag (BQ-79); contact sharing flags to add'],
   Experience: ['experiences', 'designed', 'Talent module'],
   PortfolioItem: ['company_projects (company) · profile_projects (member)', 'designed', ''],
   Connection: ['—', 'missing', 'Flutter `/professionals/{id}/connection`'],
-  SavedItem: ['—', 'missing', 'Saved opportunities, events, news'],
+  SavedItem: ['article_saves (news)', 'differs', 'News saves built; saved opportunities and events come with Phases 5–6'],
   Device: ['—', 'missing', 'FCM tokens for push (Phase 2)'],
   Company: ['organizations', 'designed', 'One Company Account per company (ADR-030)'],
   CompanyMember: [
@@ -51,7 +58,11 @@ const MODEL_MAP = {
   ],
   Report: ['abuse_reports', 'designed', ''],
   ModerationCase: ['—', 'missing', 'Reports on one target join one case'],
-  Article: ['content_items', 'designed', 'Bilingual; comments, likes, saves in the Flutter contract'],
+  Article: [
+    'articles, article_likes, article_saves, article_comments',
+    'built',
+    'Bilingual, sanitized HTML; likes, saves and comments (Phase 7 content lane)',
+  ],
   SupportTicket: ['—', 'missing', ''],
   TicketMessage: ['—', 'missing', ''],
   Broadcast: ['—', 'missing', ''],

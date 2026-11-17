@@ -8,3 +8,4 @@ export {
   type UserAdminRowView,
 } from './services/users-admin.service';
 export { NotesService, type NoteView } from './services/notes.service';
+export { ArticleChecksService } from './services/article-checks.service';

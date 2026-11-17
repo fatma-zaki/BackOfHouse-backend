@@ -63,6 +63,9 @@ model User {
   moderationCases         ModerationCase[]
   moderationReports       ModerationReport[]       @relation("ReportsMade")
   companyFollows          CompanyFollow[]
+  articleLikes            ArticleLike[]
+  articleSaves            ArticleSave[]
+  articleComments         ArticleComment[]
 
   @@unique([email], map: "uq_users__email")
   @@unique([phone], map: "uq_users__phone")

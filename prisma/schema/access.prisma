@@ -45,6 +45,7 @@ model StaffAccount {
   verifiedCompanies     Company[]              @relation("CompanyVerifiedBy")
   claimDecisions        PageClaim[]
   resolvedCases         ModerationCase[]
+  articles              Article[]
 
   @@unique([email], map: "uq_staff_accounts__email")
   @@index([role, status], map: "ix_staff_accounts__role_status")

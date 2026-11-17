@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CompaniesModule } from '../../modules/companies';
+import { ContentModule } from '../../modules/content';
 import { IdentityModule } from '../../modules/identity';
 import { NotificationsModule } from '../../modules/notifications';
 import { VerificationModule } from '../../modules/verification';
@@ -12,6 +13,7 @@ import { AppMetaController } from './meta/app-meta.controller';
 import { AppCompanyController } from './directory/app-company.controller';
 import { AppDiscoverController } from './directory/app-discover.controller';
 import { AppMeController } from './me/app-me.controller';
+import { AppNewsController } from './news/app-news.controller';
 
 /**
  * App surface (ADR-031): the Flutter app's API under /api/app/v1. Controllers,
@@ -28,8 +30,16 @@ import { AppMeController } from './me/app-me.controller';
     ProfilesModule,
     VerificationModule,
     NotificationsModule,
+    ContentModule,
   ],
-  controllers: [AppMetaController, AppAuthController, AppDiscoverController, AppCompanyController, AppMeController],
+  controllers: [
+    AppMetaController,
+    AppAuthController,
+    AppDiscoverController,
+    AppCompanyController,
+    AppMeController,
+    AppNewsController,
+  ],
   providers: [AppUserAssembler],
 })
 export class AppSurfaceModule {}
