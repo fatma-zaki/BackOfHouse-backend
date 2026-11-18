@@ -55,7 +55,8 @@ function presentArticle(a: NewsArticleView) {
     image_caption: a.imageCaption,
     breaking: a.breaking,
     labels: [] as string[],
-    // Bylines are an open question (BQ-91); the desk publishes as Back of House.
+    // Decided (BQ-91a, 2026-11-18): the editor's name is for the back office only; the app
+    // shows articles as from Back of House.
     author: null,
     ...(a.body ? { body: a.body, directives: [] as string[], keywords: [] as string[] } : {}),
     saved: a.saved,
