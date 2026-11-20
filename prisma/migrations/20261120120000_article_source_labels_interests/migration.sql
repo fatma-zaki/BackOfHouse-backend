@@ -18,5 +18,3 @@ ALTER TABLE "app"."articles"
     CHECK (char_length(source_en) <= 80 AND char_length(source_ar) <= 80) NOT VALID,
   ADD CONSTRAINT ck_articles__labels_array
     CHECK (jsonb_typeof(labels) = 'array' AND jsonb_array_length(labels) <= 5) NOT VALID;
-
-ALTER TABLE "app"."articles" VALIDATE CONSTRAINT ck_articles__labels_array;
