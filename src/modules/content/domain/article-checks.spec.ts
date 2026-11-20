@@ -24,6 +24,21 @@ describe('translationGaps', () => {
       category: ['is required to publish'],
     });
   });
+
+  it('asks for a source in both languages or neither, and for every label in both', () => {
+    expect(translationGaps({ ...complete, source: { en: null, ar: '  ' }, labels: [] })).toEqual({});
+    expect(translationGaps({ ...complete, source: { en: 'GEA', ar: 'هيئة الترفيه' } })).toEqual({});
+    expect(
+      translationGaps({
+        ...complete,
+        source: { en: 'GEA', ar: null },
+        labels: [
+          { en: 'New', ar: 'جديد' },
+          { en: '', ar: 'إلزامي' },
+        ],
+      }),
+    ).toEqual({ 'source.ar': ['is required to publish'], 'labels.1.en': ['is required to publish'] });
+  });
 });
 
 describe('intrinsicChecks', () => {
