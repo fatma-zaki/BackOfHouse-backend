@@ -22,7 +22,7 @@ function presentVerification(v: VerificationRequestView) {
   return { status: v.status, files: v.files, submitted_at: v.submittedAt?.toISOString() ?? null };
 }
 
-/** contracts/app `Notification`. Application updates arrive with Phase 5, points with Phase 6. */
+/** contracts/app `Notification`. Points arrive with Phase 6. */
 function presentNotification(n: MemberNotificationView) {
   return {
     id: n.id,
@@ -35,7 +35,13 @@ function presentNotification(n: MemberNotificationView) {
     source: NOTIFICATION_SOURCE,
     points_delta: null,
     read: n.read,
-    application_update: null,
+    application_update: n.applicationUpdate
+      ? {
+          application_id: n.applicationUpdate.applicationId,
+          opportunity_title: n.applicationUpdate.opportunityTitle,
+          status: n.applicationUpdate.status,
+        }
+      : null,
   };
 }
 

@@ -7,7 +7,7 @@
 
 An operation is **implemented** when the spec generated from code (`npm run contract:generate`) contains it.
 
-### App surface (`/api/app/v1`): 65 of 89 implemented
+### App surface (`/api/app/v1`): 72 of 89 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -16,11 +16,11 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 2 | 9 | 9 | — |
 | 3a | 24 | 24 | — |
 | 3b | 6 | 6 | — |
-| 5 | 27 | 13 | 14 operations |
+| 5 | 27 | 20 | `GET /company/supplier-requests/invited`, `GET /company/supplier-requests/{id}`, `GET /company/supplier-requests/{id}/responses`, `GET /company/supplier-responses`, `POST /company/supplier-responses`, `GET /company/supplier-responses/{id}`, `POST /company/supplier-responses/{id}/status` |
 | 6 | 10 | 0 | `GET /me/points`, `GET /me/points/transactions`, `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
 | 7 | 10 | 10 | — |
 
-### Admin surface (`/api/admin/v1`): 56 of 117 implemented
+### Admin surface (`/api/admin/v1`): 58 of 117 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -29,7 +29,7 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 2 | 9 | 9 | — |
 | 3b | 1 | 1 | — |
 | 4 | 26 | 26 | — |
-| 5 | 11 | 7 | `GET /applications`, `GET /supplier-requests`, `GET /supplier-requests/{id}/responses`, `GET /users/{id}/applications` |
+| 5 | 11 | 9 | `GET /supplier-requests`, `GET /supplier-requests/{id}/responses` |
 | 6 | 18 | 0 | 18 operations |
 | 7 | 24 | 8 | 16 operations |
 | 8 | 23 | 0 | 23 operations |
@@ -146,7 +146,7 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `PageClaim` | `organization_claims` | designed | Approval moves ownership, never verifies |
 | `Listing` | `opportunities` | built | Vocabulary "opportunities" (D1); revision kept on the row while the live version stays up (P2); PROJECT is a listing type (BQ-81) |
 | `ListingReview` | `opportunity_reviews` | built | Decisions on a listing or its revision; automated checks on the row |
-| `Application` | `applications` | designed | Privacy snapshot on apply |
+| `Application` | `applications` | built | Applicant, listing and picks snapshotted on apply; one non-withdrawn application per member and listing |
 | `SupplierResponse` | `supplier_responses` | designed |  |
 | `Event` | `events` | designed |  |
 | `EventRegistration` | `event_registrations` | designed |  |
@@ -177,7 +177,7 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `TaxonomyItem` | `categories`, `services`, `locations`, `industries`, `skills` | differs | One table per kind in the repo design |
 | `IdempotencyRecord` | `idempotency_records` | designed | Phase 1 |
 
-Totals: designed 18 · missing 15 · differs 5 · built 4 (of 42).
+Totals: designed 17 · missing 15 · differs 5 · built 5 (of 42).
 
 ## 4. Differences to resolve before the phase that needs them
 

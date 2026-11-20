@@ -66,6 +66,7 @@ model User {
   articleLikes            ArticleLike[]
   articleSaves            ArticleSave[]
   articleComments         ArticleComment[]
+  applications            Application[]
 
   @@unique([email], map: "uq_users__email")
   @@unique([phone], map: "uq_users__phone")

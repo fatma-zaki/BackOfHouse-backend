@@ -18,6 +18,7 @@ import {
   RevisionStatus,
 } from '../domain/opportunity-state';
 import { OPPORTUNITY_TYPES, OpportunityContent } from '../domain/opportunity-type.policy';
+import { applicationCounts } from './application-views';
 import { contentChanges, contentColumns, contentOf, draftContent } from './opportunity-content';
 import { NO_REVISION } from './opportunities.service';
 
@@ -449,8 +450,9 @@ export class OpportunityReviewService {
   private async views(rows: Row[], withHistory: boolean): Promise<OpportunityAdminView[]> {
     if (rows.length === 0) return [];
     const ids = rows.map((r) => r.id);
-    const [cards, reviews] = await Promise.all([
+    const [cards, counts, reviews] = await Promise.all([
       this.companies.cards(rows.map((r) => r.companyId)),
+      applicationCounts(this.prisma, ids),
       withHistory
         ? this.prisma.opportunityReview.findMany({
             where: { opportunityId: { in: ids } },
@@ -488,7 +490,7 @@ export class OpportunityReviewService {
             createdAt: r.createdAt,
           })),
         // Applications arrive with Phase 5B.
-        applicationsCount: 0,
+        applicationsCount: counts.get(row.id) ?? 0,
         views: row.views,
         revision:
           row.revisionStatus && draft

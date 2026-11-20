@@ -6699,6 +6699,9 @@ components:
         id:
           type: string
           format: uuid
+        reference:
+          type: string
+          example: AP-1001
         applicant:
           $ref: '#/components/schemas/UserSummary'
         opportunity:
@@ -6728,11 +6731,25 @@ components:
             - SELECTED
             - NOT_SELECTED
             - WITHDRAWN
+        stage:
+          type: string
+          description: The status as the app and the company see it. CONTACT (contact details released) has no admin name and reads as SHORTLISTED in `status`.
+          enum:
+            - SUBMITTED
+            - REVIEWED
+            - SHORTLISTED
+            - CONTACT
+            - ACCEPTED
+            - REJECTED
+            - WITHDRAWN
         time_in_stage_days:
           oneOf:
             - type: number
             - type: 'null'
         created_at:
+          type: string
+          format: date-time
+        updated_at:
           type: string
           format: date-time
       required:

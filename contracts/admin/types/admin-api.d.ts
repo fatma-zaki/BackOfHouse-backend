@@ -2423,6 +2423,8 @@ export interface components {
         ApplicationAdmin: {
             /** Format: uuid */
             id: string;
+            /** @example AP-1001 */
+            reference?: string;
             applicant: components["schemas"]["UserSummary"];
             opportunity: {
                 /** Format: uuid */
@@ -2434,9 +2436,16 @@ export interface components {
             };
             /** @enum {string} */
             status: "APPLIED" | "IN_REVIEW" | "SHORTLISTED" | "SELECTED" | "NOT_SELECTED" | "WITHDRAWN";
+            /**
+             * @description The status as the app and the company see it. CONTACT (contact details released) has no admin name and reads as SHORTLISTED in `status`.
+             * @enum {string}
+             */
+            stage?: "SUBMITTED" | "REVIEWED" | "SHORTLISTED" | "CONTACT" | "ACCEPTED" | "REJECTED" | "WITHDRAWN";
             time_in_stage_days?: number | null;
             /** Format: date-time */
             created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
         };
         SupplierResponse: {
             /** Format: uuid */

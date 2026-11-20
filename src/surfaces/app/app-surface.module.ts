@@ -19,6 +19,10 @@ import {
   AppCompanyOpportunitiesController,
   AppOpportunitiesController,
 } from './opportunities/app-opportunities.controller';
+import {
+  AppCompanyApplicantsController,
+  AppMyApplicationsController,
+} from './opportunities/app-applications.controller';
 
 /**
  * App surface (ADR-031): the Flutter app's API under /api/app/v1. Controllers,
@@ -47,6 +51,8 @@ import {
     AppNewsController,
     AppOpportunitiesController,
     AppCompanyOpportunitiesController,
+    AppMyApplicationsController,
+    AppCompanyApplicantsController,
   ],
   providers: [AppUserAssembler],
 })

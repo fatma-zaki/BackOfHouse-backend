@@ -1,8 +1,8 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { z } from 'zod';
 import { CLOCK, Clock } from '../../../common/clock/clock';
-import { Actor } from '../../../common/context/actor';
-import { DomainError, ErrorCode, ForbiddenError, NotFoundError, ValidationFailedError } from '../../../common/errors';
+import { Actor, requireMember } from '../../../common/context/actor';
+import { DomainError, ErrorCode, NotFoundError, ValidationFailedError } from '../../../common/errors';
 import { isUuid, uuidv7 } from '../../../common/ids/uuid-v7';
 import { parseInput } from '../../../common/validation/parse-input';
 import { Prisma } from '../../../generated/prisma/client';
@@ -28,6 +28,7 @@ import {
   submitGaps,
   TYPE_RULES,
 } from '../domain/opportunity-type.policy';
+import { applicationCounts } from './application-views';
 import {
   contentColumns,
   contentOf,
@@ -56,6 +57,8 @@ export interface OpportunityView {
   company: CompanyCard;
   postedAt: Date;
   applicants: number;
+  /** Individuals only: the latest application to this listing, if any. */
+  myApplication?: { id: string; status: string } | null;
   /** Owner only. */
   reviewerNote?: string | null;
   /** Owner only. */
@@ -63,14 +66,14 @@ export interface OpportunityView {
 }
 
 type Row = Prisma.OpportunityGetPayload<object>;
-type Viewer = { kind: 'member'; userId: string } | { kind: 'company'; userId: string; card: CompanyCard };
 
 /**
  * Listings in the app (contracts/app /opportunities*, /companies/{id}/opportunities and
  * /company/opportunities*, execution-plan Phase 5). Companies write drafts, submit them
  * for review (every listing, D9) and revise live listings without taking them down (P2).
- * Individuals see individual-facing listings; companies also see the supplier requests
- * that invite their type. Listings of a suspended company are hidden.
+ * Discover is for individuals (docs/app/README.md section 2) and never shows supplier
+ * requests; those reach invited companies under /company/supplier-requests (Phase 5C).
+ * Listings of a suspended company are hidden.
  */
 @Injectable()
 export class OpportunitiesService {
@@ -88,9 +91,9 @@ export class OpportunitiesService {
 
   /** Live listings for the viewer, newest first (no match score yet: `match_score` is null). */
   async list(actor: Actor | undefined, input: unknown): Promise<{ items: OpportunityView[]; hasMore: boolean }> {
-    const viewer = await this.viewer(actor);
+    const { userId } = requireMember(actor);
     const query = parseInput(listSchema, input);
-    const and: Prisma.OpportunityWhereInput[] = [this.visibleTo(viewer)];
+    const and: Prisma.OpportunityWhereInput[] = [this.discoverable()];
     if (query.type) and.push({ type: query.type });
     if (query.q) {
       const like = { contains: query.q, mode: 'insensitive' as const };
@@ -102,33 +105,36 @@ export class OpportunitiesService {
       skip: (query.page - 1) * query.page_size,
       take: query.page_size + 1,
     });
-    return { items: await this.views(rows.slice(0, query.page_size), false), hasMore: rows.length > query.page_size };
+    return {
+      items: await this.views(rows.slice(0, query.page_size), false, userId),
+      hasMore: rows.length > query.page_size,
+    };
   }
 
   /** One live listing the viewer may see; each open counts a view. */
   async get(actor: Actor | undefined, opportunityId: string): Promise<OpportunityView> {
-    const viewer = await this.viewer(actor);
+    const { userId } = requireMember(actor);
     const row = isUuid(opportunityId)
-      ? await this.prisma.opportunity.findFirst({ where: { AND: [{ id: opportunityId }, this.visibleTo(viewer)] } })
+      ? await this.prisma.opportunity.findFirst({ where: { AND: [{ id: opportunityId }, this.discoverable()] } })
       : null;
     if (!row) throw new NotFoundError('Opportunity not found');
     // Raw SQL so a view does not move updated_at (the company's "recently updated" order).
     await this.prisma.$executeRaw`UPDATE app.opportunities SET views = views + 1 WHERE id = ${row.id}::uuid`;
-    return (await this.views([row], false))[0];
+    return (await this.views([row], false, userId))[0];
   }
 
-  /** A company's live listings the viewer may see, newest first. */
+  /** A company's live individual-facing listings, newest first. */
   async ofCompany(actor: Actor | undefined, companyId: string): Promise<OpportunityView[]> {
-    const viewer = await this.viewer(actor);
+    const { userId } = requireMember(actor);
     if (!isUuid(companyId) || !(await this.companies.card(companyId))?.active) {
       throw new NotFoundError('Company not found');
     }
     const rows = await this.prisma.opportunity.findMany({
-      where: { AND: [{ companyId }, this.visibleTo(viewer)] },
+      where: { AND: [{ companyId }, this.discoverable()] },
       orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
       take: OWN_LIST_LIMIT,
     });
-    return this.views(rows, false);
+    return this.views(rows, false, userId);
   }
 
   /** How many live listings each company has (contracts/app `Company.open_opportunities`). */
@@ -455,43 +461,40 @@ export class OpportunitiesService {
     });
   }
 
-  /** Listings the viewer may see: live, not past closing, from an active company, for its audience. */
-  private visibleTo(viewer: Viewer): Prisma.OpportunityWhereInput {
-    const now = this.clock.now();
-    const live: Prisma.OpportunityWhereInput = {
-      status: 'PUBLISHED',
-      OR: [{ closesAt: null }, { closesAt: { gt: now } }],
-      company: { accountUser: { status: 'ACTIVE' } },
-    };
-    if (viewer.kind === 'member') return { AND: [live, { type: { in: INDIVIDUAL_TYPES } }] };
+  /** Discover: live individual-facing listings, not past closing, from an active company. */
+  private discoverable(): Prisma.OpportunityWhereInput {
     return {
-      AND: [
-        live,
-        {
-          OR: [
-            { type: { in: INDIVIDUAL_TYPES } },
-            {
-              type: 'SUPPLIER_REQUEST',
-              companyId: { not: viewer.card.id },
-              supplierTypes: { has: viewer.card.companyType as never },
-            },
-          ],
-        },
-      ],
+      status: 'PUBLISHED',
+      type: { in: INDIVIDUAL_TYPES },
+      OR: [{ closesAt: null }, { closesAt: { gt: this.clock.now() } }],
+      company: { accountUser: { status: 'ACTIVE' } },
     };
   }
 
-  private async views(rows: Row[], owner: boolean): Promise<OpportunityView[]> {
+  /** With `applicantUserId` (individuals), adds `myApplication`: the latest application to each listing. */
+  private async views(rows: Row[], owner: boolean, applicantUserId?: string): Promise<OpportunityView[]> {
     if (rows.length === 0) return [];
-    const cards = await this.companies.cards(rows.map((r) => r.companyId));
+    const ids = rows.map((r) => r.id);
+    const [cards, counts, mine] = await Promise.all([
+      this.companies.cards(rows.map((r) => r.companyId)),
+      applicationCounts(this.prisma, ids),
+      applicantUserId
+        ? this.prisma.application.findMany({
+            where: { opportunityId: { in: ids }, applicantUserId },
+            select: { id: true, status: true, opportunityId: true },
+            orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+          })
+        : [],
+    ]);
+    const latest = new Map(mine.map((a) => [a.opportunityId, { id: a.id, status: a.status }]));
     return rows.map((row) => ({
       id: row.id,
       status: row.status,
       content: contentOf(row),
       company: cards.get(row.companyId)!,
       postedAt: row.publishedAt ?? row.createdAt,
-      // Applications arrive with Phase 5B.
-      applicants: 0,
+      applicants: counts.get(row.id) ?? 0,
+      ...(applicantUserId ? { myApplication: latest.get(row.id) ?? null } : {}),
       ...(owner
         ? {
             reviewerNote: row.reviewerNote,
@@ -505,14 +508,6 @@ export class OpportunitiesService {
           }
         : {}),
     }));
-  }
-
-  private async viewer(actor: Actor | undefined): Promise<Viewer> {
-    if (actor?.kind === 'member') return { kind: 'member', userId: actor.userId };
-    if (actor?.kind === 'company') {
-      return { kind: 'company', userId: actor.userId, card: await this.requireCard(actor.companyId) };
-    }
-    throw new ForbiddenError('This is for app accounts');
   }
 
   private async requireCard(companyId: string): Promise<CompanyCard> {

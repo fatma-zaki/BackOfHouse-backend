@@ -19,6 +19,8 @@ export interface MemberNotificationView {
   targetType: NotificationTargetType | null;
   targetId: string | null;
   read: boolean;
+  /** contracts/app `Notification.application_update`: set for application status changes. */
+  applicationUpdate: { applicationId: string; opportunityTitle: string; status: string } | null;
 }
 
 /** Who the app shows as the sender of platform notifications. */
@@ -65,6 +67,14 @@ export class MemberFeedService {
           targetType: (row.targetType as NotificationTargetType | null) ?? null,
           targetId: row.targetId,
           read: row.readAt !== null,
+          applicationUpdate:
+            row.type === 'application.status_changed'
+              ? {
+                  applicationId: String(vars.application_id),
+                  opportunityTitle: String(vars.opportunity_title),
+                  status: String(vars.status),
+                }
+              : null,
         };
       });
     return { items, hasMore: rows.length > query.page_size };

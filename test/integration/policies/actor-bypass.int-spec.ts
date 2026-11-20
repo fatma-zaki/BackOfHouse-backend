@@ -3,7 +3,12 @@ import { Client } from 'pg';
 import { NotesService, UsersAdminService } from '../../../src/modules/backoffice';
 import { ClaimsService, CompaniesAdminService } from '../../../src/modules/companies';
 import { ArticlesService, NewsService } from '../../../src/modules/content';
-import { OpportunitiesService, OpportunityReviewService } from '../../../src/modules/opportunities';
+import {
+  ApplicationsAdminService,
+  ApplicationsService,
+  OpportunitiesService,
+  OpportunityReviewService,
+} from '../../../src/modules/opportunities';
 import { AccountStatusService } from '../../../src/modules/identity';
 import { ModerationService } from '../../../src/modules/moderation';
 import { VerificationReviewService } from '../../../src/modules/verification';
@@ -95,6 +100,15 @@ describe('Service-level permission checks (actor bypass)', () => {
     [
       'a Super admin writing a company listing',
       () => get(OpportunitiesService).create(staffActor('SUPER_ADMIN'), { type: 'JOB' }),
+    ],
+    [
+      // Exit test (execution-plan Phase 5): companies own application decisions.
+      'a Super admin changing an application status',
+      () => get(ApplicationsService).changeStatus(staffActor('SUPER_ADMIN'), owner.userId, { status: 'REVIEWED' }),
+    ],
+    [
+      'a Support agent listing applications',
+      () => get(ApplicationsAdminService).list(staffActor('SUPPORT'), { page: 1, page_size: 20 }),
     ],
     ['no actor at all', () => get(CompaniesAdminService).list(undefined, { page: 1, page_size: 20 })],
   ])('refuses %s', async (_, call) => {

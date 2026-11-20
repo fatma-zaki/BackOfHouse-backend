@@ -49,4 +49,7 @@ export enum ErrorCode {
   REVISION_EXISTS = 'REVISION_EXISTS',
   CAPABILITY_REQUIRED = 'CAPABILITY_REQUIRED',
   COMPANY_NOT_VERIFIED = 'COMPANY_NOT_VERIFIED',
+  // Applications (contracts/app /me/applications, /company/applicants*, Phase 5)
+  NOT_ELIGIBLE = 'NOT_ELIGIBLE',
+  ALREADY_APPLIED = 'ALREADY_APPLIED',
 }
