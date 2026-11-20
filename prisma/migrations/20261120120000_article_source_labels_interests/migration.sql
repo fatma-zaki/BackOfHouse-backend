@@ -12,11 +12,11 @@ ADD COLUMN     "labels" JSONB NOT NULL DEFAULT '[]',
 ADD COLUMN     "source_ar" TEXT,
 ADD COLUMN     "source_en" TEXT;
 
+-- NOT VALID: existing rows hold the defaults, which pass; new writes are checked.
 ALTER TABLE "app"."articles"
   ADD CONSTRAINT ck_articles__source_length
     CHECK (char_length(source_en) <= 80 AND char_length(source_ar) <= 80) NOT VALID,
   ADD CONSTRAINT ck_articles__labels_array
     CHECK (jsonb_typeof(labels) = 'array' AND jsonb_array_length(labels) <= 5) NOT VALID;
 
-ALTER TABLE "app"."articles" VALIDATE CONSTRAINT ck_articles__source_length;
 ALTER TABLE "app"."articles" VALIDATE CONSTRAINT ck_articles__labels_array;
