@@ -16,6 +16,9 @@ describe('sanitizeArticleHtml', () => {
     ['<p>&lt;script&gt;</p>', '<p>&lt;script&gt;</p>'],
     ['<!-- secret --><p>a</p>', '<p>a</p>'],
     ['<p>a<script>never closed', '<p>a</p>'],
+    // Split tags meant to reassemble after a single stripping pass come out escaped.
+    ['<p><scr<script>x</script>ipt>alert(1)</p>', '<p>xipt&gt;alert(1)</p>'],
+    ['<<script>script>alert(1)<</script>/script>', '<p>&lt;/script&gt;</p>'],
   ])('%s → %s', (input, output) => {
     expect(sanitizeArticleHtml(input)).toBe(output);
   });

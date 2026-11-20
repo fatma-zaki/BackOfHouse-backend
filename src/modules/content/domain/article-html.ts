@@ -160,7 +160,9 @@ function serializeInline(nodes: Node[]): string {
     .join('');
 }
 
-const hasText = (markup: string) => markup.replace(/<[^>]*>/g, '').trim() !== '';
+/** Whether any visible text is left, read from the parsed tree rather than from markup. */
+const hasText = (nodes: Node[]): boolean =>
+  nodes.some((node) => (typeof node === 'string' ? node.trim() !== '' : hasText(node.children)));
 
 /** Flow content: runs of loose inline content become paragraphs; lists hold only items. */
 function serializeFlow(nodes: Node[], parent: string): string {
@@ -168,7 +170,7 @@ function serializeFlow(nodes: Node[], parent: string): string {
   let run: Node[] = [];
   const flush = () => {
     const inner = serializeInline(run).trim();
-    if (hasText(inner)) out.push(parent === 'ul' || parent === 'ol' ? `<li>${inner}</li>` : `<p>${inner}</p>`);
+    if (hasText(run)) out.push(parent === 'ul' || parent === 'ol' ? `<li>${inner}</li>` : `<p>${inner}</p>`);
     run = [];
   };
   for (const node of nodes) {
@@ -202,7 +204,7 @@ function serializeBlock(node: Element, parent: string): string {
       // p, h2, h3, li: inline content only.
       const tag = inList ? 'li' : node.tag === 'li' ? 'p' : node.tag;
       const inner = serializeInline(node.children).trim();
-      return hasText(inner) ? `<${tag}>${inner}</${tag}>` : '';
+      return hasText(node.children) ? `<${tag}>${inner}</${tag}>` : '';
     }
   }
 }
