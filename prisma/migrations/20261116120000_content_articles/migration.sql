@@ -26,10 +26,6 @@ CREATE TABLE "app"."articles" (
     "excerpt_ar" TEXT,
     "body_ar" TEXT,
     "cta_label_ar" TEXT,
-    "source_en" TEXT,
-    "source_ar" TEXT,
-    "labels" JSONB NOT NULL DEFAULT '[]',
-    "interests" "app"."profile_interest"[] DEFAULT ARRAY[]::"app"."profile_interest"[],
     "link_type" "app"."article_link_type",
     "link_id" UUID,
     "status" "app"."article_status" NOT NULL DEFAULT 'DRAFT',
@@ -133,9 +129,7 @@ ALTER TABLE "app"."articles"
   ADD CONSTRAINT ck_articles__scheduled_has_time CHECK (status <> 'SCHEDULED' OR scheduled_at IS NOT NULL),
   ADD CONSTRAINT ck_articles__published_has_time CHECK (status <> 'PUBLISHED' OR published_at IS NOT NULL),
   ADD CONSTRAINT ck_articles__feature_days CHECK (feature_on_home_days BETWEEN 0 AND 14),
-  ADD CONSTRAINT ck_articles__reads_not_negative CHECK (reads >= 0),
-  ADD CONSTRAINT ck_articles__source_length CHECK (char_length(source_en) <= 80 AND char_length(source_ar) <= 80),
-  ADD CONSTRAINT ck_articles__labels_array CHECK (jsonb_typeof(labels) = 'array' AND jsonb_array_length(labels) <= 5);
+  ADD CONSTRAINT ck_articles__reads_not_negative CHECK (reads >= 0);
 
 ALTER TABLE "app"."article_comments"
   ADD CONSTRAINT ck_article_comments__text_length CHECK (char_length(btrim(text)) BETWEEN 1 AND 500);
