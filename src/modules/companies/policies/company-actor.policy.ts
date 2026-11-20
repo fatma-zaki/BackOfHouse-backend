@@ -16,6 +16,14 @@ export const COMPANY_PERMISSIONS = [
 
 export type CompanyPermission = (typeof COMPANY_PERMISSIONS)[number];
 
+/**
+ * contracts/app `CompanyCapability`. Only verified companies may create supplier requests
+ * (BQ-83, decided 2026-11-20); every company may respond to them.
+ */
+export function companyCapabilities(verified: boolean): string[] {
+  return verified ? ['CREATE_SUPPLIER_REQUEST'] : [];
+}
+
 export type CompanyActor = Extract<Actor, { kind: 'company' }>;
 
 /**

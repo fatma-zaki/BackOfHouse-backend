@@ -9,7 +9,8 @@ import {
 } from '@nestjs/swagger';
 import type { Actor } from '../../../common/context/actor';
 import { CurrentActor } from '../../../common/decorators/current-actor.decorator';
-import { CompanyWorkspaceService } from '../../../modules/companies';
+import { CompanyWorkspaceService, type CompanyView } from '../../../modules/companies';
+import { OpportunitiesService } from '../../../modules/opportunities';
 import { CompanyAccountOnly } from '../account-context';
 import { presentCompany, presentProject, presentStats } from './app-presenters';
 
@@ -25,12 +26,15 @@ const OBJECT_BODY = { schema: { type: 'object' } };
 @CompanyAccountOnly()
 @Controller('company')
 export class AppCompanyController {
-  constructor(private readonly workspace: CompanyWorkspaceService) {}
+  constructor(
+    private readonly workspace: CompanyWorkspaceService,
+    private readonly opportunities: OpportunitiesService,
+  ) {}
 
   @Get()
   @ApiOkResponse(OK)
   async profile(@CurrentActor() actor: Actor | undefined) {
-    return presentCompany(await this.workspace.profile(actor));
+    return presentCompany(await this.withLiveCount(await this.workspace.profile(actor)));
   }
 
   @Patch()
@@ -38,13 +42,15 @@ export class AppCompanyController {
   @ApiBody(OBJECT_BODY)
   @ApiOkResponse(OK)
   async updateProfile(@CurrentActor() actor: Actor | undefined, @Body() body: unknown) {
-    return presentCompany(await this.workspace.updateProfile(actor, body));
+    return presentCompany(await this.withLiveCount(await this.workspace.updateProfile(actor, body)));
   }
 
   @Get('stats')
   @ApiOkResponse(OK)
   async stats(@CurrentActor() actor: Actor | undefined) {
-    return presentStats(await this.workspace.stats(actor));
+    const stats = await this.workspace.stats(actor);
+    const live = await this.opportunities.liveCounts([actor!.kind === 'company' ? actor!.companyId : '']);
+    return presentStats({ ...stats, liveListings: [...live.values()][0] ?? 0 });
   }
 
   @Get('projects')
@@ -75,5 +81,11 @@ export class AppCompanyController {
   @ApiNoContentResponse({ description: 'Deleted' })
   async deleteProject(@CurrentActor() actor: Actor | undefined, @Param('id') id: string): Promise<void> {
     await this.workspace.deleteProject(actor, id);
+  }
+
+  /** contracts/app `Company.open_opportunities`: live listings, from the opportunities module. */
+  private async withLiveCount(view: CompanyView): Promise<CompanyView> {
+    const counts = await this.opportunities.liveCounts([view.id]);
+    return { ...view, openOpportunities: counts.get(view.id) ?? 0 };
   }
 }

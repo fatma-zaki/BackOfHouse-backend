@@ -3,6 +3,7 @@ import { Client } from 'pg';
 import { NotesService, UsersAdminService } from '../../../src/modules/backoffice';
 import { ClaimsService, CompaniesAdminService } from '../../../src/modules/companies';
 import { ArticlesService, NewsService } from '../../../src/modules/content';
+import { OpportunitiesService, OpportunityReviewService } from '../../../src/modules/opportunities';
 import { AccountStatusService } from '../../../src/modules/identity';
 import { ModerationService } from '../../../src/modules/moderation';
 import { VerificationReviewService } from '../../../src/modules/verification';
@@ -82,6 +83,18 @@ describe('Service-level permission checks (actor bypass)', () => {
     [
       'staff reading the member news feed',
       () => get(NewsService).list(staffActor('EDITOR'), { page: 1, page_size: 20 }, 'en'),
+    ],
+    [
+      'an Editor approving a listing',
+      () => get(OpportunityReviewService).approve(staffActor('EDITOR'), owner.userId, {}),
+    ],
+    [
+      'a Support agent closing a listing',
+      () => get(OpportunityReviewService).close(staffActor('SUPPORT'), owner.userId, { reason: 'x' }),
+    ],
+    [
+      'a Super admin writing a company listing',
+      () => get(OpportunitiesService).create(staffActor('SUPER_ADMIN'), { type: 'JOB' }),
     ],
     ['no actor at all', () => get(CompaniesAdminService).list(undefined, { page: 1, page_size: 20 })],
   ])('refuses %s', async (_, call) => {

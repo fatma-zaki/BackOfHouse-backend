@@ -198,7 +198,7 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
     templates: {
       en: {
         title: 'Content removed',
-        body: 'We removed one of your projects after a report. {{message}}',
+        body: 'We removed one of your projects or listings after a review. {{message}}',
         emailSubject: 'We removed content from your Back of House profile',
         emailText:
           'Hello {{full_name}},\n\n' +
@@ -207,13 +207,131 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
       },
       ar: {
         title: 'تمت إزالة محتوى',
-        body: 'أزلنا أحد مشاريعك بعد مراجعة بلاغ. {{message}}',
+        body: 'أزلنا أحد مشاريعك أو إعلاناتك بعد المراجعة. {{message}}',
         emailSubject: 'أزلنا محتوى من ملفك في Back of House',
         emailText:
           'مرحبًا {{full_name}}،\n\n' +
           'بعد مراجعة بلاغ، أزال فريقنا أحد مشاريعك.\n\n{{message}}\n\n' +
           'فريق Back of House',
       },
+    },
+  },
+  {
+    // Fed by `opportunity.published` (a reviewer approved a listing or its update). To the Company Account.
+    type: 'opportunity.approved',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['title'],
+    templates: {
+      en: { title: 'Your listing is live', body: '{{title}} was approved and is now live in the app.' },
+      ar: { title: 'إعلانك منشور الآن', body: 'تمت الموافقة على {{title}} وأصبح منشورًا في التطبيق.' },
+    },
+  },
+  {
+    // Fed by `opportunity.changes_requested`; `message` is from Back of House, never the reviewer's name.
+    type: 'opportunity.changes_requested',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['title', 'message'],
+    templates: {
+      en: {
+        title: 'Changes needed on {{title}}',
+        body: 'Back of House asked for changes: {{message}}',
+        emailSubject: 'Changes needed on your listing {{title}}',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Back of House reviewed your listing {{title}} and asked for changes:\n\n{{message}}\n\n' +
+          'Edit the listing in the app and send it for review again.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'مطلوب تعديلات على {{title}}',
+        body: 'طلب فريق Back of House تعديلات: {{message}}',
+        emailSubject: 'مطلوب تعديلات على إعلانك {{title}}',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'راجع فريق Back of House إعلانك {{title}} وطلب التعديلات التالية:\n\n{{message}}\n\n' +
+          'عدّل الإعلان من التطبيق وأرسله للمراجعة مرة أخرى.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `opportunity.rejected` (a listing, or an update of a live one, was not approved).
+    type: 'opportunity.rejected',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['title', 'message'],
+    templates: {
+      en: {
+        title: '{{title}} was not approved',
+        body: '{{message}}',
+        emailSubject: 'Your listing {{title}} was not approved',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Back of House reviewed {{title}} and did not approve it:\n\n{{message}}\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'لم تتم الموافقة على {{title}}',
+        body: '{{message}}',
+        emailSubject: 'لم تتم الموافقة على إعلانك {{title}}',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'راجع فريق Back of House {{title}} ولم تتم الموافقة عليه:\n\n{{message}}\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `opportunity.closed` with closed_by STAFF (taken down by Back of House).
+    type: 'opportunity.closed_by_staff',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['title', 'message'],
+    templates: {
+      en: {
+        title: '{{title}} was closed',
+        body: 'Back of House closed your listing: {{message}}',
+        emailSubject: 'Your listing {{title}} was closed',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'Back of House closed your listing {{title}}:\n\n{{message}}\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'تم إغلاق {{title}}',
+        body: 'أغلق فريق Back of House إعلانك: {{message}}',
+        emailSubject: 'تم إغلاق إعلانك {{title}}',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'أغلق فريق Back of House إعلانك {{title}}:\n\n{{message}}\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
+    // Fed by `opportunity.closed` with closed_by SYSTEM (the closing time passed).
+    type: 'opportunity.expired',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: false,
+    respectsQuietHours: true,
+    variables: ['title'],
+    templates: {
+      en: {
+        title: '{{title}} has closed',
+        body: 'Your listing reached its closing date and no longer takes applications.',
+      },
+      ar: { title: 'انتهى {{title}}', body: 'وصل إعلانك إلى تاريخ الإغلاق ولم يعد يستقبل طلبات.' },
     },
   },
 ];

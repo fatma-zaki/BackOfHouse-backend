@@ -12,7 +12,8 @@ import type { Actor } from '../../../common/context/actor';
 import { RequestContext } from '../../../common/context/request-context';
 import { CurrentActor } from '../../../common/decorators/current-actor.decorator';
 import { AppPageMeta, Page } from '../../../common/pagination';
-import { CompanyDirectoryService } from '../../../modules/companies';
+import { CompanyDirectoryService, type CompanyView } from '../../../modules/companies';
+import { OpportunitiesService } from '../../../modules/opportunities';
 import { ProfessionalsService, ProfilesService } from '../../../modules/profiles';
 import { VerificationReviewService } from '../../../modules/verification';
 import { IndividualsOnly } from '../account-context';
@@ -45,6 +46,7 @@ export class AppDiscoverController {
     private readonly professionals: ProfessionalsService,
     private readonly companies: CompanyDirectoryService,
     private readonly verification: VerificationReviewService,
+    private readonly opportunities: OpportunitiesService,
   ) {}
 
   /** `verified` comes from the verification decision only (verification-state.ts). */
@@ -127,25 +129,25 @@ export class AppDiscoverController {
   @ApiOkResponse(OK)
   async listCompanies(@CurrentActor() actor: Actor | undefined, @Query() query: CompanyListQueryDto) {
     const { items, hasMore } = await this.companies.list(actor, query, RequestContext.locale());
-    return pageOf(items.map(presentCompany), hasMore, query);
+    return pageOf((await this.withLiveCounts(items)).map(presentCompany), hasMore, query);
   }
 
   @Get('companies/:id')
   @ApiOkResponse(OK)
   async company(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
-    return presentCompany(await this.companies.get(actor, id));
+    return presentCompany((await this.withLiveCounts([await this.companies.get(actor, id)]))[0]);
   }
 
   @Put('companies/:id/follow')
   @ApiOkResponse(OK)
   async follow(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
-    return presentCompany(await this.companies.follow(actor, id));
+    return presentCompany((await this.withLiveCounts([await this.companies.follow(actor, id)]))[0]);
   }
 
   @Delete('companies/:id/follow')
   @ApiOkResponse(OK)
   async unfollow(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
-    return presentCompany(await this.companies.unfollow(actor, id));
+    return presentCompany((await this.withLiveCounts([await this.companies.unfollow(actor, id)]))[0]);
   }
 
   @Get('companies/:id/projects')
@@ -182,5 +184,11 @@ export class AppDiscoverController {
   async disconnect(@CurrentActor() actor: Actor | undefined, @Param('id') id: string) {
     const professional = await this.professionals.disconnect(actor, id);
     return presentProfessional(professional, await this.isVerified(professional.id));
+  }
+
+  /** contracts/app `Company.open_opportunities`: live listings, from the opportunities module. */
+  private async withLiveCounts(views: CompanyView[]): Promise<CompanyView[]> {
+    const counts = await this.opportunities.liveCounts(views.map((v) => v.id));
+    return views.map((v) => ({ ...v, openOpportunities: counts.get(v.id) ?? 0 }));
   }
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CompaniesModule } from '../companies';
 import { IdentityModule } from '../identity';
 import { ProfilesModule } from '../profiles';
+import { OpportunityFlagHandler } from './handlers/opportunity-flag.handler';
 import { ModerationService } from './services/moderation.service';
 
 /**
@@ -11,7 +12,7 @@ import { ModerationService } from './services/moderation.service';
  */
 @Module({
   imports: [IdentityModule, CompaniesModule, ProfilesModule],
-  providers: [ModerationService],
+  providers: [ModerationService, OpportunityFlagHandler],
   exports: [ModerationService],
 })
 export class ModerationModule {}

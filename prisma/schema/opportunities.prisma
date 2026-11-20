@@ -1,0 +1,142 @@
+// Module: opportunities (nest-module-map.md §4.22). Listings companies post for
+// individuals (JOB, PROJECT, CO_OP, VOLUNTEERING) and for other companies
+// (SUPPLIER_REQUEST). Every listing is reviewed by Back of House before it goes live (D9).
+
+enum OpportunityType {
+  JOB
+  PROJECT
+  CO_OP
+  VOLUNTEERING
+  SUPPLIER_REQUEST
+
+  @@map("opportunity_type")
+  @@schema("app")
+}
+
+/// contracts/app `OpportunityStatus`, plus REJECTED (contracts/admin), shown as CLOSED in the app.
+enum OpportunityStatus {
+  DRAFT
+  IN_REVIEW
+  CHANGES_REQUESTED
+  PUBLISHED
+  PAUSED
+  CLOSED
+  ARCHIVED
+  REJECTED
+
+  @@map("opportunity_status")
+  @@schema("app")
+}
+
+/// A pending update of a PUBLISHED listing (contracts/app `OpportunityRevision`).
+enum OpportunityRevisionStatus {
+  DRAFT
+  IN_REVIEW
+  CHANGES_REQUESTED
+
+  @@map("opportunity_revision_status")
+  @@schema("app")
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  FREELANCE
+
+  @@map("employment_type")
+  @@schema("app")
+}
+
+enum WorkSetup {
+  ON_SITE
+  HYBRID
+  REMOTE
+
+  @@map("work_setup")
+  @@schema("app")
+}
+
+enum OpportunityReviewDecision {
+  APPROVED
+  CHANGES_REQUESTED
+  REJECTED
+
+  @@map("opportunity_review_decision")
+  @@schema("app")
+}
+
+/// One listing. Draft content may be incomplete; submitting checks it. While a revision
+/// is pending, these columns stay the live version and `revision_draft` holds the update.
+/// `submitted_at`, `review_due_at` and `checks` describe the latest submission (the listing
+/// or its revision).
+model Opportunity {
+  id               String                     @id @default(uuid(7)) @db.Uuid
+  companyId        String                     @map("company_id") @db.Uuid
+  type             OpportunityType
+  status           OpportunityStatus          @default(DRAFT)
+  title            String                     @default("")
+  city             String                     @default("")
+  summary          String                     @default("")
+  description      String                     @default("")
+  employmentType   EmploymentType?            @map("employment_type")
+  compensation     String?
+  duration         String?
+  responsibilities String[]                   @default([])
+  requirements     String[]                   @default([])
+  skills           String[]                   @default([])
+  /// SUPPLIER_REQUEST only: the company types invited to respond.
+  supplierTypes    CompanyType[]              @default([]) @map("supplier_types")
+  closesAt         DateTime?                  @map("closes_at") @db.Timestamptz(6)
+  workSetup        WorkSetup?                 @map("work_setup")
+  /// Shown to the company with CHANGES_REQUESTED or REJECTED; written as from Back of House.
+  reviewerNote     String?                    @map("reviewer_note")
+  submittedAt      DateTime?                  @map("submitted_at") @db.Timestamptz(6)
+  reviewDueAt      DateTime?                  @map("review_due_at") @db.Timestamptz(6)
+  /// When the overdue review was announced to staff (once per submission).
+  slaAlertedAt     DateTime?                  @map("sla_alerted_at") @db.Timestamptz(6)
+  /// Sent again after changes were requested.
+  resubmitted      Boolean                    @default(false)
+  autoFlagged      Boolean                    @default(false) @map("auto_flagged")
+  /// contracts/admin `AutoCheck[]` from the latest submission.
+  checks           Json                       @default("[]") @db.JsonB
+  revisionStatus   OpportunityRevisionStatus? @map("revision_status")
+  /// contracts/app `OpportunityInput` of the pending revision.
+  revisionDraft    Json?                      @map("revision_draft") @db.JsonB
+  revisionNote     String?                    @map("revision_note")
+  publishedAt      DateTime?                  @map("published_at") @db.Timestamptz(6)
+  closedAt         DateTime?                  @map("closed_at") @db.Timestamptz(6)
+  /// Why staff closed it (contracts/admin POST /opportunities/{id}/close).
+  closeReason      String?                    @map("close_reason")
+  views            Int                        @default(0)
+  createdAt        DateTime                   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_opportunities__company_id")
+  reviews          OpportunityReview[]
+
+  @@index([status, publishedAt(sort: Desc)], map: "ix_opportunities__status_published_at")
+  @@index([companyId, updatedAt(sort: Desc)], map: "ix_opportunities__company_updated_at")
+  @@index([status, reviewDueAt], map: "ix_opportunities__status_review_due_at")
+  @@index([revisionStatus, reviewDueAt], map: "ix_opportunities__revision_status_review_due_at")
+  @@map("opportunities")
+  @@schema("app")
+}
+
+/// A review decision on a listing or one of its revisions (contracts/admin `ReviewDecision`).
+model OpportunityReview {
+  id            String                    @id @default(uuid(7)) @db.Uuid
+  opportunityId String                    @map("opportunity_id") @db.Uuid
+  decision      OpportunityReviewDecision
+  /// The decision was on a revision of the live listing.
+  revision      Boolean                   @default(false)
+  reasons       String[]                  @default([])
+  message       String?
+  staffId       String                    @map("staff_id") @db.Uuid
+  createdAt     DateTime                  @default(now()) @map("created_at") @db.Timestamptz(6)
+  opportunity   Opportunity               @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_opportunity_reviews__opportunity_id")
+  staff         StaffAccount              @relation(fields: [staffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_opportunity_reviews__staff_id")
+
+  @@index([opportunityId, createdAt], map: "ix_opportunity_reviews__opportunity_created_at")
+  @@map("opportunity_reviews")
+  @@schema("app")
+}

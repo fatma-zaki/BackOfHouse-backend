@@ -4,6 +4,7 @@ import { BackofficeModule } from '../../modules/backoffice';
 import { CompaniesModule } from '../../modules/companies';
 import { ContentModule } from '../../modules/content';
 import { ModerationModule } from '../../modules/moderation';
+import { OpportunitiesModule } from '../../modules/opportunities';
 import { IdentityModule } from '../../modules/identity';
 import { VerificationModule } from '../../modules/verification';
 import { NotificationsModule } from '../../modules/notifications';
@@ -19,6 +20,10 @@ import { AdminClaimsController } from './companies/admin-claims.controller';
 import { AdminCompaniesController } from './companies/admin-companies.controller';
 import { AdminModerationController } from './moderation/admin-moderation.controller';
 import { AdminArticlesController } from './news/admin-articles.controller';
+import {
+  AdminCompanyOpportunitiesController,
+  AdminOpportunitiesController,
+} from './opportunities/admin-opportunities.controller';
 import { AdminNotesController } from './users/admin-notes.controller';
 import { AdminUsersController } from './users/admin-users.controller';
 import { AdminVerificationController } from './verification/admin-verification.controller';
@@ -41,6 +46,7 @@ import { AdminVerificationController } from './verification/admin-verification.c
     CompaniesModule,
     ModerationModule,
     ContentModule,
+    OpportunitiesModule,
   ],
   controllers: [
     AdminMetaController,
@@ -56,6 +62,8 @@ import { AdminVerificationController } from './verification/admin-verification.c
     AdminClaimsController,
     AdminModerationController,
     AdminArticlesController,
+    AdminOpportunitiesController,
+    AdminCompanyOpportunitiesController,
   ],
 })
 export class AdminSurfaceModule {}

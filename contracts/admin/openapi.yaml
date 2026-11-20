@@ -6583,6 +6583,9 @@ components:
               format: uuid
             name:
               type: string
+        revision:
+          type: boolean
+          description: The decision was on an update of a live listing.
         created_at:
           type: string
           format: date-time
@@ -6624,6 +6627,49 @@ components:
               type: integer
             views:
               type: integer
+            summary:
+              type: string
+              description: The one-line card text the company wrote (contracts/app `Opportunity.summary`).
+            supplier_types:
+              type: array
+              description: SUPPLIER_REQUEST only, the company types invited to respond (contracts/app `CompanyType`).
+              items:
+                type: string
+            is_revision:
+              type: boolean
+              description: >-
+                The listing is live and an update of it waits for review. The queue labels it "Revision"; approving
+                puts `revision` live, and the fields above stay the live version until then.
+            revision:
+              description: The pending update of a live listing, with what it changes against the live version.
+              oneOf:
+                - type: object
+                  required:
+                    - status
+                    - changes
+                  properties:
+                    status:
+                      type: string
+                      enum:
+                        - DRAFT
+                        - IN_REVIEW
+                        - CHANGES_REQUESTED
+                    changes:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - field
+                        properties:
+                          field:
+                            type: string
+                            description: The contracts/app `OpportunityInput` field name.
+                          before: {}
+                          after: {}
+                - type: 'null'
+            updated_at:
+              type: string
+              format: date-time
     ReviewRequest:
       type: object
       properties:

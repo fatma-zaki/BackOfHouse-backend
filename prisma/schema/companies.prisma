@@ -67,8 +67,9 @@ model Company {
   projects     CompanyProject[]
   profileViews CompanyProfileView[]
 
-  claims     PageClaim[]
-  verifiedBy StaffAccount? @relation("CompanyVerifiedBy", fields: [verifiedByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_companies__verified_by_staff_id")
+  claims        PageClaim[]
+  opportunities Opportunity[]
+  verifiedBy    StaffAccount? @relation("CompanyVerifiedBy", fields: [verifiedByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_companies__verified_by_staff_id")
 
   @@unique([accountUserId], map: "uq_companies__account_user_id")
   @@unique([slug], map: "uq_companies__slug")

@@ -1,4 +1,9 @@
-import type { CompanyProjectView, CompanyStatsView, CompanyView } from '../../../modules/companies';
+import {
+  companyCapabilities,
+  type CompanyProjectView,
+  type CompanyStatsView,
+  type CompanyView,
+} from '../../../modules/companies';
 import type { ExperienceView, ProfessionalView, ProfileProjectView, ProfileView } from '../../../modules/profiles';
 
 /** contracts/app `Company` (CompanySummary + profile). Images arrive with uploads (1B). */
@@ -9,8 +14,7 @@ export function presentCompany(c: CompanyView) {
     company_type: c.companyType,
     logo_url: null,
     is_verified: c.isVerified,
-    // Who may create supplier requests is open (BQ-83).
-    capabilities: [] as string[],
+    capabilities: companyCapabilities(c.isVerified),
     specialization: c.specialization,
     city: c.city,
     description: c.description,

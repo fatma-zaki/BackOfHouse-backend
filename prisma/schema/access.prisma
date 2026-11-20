@@ -46,6 +46,7 @@ model StaffAccount {
   claimDecisions        PageClaim[]
   resolvedCases         ModerationCase[]
   articles              Article[]
+  opportunityReviews    OpportunityReview[]
 
   @@unique([email], map: "uq_staff_accounts__email")
   @@index([role, status], map: "ix_staff_accounts__role_status")

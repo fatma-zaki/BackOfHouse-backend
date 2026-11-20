@@ -20,6 +20,8 @@ const BUILT_TABLES = new Set([
   'article_likes',
   'article_saves',
   'article_comments',
+  'opportunities',
+  'opportunity_reviews',
 ]);
 const MODEL_MAP = {
   User: ['users, profiles', 'designed', 'Students kept as a profile flag (BQ-79); contact sharing flags to add'],
@@ -38,10 +40,10 @@ const MODEL_MAP = {
   PageClaim: ['organization_claims', 'designed', 'Approval moves ownership, never verifies'],
   Listing: [
     'opportunities',
-    'designed',
-    'Vocabulary "opportunities" (D1); revision flow (P2); PROJECT type open (BQ-81)',
+    'built',
+    'Vocabulary "opportunities" (D1); revision kept on the row while the live version stays up (P2); PROJECT is a listing type (BQ-81)',
   ],
-  ListingReview: ['—', 'missing', 'Review decisions and pending revisions (P2)'],
+  ListingReview: ['opportunity_reviews', 'built', 'Decisions on a listing or its revision; automated checks on the row'],
   Application: ['applications', 'designed', 'Privacy snapshot on apply'],
   SupplierResponse: ['supplier_responses', 'designed', ''],
   Event: ['events', 'designed', ''],
@@ -300,9 +302,12 @@ out();
 out('| Topic | App contract | Admin contract | Resolve by |');
 out('|---|---|---|---|');
 out(
-  '| Opportunity status | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, PAUSED, CLOSED, ARCHIVED` | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, REJECTED, CLOSED` | Phase 5: one status enum for both (add `REJECTED`, `PAUSED`, `ARCHIVED` where missing) |',
+  '| Opportunity status | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, PAUSED, CLOSED, ARCHIVED` | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, REJECTED, CLOSED` | Built (5A): one database enum with all eight; the app shows REJECTED as CLOSED, the admin PAUSED/ARCHIVED as CLOSED |',
 );
-out('| Opportunity type `PROJECT` | present | present | BQ-81 (Phase 5) |');
+out('| Opportunity type `PROJECT` | present | present | Decided (BQ-81, 2026-11-20): a listing type individuals apply to |');
+out(
+  '| Listing pay, hours, supplier brief | `compensation`, `duration` (free text) | `pay` (range), `working_hours`, `supplier` (budget, dates) | BQ-92 |',
+);
 out(
   '| Company team roles | single Company Account | `OWNER, RECRUITER, EDITOR` on company team | Phase 4: admin team view shows the single account (P3) |',
 );

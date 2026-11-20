@@ -28,6 +28,11 @@ const TYPE_OF: Record<AdminCategory, string> = {
   AGENCY: 'AGENCY',
   PRODUCTION: 'PRODUCTION',
 };
+/** contracts/admin `CompanySummary.category` for a company type (none for SERVICE_PROVIDER and OTHER, BQ-89). */
+export function adminCategoryOf(companyType: string): AdminCategory | null {
+  return CATEGORY_OF[companyType] ?? null;
+}
+
 const CATEGORIES = ['ORGANIZER', 'VENUE', 'SUPPLIER', 'AGENCY', 'PRODUCTION'] as const;
 type AdminCategory = (typeof CATEGORIES)[number];
 

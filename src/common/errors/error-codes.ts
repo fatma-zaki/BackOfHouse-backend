@@ -44,4 +44,9 @@ export enum ErrorCode {
   // News (contracts/admin /articles, contracts/app /news)
   TRANSLATION_MISSING = 'TRANSLATION_MISSING',
   ENGAGEMENT_NOT_ALLOWED = 'ENGAGEMENT_NOT_ALLOWED',
+  // Opportunities (contracts/app /company/opportunities*, Phase 5)
+  NOT_EDITABLE = 'NOT_EDITABLE',
+  REVISION_EXISTS = 'REVISION_EXISTS',
+  CAPABILITY_REQUIRED = 'CAPABILITY_REQUIRED',
+  COMPANY_NOT_VERIFIED = 'COMPANY_NOT_VERIFIED',
 }
