@@ -13,7 +13,14 @@ import { MembersService } from '../../identity';
 import { TaxonomyService } from '../../taxonomy';
 import { compareExperience, currentCompany, yearsOfExperience } from '../domain/experience';
 
-const INTERESTS = ['TECH_INNOVATION', 'MARKETING', 'DESIGN', 'BUSINESS', 'NETWORKING', 'PRODUCTION'] as const;
+export const PROFILE_INTERESTS = [
+  'TECH_INNOVATION',
+  'MARKETING',
+  'DESIGN',
+  'BUSINESS',
+  'NETWORKING',
+  'PRODUCTION',
+] as const;
 
 const updateSchema = z
   .object({
@@ -23,8 +30,8 @@ const updateSchema = z
     about: z.string().trim().max(600, 'must be at most 600 characters'),
     profile_status: z.enum(['PROFESSIONAL', 'STUDENT']),
     interests: z
-      .array(z.enum(INTERESTS))
-      .max(INTERESTS.length)
+      .array(z.enum(PROFILE_INTERESTS))
+      .max(PROFILE_INTERESTS.length)
       .refine((items) => new Set(items).size === items.length, 'must not repeat an interest'),
     contact_privacy: z
       .object({ share_email: z.boolean().default(false), share_phone: z.boolean().default(false) })
@@ -255,6 +262,12 @@ export class ProfilesService {
   }
 
   /** For `AppUser.headline` (GET /me); null until the member writes one. */
+  /** The interests a member picked on their profile (none for a Company Account). */
+  async interestsOf(userId: string): Promise<string[]> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { interests: true } });
+    return profile?.interests ?? [];
+  }
+
   async headlineOf(userId: string): Promise<string | null> {
     const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { headline: true } });
     return profile?.headline || null;

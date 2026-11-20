@@ -7,12 +7,13 @@ import type { Locale } from '../../../common/i18n/locale';
 import { isUuid } from '../../../common/ids/uuid-v7';
 import { parseInput } from '../../../common/validation/parse-input';
 import type { Prisma } from '../../../generated/prisma/client';
+import type { ProfileInterest } from '../../../generated/prisma/enums';
 import { PrismaService } from '../../../platform/database';
 import { MembersService } from '../../identity';
 import { ProfilesService } from '../../profiles';
 import { TaxonomyService } from '../../taxonomy';
 import { ArticleBlock, articleBlocks, articlePlainText, readMinutes, teaserOf } from '../domain/article-html';
-import { NEWS_TOPICS } from './articles.service';
+import { labelsOf, NEWS_TOPICS } from './articles.service';
 
 /** Articles come from the Back of House editorial desk (docs/app/README.md "News"). */
 export const NEWS_SOURCE = { en: 'Back of House', ar: 'باك أوف هاوس' } as const;
@@ -48,6 +49,7 @@ export interface NewsArticleView {
   publishedAt: Date;
   imageCaption: string | null;
   breaking: boolean;
+  labels: string[];
   body?: ArticleBlock[];
   likeCount: number;
   liked: boolean;
@@ -89,7 +91,11 @@ export class NewsService {
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
-  /** FOR_YOU leads with what the desk features on Home ("breaking"); LATEST is newest first. */
+  /**
+   * LATEST is newest first. FOR_YOU leads with what the desk features on Home ("breaking"),
+   * then articles tagged with one of the member's interests (BQ-91c), then the rest; each
+   * group newest first. Company Accounts have no interests, so they get featured, then the rest.
+   */
   async list(
     actor: Actor | undefined,
     input: unknown,
@@ -117,34 +123,50 @@ export class NewsService {
         take,
       });
     } else {
-      // Featured first (newest first among them), then the rest newest first.
-      const featuredWhere = { AND: [...and, { featuredUntil: { gt: now } }] };
-      const featuredCount = await this.prisma.article.count({ where: featuredWhere });
-      const featured =
-        skip < featuredCount
-          ? await this.prisma.article.findMany({
-              where: featuredWhere,
-              include: counted,
-              orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
-              skip,
-              take,
-            })
-          : [];
-      const rest =
-        featured.length < take
-          ? await this.prisma.article.findMany({
-              where: { AND: [...and, { OR: [{ featuredUntil: null }, { featuredUntil: { lte: now } }] }] },
-              include: counted,
-              orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
-              skip: Math.max(0, skip - featuredCount),
-              take: take - featured.length,
-            })
-          : [];
-      rows = [...featured, ...rest];
+      const featured: Prisma.ArticleWhereInput = { featuredUntil: { gt: now } };
+      const notFeatured: Prisma.ArticleWhereInput = { OR: [{ featuredUntil: null }, { featuredUntil: { lte: now } }] };
+      const interests = (
+        viewer.kind === 'member' ? await this.profiles.interestsOf(viewer.userId) : []
+      ) as ProfileInterest[];
+      const shared: Prisma.ArticleWhereInput = { interests: { hasSome: interests } };
+      const groups =
+        interests.length > 0
+          ? [[featured], [notFeatured, shared], [notFeatured, { NOT: shared }]]
+          : [[featured], [notFeatured]];
+      rows = await this.grouped(
+        groups.map((extra) => ({ AND: [...and, ...extra] })),
+        skip,
+        take,
+      );
     }
     const hasMore = rows.length > query.page_size;
     const items = await this.views(rows.slice(0, query.page_size), viewer, locale, false);
     return { items, hasMore };
+  }
+
+  /** One page across groups listed in order, each newest first. */
+  private async grouped(groups: Prisma.ArticleWhereInput[], skip: number, take: number): Promise<NewsRow[]> {
+    const rows: NewsRow[] = [];
+    let offset = skip;
+    for (const where of groups) {
+      if (rows.length >= take) break;
+      const count = await this.prisma.article.count({ where });
+      if (offset >= count) {
+        offset -= count;
+        continue;
+      }
+      rows.push(
+        ...(await this.prisma.article.findMany({
+          where,
+          include: counted,
+          orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
+          skip: offset,
+          take: take - rows.length,
+        })),
+      );
+      offset = 0;
+    }
+    return rows;
   }
 
   /** One live article with its body; each open counts a read. */
@@ -302,12 +324,16 @@ export class NewsService {
         category: labels.get(topic) ?? topic,
         title,
         summary: excerpt || teaserOf(text, 200),
-        source: NEWS_SOURCE[locale],
+        // The desk's credit when it set one (BQ-91b), else Back of House.
+        source: (ar ? row.sourceAr : row.sourceEn) || NEWS_SOURCE[locale],
         teaser: teaserOf(text),
         readMinutes: readMinutes(text),
         publishedAt: row.publishedAt!,
         imageCaption: null,
         breaking: !!row.featuredUntil && row.featuredUntil > now,
+        labels: labelsOf(row.labels)
+          .map((l) => (ar ? l.ar : l.en))
+          .filter((l) => l !== ''),
         ...(withBody ? { body: articleBlocks(body) } : {}),
         likeCount: row._count.likes,
         liked: liked.has(row.id),

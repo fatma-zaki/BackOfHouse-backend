@@ -2576,6 +2576,12 @@ export interface components {
                 id?: string;
                 name?: string;
             };
+            /** @description Who the article credits, in both languages (BQ-91b). Null or empty shows "Back of House". Up to 80 characters; one language needs the other before publishing. */
+            source?: components["schemas"]["LocalizedText"] | null;
+            /** @description Up to five short tags shown on the card, each in both languages (up to 30 characters). */
+            labels?: components["schemas"]["LocalizedText"][];
+            /** @description Member interests the article is for (BQ-91c). In the app's FOR_YOU order, members who share one see it right after the featured articles. */
+            interests?: components["schemas"]["ProfileInterest"][];
             reads?: number;
             /** Format: date-time */
             updated_at?: string;
@@ -2593,7 +2599,18 @@ export interface components {
                 /** Format: uuid */
                 id?: string;
             } | null;
+            /** @description Who the article credits, in both languages (BQ-91b). Null or empty shows "Back of House". Up to 80 characters; one language needs the other before publishing. */
+            source?: components["schemas"]["LocalizedText"] | null;
+            /** @description Up to five short tags shown on the card, each in both languages (up to 30 characters). */
+            labels?: components["schemas"]["LocalizedText"][];
+            /** @description Member interests the article is for (BQ-91c). In the app's FOR_YOU order, members who share one see it right after the featured articles. */
+            interests?: components["schemas"]["ProfileInterest"][];
         };
+        /**
+         * @description The interests a member picks on their profile (contracts/app `ProfileInterest`).
+         * @enum {string}
+         */
+        ProfileInterest: "TECH_INNOVATION" | "MARKETING" | "DESIGN" | "BUSINESS" | "NETWORKING" | "PRODUCTION";
         ArticleCheck: {
             /** @enum {string} */
             key?: "BOTH_LANGUAGES" | "COVER_ALT" | "LINKED_ITEM_LIVE" | "HEADLINE_LENGTH" | "PARTNER_MENTION";
