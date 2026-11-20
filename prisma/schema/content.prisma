@@ -26,38 +26,45 @@ enum ArticleLinkType {
 /// before it is scheduled or published (422 TRANSLATION_MISSING). `topic` is a
 /// `news_topics` code (contracts/app `NewsTopic`); the admin contract calls it `category`.
 model Article {
-  id                      String           @id @default(uuid(7)) @db.Uuid
+  id                      String            @id @default(uuid(7)) @db.Uuid
   /// Latin headline plus the id prefix; fixed once the article is first published.
   slug                    String
   topic                   String?
-  coverAltEn              String?          @map("cover_alt_en")
-  coverAltAr              String?          @map("cover_alt_ar")
-  headlineEn              String?          @map("headline_en")
-  excerptEn               String?          @map("excerpt_en")
+  coverAltEn              String?           @map("cover_alt_en")
+  coverAltAr              String?           @map("cover_alt_ar")
+  headlineEn              String?           @map("headline_en")
+  excerptEn               String?           @map("excerpt_en")
   /// Sanitized HTML (content/domain/article-html.ts).
-  bodyEn                  String?          @map("body_en")
-  ctaLabelEn              String?          @map("cta_label_en")
-  headlineAr              String?          @map("headline_ar")
-  excerptAr               String?          @map("excerpt_ar")
-  bodyAr                  String?          @map("body_ar")
-  ctaLabelAr              String?          @map("cta_label_ar")
-  linkType                ArticleLinkType? @map("link_type")
-  linkId                  String?          @map("link_id") @db.Uuid
-  status                  ArticleStatus    @default(DRAFT)
-  scheduledAt             DateTime?        @map("scheduled_at") @db.Timestamptz(6)
-  publishedAt             DateTime?        @map("published_at") @db.Timestamptz(6)
+  bodyEn                  String?           @map("body_en")
+  ctaLabelEn              String?           @map("cta_label_en")
+  headlineAr              String?           @map("headline_ar")
+  excerptAr               String?           @map("excerpt_ar")
+  bodyAr                  String?           @map("body_ar")
+  ctaLabelAr              String?           @map("cta_label_ar")
+  /// Who the article credits (contracts/app `Article.source`); empty means Back of House.
+  sourceEn                String?           @map("source_en")
+  sourceAr                String?           @map("source_ar")
+  /// Up to five short tags, each `{en, ar}` (contracts/app `Article.labels`).
+  labels                  Json              @default("[]") @db.JsonB
+  /// Member interests the article is for; FOR_YOU lifts it for members who share one (BQ-91c).
+  interests               ProfileInterest[] @default([])
+  linkType                ArticleLinkType?  @map("link_type")
+  linkId                  String?           @map("link_id") @db.Uuid
+  status                  ArticleStatus     @default(DRAFT)
+  scheduledAt             DateTime?         @map("scheduled_at") @db.Timestamptz(6)
+  publishedAt             DateTime?         @map("published_at") @db.Timestamptz(6)
   /// Shown first ("breaking") in the app's FOR_YOU order until this time.
-  featuredUntil           DateTime?        @map("featured_until") @db.Timestamptz(6)
-  featureOnHomeDays       Int?             @map("feature_on_home_days")
-  notifyPush              Boolean          @default(false) @map("notify_push")
+  featuredUntil           DateTime?         @map("featured_until") @db.Timestamptz(6)
+  featureOnHomeDays       Int?              @map("feature_on_home_days")
+  notifyPush              Boolean           @default(false) @map("notify_push")
   /// contracts/admin `AudienceRules`, resolved by the broadcasts lane.
-  pushAudience            Json?            @map("push_audience")
-  shareToCompanyFollowers Boolean          @default(false) @map("share_to_company_followers")
-  authorStaffId           String           @map("author_staff_id") @db.Uuid
-  reads                   Int              @default(0)
-  createdAt               DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt               DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
-  author                  StaffAccount     @relation(fields: [authorStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_articles__author_staff_id")
+  pushAudience            Json?             @map("push_audience")
+  shareToCompanyFollowers Boolean           @default(false) @map("share_to_company_followers")
+  authorStaffId           String            @map("author_staff_id") @db.Uuid
+  reads                   Int               @default(0)
+  createdAt               DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  author                  StaffAccount      @relation(fields: [authorStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_articles__author_staff_id")
   likes                   ArticleLike[]
   saves                   ArticleSave[]
   comments                ArticleComment[]

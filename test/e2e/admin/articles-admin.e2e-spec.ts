@@ -191,6 +191,50 @@ describe('Articles in the back office (e2e)', () => {
     expect((await staff('get', '/articles?status=DRAFT')).body.data.map((a: { id: string }) => a.id)).toEqual([id]);
   });
 
+  it('keeps a source, labels and interests, and wants both languages of each before publishing', async () => {
+    const { id } = await draft({
+      category: 'REGULATORY',
+      en: EN,
+      ar: AR,
+      source: { en: 'General Entertainment Authority' },
+      labels: [{ en: 'Mandatory', ar: 'إلزامي' }, { en: 'New' }, {}],
+      interests: ['PRODUCTION', 'DESIGN'],
+    });
+    const saved = await staff('get', `/articles/${id}`);
+    expectAdmin(saved, 'get', '/articles/{id}', 200);
+    expect(saved.body.data).toMatchObject({
+      source: { en: 'General Entertainment Authority', ar: '' },
+      labels: [
+        { en: 'Mandatory', ar: 'إلزامي' },
+        { en: 'New', ar: '' },
+      ],
+      interests: ['PRODUCTION', 'DESIGN'],
+    });
+
+    const blocked = await staff('post', `/articles/${id}/schedule`).send({});
+    expect({ status: blocked.status, code: blocked.body.code, errors: blocked.body.errors }).toEqual({
+      status: 422,
+      code: 'TRANSLATION_MISSING',
+      errors: { 'source.ar': ['is required to publish'], 'labels.1.ar': ['is required to publish'] },
+    });
+    const checks = await staff('get', `/articles/${id}/checks`);
+    expect(checks.body.data[0]).toMatchObject({ key: 'BOTH_LANGUAGES', result: 'FAIL' });
+
+    const fixed = await staff('patch', `/articles/${id}`).send({
+      source: { en: 'General Entertainment Authority', ar: 'الهيئة العامة للترفيه' },
+      labels: [{ en: 'Mandatory', ar: 'إلزامي' }],
+    });
+    expectAdmin(fixed, 'patch', '/articles/{id}', 200);
+    expect((await staff('post', `/articles/${id}/schedule`).send({})).body.data.status).toBe('PUBLISHED');
+
+    const tooMany = await staff('patch', `/articles/${id}`).send({ labels: Array(6).fill({ en: 'a', ar: 'b' }) });
+    expect(tooMany.body.code).toBe('VALIDATION_FAILED');
+    const repeated = await staff('patch', `/articles/${id}`).send({ interests: ['DESIGN', 'DESIGN'] });
+    expect(repeated.body.errors).toEqual({ interests: ['must not repeat an interest'] });
+    const cleared = await staff('patch', `/articles/${id}`).send({ source: null, labels: [], interests: [] });
+    expect(cleared.body.data).toMatchObject({ source: null, labels: [], interests: [] });
+  });
+
   it('runs the pre-publish checklist', async () => {
     const owner = await registerAccount(app, {
       name: 'Venue Owner',

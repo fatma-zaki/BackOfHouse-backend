@@ -9,8 +9,9 @@ import { Prisma } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner, Tx } from '../../../platform/database';
 import { OutboxWriter } from '../../../platform/outbox';
 import { AuditLogger, auditActorOf, SYSTEM_ACTOR } from '../../audit';
+import { PROFILE_INTERESTS } from '../../profiles';
 import { FIXED_LISTS } from '../../taxonomy';
-import { articleSlug, translationGaps, TranslationText } from '../domain/article-checks';
+import { articleSlug, PairText, translationGaps, TranslationText } from '../domain/article-checks';
 import { sanitizeArticleHtml } from '../domain/article-html';
 import { ArticleAction, ArticleStatus, mustStayComplete, nextArticleStatus } from '../domain/article-state';
 
@@ -21,6 +22,12 @@ export const ARTICLE_LINK_TYPES = ['OPPORTUNITY', 'EVENT', 'COMPANY'] as const;
 const MAX_SCHEDULE_DAYS = 366;
 const PAST_TOLERANCE_MS = 5 * 60_000;
 const DAY_MS = 86_400_000;
+
+/** At most five labels of up to 30 characters; a source of up to 80 (BQ-91b). */
+const MAX_LABELS = 5;
+
+const pairSchema = (max: number) =>
+  z.object({ en: z.string().trim().max(max).optional(), ar: z.string().trim().max(max).optional() }).strict();
 
 const translationSchema = z
   .object({
@@ -45,6 +52,12 @@ const inputSchema = z
       .object({ type: z.enum(ARTICLE_LINK_TYPES), id: z.string().uuid() })
       .strict()
       .nullable()
+      .optional(),
+    source: pairSchema(80).nullable().optional(),
+    labels: z.array(pairSchema(30)).max(MAX_LABELS).optional(),
+    interests: z
+      .array(z.enum(PROFILE_INTERESTS))
+      .refine((items) => new Set(items).size === items.length, 'must not repeat an interest')
       .optional(),
   })
   .strict();
@@ -113,6 +126,12 @@ export interface ArticleTranslationView {
   ctaLabel: string | null;
 }
 
+/** Bilingual text as the editor wrote it. */
+export interface Pair {
+  en: string;
+  ar: string;
+}
+
 /** contracts/admin `ArticleAdmin`. */
 export interface ArticleAdminView {
   id: string;
@@ -123,6 +142,9 @@ export interface ArticleAdminView {
   en: ArticleTranslationView | null;
   ar: ArticleTranslationView | null;
   link: { type: (typeof ARTICLE_LINK_TYPES)[number]; id: string } | null;
+  source: Pair | null;
+  labels: Pair[];
+  interests: string[];
   status: ArticleStatus;
   scheduledAt: Date | null;
   publishedAt: Date | null;
@@ -136,6 +158,8 @@ export interface ArticleForChecks {
   topic: string | null;
   en: TranslationText;
   ar: TranslationText;
+  source: PairText | null;
+  labels: PairText[];
   hasCover: boolean;
   coverAlt: { en: string | null; ar: string | null };
   link: { type: (typeof ARTICLE_LINK_TYPES)[number]; id: string } | null;
@@ -205,6 +229,8 @@ export class ArticlesService {
       topic: row.topic,
       en: { headline: row.headlineEn, excerpt: row.excerptEn, body: row.bodyEn },
       ar: { headline: row.headlineAr, excerpt: row.excerptAr, body: row.bodyAr },
+      source: { en: row.sourceEn, ar: row.sourceAr },
+      labels: labelsOf(row.labels),
       hasCover: false,
       coverAlt: { en: row.coverAltEn, ar: row.coverAltAr },
       link: row.linkType && row.linkId ? { type: row.linkType, id: row.linkId } : null,
@@ -436,11 +462,16 @@ export class ArticlesService {
     headlineAr: string | null;
     excerptAr: string | null;
     bodyAr: string | null;
+    sourceEn: string | null;
+    sourceAr: string | null;
+    labels: unknown;
   }): void {
     const gaps = translationGaps({
       topic: row.topic,
       en: { headline: row.headlineEn, excerpt: row.excerptEn, body: row.bodyEn },
       ar: { headline: row.headlineAr, excerpt: row.excerptAr, body: row.bodyAr },
+      source: { en: row.sourceEn, ar: row.sourceAr },
+      labels: labelsOf(row.labels),
     });
     if (Object.keys(gaps).length > 0) {
       throw new DomainError(
@@ -500,6 +531,10 @@ function columns(data: Input) {
     ctaLabelAr: string | null;
     linkType: (typeof ARTICLE_LINK_TYPES)[number] | null;
     linkId: string | null;
+    sourceEn: string | null;
+    sourceAr: string | null;
+    labels: { en: string; ar: string }[];
+    interests: (typeof PROFILE_INTERESTS)[number][];
   }> = {};
   if (data.category !== undefined) out.topic = data.category;
   if (data.cover_alt !== undefined) {
@@ -522,7 +557,26 @@ function columns(data: Input) {
     out.linkType = data.link?.type ?? null;
     out.linkId = data.link?.id ?? null;
   }
+  if (data.source !== undefined) {
+    out.sourceEn = data.source?.en || null;
+    out.sourceAr = data.source?.ar || null;
+  }
+  if (data.labels !== undefined) {
+    // Rows left empty in the editor are dropped; half-filled ones wait for the other language.
+    out.labels = data.labels.map((l) => ({ en: l.en ?? '', ar: l.ar ?? '' })).filter((l) => l.en || l.ar);
+  }
+  if (data.interests !== undefined) out.interests = data.interests;
   return out;
+}
+
+/** The stored `labels` JSON as pairs (anything else reads as no labels). */
+export function labelsOf(json: unknown): Pair[] {
+  if (!Array.isArray(json)) return [];
+  return json.flatMap((item: unknown) => {
+    if (typeof item !== 'object' || item === null) return [];
+    const { en, ar } = item as Record<string, unknown>;
+    return [{ en: typeof en === 'string' ? en : '', ar: typeof ar === 'string' ? ar : '' }];
+  });
 }
 
 function translation(
@@ -545,6 +599,9 @@ function view(row: ArticleRow): ArticleAdminView {
     en: translation(row.headlineEn, row.excerptEn, row.bodyEn, row.ctaLabelEn),
     ar: translation(row.headlineAr, row.excerptAr, row.bodyAr, row.ctaLabelAr),
     link: row.linkType && row.linkId ? { type: row.linkType, id: row.linkId } : null,
+    source: row.sourceEn || row.sourceAr ? { en: row.sourceEn ?? '', ar: row.sourceAr ?? '' } : null,
+    labels: labelsOf(row.labels),
+    interests: row.interests,
     status: row.status,
     scheduledAt: row.scheduledAt,
     publishedAt: row.publishedAt,

@@ -31,7 +31,7 @@ describe('News in the app (e2e)', () => {
   const publish = async (
     topic: string,
     headline: string,
-    options: { feature?: number; publish?: boolean; body?: string } = {},
+    options: { feature?: number; publish?: boolean; body?: string; extra?: object } = {},
   ): Promise<string> => {
     const editor = (method: 'post', path: string) =>
       request(app.getHttpServer())[method](`${ADMIN}${path}`).set('x-test-actor', 'staff:EDITOR');
@@ -39,6 +39,7 @@ describe('News in the app (e2e)', () => {
       category: topic,
       en: { headline, excerpt: `${headline} in short`, body: options.body ?? `<p>${headline} body text.</p>` },
       ar: { headline: `${headline} بالعربية`, body: '<p>نص الخبر.</p>' },
+      ...options.extra,
     });
     const id = created.body.data.id as string;
     if (options.publish !== false) {
@@ -121,6 +122,66 @@ describe('News in the app (e2e)', () => {
       clock.advance(4 * 86_400_000);
       const later = await registerAccount(app, { name: 'Later Reader' });
       expect(ids(await appRequest(app, 'get', '/news', later))).toEqual([technical, market, featured]);
+    });
+
+    it('leads FOR_YOU with featured, then articles for the member\x27s interests, then the rest', async () => {
+      const featured = await publish('REGULATORY', 'Rigging rules', { feature: 3 });
+      const forDesign = await publish('TECHNICAL', 'Stage design trends', { extra: { interests: ['DESIGN'] } });
+      const forMarketing = await publish('MARKET', 'Campaign season', { extra: { interests: ['MARKETING'] } });
+      const untagged = await publish('MARKET', 'Ticket sales rise');
+      await admin.query(
+        `INSERT INTO app.profiles (user_id, interests, updated_at)
+         VALUES ($1, ARRAY['DESIGN', 'PRODUCTION']::app.profile_interest[], now())
+         ON CONFLICT (user_id) DO UPDATE SET interests = EXCLUDED.interests`,
+        [member.userId],
+      );
+
+      expect(ids(await appRequest(app, 'get', '/news', member))).toEqual([featured, forDesign, untagged, forMarketing]);
+      // Paging walks across the groups.
+      const pages = [];
+      for (const page of [1, 2, 3, 4, 5]) {
+        pages.push(...ids(await appRequest(app, 'get', `/news?page=${page}&page_size=1`, member)));
+      }
+      expect(pages).toEqual([featured, forDesign, untagged, forMarketing]);
+      const page2 = await appRequest(app, 'get', '/news?page=2&page_size=2', member);
+      expect({ ids: ids(page2), more: page2.body.meta.has_more }).toEqual({
+        ids: [untagged, forMarketing],
+        more: false,
+      });
+
+      // No interests (another member, or a Company Account): featured, then newest first.
+      for (const reader of [other, company]) {
+        expect(ids(await appRequest(app, 'get', '/news', reader))).toEqual([
+          featured,
+          untagged,
+          forMarketing,
+          forDesign,
+        ]);
+      }
+      // LATEST ignores interests.
+      expect(ids(await appRequest(app, 'get', '/news?order=LATEST', member))).toEqual([
+        untagged,
+        forMarketing,
+        forDesign,
+        featured,
+      ]);
+    });
+
+    it('shows the source and labels the desk set, in the request language', async () => {
+      const id = await publish('REGULATORY', 'Rigging rules', {
+        extra: {
+          source: { en: 'General Entertainment Authority', ar: 'الهيئة العامة للترفيه' },
+          labels: [
+            { en: 'Mandatory', ar: 'إلزامي' },
+            { en: 'New', ar: 'جديد' },
+          ],
+        },
+      });
+      const en = await appRequest(app, 'get', `/news/${id}`, member);
+      expectApp(en, 'get', '/news/{id}', 200);
+      expect(en.body.data).toMatchObject({ source: 'General Entertainment Authority', labels: ['Mandatory', 'New'] });
+      const ar = await appRequest(app, 'get', '/news', member, 'ar');
+      expect(ar.body.data[0]).toMatchObject({ source: 'الهيئة العامة للترفيه', labels: ['إلزامي', 'جديد'] });
     });
 
     it('answers in the request language', async () => {

@@ -7,6 +7,12 @@ export interface TranslationText {
   body: string | null;
 }
 
+/** Text the editor writes in both languages (`source`, each label); empty is `null` or "". */
+export interface PairText {
+  en?: string | null;
+  ar?: string | null;
+}
+
 /** contracts/admin `ArticleCheck`. */
 export interface ArticleCheck {
   key: 'BOTH_LANGUAGES' | 'COVER_ALT' | 'LINKED_ITEM_LIVE' | 'HEADLINE_LENGTH' | 'PARTNER_MENTION';
@@ -20,12 +26,14 @@ export const HEADLINE_WARN_AFTER = 70;
 /**
  * What is missing for an article to be published, keyed by request field (`en.headline`,
  * `ar.body`, …): a headline and a body with visible text in both languages, and a topic.
- * Empty when it is complete.
+ * A `source` or a label written in one language needs the other too. Empty when complete.
  */
 export function translationGaps(article: {
   topic: string | null;
   en: TranslationText;
   ar: TranslationText;
+  source?: PairText | null;
+  labels?: PairText[];
 }): Record<string, string[]> {
   const gaps: Record<string, string[]> = {};
   for (const lang of ['en', 'ar'] as const) {
@@ -33,7 +41,18 @@ export function translationGaps(article: {
     if (!articlePlainText(article[lang].body ?? '')) gaps[`${lang}.body`] = ['is required to publish'];
   }
   if (!article.topic) gaps['category'] = ['is required to publish'];
+  pairGaps(gaps, 'source', article.source);
+  (article.labels ?? []).forEach((label, i) => pairGaps(gaps, `labels.${i}`, label, true));
   return gaps;
+}
+
+/** Both languages or neither; a label (`always`) needs both. */
+function pairGaps(gaps: Record<string, string[]>, key: string, pair: PairText | null | undefined, always = false) {
+  const en = !!pair?.en?.trim();
+  const ar = !!pair?.ar?.trim();
+  if (!always && !en && !ar) return;
+  if (!en) gaps[`${key}.en`] = ['is required to publish'];
+  if (!ar) gaps[`${key}.ar`] = ['is required to publish'];
 }
 
 /** The checks that need nothing outside the article: languages, cover text, headline length. */
@@ -41,6 +60,8 @@ export function intrinsicChecks(article: {
   topic: string | null;
   en: TranslationText;
   ar: TranslationText;
+  source?: PairText | null;
+  labels?: PairText[];
   hasCover: boolean;
   coverAlt: { en: string | null; ar: string | null };
 }): ArticleCheck[] {

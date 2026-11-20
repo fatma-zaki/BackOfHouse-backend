@@ -7098,6 +7098,27 @@ components:
               format: uuid
             name:
               type: string
+        source:
+          description: >-
+            Who the article credits, in both languages (BQ-91b). Null or empty shows "Back of House". Up to 80
+            characters; one language needs the other before publishing.
+          oneOf:
+            - $ref: '#/components/schemas/LocalizedText'
+            - type: 'null'
+        labels:
+          description: Up to five short tags shown on the card, each in both languages (up to 30 characters).
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/LocalizedText'
+        interests:
+          description: >-
+            Member interests the article is for (BQ-91c). In the app's FOR_YOU order, members who share one see
+            it right after the featured articles.
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ProfileInterest'
         reads:
           type: integer
         updated_at:
@@ -7134,6 +7155,37 @@ components:
                   type: string
                   format: uuid
             - type: 'null'
+        source:
+          description: >-
+            Who the article credits, in both languages (BQ-91b). Null or empty shows "Back of House". Up to 80
+            characters; one language needs the other before publishing.
+          oneOf:
+            - $ref: '#/components/schemas/LocalizedText'
+            - type: 'null'
+        labels:
+          description: Up to five short tags shown on the card, each in both languages (up to 30 characters).
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/LocalizedText'
+        interests:
+          description: >-
+            Member interests the article is for (BQ-91c). In the app's FOR_YOU order, members who share one see
+            it right after the featured articles.
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ProfileInterest'
+    ProfileInterest:
+      type: string
+      description: The interests a member picks on their profile (contracts/app `ProfileInterest`).
+      enum:
+        - TECH_INNOVATION
+        - MARKETING
+        - DESIGN
+        - BUSINESS
+        - NETWORKING
+        - PRODUCTION
     ArticleCheck:
       type: object
       properties:

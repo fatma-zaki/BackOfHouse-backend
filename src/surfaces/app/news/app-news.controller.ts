@@ -54,7 +54,7 @@ function presentArticle(a: NewsArticleView) {
     image_url: null,
     image_caption: a.imageCaption,
     breaking: a.breaking,
-    labels: [] as string[],
+    labels: a.labels,
     // Decided (BQ-91a, 2026-11-18): the editor's name is for the back office only; the app
     // shows articles as from Back of House.
     author: null,
