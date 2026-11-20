@@ -170,6 +170,11 @@ export class TaxonomyService {
     return rows.map((r) => ({ id: r.id, name: { en: r.nameEn, ar: r.nameAr }, active: r.isActive }));
   }
 
+  /** News topic code → label in the request language, including staff label edits (contracts/app `Article.category`). */
+  async newsTopicLabels(locale: Locale): Promise<Map<string, string>> {
+    return new Map((await this.read(this.prisma, 'news_topics')).map((v) => [v.id, pickText(v.name, locale)]));
+  }
+
   private requireKind(kind: string): TaxonomyKind {
     if (!isTaxonomyKind(kind)) throw new NotFoundError(`Unknown taxonomy kind "${kind}"`);
     return kind;

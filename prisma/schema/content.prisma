@@ -1,0 +1,117 @@
+// Module: content (nest-module-map.md §4.10). Editorial news from the Back of House desk
+// (contracts/admin /articles*, contracts/app /news*). Members never post articles; they
+// like, save and comment. Bodies are stored as sanitized HTML (security-and-audit.md §6).
+
+enum ArticleStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  UNPUBLISHED
+
+  @@map("article_status")
+  @@schema("app")
+}
+
+/// What an article links to (contracts/admin `ArticleAdmin.link`).
+enum ArticleLinkType {
+  OPPORTUNITY
+  EVENT
+  COMPANY
+
+  @@map("article_link_type")
+  @@schema("app")
+}
+
+/// One editorial article, written in English and Arabic. Both languages are complete
+/// before it is scheduled or published (422 TRANSLATION_MISSING). `topic` is a
+/// `news_topics` code (contracts/app `NewsTopic`); the admin contract calls it `category`.
+model Article {
+  id                      String           @id @default(uuid(7)) @db.Uuid
+  /// Latin headline plus the id prefix; fixed once the article is first published.
+  slug                    String
+  topic                   String?
+  coverAltEn              String?          @map("cover_alt_en")
+  coverAltAr              String?          @map("cover_alt_ar")
+  headlineEn              String?          @map("headline_en")
+  excerptEn               String?          @map("excerpt_en")
+  /// Sanitized HTML (content/domain/article-html.ts).
+  bodyEn                  String?          @map("body_en")
+  ctaLabelEn              String?          @map("cta_label_en")
+  headlineAr              String?          @map("headline_ar")
+  excerptAr               String?          @map("excerpt_ar")
+  bodyAr                  String?          @map("body_ar")
+  ctaLabelAr              String?          @map("cta_label_ar")
+  linkType                ArticleLinkType? @map("link_type")
+  linkId                  String?          @map("link_id") @db.Uuid
+  status                  ArticleStatus    @default(DRAFT)
+  scheduledAt             DateTime?        @map("scheduled_at") @db.Timestamptz(6)
+  publishedAt             DateTime?        @map("published_at") @db.Timestamptz(6)
+  /// Shown first ("breaking") in the app's FOR_YOU order until this time.
+  featuredUntil           DateTime?        @map("featured_until") @db.Timestamptz(6)
+  featureOnHomeDays       Int?             @map("feature_on_home_days")
+  notifyPush              Boolean          @default(false) @map("notify_push")
+  /// contracts/admin `AudienceRules`, resolved by the broadcasts lane.
+  pushAudience            Json?            @map("push_audience")
+  shareToCompanyFollowers Boolean          @default(false) @map("share_to_company_followers")
+  authorStaffId           String           @map("author_staff_id") @db.Uuid
+  reads                   Int              @default(0)
+  createdAt               DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime         @updatedAt @map("updated_at") @db.Timestamptz(6)
+  author                  StaffAccount     @relation(fields: [authorStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_articles__author_staff_id")
+  likes                   ArticleLike[]
+  saves                   ArticleSave[]
+  comments                ArticleComment[]
+
+  @@unique([slug], map: "uq_articles__slug")
+  @@index([status, publishedAt(sort: Desc)], map: "ix_articles__status_published_at")
+  @@index([status, scheduledAt], map: "ix_articles__status_scheduled_at")
+  @@map("articles")
+  @@schema("app")
+}
+
+/// An individual's like (Company Accounts only read, ENGAGEMENT_NOT_ALLOWED).
+model ArticleLike {
+  articleId String   @map("article_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_likes__article_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_likes__user_id")
+
+  @@id([articleId, userId], map: "article_likes_pkey")
+  @@index([userId], map: "ix_article_likes__user_id")
+  @@map("article_likes")
+  @@schema("app")
+}
+
+/// A saved article (any app account).
+model ArticleSave {
+  articleId String   @map("article_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_saves__article_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_saves__user_id")
+
+  @@id([articleId, userId], map: "article_saves_pkey")
+  @@index([userId, createdAt(sort: Desc)], map: "ix_article_saves__user_created_at")
+  @@map("article_saves")
+  @@schema("app")
+}
+
+/// A flat comment by an individual, 1–500 characters, with the author as they were when
+/// posting (contracts/app `ArticleComment`). Only the author deletes it.
+model ArticleComment {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  articleId      String   @map("article_id") @db.Uuid
+  authorUserId   String   @map("author_user_id") @db.Uuid
+  authorName     String   @map("author_name")
+  authorHeadline String?  @map("author_headline")
+  text           String
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  article        Article  @relation(fields: [articleId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_comments__article_id")
+  author         User     @relation(fields: [authorUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_article_comments__author_user_id")
+
+  @@index([articleId, createdAt(sort: Desc)], map: "ix_article_comments__article_created_at")
+  @@index([authorUserId], map: "ix_article_comments__author_user_id")
+  @@map("article_comments")
+  @@schema("app")
+}

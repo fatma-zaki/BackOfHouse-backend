@@ -153,7 +153,8 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 | `profile.visibility_changed` | profiles | SRC | `profile_id`, `is_searchable` | §5.1 privacy | async |
 | `media.ready` | media | owning module (e.g. ORG attach) | `asset_id`, `purpose` | Upload pipeline | async |
 | `media.rejected` | media | ORG / PRJ (detach), NTF (uploader) | `asset_id`, `reason_code` | §18 malware and type | async |
-| `content.published` | content | SRC (sitemap) | `content_item_id`, `type`, `slug` | SEO | async |
+| `article.published` | content | broadcasts lane (push to `push_audience` when `notify_push`), NTF (company followers when `share_to_company_followers`), SRC (sitemap) | `article_id`, `slug`, `topic`, `notify_push`, `push_audience`, `share_to_company_followers`, `link_type`, `link_id` | Replaces `content.published` for news (added 2026-11-16). Emitted when published now and by the `article.publish` job. No consumer yet | async |
+| `article.unpublished` | content | SRC (sitemap) | `article_id` | Added 2026-11-16. No consumer yet | async |
 | `abuse_report.created` | moderation | ADM, NTF (moderators, urgent types) | `report_id`, `target_type`, `category`, `sla_due_at` | §23 24 h target | async |
 | `abuse_report.resolved` | moderation | NTF (reporter) | `report_id`, `outcome` | | async |
 | `appeal.submitted` | moderation | ADM | `appeal_id`, `subject_type` | §8.6 | async |

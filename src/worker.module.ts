@@ -12,6 +12,7 @@ import { NotificationsModule } from './modules/notifications';
 import { BackofficeModule } from './modules/backoffice';
 import { CompaniesModule } from './modules/companies';
 import { ProfilesModule } from './modules/profiles';
+import { ContentModule } from './modules/content';
 
 /**
  * The `worker` process (ADR-022): outbox dispatcher and scheduled jobs, no HTTP.
@@ -35,6 +36,8 @@ import { ProfilesModule } from './modules/profiles';
     // Owning modules carry out moderation removals (@OnDomainEvent).
     CompaniesModule,
     ProfilesModule,
+    // Publishes scheduled articles (article.publish).
+    ContentModule,
   ],
 })
 export class WorkerModule {}
