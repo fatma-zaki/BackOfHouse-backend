@@ -4,6 +4,7 @@ export {
   ModerationService,
   REPORT_REASONS,
   TARGET_TYPES,
+  CASE_TARGET_TYPES,
   type ModerationCaseView,
   type ModerationTargetType,
 } from './services/moderation.service';

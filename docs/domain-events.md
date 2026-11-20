@@ -212,15 +212,20 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 | `event.feedback.submitted` | events | ANL | `event_id`, `rating` | Satisfaction |
 | `event.certificate.issued` | events | NTF | `registration_id`, `document_id` | §9.2 |
 
-### 4.4 Talent & opportunities (Phase 3)
+### 4.4 Talent & opportunities (Phase 3; opportunities built in Phase 5)
 
 | Event | Producer | Consumers | Payload | Purpose |
 |---|---|---|---|---|
 | `experience.confirmation_requested` | talent | NTF (organization confirmers) | `experience_id`, `organization_id`, `user_id` | §10.1 |
 | `experience.confirmed` | talent | ENG (TRUST employer 25 / org confirmation 20), NTF, SRC | `experience_id`, `organization_id`, `user_id` | §8.2 |
 | `experience.declined` | talent | NTF | `experience_id` | |
-| `opportunity.published` | opportunities | SRC, ENG (org RECENT_ACTIVITY/CONTRIBUTION), ANL | `opportunity_id`, `organization_id`, `type`, `audience` | Rules §5, §6 |
-| `opportunity.paused` / `opportunity.closed` | opportunities | NTF (applicants), ANL (`opportunity_closed`: result), SRC | `opportunity_id`, `outcome` | §10.3, §16 |
+| `opportunity.submitted` | opportunities | NTF (review bell, `staff.opportunity_submitted`) | `opportunity_id`, `company_id`, `type`, `revision`, `due_at` | Built 2026-11-20 (5A): a listing or the revision of a live one waits for review |
+| `opportunity.auto_flagged` | opportunities | MOD (opens or joins the listing's case, `source` AUTO_FILTER) | `opportunity_id`, `owner_user_id`, `title`, `preview`, `reasons` (SCAM, SPAM) | Built (5A): contact details or fee language found on submit; moderation keeps the title and text because it cannot read listings (same layer) |
+| `opportunity.published` | opportunities | NTF (Company Account, `opportunity.approved`); later SRC, ENG, ANL, company followers (BQ-92 b) | `opportunity_id`, `company_id`, `owner_user_id`, `type`, `title`, `revision`, `message` | Built (5A): approval of a listing, or of a revision (the live content changed) |
+| `opportunity.changes_requested` / `opportunity.rejected` | opportunities | NTF (Company Account) | as `opportunity.published`; `message` is from Back of House | Built (5A) |
+| `opportunity.closed` | opportunities | NTF (Company Account when `closed_by` is STAFF or SYSTEM); later applicants (5B), ANL | `opportunity_id`, `company_id`, `owner_user_id`, `title`, `type`, `closed_by` (COMPANY, STAFF, SYSTEM), `message` | Built (5A): closed by the company, by staff (`moderation.act`, or a moderation removal) or by the `opportunity.autoclose` job |
+| `opportunity.review_overdue` | opportunities (`opportunity.sla` job) | NTF (review bell, `staff.opportunity_overdue`) | `opportunity_id`, `company_id`, `type`, `revision`, `due_at` | Built (5A): once per submission |
+| `opportunity.paused` | opportunities | NTF (applicants), SRC | `opportunity_id` | Not built: nothing pauses a listing yet |
 | `opportunity.match_found` ⏸ | opportunities (matching) | NTF | `opportunity_id`, `user_id`, `score` | Deferred (rules §9) |
 | `application.submitted` | opportunities | NTF (publishing company), ANL (`opportunity_applied`) | `application_id`, `opportunity_id`, `applicant_user_id` | §16, rules §8 |
 | `application.status_changed` | opportunities | NTF (applicant) | `application_id`, `from`, `to` (any company-chosen status, flexible, BQ-67) | Rules §8 |

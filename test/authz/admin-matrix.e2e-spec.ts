@@ -123,6 +123,13 @@ describe('admin permission matrix (e2e)', () => {
         'POST /articles/{id}/schedule',
         'POST /articles/{id}/unpublish',
         'POST /articles/{id}/unschedule',
+        'GET /opportunities',
+        'GET /opportunities/{id}',
+        'POST /opportunities/{id}/approve',
+        'POST /opportunities/{id}/request-changes',
+        'POST /opportunities/{id}/reject',
+        'POST /opportunities/{id}/close',
+        'GET /companies/{id}/opportunities',
       ].sort(),
     );
   });

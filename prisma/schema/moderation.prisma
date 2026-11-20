@@ -7,6 +7,7 @@ enum ModerationTargetType {
   COMPANY
   COMPANY_PROJECT
   PROFILE_PROJECT
+  OPPORTUNITY
 
   @@map("moderation_target_type")
   @@schema("app")
@@ -46,6 +47,10 @@ model ModerationCase {
   targetId          String                @map("target_id") @db.Uuid
   /// The account answerable for the target (the member, or the Company Account).
   ownerUserId       String?               @map("owner_user_id") @db.Uuid
+  /// For targets moderation cannot read itself (OPPORTUNITY, a module on the same layer):
+  /// the title and text as they were when the case opened.
+  targetTitle       String?               @map("target_title")
+  targetPreview     String?               @map("target_preview")
   source            ModerationSource
   status            ModerationStatus      @default(OPEN)
   resolution        ModerationResolution?

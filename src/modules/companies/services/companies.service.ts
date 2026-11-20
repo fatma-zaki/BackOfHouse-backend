@@ -4,7 +4,7 @@ import { normalizeArabic } from '../../../common/text';
 import { PrismaService } from '../../../platform/database';
 import { AuthTokens, MemberAuthService } from '../../identity';
 import { companySlug } from '../domain/slug';
-import { COMPANY_PERMISSIONS } from '../policies/company-actor.policy';
+import { COMPANY_PERMISSIONS, companyCapabilities } from '../policies/company-actor.policy';
 
 /** contracts/app `CompanyMembership`. */
 export interface CompanyMembershipView {
@@ -14,11 +14,25 @@ export interface CompanyMembershipView {
     company_type: string;
     logo_url: string | null;
     is_verified: boolean;
-    /** Who may create supplier requests is decided with Phase 5; none until then. */
+    /** contracts/app `CompanyCapability` (BQ-83: verified companies create supplier requests). */
     capabilities: string[];
   };
   role: 'OWNER';
   permissions: string[];
+}
+
+/** A company as listings show it (contracts/app and admin `CompanySummary`). */
+export interface CompanyCard {
+  id: string;
+  slug: string;
+  name: string;
+  companyType: string;
+  city: string;
+  isVerified: boolean;
+  capabilities: string[];
+  accountUserId: string;
+  /** Its Company Account is active, so it is listed and its listings are visible. */
+  active: boolean;
 }
 
 /**
@@ -104,6 +118,45 @@ export class CompaniesService {
       : null;
   }
 
+  /** Listing cards for these companies, by id (missing ids are left out). */
+  async cards(companyIds: string[]): Promise<Map<string, CompanyCard>> {
+    const ids = [...new Set(companyIds)].filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+    if (ids.length === 0) return new Map();
+    const rows = await this.prisma.company.findMany({
+      where: { id: { in: ids } },
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        companyType: true,
+        city: true,
+        verifiedAt: true,
+        accountUserId: true,
+        accountUser: { select: { status: true } },
+      },
+    });
+    return new Map(
+      rows.map((c) => [
+        c.id,
+        {
+          id: c.id,
+          slug: c.slug,
+          name: c.name,
+          companyType: c.companyType,
+          city: c.city,
+          isVerified: c.verifiedAt !== null,
+          capabilities: companyCapabilities(c.verifiedAt !== null),
+          accountUserId: c.accountUserId,
+          active: c.accountUser.status === 'ACTIVE',
+        },
+      ]),
+    );
+  }
+
+  async card(companyId: string): Promise<CompanyCard | null> {
+    return (await this.cards([companyId])).get(companyId) ?? null;
+  }
+
   /** Whether a company with this id exists (any status). */
   async exists(companyId: string): Promise<boolean> {
     if (!/^[0-9a-f-]{36}$/i.test(companyId)) return false;
@@ -125,7 +178,7 @@ export class CompaniesService {
         company_type: company.companyType,
         logo_url: null,
         is_verified: company.verifiedAt !== null,
-        capabilities: [],
+        capabilities: companyCapabilities(company.verifiedAt !== null),
       },
       role: 'OWNER',
       permissions: [...COMPANY_PERMISSIONS],

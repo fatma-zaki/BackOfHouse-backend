@@ -2379,6 +2379,8 @@ export interface components {
                 id?: string;
                 name?: string;
             };
+            /** @description The decision was on an update of a live listing. */
+            revision?: boolean;
             /** Format: date-time */
             created_at?: string;
         };
@@ -2393,6 +2395,25 @@ export interface components {
             history?: components["schemas"]["ReviewDecision"][];
             applications_count?: number;
             views?: number;
+            /** @description The one-line card text the company wrote (contracts/app `Opportunity.summary`). */
+            summary?: string;
+            /** @description SUPPLIER_REQUEST only, the company types invited to respond (contracts/app `CompanyType`). */
+            supplier_types?: string[];
+            /** @description The listing is live and an update of it waits for review. The queue labels it "Revision"; approving puts `revision` live, and the fields above stay the live version until then. */
+            is_revision?: boolean;
+            /** @description The pending update of a live listing, with what it changes against the live version. */
+            revision?: {
+                /** @enum {string} */
+                status: "DRAFT" | "IN_REVIEW" | "CHANGES_REQUESTED";
+                changes: {
+                    /** @description The contracts/app `OpportunityInput` field name. */
+                    field: string;
+                    before?: unknown;
+                    after?: unknown;
+                }[];
+            } | null;
+            /** Format: date-time */
+            updated_at?: string;
         };
         ReviewRequest: {
             reasons?: ("PAY_UNCLEAR" | "SCHEDULE_INCONSISTENT" | "CONTACT_DETAILS_IN_TEXT" | "WRONG_CATEGORY" | "MISSING_WORKING_HOURS" | "FEE_REQUESTED" | "MISLEADING" | "OTHER")[];

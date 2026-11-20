@@ -13,6 +13,7 @@ import { BackofficeModule } from './modules/backoffice';
 import { CompaniesModule } from './modules/companies';
 import { ProfilesModule } from './modules/profiles';
 import { ContentModule } from './modules/content';
+import { OpportunitiesModule } from './modules/opportunities';
 
 /**
  * The `worker` process (ADR-022): outbox dispatcher and scheduled jobs, no HTTP.
@@ -38,6 +39,7 @@ import { ContentModule } from './modules/content';
     ProfilesModule,
     // Publishes scheduled articles (article.publish).
     ContentModule,
+    OpportunitiesModule,
   ],
 })
 export class WorkerModule {}

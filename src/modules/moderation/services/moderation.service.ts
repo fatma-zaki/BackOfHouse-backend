@@ -13,8 +13,13 @@ import { AccountStatusService, MembersService } from '../../identity';
 import { ProfilesService } from '../../profiles';
 
 export const REPORT_REASONS = ['SPAM', 'SCAM', 'FAKE_PROFILE', 'INAPPROPRIATE', 'HARASSMENT', 'OTHER'] as const;
+/** What members can report. */
 export const TARGET_TYPES = ['USER', 'COMPANY', 'COMPANY_PROJECT', 'PROFILE_PROJECT'] as const;
-export type ModerationTargetType = (typeof TARGET_TYPES)[number];
+/** What a case can be about: reportable targets, and listings flagged by the automated checks (Phase 5). */
+export const CASE_TARGET_TYPES = [...TARGET_TYPES, 'OPPORTUNITY'] as const;
+export type ModerationTargetType = (typeof CASE_TARGET_TYPES)[number];
+/** Targets whose content can be removed by their owning module on `moderation.case.resolved`. */
+const REMOVABLE: readonly ModerationTargetType[] = ['COMPANY_PROJECT', 'PROFILE_PROJECT', 'OPPORTUNITY'];
 
 const reportSchema = z
   .object({
@@ -33,7 +38,7 @@ const listSchema = z.object({
     .regex(/^-?created_at$/, 'must be created_at, optionally prefixed with -')
     .optional(),
   status: z.enum(['OPEN', 'AUTO_FLAGGED', 'RESOLVED']).optional(),
-  target_type: z.enum(TARGET_TYPES).optional(),
+  target_type: z.enum(CASE_TARGET_TYPES).optional(),
   reason: z.enum(REPORT_REASONS).optional(),
 });
 
@@ -114,6 +119,37 @@ export class ModerationService {
     return { caseId };
   }
 
+  /**
+   * The automated checks flagged a listing on submit (`opportunity.auto_flagged`). Moderation
+   * cannot read listings (same layer, module-dependency-map.md), so the case keeps the title
+   * and text as they were. One open case per listing; the reasons go to its audit entry.
+   */
+  async flagOpportunity(snapshot: {
+    opportunityId: string;
+    ownerUserId: string;
+    title: string;
+    preview: string;
+    reasons: (typeof REPORT_REASONS)[number][];
+  }): Promise<string> {
+    return this.transactions.run(async (tx) => {
+      const id = await this.openCase(
+        tx,
+        'OPPORTUNITY',
+        snapshot.opportunityId,
+        snapshot.ownerUserId,
+        'AUTO_FILTER',
+        snapshot.reasons.join(','),
+        { title: snapshot.title, preview: snapshot.preview },
+      );
+      // The latest wording is what staff review.
+      await tx.moderationCase.update({
+        where: { id },
+        data: { targetTitle: snapshot.title, targetPreview: snapshot.preview },
+      });
+      return id;
+    });
+  }
+
   /** The automatic filter flags a target (Phase 5 opportunity checks feed this). */
   async autoFlag(
     targetType: ModerationTargetType,
@@ -160,8 +196,10 @@ export class ModerationService {
     const data = parseInput(actionSchema, input);
     const found = await this.find(caseId);
     if (found.status !== 'OPEN') throw this.closed();
-    if (data.action === 'REMOVE_CONTENT' && !['COMPANY_PROJECT', 'PROFILE_PROJECT'].includes(found.targetType)) {
-      throw new ValidationFailedError({ action: ['only projects can be removed; suspend the account instead'] });
+    if (data.action === 'REMOVE_CONTENT' && !REMOVABLE.includes(found.targetType)) {
+      throw new ValidationFailedError({
+        action: ['only projects and listings can be removed; suspend the account instead'],
+      });
     }
     if (data.action === 'SUSPEND_ACCOUNT') {
       if (!staffHas(staff, 'accounts.suspend')) throw new ForbiddenError('Suspending needs accounts.suspend');
@@ -222,6 +260,9 @@ export class ModerationService {
         return this.companies.describeProject(id);
       case 'PROFILE_PROJECT':
         return this.profiles.describeProject(id);
+      case 'OPPORTUNITY':
+        // Kept on the case itself (flagOpportunity).
+        return null;
     }
   }
 
@@ -233,6 +274,7 @@ export class ModerationService {
     ownerUserId: string,
     source: 'MEMBERS' | 'AUTO_FILTER',
     autoReason?: string,
+    snapshot?: { title: string; preview: string },
   ): Promise<string> {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`moderation:${targetType}:${targetId}`}, 0))`;
     const open = await tx.moderationCase.findFirst({
@@ -240,7 +282,16 @@ export class ModerationService {
       select: { id: true },
     });
     if (open) return open.id;
-    const created = await tx.moderationCase.create({ data: { targetType, targetId, ownerUserId, source } });
+    const created = await tx.moderationCase.create({
+      data: {
+        targetType,
+        targetId,
+        ownerUserId,
+        source,
+        targetTitle: snapshot?.title ?? null,
+        targetPreview: snapshot?.preview ?? null,
+      },
+    });
     await this.audit.record({
       actor: SYSTEM_ACTOR,
       action: 'moderation.case.open',
@@ -264,7 +315,9 @@ export class ModerationService {
 
   private async view(row: CaseRow): Promise<ModerationCaseView> {
     const [target, owner, history] = await Promise.all([
-      this.describe(row.targetType, row.targetId),
+      row.targetType === 'OPPORTUNITY'
+        ? { title: row.targetTitle ?? '(listing)', ownerUserId: row.ownerUserId, preview: row.targetPreview }
+        : this.describe(row.targetType, row.targetId),
       row.ownerUserId ? this.members.contact(row.ownerUserId) : null,
       row.ownerUserId
         ? this.prisma.moderationCase.groupBy({

@@ -27,6 +27,26 @@ export const STAFF_NOTIFICATION_CATALOG: readonly StaffCatalogEntry[] = [
       ar: { title: 'طلب توثيق جديد', body: 'أرسل أحد الأفراد مستندات للمراجعة والتوثيق.' },
     },
   },
+  {
+    // Fed by `opportunity.submitted` (a new listing, or an update of a live one, waits for review).
+    type: 'staff.opportunity_submitted',
+    category: 'OPPORTUNITY_REVIEW',
+    permission: 'opportunities.review',
+    templates: {
+      en: { title: 'New listing to review', body: 'A company sent a listing for review.' },
+      ar: { title: 'إعلان جديد للمراجعة', body: 'أرسلت إحدى الشركات إعلانًا للمراجعة.' },
+    },
+  },
+  {
+    // Fed by `opportunity.review_overdue` (the opportunity.sla job, once per submission).
+    type: 'staff.opportunity_overdue',
+    category: 'OPPORTUNITY_REVIEW',
+    permission: 'opportunities.review',
+    templates: {
+      en: { title: 'Listing review overdue', body: 'A listing has waited longer than the review deadline.' },
+      ar: { title: 'تأخرت مراجعة إعلان', body: 'انتظر أحد الإعلانات أكثر من المهلة المحددة للمراجعة.' },
+    },
+  },
 ];
 
 const BY_TYPE = new Map(STAFF_NOTIFICATION_CATALOG.map((entry) => [entry.type, entry]));

@@ -3,6 +3,7 @@ import { CompaniesModule } from '../../modules/companies';
 import { ContentModule } from '../../modules/content';
 import { IdentityModule } from '../../modules/identity';
 import { NotificationsModule } from '../../modules/notifications';
+import { OpportunitiesModule } from '../../modules/opportunities';
 import { VerificationModule } from '../../modules/verification';
 import { ProfilesModule } from '../../modules/profiles';
 import { SettingsModule } from '../../modules/settings';
@@ -14,6 +15,10 @@ import { AppCompanyController } from './directory/app-company.controller';
 import { AppDiscoverController } from './directory/app-discover.controller';
 import { AppMeController } from './me/app-me.controller';
 import { AppNewsController } from './news/app-news.controller';
+import {
+  AppCompanyOpportunitiesController,
+  AppOpportunitiesController,
+} from './opportunities/app-opportunities.controller';
 
 /**
  * App surface (ADR-031): the Flutter app's API under /api/app/v1. Controllers,
@@ -31,6 +36,7 @@ import { AppNewsController } from './news/app-news.controller';
     VerificationModule,
     NotificationsModule,
     ContentModule,
+    OpportunitiesModule,
   ],
   controllers: [
     AppMetaController,
@@ -39,6 +45,8 @@ import { AppNewsController } from './news/app-news.controller';
     AppCompanyController,
     AppMeController,
     AppNewsController,
+    AppOpportunitiesController,
+    AppCompanyOpportunitiesController,
   ],
   providers: [AppUserAssembler],
 })
