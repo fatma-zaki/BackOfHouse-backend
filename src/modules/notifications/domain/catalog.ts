@@ -335,6 +335,55 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
     },
   },
   {
+    // Fed by `opportunity.followers_alerted`: a company the member follows published a new
+    // individual-facing listing (BQ-92 b). Optional: members can turn it off.
+    type: 'opportunity.new_from_followed',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: false,
+    respectsQuietHours: true,
+    variables: ['company_name', 'title'],
+    templates: {
+      en: { title: 'New from {{company_name}}', body: '{{company_name}} posted {{title}}.' },
+      ar: { title: 'جديد من {{company_name}}', body: 'نشرت {{company_name}} فرصة جديدة: {{title}}.' },
+    },
+  },
+  {
+    // Fed by `supplier_response.submitted`: the buyer's Company Account hears of each response.
+    type: 'supplier.response_received',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['request_title', 'responder_name'],
+    templates: {
+      en: {
+        title: 'New response to {{request_title}}',
+        body: '{{responder_name}} responded to your supplier request.',
+      },
+      ar: { title: 'رد جديد على {{request_title}}', body: 'ردت {{responder_name}} على طلب التوريد الخاص بك.' },
+    },
+  },
+  {
+    // Fed by `supplier_response.status_changed`: the responder hears of every buyer move.
+    type: 'supplier.response_status_changed',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['request_title', 'buyer_name', 'status'],
+    templates: {
+      en: {
+        title: 'Update on your response',
+        body: '{{buyer_name}} updated your response to {{request_title}}: {{status}}.',
+      },
+      ar: {
+        title: 'تحديث على ردك',
+        body: 'حدّثت {{buyer_name}} حالة ردك على {{request_title}}: {{status}}.',
+      },
+    },
+  },
+  {
     // Fed by `application.status_changed`: every official status change, SUBMITTED and
     // WITHDRAWN included (docs/app/README.md section 4). The app words these itself from
     // `application_update`; this text is the push and the fallback.

@@ -51,11 +51,12 @@ export class AppCompanyController {
   async stats(@CurrentActor() actor: Actor | undefined) {
     const stats = await this.workspace.stats(actor);
     const companyId = actor!.kind === 'company' ? actor!.companyId : '';
-    const [live, applicants] = await Promise.all([
+    const [live, applicants, supplierInvites] = await Promise.all([
       this.opportunities.liveCounts([companyId]),
       this.applications.companyCounts(companyId),
+      this.opportunities.supplierInvites(companyId),
     ]);
-    return presentStats({ ...stats, ...applicants, liveListings: [...live.values()][0] ?? 0 });
+    return presentStats({ ...stats, ...applicants, supplierInvites, liveListings: [...live.values()][0] ?? 0 });
   }
 
   @Get('projects')

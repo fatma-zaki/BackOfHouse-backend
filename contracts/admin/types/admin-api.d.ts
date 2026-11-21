@@ -2457,6 +2457,11 @@ export interface components {
             projects?: components["schemas"]["PortfolioItem"][];
             /** @enum {string} */
             status: "NEW" | "SHORTLISTED" | "DECLINED" | "AWARDED" | "HIDDEN";
+            /**
+             * @description The status as the companies see it (REVIEWED reads as NEW in `status`). Prices are not shown to staff; only the buyer and the responder see them.
+             * @enum {string}
+             */
+            stage?: "SUBMITTED" | "REVIEWED" | "SHORTLISTED" | "SELECTED" | "REJECTED";
             replied_in_hours?: number | null;
             /** Format: date-time */
             created_at?: string;

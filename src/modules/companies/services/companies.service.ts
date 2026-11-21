@@ -5,6 +5,7 @@ import { PrismaService } from '../../../platform/database';
 import { AuthTokens, MemberAuthService } from '../../identity';
 import { companySlug } from '../domain/slug';
 import { COMPANY_PERMISSIONS, companyCapabilities } from '../policies/company-actor.policy';
+import { CompanyProjectView, projectView } from './company-views';
 
 /** contracts/app `CompanyMembership`. */
 export interface CompanyMembershipView {
@@ -151,6 +152,28 @@ export class CompaniesService {
         },
       ]),
     );
+  }
+
+  /**
+   * The company's own projects among `ids`, in the order given (evidence on a supplier
+   * response). Ids of another company's projects are left out; the caller compares counts.
+   */
+  async ownProjects(companyId: string, ids: readonly string[]): Promise<CompanyProjectView[]> {
+    const valid = ids.filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+    if (valid.length === 0) return [];
+    const rows = await this.prisma.companyProject.findMany({ where: { companyId, id: { in: valid } } });
+    const byId = new Map(rows.map((r) => [r.id, projectView(r)]));
+    return valid.map((id) => byId.get(id)).filter((p): p is CompanyProjectView => p !== undefined);
+  }
+
+  /** Members following the company whose accounts are active (for "new listing" alerts). */
+  async followerIds(companyId: string): Promise<string[]> {
+    const rows = await this.prisma.companyFollow.findMany({
+      where: { companyId, user: { status: 'ACTIVE' } },
+      select: { userId: true },
+      orderBy: { createdAt: 'asc' },
+    });
+    return rows.map((r) => r.userId);
   }
 
   async card(companyId: string): Promise<CompanyCard | null> {

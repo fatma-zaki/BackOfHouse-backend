@@ -10,10 +10,11 @@ import { ApplicationsAdminService } from './services/applications-admin.service'
 import { ApplicationsService } from './services/applications.service';
 import { OpportunitiesService } from './services/opportunities.service';
 import { OpportunityReviewService } from './services/opportunity-review.service';
+import { SupplierResponsesService } from './services/supplier-responses.service';
 
 /**
  * Opportunities (nest-module-map.md §4.22, layer L6): listings, their review and revisions,
- * and applications. Depends on companies (cards, verification), settings (review SLA, check
+ * applications, and supplier responses. Depends on companies (cards, verification), settings (review SLA, check
  * switches), profiles (what an applicant picks, contact sharing) and verification (the
  * applicant's verified badge).
  * Jobs: `opportunity.autoclose` closes listings past `closes_at`; `opportunity.sla`
@@ -26,9 +27,16 @@ import { OpportunityReviewService } from './services/opportunity-review.service'
     OpportunityReviewService,
     ApplicationsService,
     ApplicationsAdminService,
+    SupplierResponsesService,
     OpportunityModerationHandler,
   ],
-  exports: [OpportunitiesService, OpportunityReviewService, ApplicationsService, ApplicationsAdminService],
+  exports: [
+    OpportunitiesService,
+    OpportunityReviewService,
+    ApplicationsService,
+    ApplicationsAdminService,
+    SupplierResponsesService,
+  ],
 })
 export class OpportunitiesModule implements OnModuleInit {
   private readonly logger = new Logger(OpportunitiesModule.name);

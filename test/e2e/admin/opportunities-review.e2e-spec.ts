@@ -125,6 +125,41 @@ describe('Opportunity review in the back office (e2e)', () => {
     expect(bell.rows.map((r) => r.type)).toContain('staff.opportunity_submitted');
   });
 
+  it("tells the company's followers about a new listing, but not about revisions or supplier requests", async () => {
+    expect((await appRequest(app, 'put', `/companies/${venue.companyId}/follow`, member)).status).toBe(200);
+    const id = await submitted();
+    await staff('post', `/opportunities/${id}/approve`);
+    await appRequest(app, 'post', `/company/opportunities/${id}/revision`, venue);
+    await appRequest(app, 'patch', `/company/opportunities/${id}/revision`, venue).send({
+      type: 'JOB',
+      title: 'New title',
+    });
+    await appRequest(app, 'post', `/company/opportunities/${id}/revision/submit`, venue);
+    await staff('post', `/opportunities/${id}/approve`);
+    const request_ = await submitted({
+      type: 'SUPPLIER_REQUEST',
+      ...COMPLETE,
+      supplier_types: ['SUPPLIER'],
+      work_setup: null,
+    });
+    await staff('post', `/opportunities/${request_}/approve`);
+
+    await dispatcher.dispatchOnce();
+    const sent = await admin.query<{ type: string; title: string; company: string; target_id: string }>(
+      `SELECT type, payload->>'title' AS title, payload->>'company_name' AS company, target_id
+         FROM app.notifications WHERE recipient_user_id = $1`,
+      [member.userId],
+    );
+    expect(sent.rows).toEqual([
+      { type: 'opportunity.new_from_followed', title: 'Rigging lead', company: 'Riyadh Stages', target_id: id },
+    ]);
+    const feed = await appRequest(app, 'get', '/me/notifications', member);
+    expect(feed.body.data[0]).toMatchObject({
+      title: 'New from Riyadh Stages',
+      body: 'Riyadh Stages posted Rigging lead.',
+    });
+  });
+
   it('asks for changes, takes the listing back after edits, and keeps the history', async () => {
     const id = await submitted();
     const asked = await staff('post', `/opportunities/${id}/request-changes`).send({

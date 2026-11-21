@@ -730,6 +730,15 @@ App and admin ship together (D8). Blocked by **BQ-81** (is PROJECT an opportunit
 > - **Notifications:** `application.status_changed` → the applicant, for every change incl. SUBMITTED and WITHDRAWN; `/me/notifications` fills `application_update`.
 > - **Exit tests built:** `application-status.policy.spec.ts`; `actor-bypass` (a Super admin calling `ApplicationsService.changeStatus` → FORBIDDEN); `test/e2e/app/applications.e2e-spec.ts`; `test/e2e/admin/applications.e2e-spec.ts`; `admin-matrix` extended.
 > - **Not in the contracts yet:** saved opportunities and `/home` (no paths in contracts/app); left for when they are added.
+>
+> **Progress (2026-11-21): 5C (supplier responses) built on branch `phase-5c-supplier-responses`** (stacked on 5B).
+> - **Supplier responses** (in the opportunities module): `supplier_responses`, one per responding company and request (unique index and advisory lock); message ≤ 1000, free-text `proposed_price` and `setup_time`, the responder's own company projects snapshotted.
+> - **Rules:** `domain/supplier-response.policy.ts` (SUBMITTED → REVIEWED → SHORTLISTED → SELECTED one step at a time, REJECTED from any open status, final decisions; `respondRefusal` in the contract order NOT_SUPPLIER_REQUEST, OWN_REQUEST, NOT_INVITED, CLOSED). Only the buyer moves a response (`MANAGE_OPPORTUNITIES`; the responder gets 403). Selecting needs an open request and, in one transaction, rejects every other open response and closes the request.
+> - **Prices:** `proposed_price` reaches only the buyer and the responder; other companies cannot open the response (404) and staff never see it.
+> - **App:** `/company/supplier-requests/invited` (open requests inviting the company's type, not its own), `/company/supplier-requests/{id}` (own, invited, or already answered), `/{id}/responses` (buyer), `/company/supplier-responses` (list, respond), `/{id}`, `/{id}/status`; `Opportunity.applicants` counts responses for a request; `CompanyStats.supplier_invites`.
+> - **Admin:** `GET /supplier-requests` (`suppliers.view`; OPEN live, AWARDED closed with a selected response, CLOSED otherwise; KPIs open, awarded, responses) and `GET /supplier-requests/{id}/responses` (read-only, no price; admin status names NEW/SHORTLISTED/AWARDED/DECLINED with the additive `stage` carrying the app status, `replied_in_hours`).
+> - **Notifications:** buyer on each new response (`supplier.response_received`), responder on every move (`supplier.response_status_changed`). **Followers (BQ-92 b, decided 2026-11-21):** approving a new individual-facing listing sends `opportunity.new_from_followed` to the company's active followers, batched 500 per `opportunity.followers_alerted` event.
+> - **Exit tests built:** `supplier-response.policy.spec.ts`; `test/e2e/app/suppliers.e2e-spec.ts` (journey to selection, refusals, prices, admin views); the follower case in `opportunities-review.e2e-spec.ts`; `admin-matrix` extended.
 
 
 **Domain**

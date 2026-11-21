@@ -11,6 +11,12 @@ const decided = z.object({
   title: z.string(),
   message: z.string().nullable().optional(),
 });
+const followers = z.object({
+  opportunity_id: z.string().uuid(),
+  company_name: z.string(),
+  title: z.string(),
+  follower_user_ids: z.array(z.string().uuid()),
+});
 const closed = decided.extend({ closed_by: z.enum(['COMPANY', 'STAFF', 'SYSTEM']) });
 
 /**
@@ -55,6 +61,18 @@ export class OpportunityEventsHandler {
   @OnDomainEvent('opportunity.rejected')
   async rejected(event: DomainEvent): Promise<void> {
     await this.notifyCompany(event, 'opportunity.rejected', decided.parse(event.payload));
+  }
+
+  /** A followed company's new listing (one batch of followers per event). */
+  @OnDomainEvent('opportunity.followers_alerted')
+  async followersAlerted(event: DomainEvent): Promise<void> {
+    const data = followers.parse(event.payload);
+    await this.notifications.notify(event, {
+      type: 'opportunity.new_from_followed',
+      recipientUserIds: data.follower_user_ids,
+      payload: { company_name: data.company_name, title: data.title },
+      target: { type: 'OPPORTUNITY', id: data.opportunity_id },
+    });
   }
 
   /** The company closing its own listing needs no message. */

@@ -68,18 +68,24 @@ export function applicationView(row: ApplicationRow): ApplicationView {
 }
 
 /**
- * contracts/app `Opportunity.applicants`: applications that were not withdrawn, per listing.
- * Supplier requests count responses instead (Phase 5C).
+ * contracts/app `Opportunity.applicants`, per listing: applications that were not
+ * withdrawn, or for a supplier request its responses (a listing only ever has one kind).
  */
 export async function applicationCounts(
   db: PrismaService | Tx,
   opportunityIds: string[],
 ): Promise<Map<string, number>> {
   if (opportunityIds.length === 0) return new Map();
-  const rows = await db.application.groupBy({
-    by: ['opportunityId'],
-    where: { opportunityId: { in: opportunityIds }, status: { not: 'WITHDRAWN' } },
-    _count: true,
-  });
-  return new Map(rows.map((r) => [r.opportunityId, r._count]));
+  const [applications, responses] = await Promise.all([
+    db.application.groupBy({
+      by: ['opportunityId'],
+      where: { opportunityId: { in: opportunityIds }, status: { not: 'WITHDRAWN' } },
+      _count: true,
+    }),
+    db.supplierResponse.groupBy({ by: ['requestId'], where: { requestId: { in: opportunityIds } }, _count: true }),
+  ]);
+  return new Map([
+    ...applications.map((r) => [r.opportunityId, r._count] as const),
+    ...responses.map((r) => [r.requestId, r._count] as const),
+  ]);
 }

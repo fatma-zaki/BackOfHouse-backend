@@ -28,7 +28,11 @@ const MODEL_MAP = {
   Experience: ['experiences', 'designed', 'Talent module'],
   PortfolioItem: ['company_projects (company) · profile_projects (member)', 'designed', ''],
   Connection: ['—', 'missing', 'Flutter `/professionals/{id}/connection`'],
-  SavedItem: ['article_saves (news)', 'differs', 'News saves built; saved opportunities and events come with Phases 5–6'],
+  SavedItem: [
+    'article_saves (news)',
+    'differs',
+    'News saves built; saved opportunities and events come with Phases 5–6',
+  ],
   Device: ['—', 'missing', 'FCM tokens for push (Phase 2)'],
   Company: ['organizations', 'designed', 'One Company Account per company (ADR-030)'],
   CompanyMember: [
@@ -43,13 +47,21 @@ const MODEL_MAP = {
     'built',
     'Vocabulary "opportunities" (D1); revision kept on the row while the live version stays up (P2); PROJECT is a listing type (BQ-81)',
   ],
-  ListingReview: ['opportunity_reviews', 'built', 'Decisions on a listing or its revision; automated checks on the row'],
+  ListingReview: [
+    'opportunity_reviews',
+    'built',
+    'Decisions on a listing or its revision; automated checks on the row',
+  ],
   Application: [
     'applications',
     'built',
     'Applicant, listing and picks snapshotted on apply; one non-withdrawn application per member and listing',
   ],
-  SupplierResponse: ['supplier_responses', 'designed', ''],
+  SupplierResponse: [
+    'supplier_responses',
+    'built',
+    'One per responding company and request; price shown to buyer and responder only',
+  ],
   Event: ['events', 'designed', ''],
   EventRegistration: ['event_registrations', 'designed', ''],
   CheckInScan: ['—', 'missing', 'Door scans, idempotent per pass per day'],
@@ -308,7 +320,9 @@ out('|---|---|---|---|');
 out(
   '| Opportunity status | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, PAUSED, CLOSED, ARCHIVED` | `DRAFT, IN_REVIEW, CHANGES_REQUESTED, PUBLISHED, REJECTED, CLOSED` | Built (5A): one database enum with all eight; the app shows REJECTED as CLOSED, the admin PAUSED/ARCHIVED as CLOSED |',
 );
-out('| Opportunity type `PROJECT` | present | present | Decided (BQ-81, 2026-11-20): a listing type individuals apply to |');
+out(
+  '| Opportunity type `PROJECT` | present | present | Decided (BQ-81, 2026-11-20): a listing type individuals apply to |',
+);
 out(
   '| Listing pay, hours, supplier brief | `compensation`, `duration` (free text) | `pay` (range), `working_hours`, `supplier` (budget, dates) | BQ-92 |',
 );
