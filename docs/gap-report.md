@@ -7,7 +7,7 @@
 
 An operation is **implemented** when the spec generated from code (`npm run contract:generate`) contains it.
 
-### App surface (`/api/app/v1`): 79 of 89 implemented
+### App surface (`/api/app/v1`): 81 of 89 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -17,10 +17,10 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 3a | 24 | 24 | — |
 | 3b | 6 | 6 | — |
 | 5 | 27 | 27 | — |
-| 6 | 10 | 0 | `GET /me/points`, `GET /me/points/transactions`, `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
+| 6 | 10 | 2 | `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
 | 7 | 10 | 10 | — |
 
-### Admin surface (`/api/admin/v1`): 60 of 117 implemented
+### Admin surface (`/api/admin/v1`): 65 of 117 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -30,7 +30,7 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 3b | 1 | 1 | — |
 | 4 | 26 | 26 | — |
 | 5 | 11 | 11 | — |
-| 6 | 18 | 0 | 18 operations |
+| 6 | 18 | 5 | 13 operations |
 | 7 | 24 | 8 | 16 operations |
 | 8 | 23 | 0 | 23 operations |
 
@@ -151,8 +151,8 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `Event` | `events` | designed |  |
 | `EventRegistration` | `event_registrations` | designed |  |
 | `CheckInScan` | — | missing | Door scans, idempotent per pass per day |
-| `PointsTransaction` | `point_ledger` | designed | Append-only; spending allowed (BQ-76) |
-| `EarningRule` | `point_rules`, `point_rule_versions` | designed | Seed at the design scale (BQ-77) |
+| `PointsTransaction` | `point_ledger` | built | Append-only; one entry per idempotency key; spending allowed (BQ-76) |
+| `EarningRule` | `earning_rules` | built | Seeded at the design scale (BQ-77); a change applies from then on |
 | `Reward` | `rewards` | differs | Needs price, stock and level (BQ-76) |
 | `Redemption` | — | missing | Was excluded by BQ-08; needed after BQ-76 |
 | `VerificationRequest` | `verifications`, `verification_documents`, `verification_decisions` | designed | Student ID accepted (BQ-79) |
@@ -177,7 +177,7 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `TaxonomyItem` | `categories`, `services`, `locations`, `industries`, `skills` | differs | One table per kind in the repo design |
 | `IdempotencyRecord` | `idempotency_records` | designed | Phase 1 |
 
-Totals: designed 16 · missing 15 · differs 5 · built 6 (of 42).
+Totals: designed 14 · missing 15 · differs 5 · built 8 (of 42).
 
 ## 4. Differences to resolve before the phase that needs them
 

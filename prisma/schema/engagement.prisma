@@ -1,0 +1,105 @@
+// Module: engagement (nest-module-map.md §4.19, points-architecture.md). Points are earned
+// for verified activity and spent on rewards (BQ-76). They never grant verification.
+
+/// contracts/admin `PointsTransaction.type`.
+enum PointEntryType {
+  EVENT_ATTENDANCE
+  VOLUNTEER_SHIFT
+  PROFILE_COMPLETED
+  REFERRAL
+  WORKSHOP_ATTENDANCE
+  REWARD_REDEMPTION
+  MANUAL_ADJUSTMENT
+  REVERSAL
+
+  @@map("point_entry_type")
+  @@schema("app")
+}
+
+/// contracts/admin `EarningRule.key` (BQ-77 seed values in the migration).
+enum EarningRuleKey {
+  EVENT_REGISTRATION
+  EVENT_ATTENDANCE
+  VOLUNTEER_SHIFT
+  PROFILE_COMPLETED
+  REFERRAL_ATTENDED
+
+  @@map("earning_rule_key")
+  @@schema("app")
+}
+
+/// contracts/admin `PointsAdjustmentRequest.reason`.
+enum PointAdjustmentReason {
+  ATTENDANCE_NOT_RECORDED
+  VOLUNTEER_SHIFT_MISSING
+  GOODWILL
+  CORRECTION
+  OTHER
+
+  @@map("point_adjustment_reason")
+  @@schema("app")
+}
+
+/// Every points movement: the source of truth (balance = the sum of `amount`). Append-only:
+/// UPDATE, DELETE and TRUNCATE are revoked and refused by `app.raise_immutable()`, the same
+/// pattern as audit_logs. `idempotency_key` makes each award happen once (e.g.
+/// `event_attendance:<user>:<event>`); a reversal names the entry it reverses, at most once.
+model PointEntry {
+  id               String                 @id @default(uuid(7)) @db.Uuid
+  userId           String                 @map("user_id") @db.Uuid
+  /// Positive when earned, negative when spent or taken back. Never zero.
+  amount           Int
+  type             PointEntryType
+  /// What the member sees, e.g. the event's title.
+  title            String
+  subtitle         String?
+  sourceType       String?                @map("source_type")
+  sourceId         String?                @map("source_id")
+  /// Manual adjustments only.
+  reason           PointAdjustmentReason?
+  note             String?
+  createdByStaffId String?                @map("created_by_staff_id") @db.Uuid
+  idempotencyKey   String                 @map("idempotency_key")
+  reversesEntryId  String?                @map("reverses_entry_id") @db.Uuid
+  createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_point_ledger__user_id")
+  createdBy        StaffAccount?          @relation(fields: [createdByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_point_ledger__created_by_staff_id")
+
+  @@unique([idempotencyKey], map: "uq_point_ledger__idempotency_key")
+  @@unique([reversesEntryId], map: "uq_point_ledger__reverses_entry_id")
+  @@index([userId, createdAt(sort: Desc)], map: "ix_point_ledger__user_created_at")
+  @@index([createdAt(sort: Desc)], map: "ix_point_ledger__created_at")
+  @@map("point_ledger")
+  @@schema("app")
+}
+
+/// A projection of the ledger per member, kept in the same transaction as each entry and
+/// rebuilt by the nightly `points.reconcile` job. `total_earned` drives the level (BQ-76:
+/// spending never lowers it); `total_spent` is what rewards cost (positive).
+model PointBalance {
+  userId      String   @id @map("user_id") @db.Uuid
+  balance     Int      @default(0)
+  totalEarned Int      @default(0) @map("total_earned")
+  totalSpent  Int      @default(0) @map("total_spent")
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_point_balances__user_id")
+
+  @@map("point_balances")
+  @@schema("app")
+}
+
+/// How many points an activity earns (contracts/admin `EarningRule`). A change applies from
+/// then on; past entries keep what they earned. EVENT_REGISTRATION is locked at 0.
+model EarningRule {
+  key              EarningRuleKey @id
+  points           Int
+  enabled          Boolean        @default(true)
+  limitNote        String?        @map("limit_note")
+  locked           Boolean        @default(false)
+  updatedByStaffId String?        @map("updated_by_staff_id") @db.Uuid
+  updatedAt        DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy        StaffAccount?  @relation(fields: [updatedByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_earning_rules__updated_by_staff_id")
+
+  @@map("earning_rules")
+  @@schema("app")
+}

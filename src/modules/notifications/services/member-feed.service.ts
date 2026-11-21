@@ -21,6 +21,8 @@ export interface MemberNotificationView {
   read: boolean;
   /** contracts/app `Notification.application_update`: set for application status changes. */
   applicationUpdate: { applicationId: string; opportunityTitle: string; status: string } | null;
+  /** contracts/app `Notification.points_delta`: set for points notifications. */
+  pointsDelta: number | null;
 }
 
 /** Who the app shows as the sender of platform notifications. */
@@ -75,6 +77,7 @@ export class MemberFeedService {
                   status: String(vars.status),
                 }
               : null,
+          pointsDelta: row.type === 'points.earned' ? Number(vars.points) : null,
         };
       });
     return { items, hasMore: rows.length > query.page_size };

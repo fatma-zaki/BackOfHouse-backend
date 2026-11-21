@@ -187,7 +187,8 @@ Consumer abbreviations: **NTF** notifications · **ENG** engagement (P2+) · **S
 
 | Event | Producer | Consumers | Payload | Purpose |
 |---|---|---|---|---|
-| `points.credited` / `points.debited` | engagement | ENG (levels, badges, visibility debounce), NTF (optional milestone) | `entry_id`, `subject_ref`, `category`, `amount`, `rule_code` | Downstream projections |
+| `points.credited` / `points.debited` | engagement | NTF (`points.earned` with `points_delta`, not for reversals), later ENG (badges), ANL | `entry_id`, `user_id`, `amount`, `type`, `title`, `balance`, `level_before`, `level_after` | Built (6A): every ledger entry |
+| `profile.changed` | profiles | ENG ("profile completed" +50 once) | `user_id` | Built (6A): profile edit, new experience or project, skills replaced |
 | `points.reversed` | engagement | ENG (levels), NTF (subject, if user-visible, BQ-13) | `entry_id`, `reverses_entry_id`, `subject_ref`, `amount` | §8.1 |
 | `points.balance_frozen` | engagement | NTF, SRC (visibility) | `subject_ref`, `reason_code` | §8.2 |
 | `level.review_requested` | engagement | ADM, NTF (staff) | `assignment_id`, `user_id`, `level_code` | §8.6 human review |

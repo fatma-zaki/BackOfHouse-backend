@@ -13,6 +13,7 @@ import { BackofficeModule } from './modules/backoffice';
 import { CompaniesModule } from './modules/companies';
 import { ProfilesModule } from './modules/profiles';
 import { ContentModule } from './modules/content';
+import { EngagementModule } from './modules/engagement';
 import { OpportunitiesModule } from './modules/opportunities';
 
 /**
@@ -40,6 +41,7 @@ import { OpportunitiesModule } from './modules/opportunities';
     // Publishes scheduled articles (article.publish).
     ContentModule,
     OpportunitiesModule,
+    EngagementModule,
   ],
 })
 export class WorkerModule {}

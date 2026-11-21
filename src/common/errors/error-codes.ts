@@ -54,4 +54,8 @@ export enum ErrorCode {
   ALREADY_APPLIED = 'ALREADY_APPLIED',
   // Supplier responses (contracts/app /company/supplier-responses*, Phase 5C)
   ALREADY_RESPONDED = 'ALREADY_RESPONDED',
+  // Points (contracts/admin /points/adjustments, /earning-rules, Phase 6)
+  MONTHLY_CAP_REACHED = 'MONTHLY_CAP_REACHED',
+  INSUFFICIENT_POINTS = 'INSUFFICIENT_POINTS',
+  RULE_LOCKED = 'RULE_LOCKED',
 }

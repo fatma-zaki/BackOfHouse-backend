@@ -384,6 +384,20 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
     },
   },
   {
+    // Fed by `points.credited` (engagement): points in, e.g. verified attendance or a
+    // correction. `/me/notifications` sends the amount as `points_delta`.
+    type: 'points.earned',
+    category: 'EVENTS',
+    channels: ['PUSH'],
+    mandatory: false,
+    respectsQuietHours: true,
+    variables: ['points', 'title'],
+    templates: {
+      en: { title: 'You earned {{points}} points', body: '{{title}}' },
+      ar: { title: 'حصلت على {{points}} نقطة', body: '{{title}}' },
+    },
+  },
+  {
     // Fed by `application.status_changed`: every official status change, SUBMITTED and
     // WITHDRAWN included (docs/app/README.md section 4). The app words these itself from
     // `application_update`; this text is the push and the fallback.

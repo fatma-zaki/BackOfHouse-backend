@@ -8,6 +8,7 @@ import { riyadhDay } from '../../../common/time/riyadh';
 import { parseInput } from '../../../common/validation/parse-input';
 import type { Profile, ProfileExperience, ProfileProject } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner } from '../../../platform/database';
+import { OutboxWriter } from '../../../platform/outbox';
 import { AuditActorType, AuditLogger } from '../../audit';
 import { MembersService } from '../../identity';
 import { TaxonomyService } from '../../taxonomy';
@@ -116,6 +117,7 @@ export class ProfilesService {
     private readonly members: MembersService,
     private readonly audit: AuditLogger,
     private readonly taxonomy: TaxonomyService,
+    private readonly outbox: OutboxWriter,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -156,6 +158,7 @@ export class ProfilesService {
           },
         },
       });
+      await this.emitChanged(userId);
     });
     return this.view(userId, locale);
   }
@@ -170,6 +173,7 @@ export class ProfilesService {
       }
       const created = await tx.profileExperience.create({ data: { userId, ...data } });
       await this.recordEntry(userId, 'user.profile.experience.create', 'profile_experience', created.id);
+      await this.emitChanged(userId);
       return created;
     });
     return experienceView(entry);
@@ -207,6 +211,7 @@ export class ProfilesService {
       }
       const created = await tx.profileProject.create({ data: { userId, ...data } });
       await this.recordEntry(userId, 'user.profile.project.create', 'profile_project', created.id);
+      await this.emitChanged(userId);
       return created;
     });
     return projectView(project);
@@ -249,6 +254,7 @@ export class ProfilesService {
     await this.transactions.run(async (tx) => {
       await tx.profileSkill.deleteMany({ where: { userId } });
       await tx.profileSkill.createMany({ data: ids.map((skillId, sortOrder) => ({ userId, skillId, sortOrder })) });
+      await this.emitChanged(userId);
     });
     return this.view(userId, locale);
   }
@@ -283,6 +289,34 @@ export class ProfilesService {
       phone: user.phone,
       shareEmail: profile?.shareEmail ?? false,
       sharePhone: profile?.sharePhone ?? false,
+    };
+  }
+
+  /**
+   * What "profile completed" looks at (engagement, decided 2026-11-21): the core text
+   * fields and how many experience items, skills and projects the profile has.
+   */
+  async completionOf(userId: string): Promise<{
+    headline: string;
+    city: string;
+    about: string;
+    experience: number;
+    skills: number;
+    projects: number;
+  }> {
+    const [profile, experience, skills, projects] = await Promise.all([
+      this.prisma.profile.findUnique({ where: { userId }, select: { headline: true, city: true, about: true } }),
+      this.prisma.profileExperience.count({ where: { userId } }),
+      this.prisma.profileSkill.count({ where: { userId } }),
+      this.prisma.profileProject.count({ where: { userId } }),
+    ]);
+    return {
+      headline: profile?.headline ?? '',
+      city: profile?.city ?? '',
+      about: profile?.about ?? '',
+      experience,
+      skills,
+      projects,
     };
   }
 
@@ -328,6 +362,17 @@ export class ProfilesService {
         startDate: new Date(`${e.start}T00:00:00Z`),
         endDate: e.end ? new Date(`${e.end}T00:00:00Z`) : null,
       }));
+  }
+
+  /** Profile content grew or changed (engagement checks "profile completed"). Inside the caller's transaction. */
+  private async emitChanged(userId: string): Promise<void> {
+    await this.outbox.emit({
+      name: 'profile.changed',
+      aggregateType: 'user',
+      aggregateId: userId,
+      actor: { type: 'USER', user_id: userId },
+      data: { user_id: userId },
+    });
   }
 
   private async recordEntry(userId: string, action: string, entityType: string, entityId: string): Promise<void> {

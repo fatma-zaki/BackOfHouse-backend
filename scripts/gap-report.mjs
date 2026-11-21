@@ -65,8 +65,8 @@ const MODEL_MAP = {
   Event: ['events', 'designed', ''],
   EventRegistration: ['event_registrations', 'designed', ''],
   CheckInScan: ['—', 'missing', 'Door scans, idempotent per pass per day'],
-  PointsTransaction: ['point_ledger', 'designed', 'Append-only; spending allowed (BQ-76)'],
-  EarningRule: ['point_rules, point_rule_versions', 'designed', 'Seed at the design scale (BQ-77)'],
+  PointsTransaction: ['point_ledger', 'built', 'Append-only; one entry per idempotency key; spending allowed (BQ-76)'],
+  EarningRule: ['earning_rules', 'built', 'Seeded at the design scale (BQ-77); a change applies from then on'],
   Reward: ['rewards', 'differs', 'Needs price, stock and level (BQ-76)'],
   Redemption: ['—', 'missing', 'Was excluded by BQ-08; needed after BQ-76'],
   VerificationRequest: [

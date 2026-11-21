@@ -10,6 +10,9 @@ export const APP_TABLES = [
   'app.article_likes',
   'app.article_saves',
   'app.articles',
+  'app.earning_rules',
+  'app.point_ledger',
+  'app.point_balances',
   'app.supplier_responses',
   'app.applications',
   'app.opportunity_reviews',
@@ -62,6 +65,13 @@ export async function resetDatabase(client: Client): Promise<void> {
   await client.query('SET session_replication_role = replica');
   await client.query(`TRUNCATE ${APP_TABLES.join(', ')}`);
   await client.query('SET session_replication_role = origin');
+  // Earning rules are seeded by their migration (BQ-77); put the seed back.
+  await client.query(`INSERT INTO app.earning_rules (key, points, enabled, limit_note, locked, updated_at) VALUES
+      ('EVENT_REGISTRATION', 0, true, 'Registering never earns points', true, now()),
+      ('EVENT_ATTENDANCE', 150, true, 'Default; each event can set its own', false, now()),
+      ('VOLUNTEER_SHIFT', 200, true, 'Per confirmed shift', false, now()),
+      ('PROFILE_COMPLETED', 50, true, 'Once', false, now()),
+      ('REFERRAL_ATTENDED', 50, true, 'Max 10 a month', false, now())`);
 }
 
 /** Environment for building AppConfig against the test database. */

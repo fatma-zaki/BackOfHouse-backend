@@ -786,6 +786,15 @@ App and admin ship together (D8). Blocked by **BQ-81** (is PROJECT an opportunit
 
 All inputs decided (BQ-76, BQ-77, D9). Nothing blocks this phase.
 
+> **Progress (2026-11-21): 6A (points ledger) built on branch `phase-6-events-points`.** Split like Phase 5: 6A points, 6B events, 6C rewards.
+> - **Engagement** (new module, L6): `point_ledger` is append-only like `audit_logs` (UPDATE/DELETE/TRUNCATE revoked from `boh_app` and refused by `app.raise_immutable()`); each movement has a unique `idempotency_key` (e.g. `event_attendance:<user>:<event>`, `profile_completed:<user>`), so a repeat is a no-op. `point_balances` (balance, total earned, total spent) is updated in the same transaction under `FOR UPDATE`; CHECKs keep balance = earned − spent ≥ 0. The nightly `points.reconcile` job (00:30 Riyadh) rebuilds any balance that drifted.
+> - **Rules** (`domain/points.ts`): level from lifetime earned points (L1 0 · L2 100 · L3 500 · L4 1,500); spending moves only `total_spent`, so it never lowers the level (BQ-76). `earning_rules` seeded with BQ-77 (registration 0 locked, attendance 150, volunteer shift 200, profile completed 50 once, referral 50 max 10 a month); a change applies from then on.
+> - **Profile completed** (decided 2026-11-21): headline, city, about, at least one experience item, one skill and one project; +50 once, on `profile.changed` from profiles.
+> - **Adjustments:** `POST /points/adjustments` (reason and note required, `Idempotency-Key` honoured); Support adds only, up to 500 per member per Riyadh month (422 `MONTHLY_CAP_REACHED`); Super admins may deduct, never below zero. Audited and shown in the member's history.
+> - **App:** `/me/points` (`next_benefit_at` = next level's target until 6C), `/me/points/transactions` (ALL / EARNED / REDEEMED). `PointsActivity` gains `ADJUSTMENT` (decided 2026-11-21) for corrections, reversals and referrals. Members get "You earned N points" with `points_delta`.
+> - **Admin:** `/points/ledger`, `/users/{id}/points`, `/earning-rules` (`RULE_LOCKED` for registration).
+> - **Exit tests built:** `engagement/domain/points.spec.ts`; `test/integration/points-ledger.int-spec.ts` (append-only, exactly once under concurrency, balance = ledger sum, level never drops); `test/e2e/app/points.e2e-spec.ts`; `admin-matrix` extended.
+
 **Domain**
 - `events`:
   - registrations with a QR pass and 0 points;

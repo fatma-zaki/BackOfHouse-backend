@@ -134,6 +134,11 @@ describe('admin permission matrix (e2e)', () => {
         'GET /users/{id}/applications',
         'GET /supplier-requests',
         'GET /supplier-requests/{id}/responses',
+        'GET /points/ledger',
+        'POST /points/adjustments',
+        'GET /earning-rules',
+        'PUT /earning-rules/{key}',
+        'GET /users/{id}/points',
       ].sort(),
     );
   });

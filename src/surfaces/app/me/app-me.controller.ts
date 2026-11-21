@@ -33,7 +33,7 @@ function presentNotification(n: MemberNotificationView) {
     target_type: n.targetType,
     target_id: n.targetId,
     source: NOTIFICATION_SOURCE,
-    points_delta: null,
+    points_delta: n.pointsDelta,
     read: n.read,
     application_update: n.applicationUpdate
       ? {

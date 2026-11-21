@@ -10,6 +10,7 @@ import { AccountEventsHandler } from './handlers/account-events.handler';
 import { ModerationEventsHandler } from './handlers/moderation-events.handler';
 import { ApplicationEventsHandler } from './handlers/application-events.handler';
 import { OpportunityEventsHandler } from './handlers/opportunity-events.handler';
+import { PointsEventsHandler } from './handlers/points-events.handler';
 import { SupplierEventsHandler } from './handlers/supplier-events.handler';
 import { VerificationEventsHandler } from './handlers/verification-events.handler';
 import { DevEmailSender, EMAIL_SENDER, EmailSender, NotConfiguredEmailSender } from './infrastructure/email-sender';
@@ -49,6 +50,7 @@ const isLocalOrTest = (config: AppConfig) => config.app.appEnv === 'local' || co
     OpportunityEventsHandler,
     ApplicationEventsHandler,
     SupplierEventsHandler,
+    PointsEventsHandler,
     {
       provide: PUSH_SENDER,
       inject: [AppConfig, CLOCK],
