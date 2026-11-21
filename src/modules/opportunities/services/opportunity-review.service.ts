@@ -9,7 +9,7 @@ import { Prisma } from '../../../generated/prisma/client';
 import { PrismaService, TransactionRunner, Tx } from '../../../platform/database';
 import { OutboxWriter } from '../../../platform/outbox';
 import { AuditLogger, auditActorOf, SYSTEM_ACTOR } from '../../audit';
-import { CompaniesService, CompanyCard } from '../../companies';
+import { CompaniesService, CompanyCard, type Kpi } from '../../companies';
 import { AutoCheck, slaState } from '../domain/opportunity-checks';
 import {
   nextOpportunityStatus,
@@ -17,7 +17,7 @@ import {
   OpportunityStatus,
   RevisionStatus,
 } from '../domain/opportunity-state';
-import { OPPORTUNITY_TYPES, OpportunityContent } from '../domain/opportunity-type.policy';
+import { INDIVIDUAL_TYPES, OPPORTUNITY_TYPES, OpportunityContent } from '../domain/opportunity-type.policy';
 import { applicationCounts } from './application-views';
 import { contentChanges, contentColumns, contentOf, draftContent } from './opportunity-content';
 import { NO_REVISION } from './opportunities.service';
@@ -32,6 +32,9 @@ export const REVIEW_REASONS = [
   'MISLEADING',
   'OTHER',
 ] as const;
+
+/** Followers per `opportunity.followers_alerted` event. */
+const FOLLOWER_BATCH = 500;
 
 const ADMIN_STATUSES = ['DRAFT', 'IN_REVIEW', 'CHANGES_REQUESTED', 'PUBLISHED', 'REJECTED', 'CLOSED'] as const;
 const SORTS = {
@@ -58,6 +61,26 @@ const listSchema = z.object({
   city: z.string().trim().max(100).optional(),
   company_id: z.string().uuid().optional(),
 });
+
+const supplierListSchema = z.object({
+  page: z.number().int().min(1),
+  page_size: z.number().int().min(1).max(100),
+  sort: listSchema.shape.sort,
+  from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'must be a date like 2026-11-01')
+    .optional(),
+  to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'must be a date like 2026-11-01')
+    .optional(),
+  status: z.enum(['OPEN', 'AWARDED', 'CLOSED']).optional(),
+  /** A company type invited by the request (`supplier_types`). */
+  category: z.string().trim().max(40).optional(),
+  city: z.string().trim().max(100).optional(),
+});
+
+const DAY_MS = 86_400_000;
 
 /** contracts/admin `ReviewRequest`: the message goes to the company as from "Back of House". */
 const reviewSchema = z
@@ -141,6 +164,47 @@ export class OpportunityReviewService {
     this.requireStaff(actor, 'opportunities.view');
     const query = parseInput(listSchema, input);
     return this.page(query, query.company_id ? { companyId: query.company_id } : {});
+  }
+
+  /**
+   * contracts/admin GET /supplier-requests (`suppliers.view`): live and closed requests with
+   * their response counts. OPEN is live; AWARDED closed with a selected response; CLOSED
+   * closed without one.
+   */
+  async supplierRequests(
+    actor: Actor | undefined,
+    input: unknown,
+  ): Promise<{ items: OpportunityAdminView[]; total: number; kpis: Kpi[] }> {
+    this.requireStaff(actor, 'suppliers.view');
+    const query = parseInput(supplierListSchema, input);
+    const awarded: Prisma.OpportunityWhereInput = { supplierResponses: { some: { status: 'SELECTED' } } };
+    const scope: Prisma.OpportunityWhereInput[] = [
+      { type: 'SUPPLIER_REQUEST', status: { in: ['PUBLISHED', 'CLOSED'] } },
+    ];
+    if (query.status === 'OPEN') scope.push({ status: 'PUBLISHED' });
+    if (query.status === 'AWARDED') scope.push({ status: 'CLOSED' }, awarded);
+    if (query.status === 'CLOSED') scope.push({ status: 'CLOSED' }, { NOT: awarded });
+    if (query.category) scope.push({ supplierTypes: { has: query.category.toUpperCase() as never } });
+    if (query.from) scope.push({ createdAt: { gte: new Date(`${query.from}T00:00:00+03:00`) } });
+    if (query.to) {
+      scope.push({ createdAt: { lt: new Date(new Date(`${query.to}T00:00:00+03:00`).getTime() + DAY_MS) } });
+    }
+    const where: Prisma.OpportunityWhereInput = { AND: scope };
+    const [page, open, awardedCount, responses] = await Promise.all([
+      this.page({ ...query, sort: query.sort ?? '-published_at', status: undefined }, where),
+      this.prisma.opportunity.count({ where: { type: 'SUPPLIER_REQUEST', status: 'PUBLISHED' } }),
+      this.prisma.opportunity.count({ where: { type: 'SUPPLIER_REQUEST', status: 'CLOSED', ...awarded } }),
+      this.prisma.supplierResponse.count(),
+    ]);
+    const kpi = (key: string, label: string, value: number): Kpi => ({ key, label, value, display: String(value) });
+    return {
+      ...page,
+      kpis: [
+        kpi('open_requests', 'Open requests', open),
+        kpi('awarded_requests', 'Awarded', awardedCount),
+        kpi('responses', 'Responses', responses),
+      ],
+    };
   }
 
   /** contracts/admin GET /companies/{id}/opportunities (`companies.view`). */
@@ -358,6 +422,25 @@ export class OpportunityReviewService {
           message: note.message,
         },
       });
+      // A new individual-facing listing reaches the company's followers (BQ-92 b, decided
+      // 2026-11-21); revisions and supplier requests do not. Batched so payloads stay small.
+      if (decision === 'APPROVE' && !revision && INDIVIDUAL_TYPES.includes(row.type)) {
+        const followers = await this.companies.followerIds(row.companyId);
+        for (let i = 0; i < followers.length; i += FOLLOWER_BATCH) {
+          await this.outbox.emit({
+            name: 'opportunity.followers_alerted',
+            aggregateType: 'opportunity',
+            aggregateId: row.id,
+            actor: { type: 'STAFF', user_id: staff.staffId },
+            data: {
+              opportunity_id: row.id,
+              company_name: card?.name ?? '',
+              title: row.title,
+              follower_user_ids: followers.slice(i, i + FOLLOWER_BATCH),
+            },
+          });
+        }
+      }
     });
     return this.one(opportunityId);
   }

@@ -52,4 +52,6 @@ export enum ErrorCode {
   // Applications (contracts/app /me/applications, /company/applicants*, Phase 5)
   NOT_ELIGIBLE = 'NOT_ELIGIBLE',
   ALREADY_APPLIED = 'ALREADY_APPLIED',
+  // Supplier responses (contracts/app /company/supplier-responses*, Phase 5C)
+  ALREADY_RESPONDED = 'ALREADY_RESPONDED',
 }

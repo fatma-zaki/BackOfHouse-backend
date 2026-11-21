@@ -148,6 +148,63 @@ export class OpportunitiesService {
     return new Map(rows.map((r) => [r.companyId, r._count]));
   }
 
+  // ---- Supplier requests (B2B) ----
+
+  /** GET /company/supplier-requests/invited: open requests inviting this company's type, not its own. */
+  async invitedRequests(actor: Actor | undefined): Promise<OpportunityView[]> {
+    const company = requireCompanyActor(actor);
+    const card = await this.requireCard(company.companyId);
+    const rows = await this.prisma.opportunity.findMany({
+      where: this.invitedTo(card),
+      orderBy: [{ publishedAt: 'desc' }, { id: 'desc' }],
+      take: OWN_LIST_LIMIT,
+    });
+    return this.views(rows, false);
+  }
+
+  /**
+   * GET /company/supplier-requests/{id}: the buyer's own request (with owner fields), one open
+   * to this company's type, or one it already responded to. Anything else is 404.
+   */
+  async supplierRequest(actor: Actor | undefined, requestId: string): Promise<OpportunityView> {
+    const company = requireCompanyActor(actor);
+    const card = await this.requireCard(company.companyId);
+    const row = isUuid(requestId)
+      ? await this.prisma.opportunity.findFirst({
+          where: {
+            id: requestId,
+            type: 'SUPPLIER_REQUEST',
+            OR: [
+              { companyId: card.id },
+              this.invitedTo(card),
+              { supplierResponses: { some: { responderCompanyId: card.id } } },
+            ],
+          },
+        })
+      : null;
+    if (!row) throw new NotFoundError('Supplier request not found');
+    return (await this.views([row], row.companyId === card.id))[0];
+  }
+
+  /** How many open requests invite this company and are not answered yet (`CompanyStats.supplier_invites`). */
+  async supplierInvites(companyId: string): Promise<number> {
+    const card = await this.requireCard(companyId);
+    return this.prisma.opportunity.count({
+      where: { AND: [this.invitedTo(card), { supplierResponses: { none: { responderCompanyId: card.id } } }] },
+    });
+  }
+
+  private invitedTo(card: CompanyCard): Prisma.OpportunityWhereInput {
+    return {
+      type: 'SUPPLIER_REQUEST',
+      status: 'PUBLISHED',
+      companyId: { not: card.id },
+      supplierTypes: { has: card.companyType as never },
+      OR: [{ closesAt: null }, { closesAt: { gt: this.clock.now() } }],
+      company: { accountUser: { status: 'ACTIVE' } },
+    };
+  }
+
   // ---- The company's own listings ----
 
   /** Own listings in every status (supplier requests included), most recently updated first. */

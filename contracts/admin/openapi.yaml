@@ -6785,6 +6785,15 @@ components:
             - DECLINED
             - AWARDED
             - HIDDEN
+        stage:
+          type: string
+          description: The status as the companies see it (REVIEWED reads as NEW in `status`). Prices are not shown to staff; only the buyer and the responder see them.
+          enum:
+            - SUBMITTED
+            - REVIEWED
+            - SHORTLISTED
+            - SELECTED
+            - REJECTED
         replied_in_hours:
           oneOf:
             - type: number

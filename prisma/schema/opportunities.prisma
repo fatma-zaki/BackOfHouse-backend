@@ -71,49 +71,50 @@ enum OpportunityReviewDecision {
 /// `submitted_at`, `review_due_at` and `checks` describe the latest submission (the listing
 /// or its revision).
 model Opportunity {
-  id               String                     @id @default(uuid(7)) @db.Uuid
-  companyId        String                     @map("company_id") @db.Uuid
-  type             OpportunityType
-  status           OpportunityStatus          @default(DRAFT)
-  title            String                     @default("")
-  city             String                     @default("")
-  summary          String                     @default("")
-  description      String                     @default("")
-  employmentType   EmploymentType?            @map("employment_type")
-  compensation     String?
-  duration         String?
-  responsibilities String[]                   @default([])
-  requirements     String[]                   @default([])
-  skills           String[]                   @default([])
+  id                String                     @id @default(uuid(7)) @db.Uuid
+  companyId         String                     @map("company_id") @db.Uuid
+  type              OpportunityType
+  status            OpportunityStatus          @default(DRAFT)
+  title             String                     @default("")
+  city              String                     @default("")
+  summary           String                     @default("")
+  description       String                     @default("")
+  employmentType    EmploymentType?            @map("employment_type")
+  compensation      String?
+  duration          String?
+  responsibilities  String[]                   @default([])
+  requirements      String[]                   @default([])
+  skills            String[]                   @default([])
   /// SUPPLIER_REQUEST only: the company types invited to respond.
-  supplierTypes    CompanyType[]              @default([]) @map("supplier_types")
-  closesAt         DateTime?                  @map("closes_at") @db.Timestamptz(6)
-  workSetup        WorkSetup?                 @map("work_setup")
+  supplierTypes     CompanyType[]              @default([]) @map("supplier_types")
+  closesAt          DateTime?                  @map("closes_at") @db.Timestamptz(6)
+  workSetup         WorkSetup?                 @map("work_setup")
   /// Shown to the company with CHANGES_REQUESTED or REJECTED; written as from Back of House.
-  reviewerNote     String?                    @map("reviewer_note")
-  submittedAt      DateTime?                  @map("submitted_at") @db.Timestamptz(6)
-  reviewDueAt      DateTime?                  @map("review_due_at") @db.Timestamptz(6)
+  reviewerNote      String?                    @map("reviewer_note")
+  submittedAt       DateTime?                  @map("submitted_at") @db.Timestamptz(6)
+  reviewDueAt       DateTime?                  @map("review_due_at") @db.Timestamptz(6)
   /// When the overdue review was announced to staff (once per submission).
-  slaAlertedAt     DateTime?                  @map("sla_alerted_at") @db.Timestamptz(6)
+  slaAlertedAt      DateTime?                  @map("sla_alerted_at") @db.Timestamptz(6)
   /// Sent again after changes were requested.
-  resubmitted      Boolean                    @default(false)
-  autoFlagged      Boolean                    @default(false) @map("auto_flagged")
+  resubmitted       Boolean                    @default(false)
+  autoFlagged       Boolean                    @default(false) @map("auto_flagged")
   /// contracts/admin `AutoCheck[]` from the latest submission.
-  checks           Json                       @default("[]") @db.JsonB
-  revisionStatus   OpportunityRevisionStatus? @map("revision_status")
+  checks            Json                       @default("[]") @db.JsonB
+  revisionStatus    OpportunityRevisionStatus? @map("revision_status")
   /// contracts/app `OpportunityInput` of the pending revision.
-  revisionDraft    Json?                      @map("revision_draft") @db.JsonB
-  revisionNote     String?                    @map("revision_note")
-  publishedAt      DateTime?                  @map("published_at") @db.Timestamptz(6)
-  closedAt         DateTime?                  @map("closed_at") @db.Timestamptz(6)
+  revisionDraft     Json?                      @map("revision_draft") @db.JsonB
+  revisionNote      String?                    @map("revision_note")
+  publishedAt       DateTime?                  @map("published_at") @db.Timestamptz(6)
+  closedAt          DateTime?                  @map("closed_at") @db.Timestamptz(6)
   /// Why staff closed it (contracts/admin POST /opportunities/{id}/close).
-  closeReason      String?                    @map("close_reason")
-  views            Int                        @default(0)
-  createdAt        DateTime                   @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(6)
-  company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_opportunities__company_id")
-  reviews          OpportunityReview[]
-  applications     Application[]
+  closeReason       String?                    @map("close_reason")
+  views             Int                        @default(0)
+  createdAt         DateTime                   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(6)
+  company           Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_opportunities__company_id")
+  reviews           OpportunityReview[]
+  applications      Application[]
+  supplierResponses SupplierResponse[]
 
   @@index([status, publishedAt(sort: Desc)], map: "ix_opportunities__status_published_at")
   @@index([companyId, updatedAt(sort: Desc)], map: "ix_opportunities__company_updated_at")
@@ -163,33 +164,73 @@ enum ApplicationStatus {
 /// them live from the CONTACT stage). At most one application per member and listing that is
 /// not WITHDRAWN: a partial unique index in the migration (`uq_applications__active`).
 model Application {
-  id                String            @id @default(uuid(7)) @db.Uuid
+  id              String            @id @default(uuid(7)) @db.Uuid
   /// Shown as `reference` (AP-1001, ...).
-  number            Int               @default(autoincrement())
-  opportunityId     String            @map("opportunity_id") @db.Uuid
-  applicantUserId   String            @map("applicant_user_id") @db.Uuid
-  status            ApplicationStatus @default(SUBMITTED)
-  message           String?
+  number          Int               @default(autoincrement())
+  opportunityId   String            @map("opportunity_id") @db.Uuid
+  applicantUserId String            @map("applicant_user_id") @db.Uuid
+  status          ApplicationStatus @default(SUBMITTED)
+  message         String?
   /// contracts/app `ApplicantSnapshot` (public profile only).
-  applicant         Json              @db.JsonB
+  applicant       Json              @db.JsonB
   /// The listing's title, type, city, employment type and pay at submission.
-  listing           Json              @db.JsonB
+  listing         Json              @db.JsonB
   /// contracts/app `Experience[]` the applicant picked.
-  experience        Json              @default("[]") @db.JsonB
+  experience      Json              @default("[]") @db.JsonB
   /// contracts/app `ProfileProject[]` the applicant picked.
-  projects          Json              @default("[]") @db.JsonB
-  submittedAt       DateTime          @map("submitted_at") @db.Timestamptz(6)
+  projects        Json              @default("[]") @db.JsonB
+  submittedAt     DateTime          @map("submitted_at") @db.Timestamptz(6)
   /// When the status last changed (admin `time_in_stage_days`).
-  statusChangedAt   DateTime          @map("status_changed_at") @db.Timestamptz(6)
-  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
-  opportunity       Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__opportunity_id")
-  applicantUser     User              @relation(fields: [applicantUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__applicant_user_id")
+  statusChangedAt DateTime          @map("status_changed_at") @db.Timestamptz(6)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  opportunity     Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__opportunity_id")
+  applicantUser   User              @relation(fields: [applicantUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__applicant_user_id")
 
   @@unique([number], map: "uq_applications__number")
   @@index([applicantUserId, updatedAt(sort: Desc)], map: "ix_applications__applicant_updated_at")
   @@index([opportunityId, updatedAt(sort: Desc)], map: "ix_applications__opportunity_updated_at")
   @@index([createdAt(sort: Desc)], map: "ix_applications__created_at")
   @@map("applications")
+  @@schema("app")
+}
+
+/// contracts/app `SupplierResponseStatus`. The buyer moves a response one step at a time;
+/// SELECTED and REJECTED are final (supplier-response-status.policy.ts).
+enum SupplierResponseStatus {
+  SUBMITTED
+  REVIEWED
+  SHORTLISTED
+  SELECTED
+  REJECTED
+
+  @@map("supplier_response_status")
+  @@schema("app")
+}
+
+/// A company's response to a supplier request (contracts/app `SupplierResponse`). One per
+/// responding company and request. `proposed_price` is shown only to the buyer and the
+/// responder. `projects` snapshots the responder's company projects picked as evidence.
+model SupplierResponse {
+  id                 String                 @id @default(uuid(7)) @db.Uuid
+  requestId          String                 @map("request_id") @db.Uuid
+  responderCompanyId String                 @map("responder_company_id") @db.Uuid
+  status             SupplierResponseStatus @default(SUBMITTED)
+  message            String
+  proposedPrice      String?                @map("proposed_price")
+  setupTime          String?                @map("setup_time")
+  /// contracts/app `CompanyProject[]` at submission.
+  projects           Json                   @default("[]") @db.JsonB
+  submittedAt        DateTime               @map("submitted_at") @db.Timestamptz(6)
+  statusChangedAt    DateTime               @map("status_changed_at") @db.Timestamptz(6)
+  createdAt          DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime               @updatedAt @map("updated_at") @db.Timestamptz(6)
+  request            Opportunity            @relation(fields: [requestId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_supplier_responses__request_id")
+  responder          Company                @relation(fields: [responderCompanyId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_supplier_responses__responder_company_id")
+
+  @@unique([requestId, responderCompanyId], map: "uq_supplier_responses__request_responder")
+  @@index([responderCompanyId, updatedAt(sort: Desc)], map: "ix_supplier_responses__responder_updated_at")
+  @@index([requestId, updatedAt(sort: Desc)], map: "ix_supplier_responses__request_updated_at")
+  @@map("supplier_responses")
   @@schema("app")
 }

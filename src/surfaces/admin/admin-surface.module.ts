@@ -28,6 +28,7 @@ import {
   AdminApplicationsController,
   AdminUserApplicationsController,
 } from './opportunities/admin-applications.controller';
+import { AdminSupplierRequestsController } from './opportunities/admin-suppliers.controller';
 import { AdminNotesController } from './users/admin-notes.controller';
 import { AdminUsersController } from './users/admin-users.controller';
 import { AdminVerificationController } from './verification/admin-verification.controller';
@@ -70,6 +71,7 @@ import { AdminVerificationController } from './verification/admin-verification.c
     AdminCompanyOpportunitiesController,
     AdminApplicationsController,
     AdminUserApplicationsController,
+    AdminSupplierRequestsController,
   ],
 })
 export class AdminSurfaceModule {}
