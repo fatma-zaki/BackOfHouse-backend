@@ -10,7 +10,7 @@ import {
 import type { Actor } from '../../../common/context/actor';
 import { CurrentActor } from '../../../common/decorators/current-actor.decorator';
 import { CompanyWorkspaceService, type CompanyView } from '../../../modules/companies';
-import { OpportunitiesService } from '../../../modules/opportunities';
+import { ApplicationsService, OpportunitiesService } from '../../../modules/opportunities';
 import { CompanyAccountOnly } from '../account-context';
 import { presentCompany, presentProject, presentStats } from './app-presenters';
 
@@ -29,6 +29,7 @@ export class AppCompanyController {
   constructor(
     private readonly workspace: CompanyWorkspaceService,
     private readonly opportunities: OpportunitiesService,
+    private readonly applications: ApplicationsService,
   ) {}
 
   @Get()
@@ -49,8 +50,12 @@ export class AppCompanyController {
   @ApiOkResponse(OK)
   async stats(@CurrentActor() actor: Actor | undefined) {
     const stats = await this.workspace.stats(actor);
-    const live = await this.opportunities.liveCounts([actor!.kind === 'company' ? actor!.companyId : '']);
-    return presentStats({ ...stats, liveListings: [...live.values()][0] ?? 0 });
+    const companyId = actor!.kind === 'company' ? actor!.companyId : '';
+    const [live, applicants] = await Promise.all([
+      this.opportunities.liveCounts([companyId]),
+      this.applications.companyCounts(companyId),
+    ]);
+    return presentStats({ ...stats, ...applicants, liveListings: [...live.values()][0] ?? 0 });
   }
 
   @Get('projects')

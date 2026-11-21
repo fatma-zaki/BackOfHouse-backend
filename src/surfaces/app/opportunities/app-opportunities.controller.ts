@@ -12,7 +12,7 @@ import type { Actor } from '../../../common/context/actor';
 import { CurrentActor } from '../../../common/decorators/current-actor.decorator';
 import { AppPageMeta, AppPaginationQueryDto, Page } from '../../../common/pagination';
 import { OPPORTUNITY_TYPES, OpportunitiesService } from '../../../modules/opportunities';
-import { CompanyAccountOnly } from '../account-context';
+import { CompanyAccountOnly, IndividualsOnly } from '../account-context';
 import { presentOpportunity } from './app-opportunity.presenters';
 
 /** contracts/app GET /opportunities query. */
@@ -32,9 +32,10 @@ export class OpportunityListQueryDto extends AppPaginationQueryDto {
 const OK = { description: 'OK', schema: { type: 'object', properties: { data: {} } } };
 const OBJECT_BODY = { schema: { type: 'object' } };
 
-/** Live listings (contracts/app /opportunities*, /companies/{id}/opportunities). */
+/** Live listings (contracts/app /opportunities*, /companies/{id}/opportunities). Individuals only. */
 @ApiTags('Discover')
 @ApiBearerAuth()
+@IndividualsOnly()
 @Controller()
 export class AppOpportunitiesController {
   constructor(private readonly opportunities: OpportunitiesService) {}

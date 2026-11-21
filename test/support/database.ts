@@ -10,6 +10,7 @@ export const APP_TABLES = [
   'app.article_likes',
   'app.article_saves',
   'app.articles',
+  'app.applications',
   'app.opportunity_reviews',
   'app.opportunities',
   'app.admin_sessions',

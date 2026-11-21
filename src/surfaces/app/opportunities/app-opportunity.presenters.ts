@@ -36,7 +36,7 @@ export function presentInput(c: OpportunityContent) {
 /**
  * contracts/app `Opportunity`. REJECTED is not an app status: the company sees CLOSED with
  * the reviewer's note. There is no match score yet (`match_score` null; the app never
- * invents one); `my_application` arrives with applications (Phase 5B).
+ * invents one); `my_application` is sent to individuals only.
  */
 export function presentOpportunity(v: OpportunityView) {
   const c = v.content;
@@ -74,6 +74,6 @@ export function presentOpportunity(v: OpportunityView) {
             : null,
         }
       : {}),
-    my_application: null,
+    ...(v.myApplication !== undefined ? { my_application: v.myApplication } : {}),
   };
 }

@@ -12,6 +12,7 @@ import { AuditActorType, AuditLogger } from '../../audit';
 import { MembersService } from '../../identity';
 import { TaxonomyService } from '../../taxonomy';
 import { compareExperience, currentCompany, yearsOfExperience } from '../domain/experience';
+import type { ContactSubject } from '../policies/contact-visibility.policy';
 
 export const PROFILE_INTERESTS = [
   'TECH_INNOVATION',
@@ -261,13 +262,31 @@ export class ProfilesService {
     return project ? { title: project.title, ownerUserId: project.userId, preview: project.role } : null;
   }
 
-  /** For `AppUser.headline` (GET /me); null until the member writes one. */
   /** The interests a member picked on their profile (none for a Company Account). */
   async interestsOf(userId: string): Promise<string[]> {
     const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { interests: true } });
     return profile?.interests ?? [];
   }
 
+  /**
+   * Email, phone and the member's sharing choices, for contact-visibility.policy.ts (an
+   * applicant at the CONTACT stage). Null when the account does not exist.
+   */
+  async contactSubject(userId: string): Promise<ContactSubject | null> {
+    const [user, profile] = await Promise.all([
+      this.prisma.user.findUnique({ where: { id: userId }, select: { email: true, phone: true } }),
+      this.prisma.profile.findUnique({ where: { userId }, select: { shareEmail: true, sharePhone: true } }),
+    ]);
+    if (!user) return null;
+    return {
+      email: user.email,
+      phone: user.phone,
+      shareEmail: profile?.shareEmail ?? false,
+      sharePhone: profile?.sharePhone ?? false,
+    };
+  }
+
+  /** For `AppUser.headline` (GET /me); null until the member writes one. */
   async headlineOf(userId: string): Promise<string | null> {
     const profile = await this.prisma.profile.findUnique({ where: { userId }, select: { headline: true } });
     return profile?.headline || null;

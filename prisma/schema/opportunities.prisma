@@ -113,6 +113,7 @@ model Opportunity {
   updatedAt        DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(6)
   company          Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_opportunities__company_id")
   reviews          OpportunityReview[]
+  applications     Application[]
 
   @@index([status, publishedAt(sort: Desc)], map: "ix_opportunities__status_published_at")
   @@index([companyId, updatedAt(sort: Desc)], map: "ix_opportunities__company_updated_at")
@@ -138,5 +139,57 @@ model OpportunityReview {
 
   @@index([opportunityId, createdAt], map: "ix_opportunity_reviews__opportunity_created_at")
   @@map("opportunity_reviews")
+  @@schema("app")
+}
+
+/// contracts/app `ApplicationStatus`. The company moves an application one step at a time;
+/// ACCEPTED, REJECTED and WITHDRAWN are final (application-status.policy.ts).
+enum ApplicationStatus {
+  SUBMITTED
+  REVIEWED
+  SHORTLISTED
+  CONTACT
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+
+  @@map("application_status")
+  @@schema("app")
+}
+
+/// An individual's application to a listing (contracts/app `Application`). The applicant,
+/// listing, experience and project snapshots are taken at submission so later edits do not
+/// rewrite history; contact details are never stored here (contact-visibility.policy.ts reads
+/// them live from the CONTACT stage). At most one application per member and listing that is
+/// not WITHDRAWN: a partial unique index in the migration (`uq_applications__active`).
+model Application {
+  id                String            @id @default(uuid(7)) @db.Uuid
+  /// Shown as `reference` (AP-1001, ...).
+  number            Int               @default(autoincrement())
+  opportunityId     String            @map("opportunity_id") @db.Uuid
+  applicantUserId   String            @map("applicant_user_id") @db.Uuid
+  status            ApplicationStatus @default(SUBMITTED)
+  message           String?
+  /// contracts/app `ApplicantSnapshot` (public profile only).
+  applicant         Json              @db.JsonB
+  /// The listing's title, type, city, employment type and pay at submission.
+  listing           Json              @db.JsonB
+  /// contracts/app `Experience[]` the applicant picked.
+  experience        Json              @default("[]") @db.JsonB
+  /// contracts/app `ProfileProject[]` the applicant picked.
+  projects          Json              @default("[]") @db.JsonB
+  submittedAt       DateTime          @map("submitted_at") @db.Timestamptz(6)
+  /// When the status last changed (admin `time_in_stage_days`).
+  statusChangedAt   DateTime          @map("status_changed_at") @db.Timestamptz(6)
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  opportunity       Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__opportunity_id")
+  applicantUser     User              @relation(fields: [applicantUserId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_applications__applicant_user_id")
+
+  @@unique([number], map: "uq_applications__number")
+  @@index([applicantUserId, updatedAt(sort: Desc)], map: "ix_applications__applicant_updated_at")
+  @@index([opportunityId, updatedAt(sort: Desc)], map: "ix_applications__opportunity_updated_at")
+  @@index([createdAt(sort: Desc)], map: "ix_applications__created_at")
+  @@map("applications")
   @@schema("app")
 }

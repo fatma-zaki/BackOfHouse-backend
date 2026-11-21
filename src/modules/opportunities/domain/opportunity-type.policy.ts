@@ -99,3 +99,23 @@ export function submitGaps(content: OpportunityContent, now: Date): Record<strin
   if (content.closesAt && content.closesAt.getTime() <= now.getTime()) gaps.closes_at = ['must be in the future'];
   return gaps;
 }
+
+/** contracts/app `Error.reason` with `NOT_ELIGIBLE` when applying. */
+export type ApplyRefusal = 'COMPANY_FACING' | 'INDIVIDUALS_ONLY' | 'CLOSED' | 'STUDENTS_ONLY';
+
+/**
+ * Whether this applicant may apply to this listing (docs/app/README.md §4 "Eligibility"),
+ * checked in the contract's order. `open` is PUBLISHED and before `closes_at`; `student` is
+ * read from the profile when applying. Null when eligible.
+ */
+export function applyRefusal(
+  listing: { type: OpportunityType; open: boolean },
+  applicant: { kind: 'member' | 'company'; student: boolean },
+): ApplyRefusal | null {
+  const rule = TYPE_RULES[listing.type];
+  if (rule.audience === 'COMPANY') return 'COMPANY_FACING';
+  if (applicant.kind !== 'member') return 'INDIVIDUALS_ONLY';
+  if (!listing.open) return 'CLOSED';
+  if (rule.studentsOnly && !applicant.student) return 'STUDENTS_ONLY';
+  return null;
+}

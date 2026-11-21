@@ -44,7 +44,11 @@ const MODEL_MAP = {
     'Vocabulary "opportunities" (D1); revision kept on the row while the live version stays up (P2); PROJECT is a listing type (BQ-81)',
   ],
   ListingReview: ['opportunity_reviews', 'built', 'Decisions on a listing or its revision; automated checks on the row'],
-  Application: ['applications', 'designed', 'Privacy snapshot on apply'],
+  Application: [
+    'applications',
+    'built',
+    'Applicant, listing and picks snapshotted on apply; one non-withdrawn application per member and listing',
+  ],
   SupplierResponse: ['supplier_responses', 'designed', ''],
   Event: ['events', 'designed', ''],
   EventRegistration: ['event_registrations', 'designed', ''],

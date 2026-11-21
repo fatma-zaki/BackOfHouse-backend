@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
-import { DomainError, ErrorCode, FieldErrors, RateLimitedError } from '../errors';
+import { DomainError, ErrorCode, FieldErrors, NotEligibleError, RateLimitedError } from '../errors';
 import { RequestContext } from '../context/request-context';
 import { scrubSecrets } from '../text/scrub-secrets';
 
@@ -11,6 +11,8 @@ export interface ErrorBody {
   message: string;
   trace_id: string;
   errors?: FieldErrors;
+  /** With NOT_ELIGIBLE (contracts/app `Error.reason`). */
+  reason?: string;
 }
 
 interface BodyParserError {
@@ -80,6 +82,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
           message: exception.message,
           trace_id,
           ...(exception.errors ? { errors: exception.errors } : {}),
+          ...(exception instanceof NotEligibleError ? { reason: exception.reason } : {}),
         },
       };
     }

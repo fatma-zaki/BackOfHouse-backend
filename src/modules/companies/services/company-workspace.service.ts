@@ -133,7 +133,7 @@ export class CompanyWorkspaceService {
     return this.view(company.companyId);
   }
 
-  /** Listing and applicant counts arrive with opportunities (Phase 5). */
+  /** Listing and applicant counts belong to opportunities (L6); the app surface fills them in. */
   async stats(actor: Actor | undefined): Promise<CompanyStatsView> {
     const { companyId } = requireCompanyActor(actor);
     const today = riyadhDay(this.clock.now());

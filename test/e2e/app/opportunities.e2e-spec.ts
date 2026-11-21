@@ -169,7 +169,7 @@ describe('Opportunities in the app (e2e)', () => {
   });
 
   describe('discovery', () => {
-    it('shows individuals individual-facing listings and companies the requests that invite them', async () => {
+    it('shows individuals individual-facing listings and keeps companies out of Discover', async () => {
       const job = await publish(venue, { type: 'JOB', employment_type: 'FULL_TIME', ...COMPLETE });
       const volunteering = await publish(venue, {
         type: 'VOLUNTEERING',
@@ -202,13 +202,11 @@ describe('Opportunities in the app (e2e)', () => {
       expect(ids(await appRequest(app, 'get', '/opportunities?type=SUPPLIER_REQUEST', member))).toEqual([]);
       expect(ids(await appRequest(app, 'get', '/opportunities?q=steward', member))).toEqual([volunteering]);
 
-      expect(ids(await appRequest(app, 'get', '/opportunities', supplier))).toEqual([
-        supplierRequest,
-        volunteering,
-        job,
-      ]);
-      // The buyer does not see its own request among the invitations.
-      expect(ids(await appRequest(app, 'get', '/opportunities', venue))).toEqual([volunteering, job]);
+      // Discover is for individuals (docs/app/README.md §2); supplier requests reach invited
+      // companies under /company/supplier-requests (Phase 5C).
+      const byCompany = await appRequest(app, 'get', '/opportunities', supplier);
+      expect({ status: byCompany.status, code: byCompany.body.code }).toEqual({ status: 403, code: 'FORBIDDEN' });
+      expect((await appRequest(app, 'get', `/opportunities/${job}`, venue)).status).toBe(403);
 
       const detail = await appRequest(app, 'get', `/opportunities/${job}`, member);
       expectApp(detail, 'get', '/opportunities/{id}', 200);

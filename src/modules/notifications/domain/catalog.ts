@@ -334,6 +334,27 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
       ar: { title: 'انتهى {{title}}', body: 'وصل إعلانك إلى تاريخ الإغلاق ولم يعد يستقبل طلبات.' },
     },
   },
+  {
+    // Fed by `application.status_changed`: every official status change, SUBMITTED and
+    // WITHDRAWN included (docs/app/README.md section 4). The app words these itself from
+    // `application_update`; this text is the push and the fallback.
+    type: 'application.status_changed',
+    category: 'OPPORTUNITIES',
+    channels: ['PUSH'],
+    mandatory: true,
+    respectsQuietHours: true,
+    variables: ['opportunity_title', 'status', 'application_id'],
+    templates: {
+      en: {
+        title: 'Application update',
+        body: 'There is an update on your application to {{opportunity_title}}.',
+      },
+      ar: {
+        title: 'تحديث على طلبك',
+        body: 'يوجد تحديث على طلبك للتقديم على {{opportunity_title}}.',
+      },
+    },
+  },
 ];
 
 const BY_TYPE = new Map(NOTIFICATION_CATALOG.map((entry) => [entry.type, entry]));

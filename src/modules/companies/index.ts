@@ -8,6 +8,7 @@ export {
   COMPANY_PERMISSIONS,
   companyCapabilities,
   requireCompanyActor,
+  type CompanyActor,
   type CompanyPermission,
 } from './policies/company-actor.policy';
 export {

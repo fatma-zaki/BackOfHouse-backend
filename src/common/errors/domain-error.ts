@@ -47,6 +47,19 @@ export class NotFoundError extends DomainError {
   }
 }
 
+/**
+ * 403 `NOT_ELIGIBLE` with the `reason` the app shows (contracts/app `Error.reason`), e.g.
+ * STUDENTS_ONLY for a CO_OP listing (BQ-79).
+ */
+export class NotEligibleError extends DomainError {
+  constructor(
+    readonly reason: string,
+    message: string,
+  ) {
+    super(ErrorCode.NOT_ELIGIBLE, message, HttpStatus.FORBIDDEN);
+  }
+}
+
 export class ConflictError extends DomainError {
   constructor(message: string, code: string = ErrorCode.CONFLICT) {
     super(code, message, HttpStatus.CONFLICT);
