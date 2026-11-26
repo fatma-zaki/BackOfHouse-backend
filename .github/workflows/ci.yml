@@ -1,27 +1,21 @@
-# Stage 1 CI (backend-development-order.md): lint, typecheck, test, audit,
-# secret scan. Integration tests run against a Postgres service container of
-# the same major version family as Supabase.
+# Backend CI (backend-development-order.md): lint, typecheck, test, contracts, audit.
+# Integration tests run against a Postgres service container of the same major
+# version family as Supabase.
 name: ci
 
+# Backend only: changes limited to apps/ (admin web, mobile) have their own workflows.
+# Secret scanning runs on every change in secret-scan.yml.
 on:
   push:
     branches: [main]
+    paths-ignore: ['apps/**']
   pull_request:
+    paths-ignore: ['apps/**']
 
 permissions:
   contents: read
 
 jobs:
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   build-and-test:
     runs-on: ubuntu-latest
     services:

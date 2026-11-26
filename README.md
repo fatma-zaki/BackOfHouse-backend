@@ -9,6 +9,20 @@ NestJS modular monolith (`api` + `worker` from one codebase) on Supabase Postgre
 
 Health probes are shared: `/api/health`, `/api/health/ready`. The build plan is [docs/execution-plan.md](docs/execution-plan.md).
 
+## Repository layout
+
+One repository for the backend and both clients. The backend stays at the root; the clients live in `apps/` and keep their own tooling and lockfiles.
+
+| Path | What | Run | CI |
+| --- | --- | --- | --- |
+| `/` (`src/`, `prisma/`, `test/`) | Backend (NestJS) | `npm run start:dev` | `ci.yml` (skips changes limited to `apps/`) |
+| [`contracts/`](contracts/) | API contracts, shared by all three | `npm run contracts`, `npm run contract:types` | `ci.yml`, `contract-breaking-changes.yml` |
+| [`apps/admin-web/`](apps/admin-web/) | Admin back-office (React + Vite), imported from `BackOfHouse-web-z` with its history | `cd apps/admin-web && npm ci && npm run dev` | `admin-web.yml` |
+| [`apps/mobile/`](apps/mobile/) | Member app (Flutter), imported from `BackOfHouse-App` with its history | `cd apps/mobile && flutter pub get && flutter run --dart-define=API_BASE_URL=http://localhost:3000/api/app/v1` | `mobile.yml` |
+
+- The admin web app reads the admin contract's types through `@contracts/*` ([apps/admin-web/src/lib/admin-api.ts](apps/admin-web/src/lib/admin-api.ts)). After changing `contracts/admin/openapi.yaml`, run `npm run contract:types` at the root; a breaking change then fails the web build in the same PR.
+- `secret-scan.yml` and `codeql.yml` run on every change.
+
 **The architecture lives in [`docs/`](docs/BACK_OF_HOUSE_BACKEND_MAP.md) and is the source of truth.** This README covers only how to run and work on the code. Where the code makes a choice the docs leave open, it is listed under [Decisions and assumptions](#decisions-and-assumptions).
 
 ## Status

@@ -11,3 +11,4 @@ src/generated
 **/*.spec.ts
 *.log
 .git
+apps
