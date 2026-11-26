@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Discover</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 20px 8px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 24px; background: #6437fa; transform: skewX(-18deg)"></div><h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1></div>
+<div style="display: flex; align-items: center">
+<button type="button" aria-label="{{s.notifications}}" style="position: relative; width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 10px; inset-inline-end: 11px; width: 8px; height: 8px; border-radius: 4px; background: #6437fa; border: 2px solid {{c.bg}}"></span></button>
+<img src="/_blob/17c4ffa8b33f8d93c5fc6d4d6e5955ea" alt="{{s.name}}" style="width: 34px; height: 34px; display: block; object-fit: cover; border-radius: 17px; border: 2px solid {{c.bg}}; box-shadow: 0 0 0 2px #6437fa; margin-inline: 4px 6px">
+</div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 0 24px; gap: 14px">
+<label style="margin: 0 16px; height: 48px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 10px; border-radius: 24px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; flex-shrink: 0">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<input type="search" placeholder="{{s.search}}" aria-label="{{s.search}}" style="flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: inherit; font-size: 14px; color: {{c.ink}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+</label>
+<div role="tablist" aria-label="{{s.sections}}" style="display: flex; gap: 8px; padding: 0 16px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{segs}}" as="g" hint-placeholder-count="5">
+<button type="button" role="tab" aria-selected="{{g.sel}}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid {{g.border}}; background: {{g.bg}}; color: {{g.color}}; font-family: inherit; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; flex-shrink: 0">{{g.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 8px; padding: 0 16px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{cats}}" as="k" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{k.sel}}" style="width: 74px; height: 72px; flex-shrink: 0; border-radius: 16px; border: 1px solid {{k.border}}; background: {{k.bg}}; color: {{k.color}}; font-family: inherit; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 0; box-shadow: {{k.shadow}}; cursor: pointer">
+<sc-if value="{{k.isAll}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg></sc-if>
+<sc-if value="{{k.isConf}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.2 2.3 3.5 5"></path></svg></sc-if>
+<sc-if value="{{k.isWork}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg></sc-if>
+<sc-if value="{{k.isNet}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l4-4 4 2 3-2 4 1 3 3M3 11l5 5c1 1 2 1 3 0l1-1M21 11l-5 5M12 15l2 2M14 13l2 2"></path></svg></sc-if>
+<sc-if value="{{k.isExh}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="12" rx="1"></rect><path d="M12 15v3M8 21l4-3 4 3M8 8h8M8 11h5"></path></svg></sc-if>
+<span>{{k.label}}</span>
+</button>
+</sc-for>
+</div>
+<section style="display: flex; flex-direction: column; gap: 10px; padding: 0 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding-inline: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6437fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg><h2 style="margin: 0; font-family: {{disp}}; font-size: 18px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.upcoming}}</h2></div>
+<a href="#" style="display: flex; align-items: center; gap: 6px; color: {{c.vt}}; text-decoration: none; font-size: 13px; font-weight: 700; min-height: 32px">{{s.calendar}}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<sc-for list="{{events}}" as="e" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px; height: 92px; box-sizing: border-box; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 18px; box-shadow: {{c.shadow}}">
+<img src="{{e.img}}" alt="{{e.title}}" style="width: 84px; height: 72px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="align-self: flex-start; padding: 2px 7px; border-radius: 6px; background: {{e.tagBg}}; color: {{e.tagFg}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{e.tag}}</span>
+<span style="font-size: 14px; line-height: 18px; font-weight: 700">{{e.title}}</span>
+<span style="display: flex; gap: 4px; align-items: center; font-size: 12px; color: {{c.muted}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{e.city}}</span>
+</div>
+<div style="width: 46px; height: 60px; flex-shrink: 0; border-radius: 12px; background: {{c.soft}}; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1">
+<span style="font-size: 9.5px; font-weight: 700; color: {{c.muted}}">{{e.dow}}</span>
+<span style="font-family: Poppins, sans-serif; font-size: 19px; font-weight: 700; color: {{c.vt}}">{{e.day}}</span>
+<span style="font-size: 9.5px; font-weight: 700; color: {{c.muted}}">{{s.mon}}</span>
+</div>
+</div>
+</sc-for>
+</section>
+</main>
+<nav aria-label="{{s.nav}}" style="flex-shrink: 0; height: 84px; box-sizing: border-box; padding: 8px 6px 22px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button type="button" aria-current="{{t.current}}" style="border: 0; background: transparent; padding: 0; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; color: {{t.color}}; font-size: 11px; line-height: 14px; font-weight: {{t.weight}}; cursor: pointer">
+<span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.pill}}; color: {{t.icon}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.isHome}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg></sc-if>
+<sc-if value="{{t.isDiscover}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg></sc-if>
+<sc-if value="{{t.isNews}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{t.isRewards}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8c-1-3-3-5-5-4s0 4 5 4zM12 8c1-3 3-5 5-4s0 4-5 4z"></path></svg></sc-if>
+<sc-if value="{{t.isProfile}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+</span>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)',
+        tags: { conf: ['#ece6ff', '#4a22c9'], work: ['#dcf4ea', '#0d6446'], net: ['#fcefd6', '#80520a'], exh: ['#e0ebff', '#1c4aab'] } },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)',
+        tags: { conf: ['#3a1fa8', '#ffffff'], work: ['#0f5a45', '#ffffff'], net: ['#6b4a12', '#ffffff'], exh: ['#123f8f', '#ffffff'] } }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        title: 'Discover', notifications: 'Notifications', name: 'Fatma Zaki', nav: 'Main', sections: 'Discover sections',
+        search: 'Search events, topics, or locations', segs: ['Events', 'Opportunities', 'Companies', 'Professionals', 'Courses'],
+        cats: ['All', 'Conferences', 'Workshops', 'Networking', 'Exhibitions'],
+        upcoming: 'Upcoming Events', calendar: 'Calendar', mon: 'OCT',
+        tabs: ['Home', 'Discover', 'News', 'Rewards', 'Profile'],
+        events: [
+          { dow: 'FRI', day: '02', tag: 'CONFERENCE', tone: 'conf', title: 'Future of Work Summit', city: 'Riyadh', img: '/_blob/612f64f6131a4c2dec0861b2ac2b577b' },
+          { dow: 'TUE', day: '06', tag: 'WORKSHOP', tone: 'work', title: 'Build Your First AI Product', city: 'Jeddah', img: '/_blob/d3734488339e6faea93355cd72580712' },
+          { dow: 'SAT', day: '10', tag: 'NETWORKING', tone: 'net', title: 'Women in Tech Networking Night', city: 'Riyadh', img: '/_blob/f24ebc38adb28cb2e96a8856980b10e6' },
+          { dow: 'SUN', day: '18', tag: 'EXHIBITION', tone: 'exh', title: 'Saudi Creative Expo', city: 'Jeddah', img: '/_blob/1f47ac5ede8419f266fd886cee9a6f94' }
+        ]
+      },
+      ar: {
+        title: 'اكتشف', notifications: 'الإشعارات', name: 'فاطمة زكي', nav: 'التنقل الرئيسي', sections: 'أقسام اكتشف',
+        search: 'ابحث عن فعاليات أو مواضيع أو أماكن', segs: ['الفعاليات', 'الفرص', 'الشركات', 'المحترفون', 'الدورات'],
+        cats: ['الكل', 'مؤتمرات', 'ورش عمل', 'تواصل', 'معارض'],
+        upcoming: 'الفعاليات القادمة', calendar: 'التقويم', mon: 'أكتوبر',
+        tabs: ['الرئيسية', 'اكتشف', 'الأخبار', 'المكافآت', 'ملفي'],
+        events: [
+          { dow: 'الجمعة', day: '02', tag: 'مؤتمر', tone: 'conf', title: 'قمة مستقبل العمل', city: 'الرياض', img: '/_blob/612f64f6131a4c2dec0861b2ac2b577b' },
+          { dow: 'الثلاثاء', day: '06', tag: 'ورشة عمل', tone: 'work', title: 'ابنِ أول منتج ذكاء اصطناعي', city: 'جدة', img: '/_blob/d3734488339e6faea93355cd72580712' },
+          { dow: 'السبت', day: '10', tag: 'تواصل مهني', tone: 'net', title: 'أمسية تواصل النساء في التقنية', city: 'الرياض', img: '/_blob/f24ebc38adb28cb2e96a8856980b10e6' },
+          { dow: 'الأحد', day: '18', tag: 'معرض', tone: 'exh', title: 'معرض الإبداع السعودي', city: 'جدة', img: '/_blob/1f47ac5ede8419f266fd886cee9a6f94' }
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const active = 1;
+    const keys = ['isHome', 'isDiscover', 'isNews', 'isRewards', 'isProfile'];
+    const tabs = s.tabs.map((label, i) => {
+      const on = i === active;
+      const t = { label, color: on ? c.vt : c.muted, icon: on ? (dark ? '#a78bfa' : '#6437fa') : c.muted, pill: on ? c.soft : 'transparent', weight: on ? 800 : 600, current: on ? 'page' : 'false' };
+      keys.forEach((k, j) => { t[k] = i === j; });
+      return t;
+    });
+    const segs = s.segs.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.ink : c.card, color: i === 0 ? c.bg : c.ink, border: i === 0 ? c.ink : c.line }));
+    const ck = ['isAll', 'isConf', 'isWork', 'isNet', 'isExh'];
+    const cats = s.cats.map((label, i) => {
+      const on = i === 0;
+      const k = { label, sel: on ? 'true' : 'false', bg: on ? '#6437fa' : c.card, color: on ? '#ffffff' : c.ink, border: on ? '#6437fa' : c.line, shadow: on ? '0 8px 20px rgba(100,55,250,0.35)' : 'none' };
+      ck.forEach((key, j) => { k[key] = i === j; });
+      return k;
+    });
+    const events = s.events.map((e) => ({ ...e, tagBg: c.tags[e.tone][0], tagFg: c.tags[e.tone][1] }));
+    return {
+      c, s, tabs, segs, cats, events,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.4px', wide: ar ? '0' : '2px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

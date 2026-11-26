@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apply</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; gap: 12px; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; flex-grow: 1; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 20px 0; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 18px; box-shadow: {{c.shadow}}">
+<img src="/_blob/959bcd8bd2cfb6539f98a4500b4be775" alt="" style="width: 44px; height: 44px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{s.role}}</span><span style="font-size: 12px; color: {{c.muted}}">{{s.org}}</span></div>
+</div>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-family: {{disp}}; font-size: 15px; font-weight: 700">{{s.expH}}</h2><span style="font-size: 11px; color: {{c.muted}}">{{s.pick}}</span></div>
+<sc-for list="{{exps}}" as="e" hint-placeholder-count="2">
+<label style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: {{c.card}}; border: 1.5px solid {{e.border}}; border-radius: 16px; cursor: pointer">
+<input type="checkbox" checked="{{e.on}}" style="width: 20px; height: 20px; margin: 0; accent-color: #6437fa; flex-shrink: 0">
+<span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 13px; font-weight: 700">{{e.title}}</span><span style="font-size: 11px; color: {{c.muted}}">{{e.sub}}</span></span>
+</label>
+</sc-for>
+</section>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-family: {{disp}}; font-size: 15px; font-weight: 700">{{s.projH}}</h2><a href="#" style="font-size: 12px; font-weight: 700; color: {{c.vt}}; text-decoration: none">{{s.add}}</a></div>
+<div style="display: flex; gap: 10px">
+<sc-for list="{{projects}}" as="p" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{p.sel}}" style="position: relative; flex-grow: 1; flex-basis: 0; padding: 0; border: 2px solid {{p.border}}; border-radius: 16px; overflow: hidden; background: {{c.card}}; font-family: inherit; color: {{c.ink}}; text-align: start; cursor: pointer">
+<img src="{{p.img}}" alt="" style="width: 100%; height: 62px; display: block; object-fit: cover">
+<span style="display: block; padding: 6px 8px 8px; font-size: 11px; line-height: 14px; font-weight: 700">{{p.title}}</span>
+<span style="position: absolute; top: 6px; inset-inline-end: 6px; width: 20px; height: 20px; border-radius: 10px; background: {{p.dot}}; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+</button>
+</sc-for>
+</div>
+</section>
+<label style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: {{disp}}; font-size: 15px; font-weight: 700">{{s.msgH}}</span>
+<span style="position: relative; display: block">
+<textarea rows="4" style="width: 100%; box-sizing: border-box; height: 100px; resize: none; padding: 12px 14px; border-radius: 16px; border: 1.5px solid #6437fa; background: {{c.card}}; color: {{c.ink}}; font-family: inherit; font-size: 13px; line-height: 19px; outline: 0">{{s.msg}}</textarea>
+<span style="position: absolute; bottom: 8px; inset-inline-end: 12px; font-size: 10px; color: {{c.muted}}">{{s.count}}</span>
+</span>
+</label>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: {{c.soft}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.vt}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+<span style="font-size: 11px; line-height: 16px; color: {{c.muted}}">{{s.privacy}}</span>
+</div>
+</main>
+<div style="flex-shrink: 0; padding: 14px 20px 30px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}">
+<button type="button" style="width: 100%; height: 52px; border: 0; border-radius: 26px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 26px rgba(100,55,250,0.4); cursor: pointer">{{s.submit}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Apply', role: 'Event Producer', org: 'Saudi Events Group · Riyadh',
+        expH: 'Experience to share', pick: 'Choose at least one',
+        exps: [['Freelance Event Coordinator', '2023 – 2025 · Riyadh', true], ['Volunteer Team Lead', 'Riyadh Season · 2024', false]],
+        projH: 'Projects', add: '+ Add',
+        projects: [['Tech summit stage', true, '/_blob/fe99293a7d78b5eec8cf75c718f91260'], ['Creative expo', true, '/_blob/1f47ac5ede8419f266fd886cee9a6f94'], ['Networking night', false, '/_blob/f24ebc38adb28cb2e96a8856980b10e6']],
+        msgH: 'Message to the company', msg: 'I’ve coordinated conferences of 2,000+ guests and would love to bring that experience to your team.', count: '104 / 500',
+        privacy: 'Your email and phone stay private. Saudi Events Group only sees the contact details you choose to share.',
+        submit: 'Submit application'
+      },
+      ar: {
+        back: 'رجوع', title: 'التقديم', role: 'منتج فعاليات', org: 'مجموعة الفعاليات السعودية · الرياض',
+        expH: 'الخبرات التي ستشاركها', pick: 'اختر خبرة واحدة على الأقل',
+        exps: [['منسقة فعاليات مستقلة', '2023 – 2025 · الرياض', true], ['قائدة فريق تطوع', 'موسم الرياض · 2024', false]],
+        projH: 'المشاريع', add: '+ إضافة',
+        projects: [['مسرح قمة التقنية', true, '/_blob/fe99293a7d78b5eec8cf75c718f91260'], ['معرض إبداعي', true, '/_blob/1f47ac5ede8419f266fd886cee9a6f94'], ['أمسية تواصل', false, '/_blob/f24ebc38adb28cb2e96a8856980b10e6']],
+        msgH: 'رسالة إلى الشركة', msg: 'نسّقت مؤتمرات تجاوز حضورها 2,000 ضيف، ويسعدني نقل هذه الخبرة إلى فريقكم.', count: '72 / 500',
+        privacy: 'يبقى بريدك وجوالك خاصين. لا ترى الشركة إلا بيانات التواصل التي تختار مشاركتها.',
+        submit: 'إرسال الطلب'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const exps = s.exps.map((e) => ({ title: e[0], sub: e[1], on: e[2], border: e[2] ? '#6437fa' : c.line }));
+    const projects = s.projects.map((p) => ({ title: p[0], sel: p[1] ? 'true' : 'false', img: p[2], border: p[1] ? '#6437fa' : c.line, dot: p[1] ? '#6437fa' : 'rgba(5,5,13,0.35)' }));
+    return {
+      c, s, exps, projects,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

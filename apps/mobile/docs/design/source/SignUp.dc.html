@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign up</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<div style="display: flex; align-items: center; gap: 6px"><span style="width: 28px; height: 5px; border-radius: 3px; background: #6437fa"></span><span style="width: 28px; height: 5px; border-radius: 3px; background: {{c.line}}"></span><span style="margin-inline-start: 6px; font-size: 12px; font-weight: 700; color: {{c.muted}}">{{s.step}}</span></div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 12px 20px 0; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+<p style="margin: 0; font-size: 13px; line-height: 19px; color: {{c.muted}}">{{s.sub}}</p>
+</div>
+<div role="radiogroup" aria-label="{{s.typeLabel}}" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{types}}" as="t" hint-placeholder-count="2">
+<button type="button" role="radio" aria-checked="{{t.sel}}" style="position: relative; padding: 14px; border-radius: 18px; border: 1.5px solid {{t.border}}; background: {{t.bg}}; color: {{c.ink}}; font-family: inherit; text-align: start; display: flex; flex-direction: column; gap: 8px; cursor: pointer; box-shadow: {{t.shadow}}">
+<span style="width: 38px; height: 38px; border-radius: 12px; background: {{t.iconBg}}; color: {{t.iconFg}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.isInd}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+<sc-if value="{{t.isCo}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="11" height="18" rx="1"></rect><path d="M15 9h5v12h-5M8 7h3M8 11h3M8 15h3"></path></svg></sc-if>
+</span>
+<span style="font-size: 14px; font-weight: 700">{{t.label}}</span>
+<span style="font-size: 11px; line-height: 15px; color: {{c.muted}}">{{t.desc}}</span>
+<span style="position: absolute; top: 12px; inset-inline-end: 12px; width: 18px; height: 18px; box-sizing: border-box; border-radius: 9px; border: {{t.dot}}; background: {{c.card}}"></span>
+</button>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{fields}}" as="f" hint-placeholder-count="4">
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 700">{{f.label}}</span>
+<span style="height: 48px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 10px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{f.border}}; color: {{c.muted}}">
+<sc-if value="{{f.isName}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+<sc-if value="{{f.isMail}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></sc-if>
+<sc-if value="{{f.isPhone}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"></rect><path d="M11 18h2"></path></svg></sc-if>
+<sc-if value="{{f.isPass}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg></sc-if>
+<input type="{{f.type}}" value="{{f.value}}" placeholder="{{f.ph}}" dir="{{f.dir}}" style="flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: inherit; font-size: 14px; color: {{c.ink}}; text-align: start">
+</span>
+</label>
+</sc-for>
+</div>
+<label style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: {{c.soft}}">
+<input type="checkbox" style="width: 20px; height: 20px; margin: 0; accent-color: #6437fa; flex-shrink: 0">
+<span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 13px; font-weight: 700">{{s.student}}</span><span style="font-size: 11px; line-height: 15px; color: {{c.muted}}">{{s.studentHint}}</span></span>
+</label>
+</main>
+<div style="flex-shrink: 0; padding: 12px 20px 32px; display: flex; flex-direction: column; gap: 10px">
+<a href="#" style="height: 54px; border-radius: 27px; background: #6437fa; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 30px rgba(100,55,250,0.4)">{{s.cta}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+<p style="margin: 0; text-align: center; font-size: 12px; color: {{c.muted}}">{{s.have}} <a href="#" style="color: {{c.vt}}; font-weight: 700; text-decoration: none">{{s.signin}}</a></p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', step: 'Step 1 of 2', title: 'Create your account', sub: 'Join Saudi Arabia’s events community in under a minute.',
+        typeLabel: 'Account type', student: 'I’m currently a student', studentHint: 'Unlocks co-op and training opportunities.',
+        cta: 'Continue', have: 'Already have an account?', signin: 'Sign in',
+        types: [['Individual', 'Professionals, freelancers and students'], ['Company', 'Organizers, agencies, venues and suppliers']],
+        fields: [['Full name', 'Fatma Zaki', 'text', 'name'], ['Email', 'fatma@example.com', 'email', 'mail'], ['Phone', '+966 5X XXX XXXX', 'tel', 'phone'], ['Password', '', 'password', 'pass']]
+      },
+      ar: {
+        back: 'رجوع', step: 'الخطوة 1 من 2', title: 'أنشئ حسابك', sub: 'انضم إلى مجتمع الفعاليات في السعودية خلال دقيقة.',
+        typeLabel: 'نوع الحساب', student: 'أنا طالب حاليًا', studentHint: 'يتيح لك فرص التدريب التعاوني.',
+        cta: 'متابعة', have: 'لديك حساب بالفعل؟', signin: 'تسجيل الدخول',
+        types: [['فرد', 'محترفون ومستقلون وطلاب'], ['شركة', 'منظمون ووكالات وقاعات وموردون']],
+        fields: [['الاسم الكامل', 'فاطمة زكي', 'text', 'name'], ['البريد الإلكتروني', 'fatma@example.com', 'email', 'mail'], ['رقم الجوال', '+966 5X XXX XXXX', 'tel', 'phone'], ['كلمة المرور', '', 'password', 'pass']]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const types = s.types.map((t, i) => {
+      const on = i === 0;
+      return { label: t[0], desc: t[1], isInd: i === 0, isCo: i === 1, sel: on ? 'true' : 'false', border: on ? '#6437fa' : c.line, bg: c.card, shadow: on ? '0 8px 24px rgba(100,55,250,0.18)' : 'none', iconBg: on ? '#6437fa' : c.soft, iconFg: on ? '#ffffff' : c.vt, dot: on ? '5px solid #6437fa' : '1.5px solid ' + c.line };
+    });
+    const fields = s.fields.map((f, i) => ({ label: f[0], value: f[3] === 'pass' ? '' : f[1], ph: f[3] === 'pass' ? '••••••••' : f[1], type: f[2], isName: f[3] === 'name', isMail: f[3] === 'mail', isPhone: f[3] === 'phone', isPass: f[3] === 'pass', dir: (f[3] === 'mail' || f[3] === 'phone') ? 'ltr' : 'auto', border: i === 1 ? '#6437fa' : c.line }));
+    return {
+      c, s, types, fields,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

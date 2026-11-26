@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Applicants</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; gap: 12px; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<div style="display: flex; flex-direction: column"><h1 style="margin: 0; font-family: {{disp}}; font-size: 19px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1><span style="font-size: 12px; color: {{c.muted}}">{{s.sub}}</span></div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 12px">
+<div role="tablist" aria-label="{{s.title}}" style="display: flex; gap: 8px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button type="button" role="tab" aria-selected="{{t.sel}}" style="height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.color}}; font-family: inherit; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; cursor: pointer">{{t.label}}</button>
+</sc-for>
+</div>
+<sc-for list="{{people}}" as="p" hint-placeholder-count="3">
+<article style="display: flex; flex-direction: column; gap: 12px; padding: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<sc-if value="{{p.photo}}" hint-placeholder-val="{{ false }}"><img src="{{p.photo}}" alt="" style="width: 46px; height: 46px; display: block; object-fit: cover; border-radius: 23px; flex-shrink: 0"></sc-if>
+<sc-if value="{{p.noPhoto}}" hint-placeholder-val="{{ false }}"><span style="width: 46px; height: 46px; flex-shrink: 0; border-radius: 23px; background: {{p.av}}; color: #ffffff; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{p.ini}}</span></sc-if>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 14px; font-weight: 700">{{p.name}}</span><span style="font-size: 12px; color: {{c.muted}}">{{p.head}}</span></div>
+<span style="font-size: 11px; color: {{c.muted}}">{{p.time}}</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="display: flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 12px; background: {{c.soft}}; color: {{c.vt}}; font-size: 11px; font-weight: 700">{{p.exp}}</span>
+<span style="display: flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 12px; background: {{c.soft}}; color: {{c.vt}}; font-size: 11px; font-weight: 700">{{p.proj}}</span>
+<span style="display: flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 12px; border: 1px solid {{c.line}}; color: {{c.muted}}; font-size: 11px; font-weight: 700"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>{{p.contact}}</span>
+</div>
+<p style="margin: 0; font-size: 12px; line-height: 18px; color: {{c.muted}}">{{p.msg}}</p>
+<div style="display: flex; gap: 8px">
+<button type="button" style="flex-grow: 1; flex-basis: 0; height: 40px; border: 1.5px solid {{c.line2}}; border-radius: 20px; background: transparent; color: {{c.ink}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{s.view}}</button>
+<button type="button" style="flex-grow: 1; flex-basis: 0; height: 40px; border: 0; border-radius: 20px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 16px rgba(100,55,250,0.3)">{{s.shortlist}}</button>
+</div>
+</article>
+</sc-for>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', line2: '#cbbdfb', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', line2: '#2a2c4d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Event Producer', sub: '8 applicants · Live', view: 'View application', shortlist: 'Shortlist',
+        tabs: ['New · 3', 'In review · 2', 'Shortlisted · 2', 'Not selected · 1'],
+        people: [
+          ['FZ', 'Fatma Zaki', 'Event Attendee · Cairo', '2h', '1 experience', '2 projects', 'Contact private', 'I’ve coordinated conferences of 2,000+ guests and would love to bring that…', true],
+          ['OH', 'Omar Al-Harbi', 'Production Coordinator · Riyadh', '5h', '3 experiences', '4 projects', 'Email shared', 'Five years running stage operations for concerts and brand launches…', false],
+          ['NA', 'Noura Al-Saud', 'Event Planner · Jeddah', '1d', '2 experiences', '1 project', 'Contact private', 'Looking to move into large-scale production after three seasons…', false]
+        ]
+      },
+      ar: {
+        back: 'رجوع', title: 'منتج فعاليات', sub: '8 متقدمين · منشورة', view: 'عرض الطلب', shortlist: 'إضافة للمختصرة',
+        tabs: ['جديد · 3', 'قيد المراجعة · 2', 'القائمة المختصرة · 2', 'لم يُختر · 1'],
+        people: [
+          ['فز', 'فاطمة زكي', 'مهتمة بالفعاليات · القاهرة', 'قبل ساعتين', 'خبرة واحدة', 'مشروعان', 'التواصل خاص', 'نسّقت مؤتمرات تجاوز حضورها 2,000 ضيف، ويسعدني نقل هذه…', true],
+          ['عح', 'عمر الحربي', 'منسق إنتاج · الرياض', 'قبل 5 ساعات', '3 خبرات', '4 مشاريع', 'البريد مُشارك', 'خمس سنوات في تشغيل المسارح للحفلات وإطلاق العلامات…', false],
+          ['نس', 'نورة آل سعود', 'مخططة فعاليات · جدة', 'أمس', 'خبرتان', 'مشروع واحد', 'التواصل خاص', 'أتطلع للانتقال إلى الإنتاج الكبير بعد ثلاثة مواسم…', false]
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const tabs = s.tabs.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.ink : c.card, color: i === 0 ? c.bg : c.ink, border: i === 0 ? c.ink : c.line }));
+    const avs = ['#6437fa', '#0d6446', '#1c4aab'];
+    const people = s.people.map((p, i) => ({ ini: p[0], name: p[1], head: p[2], time: p[3], exp: p[4], proj: p[5], contact: p[6], msg: p[7], photo: p[8] ? '/_blob/17c4ffa8b33f8d93c5fc6d4d6e5955ea' : '', noPhoto: !p[8], av: avs[i] }));
+    return {
+      c, s, tabs, people,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

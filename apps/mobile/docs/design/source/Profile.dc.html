@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 20px 8px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 24px; background: #6437fa; transform: skewX(-18deg)"></div><h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1></div>
+<div style="display: flex; align-items: center">
+<button type="button" aria-label="{{s.share}}" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path></svg></button>
+<button type="button" aria-label="{{s.settings}}" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg></button>
+</div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 12px">
+<section style="display: flex; align-items: center; gap: 14px; padding: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 22px; box-shadow: {{c.shadow}}">
+<div style="position: relative; flex-shrink: 0">
+<img src="/_blob/17c4ffa8b33f8d93c5fc6d4d6e5955ea" alt="{{s.name}}" style="width: 72px; height: 72px; display: block; object-fit: cover; border-radius: 36px; border: 3px solid {{c.card}}; box-shadow: 0 0 0 2px #6437fa">
+<span style="position: absolute; bottom: 0; inset-inline-end: 0; width: 22px; height: 22px; border-radius: 11px; background: #6437fa; border: 2px solid {{c.card}}; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg></span>
+</div>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<h2 style="margin: 0; font-family: {{disp}}; font-size: 19px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.name}}</h2>
+<span style="font-size: 12px; font-weight: 700; color: {{c.vt}}">{{s.role}}</span>
+<span style="display: flex; gap: 4px; align-items: center; font-size: 12px; color: {{c.muted}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{s.city}}</span>
+<div style="display: flex; gap: 6px; margin-top: 4px">
+<span style="padding: 2px 8px; border-radius: 6px; background: {{c.soft}}; color: {{c.vt}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{s.status}}</span>
+<span style="padding: 1px 7px; border-radius: 6px; border: 1px solid {{c.line}}; color: {{c.muted}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{s.unverified}}</span>
+</div>
+</div>
+<a href="#" style="flex-shrink: 0; width: 76px; padding: 10px 6px; box-sizing: border-box; border-radius: 16px; background: {{c.soft}}; text-decoration: none; color: {{c.ink}}; display: flex; flex-direction: column; align-items: center; gap: 2px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="#6437fa" stroke="#6437fa" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"></path></svg>
+<span style="font-family: Poppins, sans-serif; font-size: 16px; font-weight: 700">1,250</span>
+<span style="font-size: 10px; color: {{c.muted}}; font-weight: 600">{{s.level}}</span>
+</a>
+</section>
+<div style="display: flex; gap: 8px; flex-shrink: 0">
+<button type="button" style="flex-grow: 1; flex-basis: 0; height: 42px; border: 0; border-radius: 21px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; box-shadow: 0 8px 20px rgba(100,55,250,0.3); cursor: pointer">{{s.edit}}</button>
+<button type="button" style="flex-grow: 1; flex-basis: 0; height: 42px; border: 1.5px solid #6437fa; border-radius: 21px; background: transparent; color: {{c.vt}}; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer">{{s.verify}}</button>
+</div>
+<section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px 4px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<sc-for list="{{stats}}" as="st" hint-placeholder-count="4">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; border-inline-start: 1px solid {{st.rule}}">
+<span style="font-family: Poppins, sans-serif; font-size: 19px; line-height: 24px; font-weight: 700; color: {{c.vt}}">{{st.n}}</span>
+<span style="font-size: 10px; line-height: 13px; color: {{c.muted}}; padding: 0 4px">{{st.label}}</span>
+</div>
+</sc-for>
+</section>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding-inline: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 20px; background: #6437fa; transform: skewX(-18deg)"></div><h2 style="margin: 0; font-family: {{disp}}; font-size: 17px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.apps}}</h2></div>
+<a href="#" style="display: flex; align-items: center; gap: 6px; color: {{c.vt}}; text-decoration: none; font-size: 13px; font-weight: 700; min-height: 32px">{{s.viewAll}}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<sc-for list="{{apps}}" as="a" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid {{a.rule}}">
+<img src="{{a.img}}" alt="{{a.org}}" style="width: 42px; height: 42px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="font-size: 13px; line-height: 18px; font-weight: 700">{{a.title}}</span>
+<span style="font-size: 11px; line-height: 15px; color: {{c.muted}}">{{a.org}}</span>
+</div>
+<span style="padding: 3px 9px; border-radius: 12px; background: {{a.bg}}; color: {{a.fg}}; font-size: 10.5px; font-weight: 800; white-space: nowrap">{{a.status}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+<section style="background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px 8px 14px; padding-inline: 14px 10px; border-bottom: 1px solid {{c.line}}">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6437fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>{{s.appearance}}</span>
+<div role="radiogroup" aria-label="{{s.appearance}}" style="display: flex; padding: 3px; border-radius: 17px; background: {{c.soft}}">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="2">
+<button type="button" role="radio" aria-checked="{{m.sel}}" style="height: 28px; padding: 0 12px; border: 0; border-radius: 14px; background: {{m.bg}}; color: {{m.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: {{m.shadow}}">{{m.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px 8px 14px; padding-inline: 14px 10px">
+<span style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6437fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg>{{s.language}}</span>
+<div role="radiogroup" aria-label="{{s.language}}" style="display: flex; padding: 3px; border-radius: 17px; background: {{c.soft}}">
+<sc-for list="{{langs}}" as="l" hint-placeholder-count="2">
+<button type="button" role="radio" aria-checked="{{l.sel}}" style="height: 28px; padding: 0 12px; border: 0; border-radius: 14px; background: {{l.bg}}; color: {{l.color}}; font-family: {{l.font}}; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: {{l.shadow}}">{{l.label}}</button>
+</sc-for>
+</div>
+</div>
+</section>
+</main>
+<nav aria-label="{{s.nav}}" style="flex-shrink: 0; height: 84px; box-sizing: border-box; padding: 8px 6px 22px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button type="button" aria-current="{{t.current}}" style="border: 0; background: transparent; padding: 0; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; color: {{t.color}}; font-size: 11px; line-height: 14px; font-weight: {{t.weight}}; cursor: pointer">
+<span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.pill}}; color: {{t.icon}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.isHome}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg></sc-if>
+<sc-if value="{{t.isDiscover}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg></sc-if>
+<sc-if value="{{t.isNews}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{t.isRewards}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8c-1-3-3-5-5-4s0 4 5 4zM12 8c1-3 3-5 5-4s0 4-5 4z"></path></svg></sc-if>
+<sc-if value="{{t.isProfile}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+</span>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)',
+        warn: ['#fcefd6', '#80520a'], ok: ['#dcf4ea', '#0d6446'] },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)',
+        warn: ['#6b4a12', '#ffffff'], ok: ['#0f5a45', '#ffffff'] }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        title: 'Profile', share: 'Share profile', settings: 'Settings', nav: 'Main',
+        name: 'Fatma Zaki', role: 'Event Attendee', city: 'Cairo, Egypt', status: 'PROFESSIONAL', unverified: 'NOT VERIFIED', level: 'Level 3',
+        edit: 'Edit profile', verify: 'Get verified',
+        stats: [['5', 'Events attended'], ['2', 'Registered'], ['4', 'Saved'], ['12', 'Connections']],
+        apps: 'My Applications', viewAll: 'View All',
+        appsList: [
+          { title: 'Event Coordinator', org: 'Saudi Events Group', status: 'In review', tone: 'warn', img: '/_blob/959bcd8bd2cfb6539f98a4500b4be775' },
+          { title: 'Guest Experience Volunteer', org: 'Riyadh Season', status: 'Shortlisted', tone: 'ok', img: '/_blob/b9a81774c8b93cc78c19008bd80b4b27' }
+        ],
+        appearance: 'Appearance', modes: ['Light', 'Dark'], language: 'Language',
+        tabs: ['Home', 'Discover', 'News', 'Rewards', 'Profile']
+      },
+      ar: {
+        title: 'ملفي', share: 'مشاركة الملف', settings: 'الإعدادات', nav: 'التنقل الرئيسي',
+        name: 'فاطمة زكي', role: 'مهتمة بالفعاليات', city: 'القاهرة، مصر', status: 'محترفة', unverified: 'غير موثّق', level: 'المستوى 3',
+        edit: 'تعديل الملف', verify: 'طلب التوثيق',
+        stats: [['5', 'فعاليات حضرتها'], ['2', 'مسجّلة'], ['4', 'محفوظات'], ['12', 'علاقات']],
+        apps: 'طلباتي', viewAll: 'عرض الكل',
+        appsList: [
+          { title: 'منسقة فعاليات', org: 'مجموعة الفعاليات السعودية', status: 'قيد المراجعة', tone: 'warn', img: '/_blob/959bcd8bd2cfb6539f98a4500b4be775' },
+          { title: 'متطوعة تجربة الزوار', org: 'موسم الرياض', status: 'في القائمة المختصرة', tone: 'ok', img: '/_blob/b9a81774c8b93cc78c19008bd80b4b27' }
+        ],
+        appearance: 'المظهر', modes: ['فاتح', 'داكن'], language: 'اللغة',
+        tabs: ['الرئيسية', 'اكتشف', 'الأخبار', 'المكافآت', 'ملفي']
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const active = 4;
+    const keys = ['isHome', 'isDiscover', 'isNews', 'isRewards', 'isProfile'];
+    const tabs = s.tabs.map((label, i) => {
+      const on = i === active;
+      const t = { label, color: on ? c.vt : c.muted, icon: on ? (dark ? '#a78bfa' : '#6437fa') : c.muted, pill: on ? c.soft : 'transparent', weight: on ? 800 : 600, current: on ? 'page' : 'false' };
+      keys.forEach((k, j) => { t[k] = i === j; });
+      return t;
+    });
+    const stats = s.stats.map((x, i) => ({ n: x[0], label: x[1], rule: i === 0 ? 'transparent' : c.line }));
+    const apps = s.appsList.map((a, i) => ({ ...a, bg: c[a.tone][0], fg: c[a.tone][1], rule: i === s.appsList.length - 1 ? 'transparent' : c.line }));
+    const seg = (on) => ({ sel: on ? 'true' : 'false', bg: on ? '#6437fa' : 'transparent', color: on ? '#ffffff' : c.muted, shadow: on ? '0 4px 12px rgba(100,55,250,0.35)' : 'none' });
+    const modes = s.modes.map((label, i) => ({ label, ...seg(i === (dark ? 1 : 0)) }));
+    const langs = [
+      { label: 'English', font: 'Poppins, sans-serif', ...seg(!ar) },
+      { label: 'العربية', font: '"IBM Plex Sans Arabic", sans-serif', ...seg(ar) }
+    ];
+    return {
+      c, s, tabs, stats, apps, modes, langs,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.4px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

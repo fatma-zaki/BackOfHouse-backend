@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Respond to supplier request</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; gap: 12px; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 20px 0; gap: 14px">
+<section style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: {{c.card}}; border: 1.5px solid {{c.line2}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 10px">
+<img src="/_blob/fe99293a7d78b5eec8cf75c718f91260" alt="" style="width: 40px; height: 40px; display: block; object-fit: cover; border-radius: 12px">
+<div style="display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 700">{{s.from}}</span><span style="font-size: 11px; color: {{c.muted}}">{{s.due}}</span></div>
+</div>
+<span style="font-family: {{disp}}; font-size: 15px; font-weight: 700">{{s.req}}</span>
+<span style="font-size: 12px; color: {{c.muted}}">{{s.reqMeta}}</span>
+</section>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.priceL}}</span><span style="height: 48px; box-sizing: border-box; padding: 0 14px; display: flex; align-items: center; gap: 8px; border-radius: 14px; background: {{c.card}}; border: 1.5px solid #6437fa"><span style="font-size: 12px; font-weight: 700; color: {{c.muted}}">{{s.sar}}</span><input type="text" value="78,000" dir="ltr" style="flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: {{c.ink}}; font-family: inherit; font-size: 15px; font-weight: 700; text-align: start"></span></label>
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.timeL}}</span><input type="text" value="{{s.timeV}}" style="height: 48px; box-sizing: border-box; padding: 0 14px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; font-family: inherit; font-size: 14px; outline: 0"></label>
+</div>
+<label style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12px; font-weight: 700">{{s.msgL}}</span><textarea rows="4" style="height: 96px; box-sizing: border-box; resize: none; padding: 10px 14px; border-radius: 14px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; font-family: inherit; font-size: 13px; line-height: 19px; outline: 0">{{s.msgV}}</textarea></label>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between"><span style="font-size: 12px; font-weight: 700">{{s.projL}}</span><span style="font-size: 11px; color: {{c.muted}}">{{s.projN}}</span></div>
+<div style="display: flex; gap: 10px">
+<sc-for list="{{projects}}" as="p" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{p.sel}}" style="position: relative; flex-grow: 1; flex-basis: 0; padding: 0; border: 2px solid {{p.border}}; border-radius: 16px; overflow: hidden; background: {{c.card}}; font-family: inherit; color: {{c.ink}}; text-align: start; cursor: pointer">
+<img src="{{p.img}}" alt="" style="width: 100%; height: 58px; display: block; object-fit: cover">
+<span style="display: block; padding: 6px 8px 8px; font-size: 10.5px; line-height: 13px; font-weight: 700">{{p.t}}</span>
+<span style="position: absolute; top: 6px; inset-inline-end: 6px; width: 20px; height: 20px; border-radius: 10px; background: {{p.dot}}; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span>
+</button>
+</sc-for>
+</div>
+</section>
+<div style="display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px; background: {{c.soft}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{c.vt}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+<span style="font-size: 11px; line-height: 16px; color: {{c.muted}}">{{s.private}}</span>
+</div>
+</main>
+<div style="flex-shrink: 0; padding: 14px 20px 30px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}">
+<button type="button" style="width: 100%; height: 52px; border: 0; border-radius: 26px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 26px rgba(100,55,250,0.4); cursor: pointer">{{s.submit}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', line2: '#cbbdfb', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', line2: '#3a2d8f', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Your response', from: 'Riyadh Front Events', due: 'Respond by Oct 5',
+        req: 'Stage & lighting for a 3-day summit', reqMeta: 'Budget SAR 60K – 90K · Riyadh · Oct 15 – 17',
+        priceL: 'Your price', sar: 'SAR', timeL: 'Setup time', timeV: '2 days',
+        msgL: 'Message', msgV: 'We delivered staging and lighting for similar summits at Riyadh Front and can hold these dates.',
+        projL: 'Attach projects', projN: '2 selected',
+        projects: [['Riyadh Tech Summit', true, '/_blob/fe99293a7d78b5eec8cf75c718f91260'], ['Creative Expo', true, '/_blob/1f47ac5ede8419f266fd886cee9a6f94'], ['Future of Work', false, '/_blob/612f64f6131a4c2dec0861b2ac2b577b']],
+        private: 'Only Riyadh Front Events can see your response and price.', submit: 'Send response'
+      },
+      ar: {
+        back: 'رجوع', title: 'ردّك', from: 'فعاليات واجهة الرياض', due: 'الرد قبل 5 أكتوبر',
+        req: 'مسرح وإضاءة لقمة مدتها 3 أيام', reqMeta: 'الميزانية 60 – 90 ألف ر.س · الرياض · 15 – 17 أكتوبر',
+        priceL: 'سعرك', sar: 'ر.س', timeL: 'مدة التجهيز', timeV: 'يومان',
+        msgL: 'الرسالة', msgV: 'نفّذنا تجهيز المسارح والإضاءة لقمم مشابهة في واجهة الرياض، ويمكننا حجز هذه التواريخ.',
+        projL: 'إرفاق مشاريع', projN: 'تم اختيار 2',
+        projects: [['قمة الرياض للتقنية', true, '/_blob/fe99293a7d78b5eec8cf75c718f91260'], ['المعرض الإبداعي', true, '/_blob/1f47ac5ede8419f266fd886cee9a6f94'], ['مستقبل العمل', false, '/_blob/612f64f6131a4c2dec0861b2ac2b577b']],
+        private: 'لا يرى ردّك وسعرك إلا فعاليات واجهة الرياض.', submit: 'إرسال الرد'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const projects = s.projects.map((p) => ({ t: p[0], sel: p[1] ? 'true' : 'false', img: p[2], border: p[1] ? '#6437fa' : c.line, dot: p[1] ? '#6437fa' : 'rgba(5,5,13,0.35)' }));
+    return {
+      c, s, projects,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

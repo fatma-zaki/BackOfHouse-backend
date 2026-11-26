@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>News article</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}">
+<div style="position: relative; height: 270px; flex-shrink: 0">
+<img src="/_blob/633bc935833c5ccda62522c7e5f0168a" alt="{{s.alt}}" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover">
+<div style="position: absolute; left: 0; right: 0; top: 0; height: 130px; background: linear-gradient(to bottom, rgba(5,5,13,0.55) 0%, rgba(5,5,13,0) 100%)"></div>
+<div style="position: absolute; top: 48px; inset-inline: 16px; display: flex; justify-content: space-between">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.25); background: rgba(5,5,13,0.45); color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<div style="display: flex; gap: 8px">
+<button type="button" aria-label="{{s.share}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.25); background: rgba(5,5,13,0.45); color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path></svg></button>
+<button type="button" aria-label="{{s.save}}" style="width: 44px; height: 44px; border-radius: 22px; border: 0; background: #6437fa; color: #ffffff; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+</div>
+</div>
+</div>
+<main style="flex-grow: 1; overflow: hidden; margin-top: -28px; position: relative; border-radius: 28px 28px 0 0; background: {{c.bg}}; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: flex-start; padding: 3px 8px; border-radius: 6px; background: {{c.tagBg}}; color: {{c.tagFg}}; font-size: 10px; font-weight: 800; letter-spacing: {{tag}}">{{s.desk}}</span>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 31px; font-weight: 700; letter-spacing: {{tt}}">{{s.titleA}} <span style="color: {{c.vt}}">{{s.titleB}}</span></h1>
+<div style="display: flex; align-items: center; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid {{c.line}}">
+<img src="/_blob/aed6800614143886079e141957cfdccd" alt="" style="width: 36px; height: 36px; box-sizing: border-box; padding: 5px; border-radius: 18px; background: #15122e; object-fit: contain; display: block">
+<div style="display: flex; flex-direction: column"><span style="font-size: 13px; font-weight: 700">{{s.by}}</span><span style="font-size: 11px; color: {{c.muted}}">{{s.meta}}</span></div>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 25px">{{s.p1}}</p>
+<div style="display: flex; gap: 12px; padding: 16px; border-radius: 18px; background: {{c.soft}}">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="#6437fa" style="flex-shrink: 0; transform: {{flip}}"><path d="M7 7h4v4c0 3-1.5 5-4 6l-.8-1.4C7.6 14.8 8.3 13.6 8.4 12H7zm8 0h4v4c0 3-1.5 5-4 6l-.8-1.4c1.4-.8 2.1-2 2.2-3.6H15z"></path></svg>
+<p style="margin: 0; font-family: {{disp}}; font-size: 15px; line-height: 23px; font-weight: 600; color: {{c.vt}}">{{s.quote}}</p>
+</div>
+<p style="margin: 0; font-size: 15px; line-height: 25px; color: {{c.body2}}">{{s.p2}}</p>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', body2: '#2c2848', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', tagBg: '#fcefd6', tagFg: '#80520a' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', body2: '#d9d8ec', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', tagBg: '#6b4a12', tagFg: '#ffffff' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', share: 'Share', save: 'Saved', alt: 'Riyadh skyline at night',
+        desk: 'MARKET DESK', titleA: 'The Future of Events in', titleB: 'Saudi Arabia',
+        by: 'Back of House Market Desk', meta: '27 Sep 2026 · 6 min read',
+        p1: 'Saudi Arabia’s events sector is entering a new phase. Organizers, venues and production companies are rethinking how experiences are planned, staffed and delivered.',
+        quote: 'The next wave of great events will be built by the people behind them.',
+        p2: 'Technology is changing the work behind the scenes, from ticketing and crowd flow to live production, while demand for skilled local talent keeps growing.'
+      },
+      ar: {
+        back: 'رجوع', share: 'مشاركة', save: 'محفوظ', alt: 'أفق الرياض ليلًا',
+        desk: 'مكتب السوق', titleA: 'مستقبل الفعاليات في', titleB: 'السعودية',
+        by: 'مكتب السوق في باك أوف هاوس', meta: '27 سبتمبر 2026 · قراءة 6 دقائق',
+        p1: 'يدخل قطاع الفعاليات في السعودية مرحلة جديدة، إذ يعيد المنظمون والقاعات وشركات الإنتاج التفكير في طريقة تخطيط التجارب وتشغيلها وتقديمها.',
+        quote: 'الموجة القادمة من الفعاليات العظيمة سيصنعها الأشخاص الذين يقفون خلفها.',
+        p2: 'تغيّر التقنية العمل خلف الكواليس، من التذاكر وحركة الحشود إلى الإنتاج الحي، بينما يتزايد الطلب على المواهب المحلية المؤهلة.'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    return {
+      c, s,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

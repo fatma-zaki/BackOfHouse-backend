@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>News</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 20px 8px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 24px; background: #6437fa; transform: skewX(-18deg)"></div><h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1></div>
+<div style="display: flex; align-items: center">
+<button type="button" aria-label="{{s.searchNews}}" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></button>
+<button type="button" aria-label="{{s.saved}}" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+</div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 14px">
+<article style="position: relative; height: 164px; flex-shrink: 0; overflow: hidden; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 22px; box-shadow: {{c.shadow}}">
+<img src="/_blob/633bc935833c5ccda62522c7e5f0168a" alt="{{s.leadAlt}}" style="position: absolute; top: 0; inset-inline-end: 0; width: 210px; height: 164px; display: block; object-fit: cover">
+<div style="position: absolute; top: 0; inset-inline-end: 120px; width: 100px; height: 164px; background: {{fade}}"></div>
+<div style="position: absolute; top: 16px; inset-inline-start: 16px; width: 200px; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; gap: 8px; align-items: center; font-size: 10px; letter-spacing: {{wide}}; font-weight: 800"><span style="width: 3px; height: 14px; background: #6437fa; transform: skewX(-18deg)"></span>{{s.latest}}</div>
+<h2 style="margin: 0; font-family: {{disp}}; font-size: 18px; line-height: 23px; font-weight: 700; letter-spacing: {{tt}}">{{s.leadA}} <span style="color: {{c.vt}}">{{s.leadB}}</span></h2>
+<p style="margin: 0; font-size: 12px; line-height: 17px; color: {{c.muted}}">{{s.leadDek}}</p>
+<span style="display: flex; gap: 5px; align-items: center; font-size: 11px; color: {{c.muted}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{s.leadMeta}}</span>
+</div>
+<a href="#" style="position: absolute; bottom: 12px; inset-inline-end: 12px; height: 30px; box-sizing: border-box; padding: 0 12px; border-radius: 15px; background: #ffffff; color: #15122e; text-decoration: none; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px">{{s.read}}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</article>
+<div style="display: flex; gap: 8px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{desks}}" as="d" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{d.sel}}" style="height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid {{d.border}}; background: {{d.bg}}; color: {{d.color}}; font-family: inherit; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer; flex-shrink: 0; box-shadow: {{d.shadow}}">{{d.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-inline: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 20px; background: #6437fa; transform: skewX(-18deg)"></div><h2 style="margin: 0; font-family: {{disp}}; font-size: 18px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.list}}</h2></div>
+<div role="tablist" aria-label="{{s.order}}" style="display: flex; padding: 3px; border-radius: 16px; background: {{c.soft}}">
+<sc-for list="{{orders}}" as="o" hint-placeholder-count="2">
+<button type="button" role="tab" aria-selected="{{o.sel}}" style="height: 28px; padding: 0 12px; border: 0; border-radius: 14px; background: {{o.bg}}; color: {{o.color}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer">{{o.label}}</button>
+</sc-for>
+</div>
+</div>
+<sc-for list="{{stories}}" as="n" hint-placeholder-count="4">
+<article style="display: flex; gap: 12px; padding: 10px; flex-shrink: 0; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 18px; box-shadow: {{c.shadow}}">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding-inline-start: 4px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="padding: 2px 7px; border-radius: 6px; background: {{n.tagBg}}; color: {{n.tagFg}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{n.desk}}</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{c.muted}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></div>
+<h3 style="margin: 0; font-size: 14px; line-height: 19px; font-weight: 700">{{n.title}}</h3>
+<span style="display: flex; gap: 5px; align-items: center; font-size: 11px; color: {{c.muted}}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{n.meta}}</span>
+</div>
+<img src="{{n.img}}" alt="{{n.title}}" style="width: 104px; height: 78px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+</article>
+</sc-for>
+</main>
+<nav aria-label="{{s.nav}}" style="flex-shrink: 0; height: 84px; box-sizing: border-box; padding: 8px 6px 22px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button type="button" aria-current="{{t.current}}" style="border: 0; background: transparent; padding: 0; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; color: {{t.color}}; font-size: 11px; line-height: 14px; font-weight: {{t.weight}}; cursor: pointer">
+<span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.pill}}; color: {{t.icon}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.isHome}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg></sc-if>
+<sc-if value="{{t.isDiscover}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg></sc-if>
+<sc-if value="{{t.isNews}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{t.isRewards}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8c-1-3-3-5-5-4s0 4 5 4zM12 8c1-3 3-5 5-4s0 4-5 4z"></path></svg></sc-if>
+<sc-if value="{{t.isProfile}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+</span>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)', fadeA: '#ffffff', fadeB: 'rgba(255,255,255,0)',
+        tags: { tech: ['#ece6ff', '#4a22c9'], reg: ['#e0ebff', '#1c4aab'], mkt: ['#fcefd6', '#80520a'] } },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)', fadeA: '#0b0c1d', fadeB: 'rgba(11,12,29,0)',
+        tags: { tech: ['#3a1fa8', '#ffffff'], reg: ['#123f8f', '#ffffff'], mkt: ['#6b4a12', '#ffffff'] } }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        title: 'News', searchNews: 'Search news', saved: 'Saved articles', nav: 'Main', order: 'Order',
+        latest: 'LATEST NEWS', leadA: 'The Future of Events in', leadB: 'Saudi Arabia', leadAlt: 'Riyadh skyline at night',
+        leadDek: 'Innovation, technology and talent are shaping a new era for the sector.', leadMeta: '6 min read · 2h ago', read: 'Read More',
+        desks: ['All desks', 'Technical', 'Regulatory', 'Market'], list: 'Briefings', orders: ['For you', 'Latest'],
+        tabs: ['Home', 'Discover', 'News', 'Rewards', 'Profile'],
+        stories: [
+          { desk: 'TECHNICAL', tone: 'tech', title: 'How Technology is Transforming Live Events', meta: '7 min read · 5h ago', img: '/_blob/b4722c75c2e1ead44b6a49cc3ff4884a' },
+          { desk: 'MARKET', tone: 'mkt', title: 'Riyadh Season Sets a New Attendance Record', meta: '4 min read · Yesterday', img: '/_blob/b9a81774c8b93cc78c19008bd80b4b27' },
+          { desk: 'REGULATORY', tone: 'reg', title: 'What Organizers Need to Know About Event Permits', meta: '5 min read · 2d ago', img: '/_blob/b2c82e6c328b211df449df951ad78445' },
+          { desk: 'TECHNICAL', tone: 'tech', title: 'The Rise of Hybrid Events', meta: '5 min read · 3d ago', img: '/_blob/d4296759d396a16272eba87d25dfe698' }
+        ]
+      },
+      ar: {
+        title: 'الأخبار', searchNews: 'ابحث في الأخبار', saved: 'المقالات المحفوظة', nav: 'التنقل الرئيسي', order: 'الترتيب',
+        latest: 'آخر الأخبار', leadA: 'مستقبل الفعاليات في', leadB: 'السعودية', leadAlt: 'أفق الرياض ليلًا',
+        leadDek: 'الابتكار والتقنية والمواهب ترسم مرحلة جديدة للقطاع.', leadMeta: 'قراءة 6 دقائق · قبل ساعتين', read: 'اقرأ المزيد',
+        desks: ['كل المكاتب', 'التقني', 'التنظيمي', 'السوق'], list: 'الموجزات', orders: ['لك', 'الأحدث'],
+        tabs: ['الرئيسية', 'اكتشف', 'الأخبار', 'المكافآت', 'ملفي'],
+        stories: [
+          { desk: 'التقني', tone: 'tech', title: 'كيف تغيّر التقنية الفعاليات الحية', meta: 'قراءة 7 دقائق · قبل 5 ساعات', img: '/_blob/b4722c75c2e1ead44b6a49cc3ff4884a' },
+          { desk: 'السوق', tone: 'mkt', title: 'موسم الرياض يسجّل رقمًا قياسيًا جديدًا في الحضور', meta: 'قراءة 4 دقائق · أمس', img: '/_blob/b9a81774c8b93cc78c19008bd80b4b27' },
+          { desk: 'التنظيمي', tone: 'reg', title: 'ما يحتاج المنظمون معرفته عن تصاريح الفعاليات', meta: 'قراءة 5 دقائق · قبل يومين', img: '/_blob/b2c82e6c328b211df449df951ad78445' },
+          { desk: 'التقني', tone: 'tech', title: 'صعود الفعاليات الهجينة', meta: 'قراءة 5 دقائق · قبل 3 أيام', img: '/_blob/d4296759d396a16272eba87d25dfe698' }
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const active = 2;
+    const keys = ['isHome', 'isDiscover', 'isNews', 'isRewards', 'isProfile'];
+    const tabs = s.tabs.map((label, i) => {
+      const on = i === active;
+      const t = { label, color: on ? c.vt : c.muted, icon: on ? (dark ? '#a78bfa' : '#6437fa') : c.muted, pill: on ? c.soft : 'transparent', weight: on ? 800 : 600, current: on ? 'page' : 'false' };
+      keys.forEach((k, j) => { t[k] = i === j; });
+      return t;
+    });
+    const desks = s.desks.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? '#6437fa' : c.card, color: i === 0 ? '#ffffff' : c.ink, border: i === 0 ? '#6437fa' : c.line, shadow: i === 0 ? '0 6px 16px rgba(100,55,250,0.3)' : 'none' }));
+    const orders = s.orders.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.card : 'transparent', color: i === 0 ? c.vt : c.muted }));
+    const stories = s.stories.map((n) => ({ ...n, tagBg: c.tags[n.tone][0], tagFg: c.tags[n.tone][1] }));
+    return {
+      c, s, tabs, desks, orders, stories,
+      fade: 'linear-gradient(to ' + (ar ? 'left' : 'right') + ', ' + c.fadeA + ' 0%, ' + c.fadeB + ' 100%)',
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.4px', wide: ar ? '0' : '3px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

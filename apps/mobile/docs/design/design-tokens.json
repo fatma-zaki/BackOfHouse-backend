@@ -1,0 +1,77 @@
+{
+  "name": "Back of House — app design tokens",
+  "note": "Values used by every screen in this package. Light is the default theme.",
+  "color": {
+    "brand": { "violet": "#6437FA", "onViolet": "#FFFFFF", "violetShadow": "rgba(100,55,250,0.35)" },
+    "light": {
+      "background": "#F6F4FC",
+      "surface": "#FFFFFF",
+      "border": "#E4DFF3",
+      "borderAccent": "#CBBDFB",
+      "text": "#15122E",
+      "textMuted": "#5E5A78",
+      "violetText": "#5424E0",
+      "violetSoft": "#EFEAFE",
+      "cardShadow": "0 8px 30px rgba(40,20,120,0.06)",
+      "navShadow": "0 -10px 30px rgba(40,20,120,0.07)",
+      "danger": "#B42318"
+    },
+    "dark": {
+      "background": "#05050D",
+      "surface": "#0B0C1D",
+      "border": "#1D1F3D",
+      "borderAccent": "#3A2D8F",
+      "text": "#F4F3FF",
+      "textMuted": "#A9A8C3",
+      "violetText": "#A78BFA",
+      "violetSoft": "#141233",
+      "cardShadow": "0 8px 30px rgba(0,0,0,0.35)",
+      "navShadow": "0 -10px 30px rgba(0,0,0,0.5)",
+      "danger": "#F87171"
+    },
+    "tags": {
+      "light": {
+        "conference": { "bg": "#ECE6FF", "fg": "#4A22C9" },
+        "workshop":   { "bg": "#DCF4EA", "fg": "#0D6446" },
+        "networking": { "bg": "#FCEFD6", "fg": "#80520A" },
+        "exhibition": { "bg": "#E0EBFF", "fg": "#1C4AAB" }
+      },
+      "dark": {
+        "conference": { "bg": "#3A1FA8", "fg": "#FFFFFF" },
+        "workshop":   { "bg": "#0F5A45", "fg": "#FFFFFF" },
+        "networking": { "bg": "#6B4A12", "fg": "#FFFFFF" },
+        "exhibition": { "bg": "#123F8F", "fg": "#FFFFFF" }
+      }
+    },
+    "status": {
+      "light": { "success": ["#DCF4EA", "#0D6446"], "warning": ["#FCEFD6", "#80520A"], "info": ["#E0EBFF", "#1C4AAB"] },
+      "dark":  { "success": ["#0C2E24", "#4ADE80"], "warning": ["#33260A", "#FBBF24"], "info": ["#0F2350", "#7FB0FF"] }
+    }
+  },
+  "typography": {
+    "latin": "Poppins (Google Fonts) — weights 400, 500, 600, 700, 800",
+    "arabic": "IBM Plex Sans Arabic (Google Fonts) — weights 400, 500, 600, 700",
+    "numbers": "Western digits in both languages",
+    "scale": {
+      "screenTitle": "24px / 30px, 700, letter-spacing -0.5px (0 in Arabic)",
+      "sectionTitle": "17–18px / 24px, 700",
+      "cardTitle": "14–15px / 19–20px, 700",
+      "body": "13–14px / 20px, 400–500",
+      "caption": "11–12px / 16px",
+      "tag": "9.5–10px, 800, uppercase, letter-spacing 1px (Arabic: no uppercase, no tracking)",
+      "bigNumber": "22–32px, 700"
+    }
+  },
+  "radius": { "tag": 6, "chipPill": 17, "input": 14, "button": 26, "smallCard": 16, "card": 20, "heroCard": 22, "bottomNav": "24 24 0 0", "avatar": "50%" },
+  "spacing": { "screenPadding": 16, "formPadding": 20, "sectionGap": 14, "cardPadding": 14, "gridGap": 10 },
+  "components": {
+    "primaryButton": "height 52, radius 26, violet fill, white 15/700 text, shadow 0 10px 26px violetShadow",
+    "secondaryButton": "height 52, radius 26, 1.5px violet border, violetText",
+    "iconButton": "44×44 circle, 1px border, surface fill",
+    "bottomNav": "height 84, surface, rounded top 24, 5 tabs; active tab = violetSoft pill 52×30 behind icon + violetText label",
+    "sectionHeading": "4×20 violet bar skewed -18deg + title",
+    "tag": "small rounded label, colour by category",
+    "minTouchTarget": 44
+  },
+  "screen": { "width": 390, "height": 844, "topSafeArea": 40 }
+}

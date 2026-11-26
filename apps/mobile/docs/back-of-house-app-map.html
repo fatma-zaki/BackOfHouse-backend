@@ -1,0 +1,1668 @@
+<title>Back Of House App Map</title>
+<meta name="description" content="Product and application map for Back Of House: modules, navigation, flows, roles, screen inventory and open decisions, reconciled against PRD v1.0, the approved business rules and the Flutter codebase as of 18 Sep 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Tokens mirror lib/app/theme/app_colors.dart (light + dark). */
+:root{
+  --bg:#F7F8FB; --bg2:#EFF1F6; --surface:#FFFFFF; --raised:#F3F4F8;
+  --ink:#0F1A33; --ink2:#4A5468; --muted:#667085;
+  --line:#E1E4EC; --line-soft:#ECEEF3;
+  --accent:#6C5CE0; --accent-text:#5B4BD1; --accent-tint:#EFEDFC; --accent-wash:#F6F5FE;
+  --gold:#8A6315; --gold-tint:#F8EFDC;
+  --s-impl:#1F63C6; --s-impl-t:#E3EDFB;
+  --s-part:#2F7FD8; --s-part-t:#EAF2FC;
+  --s-plan:#946000; --s-plan-t:#FAF0D9;
+  --s-miss:#C23142; --s-miss-t:#FBE6E9;
+  --s-dec:#7B45D6;  --s-dec-t:#F1E9FC;
+  --s-ok:#157A52;   --s-ok-t:#E1F3EA;
+  --s-nprd:#5F6B80; --s-nprd-t:#ECEEF3;
+  --shadow:0 1px 2px rgba(15,26,51,.05), 0 8px 24px -12px rgba(15,26,51,.12);
+  --f-sans:"Plus Jakarta Sans","IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-ar:"IBM Plex Sans Arabic","Plus Jakarta Sans",Tahoma,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#060B12; --bg2:#080F17; --surface:#0B1420; --raised:#101B29;
+    --ink:#F2F4F8; --ink2:#B8C0CE; --muted:#8A94A6;
+    --line:#26344A; --line-soft:#182536;
+    --accent:#6C35FC; --accent-text:#A57BFF; --accent-tint:rgba(108,53,252,.18); --accent-wash:rgba(108,53,252,.08);
+    --gold:#D6A84F; --gold-tint:rgba(214,168,79,.12);
+    --s-impl:#6AA8FF; --s-impl-t:rgba(106,168,255,.14);
+    --s-part:#8CBBFF; --s-part-t:rgba(140,187,255,.10);
+    --s-plan:#F2B84B; --s-plan-t:rgba(242,184,75,.13);
+    --s-miss:#FF6B7A; --s-miss-t:rgba(255,107,122,.13);
+    --s-dec:#B690FF;  --s-dec-t:rgba(182,144,255,.14);
+    --s-ok:#3FCF90;   --s-ok-t:rgba(63,207,144,.12);
+    --s-nprd:#9AA5B8; --s-nprd-t:rgba(154,165,184,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#060B12; --bg2:#080F17; --surface:#0B1420; --raised:#101B29;
+  --ink:#F2F4F8; --ink2:#B8C0CE; --muted:#8A94A6;
+  --line:#26344A; --line-soft:#182536;
+  --accent:#6C35FC; --accent-text:#A57BFF; --accent-tint:rgba(108,53,252,.18); --accent-wash:rgba(108,53,252,.08);
+  --gold:#D6A84F; --gold-tint:rgba(214,168,79,.12);
+  --s-impl:#6AA8FF; --s-impl-t:rgba(106,168,255,.14);
+  --s-part:#8CBBFF; --s-part-t:rgba(140,187,255,.10);
+  --s-plan:#F2B84B; --s-plan-t:rgba(242,184,75,.13);
+  --s-miss:#FF6B7A; --s-miss-t:rgba(255,107,122,.13);
+  --s-dec:#B690FF;  --s-dec-t:rgba(182,144,255,.14);
+  --s-ok:#3FCF90;   --s-ok-t:rgba(63,207,144,.12);
+  --s-nprd:#9AA5B8; --s-nprd-t:rgba(154,165,184,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent-text);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px;border-radius:4px}
+[lang="ar"],.ar{font-family:var(--f-ar)}
+code,.mono{font-family:var(--f-mono);font-size:.84em}
+code{background:var(--raised);border:1px solid var(--line-soft);padding:.05em .4em;border-radius:5px;white-space:nowrap}
+
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1440px;margin:0 auto;padding-inline:32px;padding-block:0 96px}
+@media (max-width:1100px){.shell{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:20px}}
+@media (max-width:480px){.shell{padding-inline:16px}}
+
+/* Sidebar */
+.toc{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding-block:28px 24px}
+.toc-brand{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.logo{position:relative;display:inline-flex;flex-direction:column;justify-content:center;border:2px solid var(--ink);padding:5px 9px 4px;font-weight:800;font-size:11px;line-height:1.02;letter-spacing:.01em;color:var(--ink)}
+.logo::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;background:var(--accent)}
+.logo small{font-size:7px;font-weight:700;color:var(--accent-text)}
+.toc-brand span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+.toc ol{list-style:none;margin:0;padding:0;counter-reset:toc;display:grid;gap:1px}
+.toc li{counter-increment:toc}
+.toc a{display:grid;grid-template-columns:26px 1fr;align-items:baseline;padding:6px 10px;border-radius:8px;color:var(--ink2);text-decoration:none;font-size:13.5px;font-weight:500}
+.toc a::before{content:counter(toc,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.toc a:hover{background:var(--raised);color:var(--ink)}
+.toc a.active{background:var(--accent-tint);color:var(--accent-text)}
+.toc a.active::before{color:var(--accent-text)}
+.toc-foot{margin-top:22px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--muted);line-height:1.5}
+@media (max-width:1100px){
+  .toc{position:static;max-height:none;padding-block:20px 4px}
+  .toc-brand{margin-bottom:14px}
+  .toc ol{display:flex;overflow-x:auto;gap:6px;padding-bottom:10px;scrollbar-width:thin}
+  .toc a{white-space:nowrap;border:1px solid var(--line);background:var(--surface);grid-template-columns:auto auto;gap:6px}
+  .toc-foot{display:none}
+}
+
+/* Main */
+main{min-width:0;padding-top:28px}
+.masthead{padding-block:8px 36px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.eyebrow .ar{letter-spacing:0;text-transform:none;font-size:13px;font-weight:500}
+.eyebrow i{width:4px;height:4px;border-radius:50%;background:var(--line);display:inline-block}
+h1{font-size:clamp(34px,5vw,54px);line-height:1.04;letter-spacing:-.025em;font-weight:800;margin:14px 0 14px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent-text)}
+.lede{max-width:70ch;font-size:17px;color:var(--ink2);margin:0 0 22px}
+.sources{display:flex;flex-wrap:wrap;gap:8px}
+.src{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:12.5px;color:var(--ink2)}
+.src b{font-weight:600;color:var(--ink)}
+
+section.doc{padding-block:56px 8px}
+section.doc + section.doc{border-top:1px solid var(--line-soft)}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:baseline;margin-bottom:18px}
+.sec-no{font-family:var(--f-mono);font-size:13px;color:var(--accent-text);font-weight:500}
+h2{font-size:clamp(24px,3vw,30px);line-height:1.15;letter-spacing:-.015em;margin:0;font-weight:750;text-wrap:balance}
+.sec-head .ar{grid-column:2;font-size:14px;color:var(--muted)}
+h3{font-size:17px;line-height:1.3;margin:32px 0 10px;font-weight:700;letter-spacing:-.005em}
+h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:650}
+p{margin:0 0 12px}
+.prose{max-width:72ch;color:var(--ink2)}
+.prose strong{color:var(--ink)}
+ul.tight{margin:0 0 12px;padding-inline-start:20px;color:var(--ink2);max-width:76ch}
+ul.tight li{margin:3px 0}
+ul.tight li::marker{color:var(--muted)}
+
+/* Pills & tags */
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 9px 2px 7px;font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;border:1px solid transparent;line-height:1.6}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+.pill.I{color:var(--s-impl);background:var(--s-impl-t)}
+.pill.PI{color:var(--s-part);background:var(--s-part-t);border-color:currentColor;border-style:dashed}
+.pill.PI::before{background:linear-gradient(90deg,currentColor 50%,transparent 50%);box-shadow:inset 0 0 0 1px currentColor}
+.pill.P{color:var(--s-plan);background:var(--s-plan-t)}
+.pill.P::before{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
+.pill.N{color:var(--s-miss);background:var(--s-miss-t)}
+.pill.N::before{border-radius:1px;transform:rotate(45deg)}
+.pill.D{color:var(--s-dec);background:var(--s-dec-t)}
+.pill.D::before{border-radius:1px;transform:rotate(45deg) scale(.9)}
+.pill.OK{color:var(--s-ok);background:var(--s-ok-t)}
+.tag-nprd{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--s-nprd);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+
+/* Callouts */
+.callout{display:grid;grid-template-columns:4px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px 0;margin:18px 0;overflow:hidden}
+.callout::before{content:"";background:var(--c,var(--accent));border-radius:0 3px 3px 0}
+.callout.warn{--c:var(--s-miss)} .callout.dec{--c:var(--s-dec)} .callout.ok{--c:var(--s-ok)}
+.callout h4{color:var(--c,var(--accent-text));margin-bottom:6px}
+.callout p,.callout li{color:var(--ink2);font-size:14.5px}
+.callout ul{margin:0;padding-inline-start:18px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:22px 0}
+.stat{background:var(--surface);padding:14px 16px 12px}
+.stat b{display:block;font-size:30px;font-weight:750;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted);line-height:1.35;display:block;margin-top:4px}
+.stat .pill{margin-top:8px}
+
+/* Phase ribbon */
+.phases{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:18px 0 8px}
+@media (max-width:1000px){.phases{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.phases{grid-template-columns:minmax(0,1fr)}}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.phase.now{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+.phase header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.phase header b{font-family:var(--f-mono);font-size:12px;color:var(--accent-text)}
+.phase header span{font-size:11px;color:var(--muted)}
+.phase h5{margin:0;font-size:14px;line-height:1.3;font-weight:700}
+.phase ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px}
+.phase li{font-size:11.5px;color:var(--ink2);background:var(--raised);border-radius:5px;padding:1px 6px}
+
+/* Six systems */
+.systems{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+@media (max-width:900px){.systems{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.systems{grid-template-columns:minmax(0,1fr)}}
+.sys{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.sys .q{font-size:12px;color:var(--muted);font-style:italic}
+.sys h5{margin:0;font-size:15px;font-weight:750;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.sys h5 .ar{font-size:13px;font-weight:500;color:var(--muted)}
+.sys p{font-size:13.5px;color:var(--ink2);margin:2px 0 0}
+.sys .ent{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.sys .never{font-size:12.5px;color:var(--s-miss)}
+
+/* Diagram figure */
+figure.dia{margin:18px 0 8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.dia-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line-soft)}
+.dia-bar figcaption{font-size:13.5px;font-weight:650;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.dia-bar figcaption .mono{color:var(--accent-text);font-weight:500}
+.dia-bar figcaption .ar{font-weight:500;color:var(--muted)}
+.tools{display:flex;gap:4px}
+.tools button{font:inherit;font-size:13px;min-width:34px;height:32px;padding:0 9px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);cursor:pointer}
+.tools button:hover{background:var(--raised);color:var(--ink)}
+.stage{position:relative;height:520px;overflow:hidden;cursor:grab;touch-action:none;background:
+  radial-gradient(circle at 1px 1px,var(--line-soft) 1px,transparent 1.4px) 0 0/18px 18px, var(--bg)}
+.stage.grabbing{cursor:grabbing}
+.canvas{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.canvas svg{display:block;max-width:none!important}
+.stage .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px}
+.dia-hint{padding:7px 16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+figure.dia.expanded{position:fixed;inset:12px;z-index:50;margin:0;display:flex;flex-direction:column}
+figure.dia.expanded .stage{flex:1;height:auto!important}
+.scrim{position:fixed;inset:0;background:rgba(6,11,18,.55);z-index:40}
+.dia-err{padding:16px;color:var(--s-miss);font-size:13px;white-space:pre-wrap;font-family:var(--f-mono)}
+
+/* Notes beside diagrams */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:14px 0}
+.note{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.note h4{margin-bottom:6px}
+.note p,.note li{font-size:13.5px;color:var(--ink2)}
+.note ul{margin:0;padding-inline-start:18px}
+.note p:last-child{margin:0}
+
+/* Tabs (roles) */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+.tabs button{font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tabs button .ar{font-weight:500;opacity:.75;margin-inline-start:6px}
+
+/* Tab bars (navigation) */
+.navcompare{display:grid;gap:12px;margin:16px 0}
+.navrow{display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+@media (max-width:720px){.navrow{grid-template-columns:minmax(0,1fr)}}
+.navrow .who h5{margin:0;font-size:14px}
+.navrow .who p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.tabbar{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
+.tabbar span{padding:10px 4px 8px;text-align:center;font-size:12.5px;font-weight:600;color:var(--ink2);border-inline-start:1px solid var(--line-soft);line-height:1.25;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center}
+.tabbar span:first-child{border-inline-start:0}
+.tabbar span small{font-size:10.5px;font-weight:500;color:var(--muted)}
+.tabbar span.on{color:var(--accent-text);box-shadow:inset 0 2px 0 var(--accent)}
+.tabbar span.fab{color:var(--accent-text)}
+.tabbar span.future{color:var(--muted);border-style:dashed;background:repeating-linear-gradient(135deg,transparent 0 6px,var(--line-soft) 6px 7px)}
+.navrow.rec{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:start;padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+thead th{position:sticky;top:0;background:var(--raised);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:650;white-space:nowrap;z-index:1}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--accent-wash)}
+td.num{font-variant-numeric:tabular-nums}
+.matrix td,.matrix th{text-align:center}
+.matrix td:first-child,.matrix th:first-child{text-align:start}
+.yes{color:var(--s-ok);font-weight:650}.no{color:var(--muted)}.cond{color:var(--s-plan);font-weight:600}
+
+/* Inventory */
+.inv-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0 6px}
+.inv-controls input,.inv-controls select{font:inherit;font-size:14px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 12px}
+.inv-controls input{flex:1 1 240px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2)}
+.chip[aria-pressed="false"]{opacity:.5}
+.chip .n{font-variant-numeric:tabular-nums;font-weight:650;color:var(--ink)}
+.inv-count{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+#inv td:nth-child(1){white-space:nowrap;color:var(--muted);font-size:12.5px}
+#inv td:nth-child(2){min-width:230px}
+#inv td:nth-child(2) b{font-weight:650;display:block;color:var(--ink)}
+#inv td:nth-child(2) .ref{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+#inv td:nth-child(2) .why{display:block;font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.45}
+#inv td:nth-child(3),#inv td:nth-child(4),#inv td:nth-child(5){min-width:140px;color:var(--ink2);font-size:13px}
+#inv td:nth-child(7),#inv td:nth-child(8){white-space:nowrap;font-family:var(--f-mono);font-size:12.5px}
+#inv tr.grp td{background:var(--bg2);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding-block:7px}
+
+/* Gaps & decisions */
+.gaps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin:14px 0}
+.gap{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.gap h4{display:flex;justify-content:space-between;gap:8px}
+.gap ul{margin:0;padding-inline-start:18px}
+.gap li{font-size:13.5px;color:var(--ink2);margin:4px 0}
+.dec-table td:first-child{font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.dec-table td:nth-child(2){min-width:260px}
+.dec-table td:nth-child(2) b{display:block;color:var(--ink);font-weight:650}
+.dec-table td:nth-child(3){min-width:280px;color:var(--ink2)}
+.dec-table td:nth-child(4){white-space:nowrap;font-size:18px;text-align:center}
+.dec-table td:nth-child(5){min-width:150px;color:var(--ink2);font-size:12.5px}
+.dec-group td{background:var(--bg2);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)!important;font-family:var(--f-sans)!important}
+
+/* Legend */
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.legend .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.lg-row{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line-soft);font-size:13.5px;color:var(--ink2)}
+.lg-row:last-child{border-bottom:0}
+.lg-row b{color:var(--ink);font-weight:650}
+.emo{font-size:18px;text-align:center}
+.swatch{height:26px;border-radius:6px;border:2px solid var(--line)}
+.sw-impl{border-color:var(--s-impl);border-width:3px}
+.sw-part{border-color:var(--s-part);border-style:dashed}
+.sw-plan{border-color:var(--s-plan);border-style:dashed;border-width:1.5px}
+.sw-miss{border-color:var(--s-miss);border-style:dashed;border-width:2.5px}
+.sw-dec{border-color:var(--s-dec);border-style:dotted;border-width:3px}
+.sw-ok{border-color:var(--s-ok)}
+.sw-nprd{border-color:var(--s-nprd);border-style:double;border-width:4px}
+.mod-sw{height:22px;border-radius:6px;border:1px solid var(--line)}
+
+footer.end{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+</style>
+
+<div class="shell">
+<nav class="toc" aria-label="Sections">
+  <div class="toc-brand"><span class="logo">BACK<small>OF</small>HOUSE</span><span>App map<br>18 Sep 2026</span></div>
+  <ol>
+    <li><a href="#overview">Product overview</a></li>
+    <li><a href="#map">Overall app map</a></li>
+    <li><a href="#nav">Navigation</a></li>
+    <li><a href="#individual">Individual flow</a></li>
+    <li><a href="#company">Company flow</a></li>
+    <li><a href="#events">Events flow</a></li>
+    <li><a href="#opportunities">Opportunities flow</a></li>
+    <li><a href="#news">News &amp; community</a></li>
+    <li><a href="#points">Points &amp; rewards</a></li>
+    <li><a href="#roles">Role-based access</a></li>
+    <li><a href="#inventory">Screen inventory</a></li>
+    <li><a href="#gaps">Product gaps</a></li>
+    <li><a href="#decisions">Decisions required</a></li>
+    <li><a href="#legend">Legend</a></li>
+  </ol>
+  <p class="toc-foot">Sources: PRD v1.0 (27 Aug 2026), the business rules approved 17–18 Sep 2026, and the Flutter codebase as of 18 Sep 2026. Where the approved rules and the PRD disagree, the rules win and the PRD text is flagged.</p>
+</nav>
+
+<main>
+<header class="masthead">
+  <div class="eyebrow"><span>Phase 0 deliverable · revision 2</span><i></i><span class="ar" lang="ar" dir="rtl">خريطة الصفحات والتدفقات</span><i></i><span>Not a UI design</span></div>
+  <h1>Back Of House <em>App Map</em></h1>
+  <p class="lede">What the product is made of, how people move through it, and who can do what. Every screen is checked against the requirements document, the approved business rules and the code, so the design team starts from facts and a short list of open decisions.</p>
+  <div class="sources">
+    <span class="src"><b>PRD</b> Back_Of_House_Technical_Product_Requirements_AR_v1.0.docx</span>
+    <span class="src"><b>Rules</b> docs/business-rules.md · approved 17–18 Sep</span>
+    <span class="src"><b>Code</b> lib/app/router · lib/features (14 features)</span>
+    <span class="src"><b>Reference</b> ui-refrence/ mockups (not requirements)</span>
+  </div>
+</header>
+
+<!-- 01 -->
+<section class="doc" id="overview">
+  <div class="sec-head"><span class="sec-no">01</span><h2>Product overview</h2><span class="ar" lang="ar" dir="rtl">نظرة عامة على المنتج</span></div>
+  <div class="prose">
+    <p>Back Of House is a national professional platform for the Saudi events sector. It connects <strong>individuals</strong> and <strong>companies</strong> through profiles, company portfolios, opportunities, supplier requests, events, news and rewards. The PRD ships the <strong>verified companies directory first</strong>. The app has since been built in a different order: the individual experience and the company workspace run end to end on mock data, while the Phase 1 directory, search and claim flows are still missing.</p>
+  </div>
+
+  <div class="stats" id="stats" aria-live="polite">
+    <div class="stat"><b data-count="all">–</b><span>screens found (PRD + rules + code + reference)</span></div>
+    <div class="stat"><b data-count="I">–</b><span>built screens, all on mock data except sign-in</span><span class="pill I">Implemented</span></div>
+    <div class="stat"><b data-count="PI">–</b><span>placeholder or incomplete screens</span><span class="pill PI">Partial</span></div>
+    <div class="stat"><b data-count="N">–</b><span>required now, no code yet</span><span class="pill N">Not impl.</span></div>
+    <div class="stat"><b data-count="P">–</b><span>specified for later phases, or out of the MVP</span><span class="pill P">Planned</span></div>
+    <div class="stat"><b data-count="D">–</b><span>screens that depend on an open decision</span><span class="pill D">Decision</span></div>
+    <div class="stat"><b>1 / 11</b><span>feature data layers that call the real API (auth)</span></div>
+  </div>
+
+  <div class="callout ok">
+    <div>
+      <h4>What changed since the 14 Sep map</h4>
+      <ul>
+        <li><strong>Two account types are settled.</strong> <code>INDIVIDUAL</code> and <code>COMPANY</code>. Students are individuals with <code>profileStatus = STUDENT</code>. Supplier, venue and organizer are a <code>companyType</code>.</li>
+        <li><strong>Navigation is settled.</strong> Individuals get Home · Discover · News · Rewards · Profile. Companies get Dashboard · Opportunities · Supplier Requests · Portfolio · Profile under <code>/company</code>. The Community tab is gone.</li>
+        <li><strong>No member posts.</strong> News is editorial. Members read, save and share.</li>
+        <li><strong>Opportunities and applications are specified and built.</strong> One <code>Opportunity</code> model with 5 types, one application pipeline, and a separate B2B <code>SupplierResponse</code>.</li>
+        <li><strong>The company workspace is built.</strong> It covers listings reviewed by Back Of House, applicants, supplier requests and responses, the portfolio and the company profile.</li>
+        <li><strong>Rewards is built.</strong> The catalog, redemption and points history all work, and Profile Highlight is approved as a points reward.</li>
+        <li><strong>The build is healthy.</strong> <code>flutter analyze</code> reports no issues and all 109 tests pass (1 skipped). The broken design-system screen is fixed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div>
+      <h4>Reality check before design continues</h4>
+      <ul>
+        <li><strong>The PRD still defers a native app, and this repo is one.</strong> §2.2 and §26 put a native app after launch, and §19 recommends an SSR web front end. See <a href="#d-nav">NAV-1</a>.</li>
+        <li><strong>Almost everything runs on mock data.</strong> Only auth calls the API. The other 10 data layers carry a <code>TODO(api)</code>. <code>ApiEndpoints</code> declares no endpoints for opportunities, applications, companies, supplier requests, rewards or notifications, so the backend contract is still to be written.</li>
+        <li><strong>Every listing needs a Back Of House review, and no review tool exists.</strong> The app shows a development-only "Simulate approval" button in its place.</li>
+        <li><strong>The approved rules say "bottom navigation", but both shells use a side drawer</strong> (<code>NavDrawerShell</code>). See <a href="#d-drawer">NAV-7</a>.</li>
+        <li><strong>Phase 1 directory items are missing.</strong> Company directory, public company profile, search, filters and claim. Home and Discover already link to the directory placeholders.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Delivery phases <span class="mono" style="color:var(--muted);font-weight:400">PRD §6 · §26</span></h3>
+  <div class="phases">
+    <article class="phase now"><header><b>P0</b><span>2–3 weeks</span></header><h5>Discovery &amp; foundation</h5><ul><li>Page &amp; flow map</li><li>Clickable prototype</li><li>ERD</li><li>Permission matrix</li><li>Analytics plan</li></ul></article>
+    <article class="phase"><header><b>P1</b><span>8–10 weeks</span></header><h5>Core &amp; companies directory</h5><ul><li>Auth</li><li>Company profiles</li><li>Taxonomy</li><li>Projects</li><li>Claiming</li><li>Verification</li><li>Search</li><li>Admin</li><li>Notifications</li><li>SEO</li></ul></article>
+    <article class="phase"><header><b>P2</b><span>6–8 weeks</span></header><h5>Membership, points, events</h5><ul><li>Plans</li><li>Billing</li><li>Points</li><li>Badges &amp; levels</li><li>Visibility</li><li>Events &amp; attendance</li><li>Coupons &amp; benefits</li></ul></article>
+    <article class="phase"><header><b>P3</b><span>8 weeks</span></header><h5>Professionals &amp; opportunities</h5><ul><li>Experience &amp; skills</li><li>Employment relation</li><li>Jobs</li><li>Supplier requests</li><li>Shortlists</li><li>Messaging</li></ul></article>
+    <article class="phase"><header><b>P4</b><span>8–10 weeks</span></header><h5>Reports &amp; entity membership</h5><ul><li>3-company comparison</li><li>Benchmarks</li><li>Entity dashboard</li><li>Supplier lists</li><li>RFIs</li><li>PDF/Excel</li></ul></article>
+    <article class="phase"><header><b>P5</b><span>month 10+</span></header><h5>Observatory &amp; expansion</h5><ul><li>Sector observatory</li><li>Time series</li><li>Partner API</li><li>GCC readiness</li></ul></article>
+  </div>
+  <p class="prose">The code no longer follows this order. Opportunities and supplier requests (P3), events and points (P2) are built in mock form. Billing, memberships and messaging are now out of the MVP under the business rules. See <a href="#d-prd">PRD-1</a>.</p>
+
+  <h3>Six systems that must stay separate</h3>
+  <p class="prose">The PRD sets this rule in §8.1: <span lang="ar" dir="rtl" class="ar">«النشاط لا يساوي الثقة؛ لكل منهما رصيد مستقل»</span> (activity is not trust, and each has its own balance). The business rules repeat it in §10 and §12: nothing grants verification automatically.</p>
+  <div class="systems">
+    <div class="sys"><span class="q">Who is this?</span><h5>Identity <span class="ar" lang="ar">الهوية</span></h5><p>Two account types: <code>INDIVIDUAL</code> (with a <code>ProfileStatus</code>) and <code>COMPANY</code>. A company account acts through a <code>CompanyMembership</code>.</p><span class="ent">AppUser · AccountType · CompanyMembership</span></div>
+    <div class="sys"><span class="q">Can we trust the information?</span><h5>Verification / Trust <span class="ar" lang="ar">التحقق والثقة</span></h5><p>In code, individuals have <code>isVerified</code> and a <code>verificationLevel</code>. Company verification is handled outside the app and shown read-only. The PRD's 6-state review isn't modelled.</p><span class="ent">verified · verificationLevel</span><span class="never">Never granted by points, payment, featuring or activity.</span></div>
+    <div class="sys"><span class="q">How discoverable is the profile?</span><h5>Visibility score <span class="ar" lang="ar">درجة الظهور</span></h5><p>PRD weights: company 30% completeness · 25% trust · 20% projects · 15% activity · 10% contribution. The app shows a 0–100 score with no breakdown. Profile Highlight raises it temporarily.</p><span class="ent">Profile.visibilityScore</span></div>
+    <div class="sys"><span class="q">How much valued activity?</span><h5>Points <span class="ar" lang="ar">النقاط</span></h5><p>A mock ledger with a spendable balance. The PRD asks for an immutable ledger, versioned rules and reversals. None of those exist yet.</p><span class="ent">PointsSummary · PointsTransaction</span><span class="never">Doesn't grant trust.</span></div>
+    <div class="sys"><span class="q">What is the account paying for?</span><h5>Paid visibility <span class="ar" lang="ar">الظهور المدفوع</span></h5><p>Out of the MVP. <code>Featured</code> and <code>Promoted</code> are reserved for future paid placement. Free editorial lists are named "Companies to Watch".</p><span class="ent">Subscription · Promotion · FeaturedListing (future)</span><span class="never">Never shown as trust.</span></div>
+    <div class="sys"><span class="q">What can the user redeem?</span><h5>Rewards <span class="ar" lang="ar">المكافآت</span></h5><p>Built: a catalog in 4 categories, and redeeming spends points and returns a code. Profile Highlight is a reward, not verification and not advertising.</p><span class="ent">Reward · Redemption · RewardKind.highlight</span><span class="never">Never verification, never paid promotion.</span></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="doc" id="map">
+  <div class="sec-head"><span class="sec-no">02</span><h2>Overall app map</h2><span class="ar" lang="ar" dir="rtl">الخريطة العامة للتطبيق</span></div>
+  <p class="prose">This is the structure we <em>found</em> on 18 Sep, not an idealised one. The individual and company areas are two separate apps behind one sign-in, and <code>AuthGuard</code> keeps each account in its own area. Fill colour shows the module. Border style and the glyph at the end of each label show status.</p>
+  <figure class="dia" data-src="src-A"><div class="dia-bar"><figcaption><span class="mono">A</span> Overall product map <span class="ar" lang="ar" dir="rtl">خريطة المنتج</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-A">
+flowchart LR
+  BOH(["BACK OF HOUSE<br/>منصة قطاع الفعاليات"])
+  BOH --> ACC["Access<br/>الدخول"]
+  ACC --> ac1["Welcome · Sign in · Sign up 🔵<br/>Individual or Company"]
+  ACC --> ac2["One-time code · consent 🔴"]
+  ACC --> ac3["Reset password 🔷"]
+  BOH --> IND(["Individual area<br/>Home · Discover · News · Rewards · Profile"])
+  IND --> HOME["Home 🔵"]
+  HOME --> h1["Notifications 🔵"]
+  IND --> DISC["Discover 🔵"]
+  DISC --> d1["Events 🔵"]
+  DISC --> d2["Opportunities · apply 🔵"]
+  DISC --> d3["Companies directory 🔷<br/>placeholder"]
+  DISC --> d4["Professionals 🔷<br/>placeholder"]
+  DISC --> d5["Courses 🔷 ⚪"]
+  DISC --> d6["Search and filters 🔴<br/>events only today"]
+  IND --> NEWS["News 🔵<br/>editorial only"]
+  IND --> RWD["Rewards 🔵"]
+  RWD --> r1["Redeem · my points 🔵"]
+  IND --> PRO["Profile 🔵"]
+  PRO --> p1["My applications 🔵"]
+  PRO --> p2["Edit profile · contact privacy 🔴"]
+  PRO --> p3["Verification request 🟣"]
+  BOH --> CWS(["Company area · /company<br/>Dashboard · Opportunities · Supplier requests · Portfolio · Profile"])
+  CWS --> w1["Listings and review lifecycle 🔵"]
+  CWS --> w2["Applicants 🔵"]
+  CWS --> w3["Supplier requests and responses 🔵"]
+  CWS --> w4["Portfolio 🔵"]
+  CWS --> w5["Company profile 🔵"]
+  CWS --> w6["Team · billing · reports 🟡<br/>out of MVP"]
+  BOH --> CLM["Claim an imported company 🟣<br/>PRD Phase 1"]
+  BOH --> IWS["Institutional workspace 🟡 Phase 4<br/>no account type 🟣"]
+  BOH --> ADM["Back Of House back-office 🔴<br/>listing review · verification<br/>web · outside the app"]
+  class BOH core
+  class ACC,ac1,ac2,ac3 ident
+  class IND,DISC core
+  class HOME,h1 notif
+  class d1 events
+  class d2,p1 opps
+  class d3,w5,CLM company
+  class d4,PRO,p2,p3 indiv
+  class d5,NEWS comm
+  class d6 notif
+  class RWD,r1 engage
+  class CWS,w1,w2,w3,w4,w6 company
+  class IWS inst
+  class ADM admin
+  class ac1,HOME,h1,DISC,d1,d2,NEWS,RWD,r1,PRO,p1,w1,w2,w3,w4,w5 impl
+  class ac3,d3,d4 part
+  class ac2,d6,p2,ADM miss
+  class w6,IWS plan
+  class p3,CLM dec
+  class d5 nprd
+</script>
+  <div class="notes">
+    <div class="note"><h4>Where it comes from</h4><p>The areas follow the routes in <code>app_routes.dart</code> and the shells in <code>app_shell.dart</code> and <code>company_shell.dart</code>. The PRD §19.1 modules are kept as fill colours.</p></div>
+    <div class="note"><h4>Code-only areas</h4><p><strong>Courses</strong> is listed in the business rules' ecosystem (§13), but it has no rule, model or screen. It is a placeholder route. The <strong>Design system</strong> gallery is developer-only.</p></div>
+    <div class="note"><h4>Not in the app</h4><p>Staff work lives in a back-office: listing review, company verification, moderation and data import. The rules make listing review mandatory, so the back-office is now on the critical path.</p></div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="doc" id="nav">
+  <div class="sec-head"><span class="sec-no">03</span><h2>Navigation</h2><span class="ar" lang="ar" dir="rtl">التنقل في التطبيق</span></div>
+  <p class="prose">Both destination sets were approved on 17 Sep and are built. What remains open is the container. The rules say "bottom navigation", but the code puts both sets in a side drawer (<code>BOHNavDrawer</code>) that opens from each tab's menu button or an edge swipe. See decision <a href="#d-drawer">NAV-7</a>.</p>
+
+  <div class="navcompare">
+    <div class="navrow rec">
+      <div class="who"><h5>Individual · approved and built</h5><p><code>app_shell.dart</code> · 5 destinations in a drawer</p></div>
+      <div class="tabbar"><span class="on">Home<small>+ notifications</small></span><span>Discover<small>events · opportunities</small></span><span>News<small>editorial</small></span><span>Rewards<small>points</small></span><span>Profile<small>applications</small></span></div>
+    </div>
+    <div class="navrow rec">
+      <div class="who"><h5>Company · approved and built</h5><p><code>company_shell.dart</code> · under <code>/company</code></p></div>
+      <div class="tabbar"><span class="on">Dashboard</span><span>Opportunities<small>+ applicants</small></span><span>Supplier requests</span><span>Portfolio</span><span>Profile<small>verification read-only</small></span></div>
+    </div>
+    <div class="navrow">
+      <div class="who"><h5>Superseded</h5><p>14 Sep recommendation and the 14 Sep code</p></div>
+      <div class="tabbar"><span class="future">Home</span><span class="future">Discover</span><span class="future">Events</span><span class="future">Opportunities</span><span class="future">Profile</span></div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><h4>What the approved shape implies</h4><ul><li>Events, opportunities, companies, professionals and courses all open from Discover.</li><li>News gets a tab of its own because there is no member content.</li><li>Rewards gets a tab: points are for rewards, and Profile Highlight lives there.</li><li>Notifications open from Home and from the bell. My applications opens from Profile, from an opportunity and after applying.</li></ul></div>
+    <div class="note"><h4>Account-aware routing</h4><ul><li>After sign-in, <code>AppRoutes.homeFor</code> sends individuals to <code>/</code> and companies to <code>/company</code>.</li><li>A company that opens an individual link lands on its dashboard, and the reverse holds too.</li><li>There is no workspace switcher, so one account is one experience.</li><li>Signed-out deep links go to <code>/auth?from=…</code> and come back after sign-in.</li></ul></div>
+  </div>
+
+  <figure class="dia" data-src="src-NAV"><div class="dia-bar"><figcaption><span class="mono">NAV</span> Navigation hierarchy <span class="ar" lang="ar" dir="rtl">هيكل التنقل</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-NAV">
+flowchart TD
+  G{"Signed in as?<br/>AuthGuard"}
+  G -->|"INDIVIDUAL"| IS(["Individual drawer"])
+  G -->|"COMPANY"| CS(["Company drawer · /company"])
+  IS --> T1["Home<br/>الرئيسية 🔵"]
+  IS --> T2["Discover<br/>اكتشف 🔵"]
+  IS --> T3["News<br/>الأخبار 🔵"]
+  IS --> T4["Rewards<br/>المكافآت 🔵"]
+  IS --> T5["Profile<br/>ملفي 🔵"]
+  T1 --> t1a["Notifications 🔵"]
+  T1 --> t1b["Standing · events · opportunities<br/>Companies to Watch"]
+  T2 --> t2a["Events → details 🔵"]
+  T2 --> t2b["Opportunities → apply 🔵"]
+  T2 --> t2c["Companies 🔷 placeholder"]
+  T2 --> t2d["Professionals 🔷 placeholder"]
+  T2 --> t2e["Courses 🔷 ⚪"]
+  T3 --> t3a["Article · save 🔵"]
+  T4 --> t4a["Reward → redeem 🔵"]
+  T4 --> t4b["My points 🔵"]
+  T5 --> t5a["My applications 🔵"]
+  T5 --> t5b["Settings · appearance · language 🔵"]
+  T5 --> t5c["Edit profile · privacy 🔴"]
+  CS --> C1["Dashboard 🔵"]
+  CS --> C2["Opportunities 🔵"]
+  CS --> C3["Supplier requests 🔵"]
+  CS --> C4["Portfolio 🔵"]
+  CS --> C5["Company profile 🔵"]
+  C2 --> c2a["Listing → applicants → applicant 🔵"]
+  C3 --> c3a["Request → respond · responses 🔵"]
+  C5 --> c5a["Edit profile 🔵"]
+  class G,IS,CS core
+  class T1,t1a,t1b notif
+  class T2,t2e core
+  class t2a events
+  class t2b,t5a opps
+  class t2c,C1,C2,C3,C4,C5,c2a,c3a,c5a company
+  class t2d,T5,t5b,t5c indiv
+  class T3,t3a,t2e comm
+  class T4,t4a,t4b engage
+  class T1,t1a,T2,t2a,t2b,T3,t3a,T4,t4a,t4b,T5,t5a,t5b,C1,C2,C3,C4,C5,c2a,c3a,c5a impl
+  class t2c,t2d part
+  class t5c miss
+  class t2e nprd
+</script>
+</section>
+
+<!-- 04 -->
+<section class="doc" id="individual">
+  <div class="sec-head"><span class="sec-no">04</span><h2>Individual user flow</h2><span class="ar" lang="ar" dir="rtl">رحلة الفرد</span></div>
+  <p class="prose">Sign-up now follows the business rules: one form, then <em>Individual</em> or <em>Company</em>, and individuals can tick "I'm currently a student". The PRD §5.1 steps are still missing: one-time code, consent preferences, basic profile completion and a verification request. The dashed edge shows where they would go.</p>
+  <figure class="dia" data-src="src-B"><div class="dia-bar"><figcaption><span class="mono">B</span> Individual journey <span class="ar" lang="ar" dir="rtl">رحلة الفرد</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-B">
+flowchart TD
+  S0(["Open app"]) --> S1["Welcome 🔵<br/>/auth"]
+  S1 --> S2["Sign up 🔵<br/>name · email · phone · password · terms"]
+  S1 --> SI["Sign in 🔵<br/>email + password"]
+  S2 --> S5{"Account type 🔵<br/>Individual or Company"}
+  S5 -->|"Individual"| ST["Student? 🔵<br/>profileStatus"]
+  S5 -->|"Company"| CJ["Company journey → C"]
+  S2 -.->|"PRD step, not built"| OTP["One-time code · consent 🔴"]
+  ST --> HOME["Home 🔵"]
+  SI --> HOME
+  HOME --> PRO["My profile 🔵"]
+  PRO --> ED["Edit profile 🔴<br/>button says coming soon"]
+  PRO --> VR["Verification request 🟣<br/>not in the app"]
+  HOME --> DISC["Discover 🔵"]
+  DISC --> EV["Events 🔵<br/>register · cancel"]
+  DISC --> OP["Opportunities 🔵<br/>individual types only"]
+  OP --> EL{"Eligible? 🟢<br/>eligibilityFor"}
+  EL -->|"co-op, not a student"| NO["Reason shown · no apply"]
+  EL -->|"already applied"| NO
+  EL -->|"yes"| AP["Apply 🔵<br/>experience · projects · message"]
+  AP --> MY["My applications 🔵<br/>withdraw while active"]
+  MY --> NT["Status notifications 🔵<br/>official changes only"]
+  HOME --> NW["News 🔵<br/>read · save"]
+  EV --> ATT["Verified attendance 🟡<br/>no check-in in app"]
+  ATT --> LED[("Point ledger 🔷<br/>mock")]
+  LED --> RW["Rewards 🔵<br/>redeem spends points"]
+  RW --> HL["Profile Highlight 🟢<br/>temporary visibility"]
+  class S0,HOME,DISC core
+  class S1,S2,SI,S5,ST,OTP ident
+  class PRO,ED,VR indiv
+  class CJ company
+  class EV,ATT events
+  class OP,EL,NO,AP,MY opps
+  class NT notif
+  class NW comm
+  class LED,RW,HL engage
+  class S1,S2,SI,S5,ST,HOME,PRO,DISC,EV,OP,AP,MY,NT,NW,RW impl
+  class LED part
+  class OTP,ED miss
+  class ATT plan
+  class VR dec
+  class EL,HL ok
+</script>
+  <div class="notes">
+    <div class="note"><h4>Account types now follow the rules</h4><p>The code uses <code>AccountType</code> (individual · company) and <code>ProfileStatus</code> (professional · student). Old <code>member_type</code> values are still read. The PRD's five types collapse into these two, except the entity representative. See <a href="#d-ins">INS-1</a>.</p></div>
+    <div class="note"><h4>Verification is still thin</h4><p>Individuals carry <code>verified</code> and a numeric <code>verificationLevel</code>. The PRD defines states: not started · under review · needs info · accepted · rejected · expired. Nobody can request verification in the app yet.</p></div>
+    <div class="note"><h4>Contact privacy has no home</h4><p>Companies see an applicant's contact details only from <code>CONTACT</code>, and only the fields the applicant shares. Sharing defaults to nothing, and no settings screen exists yet. Until one does, no company will ever see contact details.</p></div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="doc" id="company">
+  <div class="sec-head"><span class="sec-no">05</span><h2>Company user flow</h2><span class="ar" lang="ar" dir="rtl">رحلة الشركة</span></div>
+  <p class="prose">A company is created at sign-up with a name and a <code>companyType</code>, and lands on its dashboard. Verification happens outside the app and appears read-only. It is not a prerequisite for anything in the MVP. The PRD's claim flow for imported profiles isn't built. See <a href="#d-claim">ID-5</a>.</p>
+  <figure class="dia" data-src="src-C"><div class="dia-bar"><figcaption><span class="mono">C</span> Company workspace <span class="ar" lang="ar" dir="rtl">مساحة عمل الشركة</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-C">
+flowchart TD
+  C0["Sign up as Company 🔵<br/>company name + type"] --> DB["Dashboard 🔵<br/>/company"]
+  C0 -.->|"PRD alternative"| CL["Claim an imported profile 🟣<br/>duplicate check · documents"]
+  VER["Verification 🟢<br/>handled outside the app"] -.->|"read-only badge"| PR
+  DB --> PR["Company profile 🔵<br/>services · industries · contact"]
+  PR --> PE["Edit profile 🔵<br/>name and type are locked"]
+  DB --> PF["Portfolio 🔵<br/>CompanyProject · client optional"]
+  PF --> PJ["Add or edit project 🔵<br/>no images yet"]
+  DB --> OPS["My opportunities 🔵<br/>every status"]
+  OPS --> NEW["Create listing 🔵<br/>JOB · PROJECT · CO_OP · VOLUNTEERING"]
+  NEW -->|"with capability"| SRQ["Supplier request 🔵"]
+  OPS --> LC["Review lifecycle → E"]
+  OPS --> APL["Applicants 🔵<br/>filter by status"]
+  APL --> APD["Applicant details 🔵<br/>one step at a time"]
+  DB --> SR["Supplier requests 🔵<br/>invited · my responses"]
+  SR --> RSP["Respond 🔵<br/>message · price · projects"]
+  DB -.-> TEAM["Team and invitations 🟡<br/>later"]
+  DB -.-> BILL["Billing · reports · analytics 🟡<br/>out of MVP"]
+  class C0,DB,CL,PR,PE,PF,PJ,TEAM company
+  class VER trust
+  class OPS,NEW,LC,APL,APD opps
+  class SRQ,SR,RSP inst
+  class BILL member
+  class C0,DB,PR,PE,PF,PJ,OPS,NEW,SRQ,APL,APD,SR,RSP impl
+  class TEAM,BILL plan
+  class CL dec
+  class VER,LC ok
+</script>
+
+  <h3>Owner, permissions and capabilities</h3>
+  <p class="prose">The MVP has one <strong>Owner</strong> per company. Screens and data sources ask for a <code>CompanyPermission</code>, never a role, so adding the PRD's Editor and Analyst later won't touch them. A <code>CompanyCapability</code> is separate from permissions. It unlocks supplier requests for organizers, agencies, venues and production companies, or when the API grants it.</p>
+  <figure class="dia" data-src="src-C2"><div class="dia-bar"><figcaption><span class="mono">C2</span> Company permissions <span class="ar" lang="ar" dir="rtl">صلاحيات الشركة</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-C2">
+flowchart LR
+  M["CompanyMembership<br/>account + company + role"]
+  O["Owner 🔵<br/>the only MVP role"]
+  M --> O
+  O --> P1["editProfile"]
+  O --> P2["manageProjects"]
+  O --> P3["manageOpportunities"]
+  O --> P4["reviewApplicants"]
+  O --> P5["respondToSupplierRequests"]
+  CAP["CompanyCapability<br/>createSupplierRequest"] -.->|"by type or API grant"| P3
+  E["Editor · Analyst 🟡<br/>PRD §4 · later roles"] -.-> M
+  class M,O,E company
+  class P1,P2,P3,P4,P5 core
+  class CAP inst
+  class O impl
+  class E plan
+</script>
+  <div class="tbl-wrap"><table class="matrix">
+    <thead><tr><th>Permission</th><th>What it unlocks</th><th>Owner · MVP</th><th>PRD editor · later</th><th>PRD analyst · later</th></tr></thead>
+    <tbody>
+      <tr><td><code>editProfile</code></td><td style="text-align:start">Edit the company profile</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td></tr>
+      <tr><td><code>manageProjects</code></td><td style="text-align:start">Add, edit and delete portfolio projects</td><td class="yes">Yes</td><td class="cond">Implied by §3</td><td class="no">No</td></tr>
+      <tr><td><code>manageOpportunities</code></td><td style="text-align:start">Create, submit, revise and close listings</td><td class="yes">Yes</td><td class="cond">Not in matrix</td><td class="cond">Not in matrix</td></tr>
+      <tr><td><code>reviewApplicants</code></td><td style="text-align:start">Move applicants and see released contact details</td><td class="yes">Yes</td><td class="cond">Not in matrix</td><td class="cond">Not in matrix</td></tr>
+      <tr><td><code>respondToSupplierRequests</code></td><td style="text-align:start">Respond as a supplier and manage responses as a buyer</td><td class="yes">Yes</td><td class="cond">Not in matrix</td><td class="cond">Not in matrix</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 06 -->
+<section class="doc" id="events">
+  <div class="sec-head"><span class="sec-no">06</span><h2>Events flow</h2><span class="ar" lang="ar" dir="rtl">رحلة الفعاليات</span></div>
+  <p class="prose">Events live in Discover. The list, the details and registration all work on mock data, and registering correctly earns <strong>no points</strong>. Everything after registration is missing. The pass, calendar, maps, save and share buttons show "coming soon", and nothing in the app verifies attendance. That is where the PRD awards points.</p>
+  <figure class="dia" data-src="src-D"><div class="dia-bar"><figcaption><span class="mono">D</span> Event registration and verified attendance <span class="ar" lang="ar" dir="rtl">التسجيل والحضور الموثّق</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-D">
+flowchart TD
+  E1["Events list 🔵<br/>/events · search · type"] --> E2["Event details 🔵<br/>agenda by day · speakers · venue"]
+  subgraph REG["REGISTRATION · booking only · 0 points"]
+    E5["Register 🔵<br/>attendee count updates"]
+    E5 --> TK["Pass code issued 🔷<br/>View pass: coming soon"]
+    E5 --> CX["Cancel 🔵 · transfer 🟡"]
+    CX -->|"repeated cancellations"| PEN["Penalty 🟢 PRD"]
+    WL["Capacity · waitlist 🟡"]
+    TC["Ticket categories 🟣<br/>PRD ties them to memberships"]
+  end
+  E2 --> E5
+  E2 -.-> WL
+  E2 -.-> TC
+  E2 --> CAL["Calendar · maps · save · share 🔷<br/>coming soon"]
+  subgraph ATT["VERIFIED ATTENDANCE · points start here"]
+    CI{"Check-in at the venue 🟡<br/>scan or manual"}
+    VA["Attendance verified 🟡"]
+    CI --> VA
+  end
+  TK --> CI
+  VA --> LED[("Point ledger 🔷 mock<br/>pointsReward after check-in")]
+  VA --> SUR["Survey · certificate 🟡"]
+  class E1,E2,E5,TK,CX,WL,TC,CAL,CI,VA,SUR events
+  class PEN,LED engage
+  class E1,E2,E5,CX impl
+  class TK,CAL,LED part
+  class WL,CI,VA,SUR plan
+  class TC dec
+  class PEN ok
+  style REG fill:{{zoneA}},stroke:{{zoneAStroke}},stroke-dasharray:6 4
+  style ATT fill:{{zoneB}},stroke:{{zoneBStroke}}
+</script>
+  <div class="notes">
+    <div class="note"><h4>Registration <span class="ar" lang="ar">التسجيل</span></h4><p>This is a promise to attend. In the mock it toggles <code>isRegistered</code>, updates the attendee count and issues a pass code. It never touches the points balance.</p></div>
+    <div class="note"><h4>Labels to check</h4><p>Accredited events show <strong>"GEA Verified"</strong>, which reuses the word the rules reserve for Back Of House trust. Event details also show a "fit" score from the data. See <a href="#d-evt">COM-6, EVT-4</a>.</p></div>
+    <div class="note"><h4>Not specified</h4><p>Who checks people in, and with which tool (<a href="#d-evt">EVT-2</a>). Paid tickets are out of the MVP.</p></div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="doc" id="opportunities">
+  <div class="sec-head"><span class="sec-no">07</span><h2>Opportunities flow</h2><span class="ar" lang="ar" dir="rtl">رحلة الفرص والطلبات</span></div>
+  <p class="prose">One <code>Opportunity</code> model covers five types. <code>JOB</code>, <code>PROJECT</code>, <code>CO_OP</code> and <code>VOLUNTEERING</code> are for individuals. <code>SUPPLIER_REQUEST</code> is B2B only. The PRD's temporary-contract and freelance types become a job's <code>EmploymentType</code>. Every company listing goes through Back Of House review, whether or not the company is verified. The company decides on applicants, and Back Of House only connects the two sides.</p>
+
+  <h3>Listing lifecycle <span class="mono" style="color:var(--muted);font-weight:400">OpportunityLifecycle</span></h3>
+  <figure class="dia" data-src="src-E"><div class="dia-bar"><figcaption><span class="mono">E</span> Listing review and revisions <span class="ar" lang="ar" dir="rtl">مراجعة الفرصة ونشرها</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-E">
+flowchart LR
+  D["DRAFT 🔵<br/>editable"] -->|"company submits"| R["IN_REVIEW 🔵"]
+  R -->|"company pulls back"| D
+  R -->|"Back Of House approves"| P["PUBLISHED 🔵"]
+  R -->|"Back Of House asks"| CR["CHANGES_REQUESTED 🔵<br/>reviewerNote · editable"]
+  CR -->|"company resubmits"| R
+  P -->|"company closes"| CL["CLOSED 🔵<br/>final"]
+  P --> RV["Revision 🔵<br/>live version stays up"]
+  RV -->|"same review"| RR["Revision in review 🔵"]
+  RR -->|"approved: replaces live"| P
+  RR -->|"changes requested"| RV
+  P -.-> PA["PAUSED · ARCHIVED 🟣<br/>in the enum, no transitions"]
+  REV["Review queue 🔴<br/>no staff tool · dev simulate"] -.-> R
+  class D,R,P,CR,CL,RV,RR,PA opps
+  class REV admin
+  class D,R,P,CR,CL,RV,RR impl
+  class PA dec
+  class REV miss
+</script>
+
+  <h3>Individual application <span class="mono" style="color:var(--muted);font-weight:400">ApplicationRules</span></h3>
+  <figure class="dia" data-src="src-E2"><div class="dia-bar"><figcaption><span class="mono">E2</span> Application pipeline <span class="ar" lang="ar" dir="rtl">مسار الطلب</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-E2">
+flowchart LR
+  AP["Apply 🔵<br/>profile snapshot · chosen experience<br/>chosen projects · message up to 500"] --> S["SUBMITTED"]
+  S --> RV["REVIEWED"]
+  RV --> SH["SHORTLISTED"]
+  SH --> CT["CONTACT<br/>contact per ContactPrivacy"]
+  CT --> AC["ACCEPTED<br/>final"]
+  S --> RJ["REJECTED<br/>from any active step · final"]
+  RV --> RJ
+  SH --> RJ
+  CT --> RJ
+  S -.-> WD["WITHDRAWN<br/>by the applicant · can re-apply"]
+  RV -.-> WD
+  SH -.-> WD
+  CT -.-> WD
+  N["Applicant notified 🟢<br/>server-side, each official change"]
+  AC -.-> N
+  RJ -.-> N
+  class AP,S,RV,SH,CT,AC,RJ,WD opps
+  class N notif
+  class AP,S,RV,SH,CT,AC,RJ,WD impl
+  class N ok
+</script>
+  <div class="notes">
+    <div class="note"><h4>Who may apply · <code>eligibilityFor</code></h4><ul><li>Individuals only. Companies never apply as individuals.</li><li>Only open, published listings.</li><li><code>CO_OP</code> is for <code>STUDENT</code> profiles only.</li><li>Verification isn't required.</li></ul></div>
+    <div class="note"><h4>Applying again</h4><p>An active, accepted or rejected application blocks a new one to the same listing. Only a withdrawn application allows a new one. The data layer enforces this, and the screen explains it.</p></div>
+    <div class="note"><h4>What is not in an application</h4><p>No CV upload, no interview scheduling, no offers and no messaging. Match scores come only from the backend, and the app never computes one.</p></div>
+  </div>
+
+  <h3>Supplier requests <span class="mono" style="color:var(--muted);font-weight:400">SupplierResponseRules</span></h3>
+  <figure class="dia" data-src="src-E3"><div class="dia-bar"><figcaption><span class="mono">E3</span> B2B supplier request and response <span class="ar" lang="ar" dir="rtl">طلبات الموردين</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-E3">
+flowchart TD
+  B["Buyer company 🔵<br/>has createSupplierRequest"] --> SRQ["Supplier request 🔵<br/>names the invited company types"]
+  SRQ --> REVW["Same listing review 🔵<br/>draft → review → published"]
+  REVW --> INV["Invited list 🔵<br/>only invited types see it"]
+  INV --> EL{"Can respond? 🟢"}
+  EL -->|"own request · not invited<br/>closed · already responded"| NO["Reason shown · no action"]
+  EL -->|"yes"| RSP["Response 🔵<br/>message · optional price · company projects<br/>no attachments"]
+  RSP --> PIPE["SUBMITTED → REVIEWED → SHORTLISTED 🔵"]
+  PIPE -->|"buyer selects"| SEL["SELECTED 🔵<br/>others rejected · request closes"]
+  PIPE -->|"buyer rejects"| RJ["REJECTED 🔵"]
+  IND["Individuals"] -.-x|"never see or apply"| SRQ
+  class B,SRQ,INV,EL,NO,RSP,PIPE,SEL,RJ inst
+  class REVW opps
+  class IND indiv
+  class B,SRQ,REVW,INV,RSP,PIPE,SEL,RJ impl
+  class EL ok
+</script>
+</section>
+
+<!-- 08 -->
+<section class="doc" id="news">
+  <div class="sec-head"><span class="sec-no">08</span><h2>News &amp; community</h2><span class="ar" lang="ar" dir="rtl">الأخبار والمجتمع</span></div>
+  <p class="prose">Decided 17 Sep: <strong>no member posts</strong>, so there is no feed, no comments and no discussion threads. The News tab is built. It carries editorial briefings from three desks (technical, regulatory, market), For you and Latest orderings, search, related articles and save. Two social actions are built in Discover without any rule behind them: <em>Follow</em> a company and <em>Connect</em> with a professional.</p>
+  <figure class="dia" data-src="src-F"><div class="dia-bar"><figcaption><span class="mono">F</span> News and social actions <span class="ar" lang="ar" dir="rtl">الأخبار والتفاعل</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-F">
+flowchart TD
+  subgraph DEF["Built · editorial desk only"]
+    N0["News tab 🔵<br/>/news · search"]
+    N1["Filters 🔵<br/>For you · Latest · Technical · Regulatory · Market"]
+    N2["Article 🔵<br/>directives · quotes · related"]
+    SV["Save 🔵"]
+    SH["Share 🔷<br/>coming soon"]
+    SL["Saved items list 🟣<br/>no screen"]
+  end
+  subgraph OUT["Decided out · 17 Sep"]
+    FEED["Member posts · feed"]
+    CMT["Comments · replies · likes"]
+  end
+  subgraph OPEN["Built in Discover without a rule"]
+    FOL["Follow company 🟣<br/>+5 points in the mock"]
+    CON["Connect with professional 🟣"]
+  end
+  N0 --> N1 --> N2
+  N2 --> SV --> SL
+  N2 --> SH
+  N0 -.-x FEED
+  FEED -.-x CMT
+  PTS["PRD point rules 🔴<br/>accepted content +8 · helpful answer"] -.-x|"no content to accept"| FEED
+  SPN["Sponsored content 🟡<br/>future · clearly labelled"] -.-> N0
+  class N0,N1,N2,SV,SH,SL,FEED,CMT comm
+  class FOL company
+  class CON indiv
+  class PTS engage
+  class SPN member
+  class N0,N1,N2,SV impl
+  class SH part
+  class SL,FOL,CON dec
+  class PTS miss
+  class SPN plan
+  style DEF fill:{{zoneA}},stroke:{{zoneAStroke}}
+  style OUT fill:{{zoneA}},stroke:{{zoneAStroke}},stroke-dasharray:3 4
+  style OPEN fill:{{zoneD}},stroke:{{zoneDStroke}},stroke-dasharray:3 4
+</script>
+</section>
+
+<!-- 09 -->
+<section class="doc" id="points">
+  <div class="sec-head"><span class="sec-no">09</span><h2>Points &amp; rewards flow</h2><span class="ar" lang="ar" dir="rtl">النقاط والمستويات والمكافآت</span></div>
+  <p class="prose">The spending side the PRD left blank is now built. The rewards catalog has four categories (learn, attend, career, community), redeeming <strong>spends</strong> points and returns a code, and My points lists the history. The earning side is the weak part: it's a seeded mock ledger, two of its entries conflict with PRD rules, and the level is computed from the spendable balance.</p>
+  <figure class="dia" data-src="src-G"><div class="dia-bar"><figcaption><span class="mono">G</span> From activity to reward <span class="ar" lang="ar" dir="rtl">من النشاط إلى المكافأة</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-G">
+flowchart TD
+  subgraph ACT["Earning · mock ledger entries"]
+    a1["Profile completion 🔵"]
+    a2["Verified identity 🔵"]
+    a3["Attended workshop 🔵"]
+    a4["Joined event 🟣<br/>PRD: attendance only"]
+    a5["Followed companies 🔴<br/>PRD: low-quality, 0 points"]
+  end
+  ACT --> L[("Ledger 🔷<br/>no rule versions · no reversals")]
+  GATE["Caps · anti-gaming · appeals 🟡"] -.-> L
+  L --> B["Balance 🔵<br/>spendable"]
+  L --> HIST["My points 🔵<br/>all · earned · redeemed"]
+  B --> LV["Level 🔴<br/>4 levels at 100 · 500 · 1500<br/>PRD has 6 · computed from balance"]
+  B --> RW["Rewards catalog 🔵<br/>learn · attend · career · community"]
+  RW --> RD["Redeem 🔵<br/>spends points"]
+  RD --> HL["Profile Highlight 🟢<br/>temporary visibility"]
+  RD --> CP["Code BOH-xxxx 🟣<br/>generated by the mock"]
+  RD -.->|"lowers the balance, so"| LV
+  class a1,a2,a3,a4,a5,L,GATE,B,HIST,LV,RW,RD,HL,CP engage
+  class a1,a2,a3,B,HIST,RW,RD impl
+  class L part
+  class a5,LV miss
+  class GATE plan
+  class a4,CP dec
+  class HL ok
+</script>
+
+  <h3>How the systems connect, and where they must not</h3>
+  <figure class="dia" data-src="src-H"><div class="dia-bar"><figcaption><span class="mono">H</span> Verification, points, rewards and paid visibility <span class="ar" lang="ar" dir="rtl">فصل الأنظمة</span></figcaption></div></figure>
+<script type="text/x-mermaid" id="src-H">
+flowchart LR
+  ID["ACCOUNT<br/>INDIVIDUAL · COMPANY"]
+  VER["VERIFICATION<br/>trust · read-only for companies"]
+  PTS["POINTS<br/>ledger · balance"]
+  RWD["REWARDS<br/>catalog · redemptions"]
+  HL["PROFILE HIGHLIGHT<br/>points-funded · temporary"]
+  VIS["VISIBILITY"]
+  PAID["FEATURED · PROMOTED<br/>future paid placement 🟡"]
+  EDI["Companies to Watch<br/>free editorial list"]
+  REVW["LISTING REVIEW<br/>OpportunityLifecycle"]
+  ID --> VER
+  PTS --> RWD --> HL --> VIS
+  PAID -.->|"labelled, separate"| VIS
+  EDI -.->|"never called Featured"| VIS
+  PTS -.-x|"never grants"| VER
+  PAID -.-x|"never grants"| VER
+  HL -.-x|"never grants"| VER
+  VER -.-x|"grants no publishing"| REVW
+  class ID ident
+  class VER trust
+  class PTS,RWD,HL engage
+  class VIS vis
+  class PAID member
+  class EDI company
+  class REVW opps
+  class PAID plan
+</script>
+  <div class="notes">
+    <div class="note"><h4>Levels: code vs PRD</h4><div class="tbl-wrap" style="margin:4px 0 0"><table><thead><tr><th>Code</th><th>PRD §9.1</th></tr></thead><tbody><tr><td>Newcomer 0–99</td><td>New 0–99</td></tr><tr><td>Active 100–499</td><td>Active 100–249 · Contributor 250–499</td></tr><tr><td>Contributor 500–1499</td><td>Verified professional 500–799 + verification</td></tr><tr><td>Leader 1500+</td><td>Community leader 800–1199 · Ambassador 1200+</td></tr></tbody></table></div></div>
+    <div class="note"><h4>Activity decay · §8.5</h4><div class="tbl-wrap" style="margin:4px 0 0"><table><thead><tr><th>Activity age</th><th>Weight</th></tr></thead><tbody><tr><td>0–30 days</td><td class="num">100%</td></tr><tr><td>31–90 days</td><td class="num">70%</td></tr><tr><td>91–180 days</td><td class="num">40%</td></tr><tr><td>&gt;180 days</td><td class="num">20%</td></tr></tbody></table></div><p style="margin-top:8px">Not applied in the app yet.</p></div>
+    <div class="note"><h4>Three labels, three meanings</h4><ul><li><strong>Verified</strong> means trust, granted by review only.</li><li><strong>Profile Highlight</strong> is a reward paid for with points.</li><li><strong>Featured / Promoted</strong> is future paid placement.</li></ul><p style="margin-top:8px">"Tier" labels were removed on 17 Sep.</p></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="doc" id="roles">
+  <div class="sec-head"><span class="sec-no">10</span><h2>Role-based access map</h2><span class="ar" lang="ar" dir="rtl">خريطة الصلاحيات حسب الدور</span></div>
+  <p class="prose">In the app there are two accounts and one company role. The PRD's wider roles are kept below as a later tab: company editor and analyst, staff, and entity users. Solid arrows mean allowed. Dashed arrows mean conditional, with the condition on the label. Arrows ending in ✕ mark something the role must not do. The backend enforces every rule, and hiding UI is never enough.</p>
+  <div class="tabs" role="tablist" aria-label="Roles">
+    <button role="tab" id="tab-ind" aria-selected="true" aria-controls="pane-ind">Individual <span class="ar" lang="ar">فرد</span></button>
+    <button role="tab" id="tab-own" aria-selected="false" aria-controls="pane-own">Company owner <span class="ar" lang="ar">مالك</span></button>
+    <button role="tab" id="tab-mem" aria-selected="false" aria-controls="pane-mem">Company member <span class="ar" lang="ar">عضو فريق</span></button>
+    <button role="tab" id="tab-adm" aria-selected="false" aria-controls="pane-adm">Back Of House staff <span class="ar" lang="ar">الإدارة</span></button>
+    <button role="tab" id="tab-ins" aria-selected="false" aria-controls="pane-ins">Institutional / buyer <span class="ar" lang="ar">جهة مشترية</span></button>
+  </div>
+
+  <div role="tabpanel" id="pane-ind" aria-labelledby="tab-ind">
+    <figure class="dia" data-src="src-R1"><div class="dia-bar"><figcaption><span class="mono">R1</span> Individual: professional and student</figcaption></div></figure>
+  </div>
+  <div role="tabpanel" id="pane-own" aria-labelledby="tab-own" hidden>
+    <figure class="dia" data-src="src-R2"><div class="dia-bar"><figcaption><span class="mono">R2</span> Company owner</figcaption></div></figure>
+  </div>
+  <div role="tabpanel" id="pane-mem" aria-labelledby="tab-mem" hidden>
+    <figure class="dia" data-src="src-R3"><div class="dia-bar"><figcaption><span class="mono">R3</span> Company member · not in the MVP</figcaption></div></figure>
+  </div>
+  <div role="tabpanel" id="pane-adm" aria-labelledby="tab-adm" hidden>
+    <figure class="dia" data-src="src-R4"><div class="dia-bar"><figcaption><span class="mono">R4</span> Back Of House staff roles</figcaption></div></figure>
+  </div>
+  <div role="tabpanel" id="pane-ins" aria-labelledby="tab-ins" hidden>
+    <figure class="dia" data-src="src-R5"><div class="dia-bar"><figcaption><span class="mono">R5</span> Entity workspace roles · Phase 4</figcaption></div></figure>
+  </div>
+
+<script type="text/x-mermaid" id="src-R1">
+flowchart LR
+  V["Visitor<br/>زائر · not signed in"]
+  I["Individual<br/>PROFESSIONAL"]
+  S["Individual<br/>STUDENT"]
+  V -->|"sign up"| I
+  V -->|"sign up · student"| S
+  V -.-x|"sign-in required"| v1["Every screen but Welcome · Sign in · Sign up"]
+  I --> a1["Apply to JOB · PROJECT · VOLUNTEERING 🔵"]
+  S --> a2["Also apply to CO_OP 🔵"]
+  I -.-x|"students only"| a2
+  I --> a3["Withdraw · re-apply after withdrawing 🔵"]
+  I --> a4["Register for events 🔵"]
+  I --> a5["Redeem rewards 🔵"]
+  I --> a6["Read and save news 🔵"]
+  I -.-x|"B2B only"| a7["Supplier requests"]
+  I -.-x|"decided out"| a8["Post · comment"]
+  I -.->|"no screen yet 🔴"| a9["Choose contact to share<br/>ContactPrivacy"]
+  class V,I,S indiv
+  class v1 core
+  class a1,a2,a3 opps
+  class a4 events
+  class a5 engage
+  class a6,a8 comm
+  class a7 inst
+  class a9 indiv
+  class a1,a2,a3,a4,a5,a6 impl
+  class a9 miss
+</script>
+<script type="text/x-mermaid" id="src-R2">
+flowchart LR
+  O["Company owner<br/>مالك الشركة<br/>one per company"]
+  O --> a["Edit profile 🔵<br/>name and type locked"]
+  O --> b["Manage portfolio projects 🔵"]
+  O --> c["Create, submit, revise, close listings 🔵"]
+  O --> d["Move applicants one step at a time 🔵<br/>reject anytime · accept from CONTACT"]
+  O -.->|"with capability"| e["Create supplier requests 🔵"]
+  O -.->|"if invited type"| f["Respond to supplier requests 🔵"]
+  O -.->|"read-only"| g["Verification state"]
+  O -.-x|"Back Of House reviews"| k["Publish without review"]
+  O -.-x|"revision instead"| l["Edit a published listing in place"]
+  O -.-x|"final"| m["Undo a decision · reopen a closed listing"]
+  O -.-x|"privacy"| n["See contact details before CONTACT"]
+  O -.-x|"AuthGuard"| p["Individual screens · apply"]
+  class O,a,b company
+  class c,d opps
+  class e,f inst
+  class g trust
+  class k,l,m,n,p admin
+  class a,b,c,d,e,f impl
+</script>
+<script type="text/x-mermaid" id="src-R3">
+flowchart LR
+  M["Company member 🟡<br/>not in the MVP"]
+  M -.-> E["Editor<br/>محرر الشركة · PRD §4"]
+  M -.-> A["Analyst<br/>محلل الشركة · PRD §4"]
+  N["A new CompanyRole with a<br/>permission set 🟢"] -.-> M
+  E -.->|"likely"| e1["editProfile · manageProjects 🟣"]
+  E -.->|"not in matrix"| e2["manageOpportunities · reviewApplicants 🟣"]
+  A -.->|"PRD P4"| a1["Company reports 🟡"]
+  A -.-x|"no"| a2["Edit profile · manage team"]
+  Q["Invitations · RBAC · team screen 🟡<br/>later"] -.-> M
+  class M,E,A,N company
+  class e1,e2 company
+  class a1 inst
+  class a2 admin
+  class Q company
+  class M,E,A,a1,Q plan
+  class e1,e2 dec
+  class N ok
+</script>
+<script type="text/x-mermaid" id="src-R4">
+flowchart LR
+  subgraph STAFF["Back Of House staff · back-office · MFA required (AUTH-03)"]
+    LRV["Listing reviewer<br/>مراجع الفرص"]
+    R["Verification reviewer<br/>مراجع تحقق"]
+    C["Content editor<br/>محرر المحتوى"]
+    S["System admin<br/>مدير نظام"]
+    AU["Auditor<br/>مدقق"]
+  end
+  LRV --> l1["Approve or request changes<br/>every listing and revision 🔴"]
+  R --> r1["Verify individuals and companies 🔴"]
+  C --> c1["Publish news · desks · translation 🔴"]
+  C -.->|"future"| c2["Sponsored content, labelled 🟡"]
+  S --> s1["Users · companies · capabilities · merges 🔴"]
+  S --> s2["Point rules · rewards catalog 🔴"]
+  S --> s3["Events · attendance 🟡"]
+  S --> s4["Data import · rollback 🔴"]
+  AU -.->|"read only"| au1["Audit trail · export log 🔴"]
+  class LRV,R,C,S,AU admin
+  class l1 opps
+  class r1 trust
+  class c1,c2 comm
+  class s1,s4,au1 admin
+  class s2 engage
+  class s3 events
+  class l1,r1,c1,s1,s2,s4,au1 miss
+  class c2,s3 plan
+</script>
+<script type="text/x-mermaid" id="src-R5">
+flowchart LR
+  subgraph ENT["Entity workspace · جهة مشترية · MFA required"]
+    EO["Owner"]
+    BU["Buyer"]
+    AN["Analyst"]
+    RD["Reader"]
+    AD["Auditor"]
+  end
+  Q["No entity account type 🟣<br/>rules allow only INDIVIDUAL · COMPANY"] -.-> ENT
+  EO --> t1["Invite users · roles · access expiry"]
+  BU --> b1["Advanced supplier search"]
+  BU --> b2["Private supplier lists · notes"]
+  BU --> b3["Side-by-side comparison"]
+  BU --> b4["RFI · update request"]
+  AN --> n1["Aggregated market reports"]
+  AN -.->|"limited · monitored · watermark"| n2["Export"]
+  RD -.->|"read"| n1
+  AD -.->|"read"| d1["Access and export log"]
+  ENT -.-x|"never"| X["Bulk download of personal data 🟢"]
+  class EO,BU,AN,RD,AD,t1,b1,b2,b3,b4,n1,n2,d1 inst
+  class Q,X admin
+  class EO,BU,AN,RD,AD,t1,b1,b2,b3,b4,n1,n2,d1 plan
+  class Q dec
+  class X ok
+</script>
+</section>
+
+<!-- 11 -->
+<section class="doc" id="inventory">
+  <div class="sec-head"><span class="sec-no">11</span><h2>Complete screen inventory</h2><span class="ar" lang="ar" dir="rtl">جرد الشاشات</span></div>
+  <p class="prose">This lists every screen found in the PRD, the business rules, the router and the UI reference mockups. <strong>Implemented</strong> means the screen works in the app. Except sign-in, sign-up and session restore, that means on mock data. <strong>Phase</strong> comes from PRD §6 and §26. "Later" means the business rules keep it out of the MVP. <strong>Priority</strong> uses the PRD backlog. The small line under each screen name is its route or source. Rows tagged <span class="tag-nprd" style="margin:0">Not in PRD</span> come from the code, the rules or the mockups only.</p>
+  <div class="inv-controls">
+    <label for="inv-q" class="mono" style="position:absolute;left:-9999px">Search screens</label>
+    <input id="inv-q" type="search" placeholder="Search screens, roles, routes…" autocomplete="off">
+    <label for="inv-mod" class="mono" style="position:absolute;left:-9999px">Module</label>
+    <select id="inv-mod"><option value="">All modules</option></select>
+    <label style="display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--ink2)"><input id="inv-nprd" type="checkbox" style="height:auto"> Not in PRD only</label>
+  </div>
+  <div class="chips" id="inv-chips" aria-label="Filter by status"></div>
+  <p class="inv-count" id="inv-count"></p>
+  <div class="tbl-wrap" style="max-height:78vh">
+    <table id="inv">
+      <thead><tr><th>Module</th><th>Screen</th><th>User type</th><th>Entry point</th><th>Destination</th><th>Status</th><th>Phase</th><th>Priority</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="doc" id="gaps">
+  <div class="sec-head"><span class="sec-no">12</span><h2>Product gaps</h2><span class="ar" lang="ar" dir="rtl">الفجوات في المنتج</span></div>
+  <p class="prose">These are places where the requirements are too thin to design against, the code contradicts the PRD or the rules, or a built screen leads nowhere. Each links to a decision in section 13.</p>
+  <div class="gaps">
+    <div class="gap"><h4>Backend &amp; data <span>🔴</span></h4><ul><li>Only auth calls the API. Ten data layers are mock-only (<code>TODO(api)</code>).</li><li><code>ApiEndpoints</code> has no contract for opportunities, applications, applicants, company, supplier requests, rewards or notifications.</li><li>The token refresh endpoint is declared but unused. A 401 clears the session.</li><li>No push delivery for application status notifications.</li></ul></div>
+    <div class="gap"><h4>Back-office <span>🔴</span></h4><ul><li>Every listing and revision needs a Back Of House review, and there is no tool. The app has a dev-only "Simulate approval".</li><li>Company verification is "handled outside the app" without a defined owner or tool.</li><li>Rewards catalog, point rules and company capabilities have no admin.</li></ul></div>
+    <div class="gap"><h4>Platform &amp; navigation <span>🟣</span></h4><ul><li>The PRD defers a native app, and this repo is Flutter mobile.</li><li>The rules say bottom navigation, and the code uses a drawer.</li><li>The PRD lets visitors search publicly. The app requires sign-in for every screen.</li><li>One person who is both a professional and a company representative needs two accounts.</li></ul></div>
+    <div class="gap"><h4>Identity &amp; profile <span>🔴</span></h4><ul><li>One-time code (AUTH-01), consent preferences, MFA and session management are missing.</li><li>Edit profile says "coming soon". Nobody can update experience, projects, skills or student status after sign-up.</li><li>There's no contact-privacy setting, so contact details are never released.</li><li>Google sign-in shows "coming soon" and isn't in the PRD.</li></ul></div>
+    <div class="gap"><h4>Directory &amp; search <span>🔴</span></h4><ul><li>The companies list, public company profile, professionals list and professional profile are placeholders. Home, Discover and opportunity cards lead into them.</li><li>Discover search only searches events, and its filter button opens Events.</li><li>The claim flow and the duplicate check for imported companies are unaddressed.</li><li>Company projects can't hold images yet.</li></ul></div>
+    <div class="gap"><h4>Built without a rule <span>🟣</span></h4><ul><li><em>Follow company</em> earns +5 points in the mock ledger. The PRD says low-quality interaction earns nothing.</li><li><em>Connect</em> with professionals implies a social graph that nothing else uses.</li><li>Event details show a "fit" score. The rules cover match scores only for opportunities.</li><li>"GEA Verified" on events reuses the word reserved for trust.</li></ul></div>
+    <div class="gap"><h4>Points &amp; rewards <span>🔴</span></h4><ul><li>The level is computed from the spendable balance, so redeeming can drop a level. The model's comment says lifetime points.</li><li>The code has 4 levels (100 · 500 · 1500) and the PRD has 6, including Verified professional.</li><li>There are no caps, rule versions, reversals, appeals or badge catalog. Profile "badges" are certifications.</li><li>Redemption codes are generated by the mock, and there's no list of past redemptions.</li></ul></div>
+    <div class="gap"><h4>Events <span>🟡</span></h4><ul><li>View pass, add to calendar, open maps, save and share all show "coming soon".</li><li>No check-in, so attendance points can't be earned for real.</li><li>No "My events" list, waitlist or transfer.</li></ul></div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="doc" id="decisions">
+  <div class="sec-head"><span class="sec-no">13</span><h2>Decisions required</h2><span class="ar" lang="ar" dir="rtl">قرارات مطلوبة قبل التصميم</span></div>
+  <p class="prose">"What we know" quotes only the PRD, the approved business rules or the code. 🟢 rows are settled and listed so nobody reopens them. 🔴 rows are conflicts between sources that need a ruling. 🟣 rows are open questions.</p>
+  <div class="tbl-wrap">
+    <table class="dec-table">
+      <thead><tr><th>ID</th><th>Question</th><th>What we know</th><th>Status</th><th>Blocks</th></tr></thead>
+      <tbody>
+        <tr class="dec-group"><td colspan="5">Platform &amp; navigation</td></tr>
+        <tr id="d-nav"><td>NAV-1</td><td><b>Is the mobile app a launch channel?</b></td><td>§2.2: a native app is out of first-launch scope. §26: deferred until the need is proven. The repo is Flutter Android/iOS, and the rules are written for it.</td><td>🟣</td><td>PRD alignment</td></tr>
+        <tr id="d-prd"><td>PRD-1</td><td><b>Should the PRD phase plan be updated to match the approved rules and the build?</b></td><td>Opportunities (P3), supplier requests (P3), events (P2) and rewards (P2) are built. Billing and memberships (P2) are out of the MVP. The directory, search and claim (P1) are missing.</td><td>🟣</td><td>Roadmap</td></tr>
+        <tr><td>NAV-2</td><td><b>What goes in the navigation?</b></td><td>Approved 17 Sep. Individual: Home · Discover · News · Rewards · Profile. Company: Dashboard · Opportunities · Supplier Requests · Portfolio · Profile.</td><td>🟢</td><td>—</td></tr>
+        <tr id="d-drawer"><td>NAV-7</td><td><b>Bottom bar or side drawer?</b></td><td>The rules say "Bottom navigation". Both shells render <code>BOHNavDrawer</code> through <code>NavDrawerShell</code>. <code>BOHBottomNavigation</code> still exists in the component library.</td><td>🔴</td><td>App shell</td></tr>
+        <tr><td>NAV-3</td><td><b>Is there a Community tab?</b></td><td>No. There are no member posts, and News is its own tab (17 Sep).</td><td>🟢</td><td>—</td></tr>
+        <tr><td>NAV-5</td><td><b>Can one person hold an individual and a company identity?</b></td><td>The account is one type. <code>AuthGuard</code> keeps companies out of individual screens, and there is no switcher. A company account's <code>fullName</code> is its representative.</td><td>🟣</td><td>Sign-up · profile</td></tr>
+        <tr><td>NAV-6</td><td><b>Confirm what Home shows.</b></td><td>The code shows standing (verification level, visibility, attendance points), upcoming events, relevant opportunities and Companies to Watch. Neither the PRD nor the rules define it.</td><td>🟣</td><td>Home</td></tr>
+        <tr class="dec-group"><td colspan="5">Identity &amp; profile</td></tr>
+        <tr><td>ID-1</td><td><b>Email or mobile one-time code, and are passwords kept?</b></td><td>AUTH-01 requires a one-time code. The code has email + password + phone, with no verification step.</td><td>🔴</td><td>Sign up</td></tr>
+        <tr><td>ID-2</td><td><b>Which account types exist?</b></td><td>Settled: <code>INDIVIDUAL</code> and <code>COMPANY</code>. Student is a <code>profileStatus</code>. Supplier, venue and the like are a <code>companyType</code>.</td><td>🟢</td><td>—</td></tr>
+        <tr id="d-claim"><td>ID-5</td><td><b>How does a company claim an imported profile?</b></td><td>The PRD (§5.2–5.3, §22.1) imports 500 unclaimed companies with a claim and duplicate check. The rules create the company at sign-up and verify outside the app.</td><td>🟣</td><td>Company onboarding · directory</td></tr>
+        <tr><td>ID-6</td><td><b>Where do individuals edit their profile, student status and contact privacy?</b></td><td>Edit profile is "coming soon". <code>ContactPrivacy</code> belongs in Profile Settings "later" (18 Sep), and it defaults to sharing nothing.</td><td>🟣</td><td>Profile · applicant contact</td></tr>
+        <tr><td>ID-3</td><td><b>Keep "Continue with Google"?</b></td><td>The button shows "coming soon", and <code>/auth/social</code> is declared. Not in the PRD.</td><td>🟣</td><td>Sign in</td></tr>
+        <tr><td>ID-4</td><td><b>Do MFA and staff roles use the app, or only the web?</b></td><td>AUTH-03 makes MFA mandatory for sensitive roles. Staff work is in the back-office.</td><td>🟣</td><td>Back-office</td></tr>
+        <tr class="dec-group"><td colspan="5">Directory &amp; social actions</td></tr>
+        <tr><td>DIR-1</td><td><b>Who can see professional profiles?</b></td><td>§10.1 gives per-section privacy. The app requires sign-in everywhere, and the professionals directory is a placeholder.</td><td>🟣</td><td>Professionals</td></tr>
+        <tr><td>DIR-2</td><td><b>Company follow, ratings and reviews?</b></td><td>Follow is built in Discover and earns points in the mock. §2.2 excludes open public star ratings.</td><td>🟣</td><td>Company profile · points</td></tr>
+        <tr><td>DIR-4</td><td><b>Keep "Connect" with professionals?</b></td><td>Built in Discover (mock). No rule defines connections, and messaging is out of the MVP.</td><td>🟣</td><td>Discover</td></tr>
+        <tr><td>DIR-3</td><td><b>How do individuals get verified?</b></td><td>The rules say verification is separate and never automatic. There's no request flow in the app. PRD §5.1 has the journey.</td><td>🟣</td><td>Profile · verification</td></tr>
+        <tr class="dec-group"><td colspan="5">News &amp; content</td></tr>
+        <tr><td>COM-1</td><td><b>Are posts, comments and replies part of the MVP?</b></td><td>No. News comes from the editorial desk, and members read, save and share (17 Sep).</td><td>🟢</td><td>—</td></tr>
+        <tr><td>COM-2</td><td><b>What happens to "accepted content +8" and "helpful answer"?</b></td><td>These PRD §8.2 point rules assume member content, which is now ruled out.</td><td>🔴</td><td>Point rules</td></tr>
+        <tr><td>COM-3</td><td><b>Is messaging required?</b></td><td>No. <code>CONTACT</code> is a status, not messaging. Contact happens outside the app.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>COM-4</td><td><b>Where do saved items live?</b></td><td>Articles can be saved (built). Saving events says "coming soon". No screen lists saved items.</td><td>🟣</td><td>Profile</td></tr>
+        <tr><td>COM-5</td><td><b>What are Courses?</b></td><td>Listed in the rules' ecosystem (§13). A placeholder route, no model, not in the PRD.</td><td>🟣</td><td>Discover</td></tr>
+        <tr id="d-evt"><td>COM-6</td><td><b>Rename "GEA Verified"?</b></td><td>The label marks GEA accreditation of an event. The rules keep "Verified" for Back Of House trust.</td><td>🟣</td><td>Events</td></tr>
+        <tr class="dec-group"><td colspan="5">Events</td></tr>
+        <tr><td>EVT-1</td><td><b>Can event tickets be paid?</b></td><td>Not in the MVP. There are no payments unless asked.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>EVT-2</td><td><b>Who checks attendees in, and with which tool?</b></td><td>The PRD asks for a unique entry code plus a manual fallback. The app issues a pass code but has no check-in.</td><td>🟣</td><td>Attendance · points</td></tr>
+        <tr><td>EVT-3</td><td><b>Points only after verified attendance, never for booking.</b></td><td>§9.2 and §20.2. Registration in the app earns nothing. The mock ledger's "Joined event" label should read "Attended".</td><td>🟢</td><td>—</td></tr>
+        <tr><td>EVT-4</td><td><b>Should events show a fit score?</b></td><td><code>Event.matchScore</code> is shown as "fit". The rules allow only backend match scores, and only for opportunities.</td><td>🟣</td><td>Event details</td></tr>
+        <tr class="dec-group"><td colspan="5">Opportunities &amp; supplier requests</td></tr>
+        <tr id="d-opp"><td>OPP-1</td><td><b>What are the application statuses?</b></td><td>SUBMITTED → REVIEWED → SHORTLISTED → CONTACT → ACCEPTED / REJECTED / WITHDRAWN. One step at a time, and decisions are final.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>OPP-2</td><td><b>Who may apply?</b></td><td>Any individual. <code>CO_OP</code> is for students only. Verification isn't required. Re-applying is allowed only after withdrawal.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>OPP-3</td><td><b>Which company roles post and review?</b></td><td>The Owner, through <code>manageOpportunities</code> and <code>reviewApplicants</code>.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>OPP-4</td><td><b>How do the PRD's six types map?</b></td><td>Five types. Temporary contract and freelance become <code>EmploymentType</code> on a job. <code>PROJECT</code> is new. A buyer is a company with a capability, not a "buying entity".</td><td>🟢</td><td>—</td></tr>
+        <tr><td>OPP-5</td><td><b>Who reviews listings, how fast, and with what tool?</b></td><td>Every listing and revision is reviewed (18 Sep). No tool, target time or reviewer role is defined.</td><td>🟣</td><td>Publishing</td></tr>
+        <tr><td>OPP-6</td><td><b>What are PAUSED and ARCHIVED for?</b></td><td>Both exist in <code>OpportunityStatus</code>, and no transition reaches them. CLOSED is final.</td><td>🟣</td><td>Lifecycle</td></tr>
+        <tr class="dec-group"><td colspan="5">Points, rewards &amp; visibility</td></tr>
+        <tr id="d-pts"><td>PTS-10</td><td><b>Are levels based on lifetime points or the spendable balance?</b></td><td>The model comment says lifetime. The mock computes the level from the balance, so redeeming lowers it.</td><td>🔴</td><td>Rewards · levels</td></tr>
+        <tr><td>PTS-11</td><td><b>Should following companies earn points?</b></td><td>The mock ledger gives +5. PRD §8.2 says low-quality interaction earns nothing.</td><td>🔴</td><td>Point rules</td></tr>
+        <tr id="d-vp"><td>PTS-6</td><td><b>Which levels exist, and is "Verified professional" one of them?</b></td><td>Code: newcomer · active · contributor · leader. PRD: six levels, with Verified professional at 500–799 plus verification.</td><td>🟣</td><td>Rewards · profile</td></tr>
+        <tr><td>PTS-1</td><td><b>What exactly earns points, and how much?</b></td><td>The PRD gives sample values and categories. The mock ledger is seeded, and no rules table is agreed.</td><td>🟣</td><td>Ledger</td></tr>
+        <tr><td>PTS-2</td><td><b>Does redeeming spend points?</b></td><td>Yes. Rewards are points-funded, and Profile Highlight is one.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>PTS-3</td><td><b>Who issues redemption codes, and where are past redemptions shown?</b></td><td>The mock generates <code>BOH-xxxx</code>. The ledger shows a negative entry, and no redemptions list exists.</td><td>🟣</td><td>Redeem</td></tr>
+        <tr><td>PTS-4</td><td><b>Membership vs rewards?</b></td><td>Separate. Memberships and subscriptions are future monetization, and rewards are points.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>PTS-5</td><td><b>Which badges exist?</b></td><td>Profile "badges" are certifications and honours. The PRD's badge awards have no catalog.</td><td>🟣</td><td>Profile · rewards</td></tr>
+        <tr><td>PTS-7</td><td><b>How much of the visibility score is shown, and how long does Profile Highlight last?</b></td><td>The PRD weights are in §8.4. The app shows one 0–100 number. Highlight is "temporary", with no duration.</td><td>🟣</td><td>Profile · rewards</td></tr>
+        <tr><td>PTS-9</td><td><b>Activity, payment and featuring never grant verification.</b></td><td>§8.1 · rules §10 and §12. "Featured" is reserved for paid placement, and "Tier" labels were removed.</td><td>🟢</td><td>—</td></tr>
+        <tr class="dec-group"><td colspan="5">Institutional</td></tr>
+        <tr id="d-ins"><td>INS-1</td><td><b>How do government and buying entities fit two account types?</b></td><td>PRD §5.4 and §12 give entities their own workspace and roles. The rules allow only individual and company accounts.</td><td>🟣</td><td>Phase 4</td></tr>
+        <tr class="dec-group"><td colspan="5">PRD §27: management decisions</td></tr>
+        <tr><td>MGT-1</td><td><b>Launch scope</b></td><td>Recommended: Saudi Arabia, Riyadh first.</td><td>🟣</td><td>Content · search defaults</td></tr>
+        <tr><td>MGT-2</td><td><b>Pricing</b></td><td>Deferred. The rules keep payments and subscriptions out of the MVP.</td><td>🟢</td><td>—</td></tr>
+        <tr><td>MGT-3</td><td><b>Verification approach</b></td><td>Handled outside the app. It grants no publishing rights.</td><td>🟢 / 🟣</td><td>Back-office</td></tr>
+        <tr><td>MGT-4</td><td><b>Publishing imported company data</b></td><td>Recommended: public fields only, with an invitation to claim. Tied to ID-5.</td><td>🟣</td><td>Directory</td></tr>
+        <tr><td>MGT-5</td><td><b>Client disclosure policy</b></td><td>Client name is optional on company projects (rules §4).</td><td>🟢</td><td>—</td></tr>
+        <tr><td>MGT-6</td><td><b>Payment and invoicing provider</b></td><td>Deferred with monetization.</td><td>🟢</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="doc" id="legend">
+  <div class="sec-head"><span class="sec-no">14</span><h2>Legend</h2><span class="ar" lang="ar" dir="rtl">دليل الرموز</span></div>
+  <div class="legend">
+    <div class="box"><h4>Status glyphs</h4>
+      <div class="lg-row"><span class="emo">🟢</span><span><b>Confirmed.</b> Stated by the PRD or an approved business rule.</span></div>
+      <div class="lg-row"><span class="emo">🔵</span><span><b>Implemented.</b> A working screen in code. Mock data unless it is auth.</span></div>
+      <div class="lg-row"><span class="emo">🔷</span><span><b>Partially implemented.</b> A placeholder route, "coming soon" actions, or missing requirements.</span></div>
+      <div class="lg-row"><span class="emo">🟡</span><span><b>Planned.</b> A later PRD phase, or kept out of the MVP by the rules.</span></div>
+      <div class="lg-row"><span class="emo">🔴</span><span><b>Missing or conflicting.</b> Needed now with no code, or sources disagree.</span></div>
+      <div class="lg-row"><span class="emo">🟣</span><span><b>Needs business decision.</b> Ambiguous, or built with no rule behind it.</span></div>
+      <div class="lg-row"><span class="emo">⚪</span><span><b>Not in PRD.</b> Exists in code, but the requirements don't cover it.</span></div>
+    </div>
+    <div class="box"><h4>Diagram borders</h4>
+      <div class="lg-row"><span class="swatch sw-impl"></span><span><b>Implemented:</b> thick solid</span></div>
+      <div class="lg-row"><span class="swatch sw-part"></span><span><b>Partial:</b> dashed</span></div>
+      <div class="lg-row"><span class="swatch sw-plan"></span><span><b>Planned:</b> thin dashed</span></div>
+      <div class="lg-row"><span class="swatch sw-miss"></span><span><b>Missing:</b> heavy dashed</span></div>
+      <div class="lg-row"><span class="swatch sw-dec"></span><span><b>Needs decision:</b> dotted</span></div>
+      <div class="lg-row"><span class="swatch sw-ok"></span><span><b>Confirmed rule:</b> solid</span></div>
+      <div class="lg-row"><span class="swatch sw-nprd"></span><span><b>Not in PRD:</b> double</span></div>
+      <div class="lg-row"><span class="mono" style="text-align:center">- - ✕</span><span><b>Crossed dashed arrow:</b> not allowed or must never happen</span></div>
+    </div>
+    <div class="box"><h4>Module fills</h4><div id="mod-legend"></div></div>
+    <div class="box"><h4>Screen inventory statuses</h4>
+      <div class="lg-row"><span class="pill I" style="justify-self:start">Impl.</span><span>IMPLEMENTED (mock data unless auth)</span></div>
+      <div class="lg-row"><span class="pill PI" style="justify-self:start">Partial</span><span>PARTIALLY IMPLEMENTED</span></div>
+      <div class="lg-row"><span class="pill N" style="justify-self:start">Not</span><span>NOT IMPLEMENTED: needed now, no code</span></div>
+      <div class="lg-row"><span class="pill P" style="justify-self:start">Plan</span><span>PLANNED: later PRD phase or out of the MVP</span></div>
+      <div class="lg-row"><span class="pill D" style="justify-self:start">Dec.</span><span>NEEDS DECISION</span></div>
+    </div>
+  </div>
+  <footer class="end">Revision 2, built 18 Sep 2026 from PRD v1.0, docs/business-rules.md (approved 17–18 Sep) and the uncommitted <code>main</code> branch. <code>flutter analyze</code>: no issues. <code>flutter test</code>: 109 passed, 1 skipped. Regenerate after each decision. Diagrams render with Mermaid 11.</footer>
+</section>
+</main>
+</div>
+
+<script>
+/* Screen inventory. [module, screen, source, userType, entry, destination, status, phase, priority, notInPrd, note]
+   status: I implemented · PI partial · N not implemented (needed now) · P planned / later · D needs decision */
+window.INVENTORY = [
+["Identity & access","Splash · session restore","/splash","All","App launch","Home or company dashboard, or the interrupted deep link","I","1","P0",0,"Restores the session from the API (/me)."],
+["Identity & access","Welcome","/auth","Visitor","Splash (signed out) · guarded deep link","Sign up · Sign in","I","1","P0",0,""],
+["Identity & access","Sign in","/login","Registered user","Welcome · Sign up","Home or /company, by account type","I","1","P0",0,"Email + password only. AUTH-01 also allows mobile. No MFA."],
+["Identity & access","Sign up · account type","/register","Visitor","Welcome → Get started","Home or /company","I","1","P0",0,"Follows the rules: Individual (with a student toggle) or Company (name + company type). No one-time code or consent preferences yet."],
+["Identity & access","Verify one-time code (email or mobile)","AUTH-01","Visitor","Sign up","Home","N","1","P0",0,"The PRD won't activate an account without it."],
+["Identity & access","Consent preferences","§5.1 · consents","Visitor","Sign up","Home","PI","1","P0",0,"Only a terms checkbox exists."],
+["Identity & access","Forgot / reset password","/reset-password · AUTH-04","Registered user","Sign in","Sign in","PI","1","P0",0,"Placeholder screen. The /auth/forgot-password call exists."],
+["Identity & access","Continue with Google","/auth/social","Visitor","Sign in","Home","D","—","P2",1,"The button shows 'coming soon'."],
+["Identity & access","Multi-factor authentication","AUTH-03","Staff · entity users","Sign in (sensitive roles)","Role home","N","1","P0",0,"Probably web back-office only."],
+["Identity & access","Active sessions · sign out everywhere","AUTH-02","Registered user","Settings","Settings","N","1","P1",0,""],
+["Identity & access","Accept team invitation","AUTH-05","Invited company member","Invitation link","Company workspace","P","Later","P0",0,"The rules defer invitations and delegated roles."],
+["Identity & access","Suspend, delete or export account","AUTH-06","Registered user","Settings","Settings","P","Later","P2",0,""],
+
+["Home & search","Home","/ · drawer","Individual","Drawer · sign in","Events · opportunities · companies · points","I","1","P0",0,"Standing card (verification level, visibility, attendance points), upcoming events, relevant opportunities, Companies to Watch."],
+["Home & search","Notifications","/notifications","Individual","Home bell","Linked opportunity, event, article, points or application","I","1","P0",0,"Categories: opportunities, events, credentials, news. Mark all read. Application status updates. Mock, no push."],
+["Home & search","Discover hub","/discover · drawer","Individual","Drawer","Events · opportunities · companies · professionals","I","—","P0",1,"Directory counts, recommended companies (Follow), suggested professionals (Connect)."],
+["Home & search","Search results (Arabic & English)","§7.4","All","Discover search","Company, professional, event, opportunity","PI","1","P0",0,"Discover search returns events only."],
+["Home & search","Search filters","§7.4","All","Discover filter button","Search results","N","1","P0",0,"The filter button opens Events."],
+
+["Companies directory","Companies list","/companies","Individual","Home Companies to Watch · Discover","Company profile","PI","1","P0",0,"Placeholder, though Home and Discover link to it."],
+["Companies directory","Company profile (public)","/companies/:id · ORG-01…10","Individual","Companies list · opportunity · Home","Projects · open opportunities","PI","1","P0",0,"Placeholder. The model and the company's own profile screen exist."],
+["Companies directory","Company project details","§7.3","Individual","Company profile","Company profile","N","1","P0",0,"Client name is optional and hidden when confidential."],
+["Companies directory","Claim an imported company","§5.2 · §22.1","Company representative","Company profile","Company workspace","D","1","P0",0,"The rules create companies at sign-up. The claim flow for 500 imported profiles has no owner."],
+["Companies directory","Add company · duplicate check","ORG-09 · §5.3","Company representative","Sign up","Company workspace","D","1","P0",0,"Sign-up takes only name and type, with no duplicate check."],
+["Companies directory","Follow company","ecosystem_cards.dart","Individual","Discover recommendations","—","D","—","P2",1,"Built (mock). Earns +5 points in the mock ledger, and no rule covers it."],
+["Companies directory","Company rating & reviews","ui-refrence","Individual","Company profile","—","D","—","P2",1,"Conflicts with the §2.2 exclusion of open public star ratings."],
+["Companies directory","Category & city pages","§7.4 SEO","Visitor","Search · web","Company profile","D","1","P1",0,"SEO pages are a web concern."],
+
+["Company workspace","Company dashboard","/company · drawer","Company owner","Sign in · drawer","Listings · portfolio · supplier requests","I","—","P0",1,"Live listings, drafts and reviews, invited supplier requests, quick actions."],
+["Company workspace","Company profile (own)","/company/profile","Company owner","Drawer","Edit profile","I","1","P0",0,"Verification shown read-only, plus capabilities and a completeness hint."],
+["Company workspace","Edit company profile","/company/profile/edit","Company owner","Company profile","Company profile","I","1","P0",0,"Specialization, city, description (up to 1000), services, industries, contact. Name and type are locked."],
+["Company workspace","Portfolio","/company/portfolio","Company owner","Drawer · dashboard","Project editor","I","1","P0",0,"CompanyProject, separate from opportunities and from individual projects."],
+["Company workspace","Add / edit company project","/company/portfolio/new · /:id/edit","Company owner","Portfolio","Portfolio","I","1","P0",0,"Title, description, location, category, dates, services, optional client. No images yet."],
+["Company workspace","Licences & certificates","ORG-05","Company owner","Company profile","Company profile","N","1","P0",0,"Not in the rules or the code."],
+["Company workspace","My opportunities","/company/opportunities","Company owner","Drawer · dashboard","Listing details","I","3","P1",0,"Every status, most recently updated first."],
+["Company workspace","Create listing","/company/opportunities/new","Company owner","My opportunities · dashboard · supplier requests","Listing details","I","3","P1",0,"Type picker shows supplier requests only with the capability. Saves a draft."],
+["Company workspace","Listing details (company)","/company/opportunities/:id","Company owner","My opportunities","Edit · applicants · responses","I","3","P1",0,"Submit, pull back, close, start a revision, reviewer note. Dev-only simulate approval."],
+["Company workspace","Edit draft or revision","/company/opportunities/:id/edit","Company owner","Listing details","Listing details","I","3","P1",0,"Only drafts and changes-requested listings are editable. Published ones change through a revision."],
+["Company workspace","Applicants","/company/opportunities/:id/applicants","Company owner","Listing details","Applicant details","I","3","P1",0,"Filtered by status."],
+["Company workspace","Applicant details","/company/applicants/:id","Company owner","Applicants","Applicants","I","3","P1",0,"Profile snapshot, chosen experience and projects, message. One step at a time. Contact only from CONTACT, per ContactPrivacy."],
+["Company workspace","Team & invitations","AUTH-05 · §4","Company owner","Dashboard","—","P","Later","P0",0,"One owner in the MVP."],
+["Company workspace","Company points & visibility score","§8.3–8.4","Company owner","Dashboard","—","P","2","P1",0,""],
+["Company workspace","Membership, billing & invoices","§7.5","Company owner","Dashboard","—","P","Later","P1",0,"The rules keep payments and subscriptions out of the MVP."],
+["Company workspace","Confirm employee relationships","§10.1","Company owner","Notification","—","P","3","P1",0,""],
+["Company workspace","Performance report & 3-company comparison","§11","Company owner","Dashboard","—","P","4","P2",0,"Advanced analytics are out of the MVP."],
+
+["Supplier requests","Supplier requests (invited · my responses)","/company/supplier-requests","Company owner","Drawer · dashboard","Request details · response details","I","3","P1",0,"Only requests that invite this company's type. The create button appears only with the capability."],
+["Supplier requests","Supplier request details","/company/supplier-requests/:id","Company owner","Supplier requests · listing details","Respond · response details","I","3","P1",0,"The buyer sees responses received. A supplier sees Respond or its own response."],
+["Supplier requests","Respond to supplier request","/company/supplier-requests/:id/respond","Invited supplier company","Request details","Supplier requests","I","3","P1",0,"Message (required, up to 1000), optional price, company projects as evidence. No attachments. One per company."],
+["Supplier requests","Supplier response details","/company/responses/:id","Buyer · responder","Request details · my responses","—","I","3","P1",0,"The buyer moves it one step at a time. Selecting rejects the rest and closes the request."],
+
+["Profile","My profile","/profile · drawer","Individual","Drawer · Home","My applications · My points · settings","I","1","P0",0,"Summary, experience, skills, projects, badges, visibility score, verification level. Share says coming soon."],
+["Profile","Edit profile","§5.1","Individual","My profile","My profile","N","1","P0",0,"The button says 'coming soon'. No way to change experience, projects, skills or student status."],
+["Profile","Contact privacy settings","ContactPrivacy · rules 18 Sep","Individual","Settings","Settings","N","1","P1",1,"Defaults to sharing nothing. Without it, no company ever sees contact details."],
+["Profile","Settings · appearance & language","/profile settings sheet","All","Profile · company profile","—","I","1","P1",0,"Light or dark, English or Arabic, sign out. Design system link in dev builds."],
+["Profile","Identity & experience verification request","§5.1","Individual","My profile","Verification status","D","1 or 3","P1",0,"No request flow. Verification is never automatic."],
+["Profile","Verification status","§5.1 · §29.1","Individual","My profile · notification","My profile","D","1 or 3","P1",0,"Code has a boolean plus a level, and the PRD has 6 states."],
+["Profile","Employment relationship request","§10.1","Individual","Experience","Pending confirmation","P","3","P1",0,""],
+["Profile","Professionals directory","/professionals","Individual","Discover","Professional profile","PI","3","P1",0,"Placeholder. Discover shows suggestions."],
+["Profile","Professional profile (public)","/professionals/:id","Individual · company","Professionals · Discover","—","PI","3","P1",0,"Placeholder."],
+["Profile","Connect with professional","ecosystem_cards.dart","Individual","Discover suggestions","—","D","—","P2",1,"Built (mock). No rule, and messaging is out of the MVP."],
+
+["Events","Events list","/events","Individual","Discover · Home","Event details","I","2","P1",0,"Search, type filter, featured event."],
+["Events","Event details & registration","/events/:id","Individual","Events · Home · notification","—","I","2","P1",0,"Agenda by day, speakers, venue. Register and cancel. Registering earns no points. Save, share and maps say coming soon."],
+["Events","My pass & entry code","§9.2","Individual","Event details","Venue check-in","PI","2","P1",0,"A pass code is issued, and 'View pass' and 'Add to calendar' say coming soon."],
+["Events","My events","§9.2","Individual","Profile","Event details","N","2","P1",0,""],
+["Events","Waitlist · transfer ticket","§9.2","Individual","Event details","—","P","2","P1",0,""],
+["Events","Ticket payment","—","Individual","Event details","—","P","Later","P1",0,"No payments in the MVP."],
+["Events","Venue check-in (scan or manual)","§9.2","Event staff","—","Verified attendance","P","2","P1",0,"This is where attendance points are awarded."],
+["Events","Post-event survey & certificate","§9.2","Attendee","Notification","—","P","2","P2",0,""],
+["Events","Attendees list","ui-refrence","Individual","Event details","—","D","—","P2",1,"Privacy implications."],
+
+["Opportunities","Opportunities list","/opportunities","Individual","Discover · Home · notification","Opportunity details","I","3","P1",0,"Individual types only. Type chips and search. Best match first."],
+["Opportunities","Opportunity details","/opportunities/:id","Individual","List · Home · notification","Apply · My applications","I","3","P1",0,"Shows the eligibility reason. Match score only when the backend sends one."],
+["Opportunities","Apply","/opportunities/:id/apply","Individual","Opportunity details","My applications","I","3","P1",0,"Profile snapshot, chosen experience and projects, optional message up to 500. No CV."],
+["Opportunities","My applications","/applications","Individual","Profile · opportunity · after applying","Opportunity details","I","3","P1",0,"Active and past. Withdraw while active."],
+["Opportunities","Messaging · interview · offer","—","—","—","—","P","Later","P1",0,"Out of the MVP. CONTACT is a status, not messaging."],
+["Opportunities","Matching alerts","§26","Individual","Notifications","Opportunity details","P","Later","P1",0,"No recommendation engine in the MVP."],
+
+["News","News","/news · drawer","Individual","Drawer · Home","Article","I","1","P1",0,"For you, Latest, Technical, Regulatory, Market. Search."],
+["News","Article","/news/:id","Individual","News · Home · notification","Related articles","I","1","P1",0,"Directives, quotes, notices, related articles, save. Share says coming soon."],
+["News","Saved items","—","Individual","Profile","Article","D","—","P2",1,"Articles can be saved, but no list exists."],
+["News","Report content","§13","Individual","Article","Moderator queue","P","1","P1",0,"The user-side flow isn't specified."],
+["News","Courses list & details","/courses · /courses/:id","Individual","Discover","—","PI","—","P2",1,"Placeholder, no model."],
+["News","Terms & privacy policy","AppConfig.termsUrl · privacyUrl","All","Sign up","External browser","I","1","P0",0,""],
+
+["Points & rewards","Rewards catalog","/rewards · drawer","Individual","Drawer","Reward details","I","2","P1",1,"Four categories plus search. Some rewards are 'coming soon'."],
+["Points & rewards","Reward details & redeem","/rewards/:id","Individual","Rewards","Redemption code","I","2","P1",1,"Benefits, steps, cost. Redeeming spends points and shows a code."],
+["Points & rewards","Profile Highlight reward","RewardKind.highlight · rules 17 Sep","Individual","Rewards","—","I","—","P1",1,"Temporary visibility. Not verification, not paid promotion."],
+["Points & rewards","My points (history)","/rewards/points","Individual","Rewards · Home · Profile","—","I","2","P1",0,"Balance, level progress, ledger filtered by all, earned or redeemed."],
+["Points & rewards","Levels & benefits","§9.1","Individual","My points","—","PI","2","P1",0,"4 levels in code and 6 in the PRD. Computed from the spendable balance."],
+["Points & rewards","Badges","§14","Individual","Profile","—","D","2","P1",0,"Profile badges are certifications, and there's no points badge catalog."],
+["Points & rewards","Visibility score breakdown","§8.4","Individual","Profile · Home","—","PI","2","P1",0,"One number, no breakdown."],
+["Points & rewards","My redemptions","—","Individual","Rewards","—","D","2","P2",0,"Codes are shown once. Only a negative ledger entry remains."],
+["Points & rewards","Points appeal","§8.6","Individual","Point history","—","P","2","P2",0,""],
+
+["Institutional","Entity registration & workspace","§5.4 · §12","Entity representative","—","Supplier search · lists · reports","D","4","P2",0,"No account type for entities in the rules."],
+["Institutional","Supplier lists, comparison & RFI","§12.1","Buyer","Entity workspace","Company response","P","4","P2",0,""],
+["Institutional","Market reports & controlled export","§12.2–12.3","Analyst · reader","Entity workspace","Export log","P","4","P2",0,""],
+["Institutional","Sector observatory","Phase 5","Entity · research partner","—","Reports","P","5","P2",0,""],
+
+["Back-office","Listing review queue","OpportunityLifecycle · rules 18 Sep","Listing reviewer","Back-office","Publish or changes requested","N","—","P0",1,"Every listing and revision. The app has a dev-only simulate button in its place."],
+["Back-office","Company & individual verification","§13 · rules 18 Sep","Verification reviewer","Back-office","—","N","1","P0",0,"Outside the app. Grants no publishing."],
+["Back-office","Users, companies & capabilities","§13","System admin","Back-office","—","N","1","P0",0,"Includes granting createSupplierRequest."],
+["Back-office","News desk & translation","§13","Content editor","Back-office","—","N","1","P0",0,""],
+["Back-office","Rewards catalog & point rules","§13","System admin","Back-office","—","N","2","P1",0,"Needed as soon as rewards leave the mock."],
+["Back-office","Data import · preview · rollback","§22.1","System admin","Back-office","—","N","1","P0",0,""],
+["Back-office","Audit log","§13","Auditor · admin","Back-office","—","N","1","P0",0,""],
+
+["Developer","Design system gallery","/design-system","Developers (non-production)","Profile settings","—","I","—","P2",1,"Compiles cleanly now."]
+];
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function(){
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const STATUS = {
+    I:  {label:"Implemented"},
+    PI: {label:"Partially implemented"},
+    N:  {label:"Not implemented"},
+    P:  {label:"Planned"},
+    D:  {label:"Needs decision"}
+  };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  /* ── Stats ─────────────────────────────────────── */
+  const inv = window.INVENTORY || [];
+  const counts = {all: inv.length, I:0, PI:0, N:0, P:0, D:0};
+  inv.forEach(r => counts[r[6]]++);
+  $$('[data-count]').forEach(el => { el.textContent = counts[el.dataset.count]; });
+
+  /* ── Inventory table ───────────────────────────── */
+  const tbody = $('#inv tbody');
+  const modSel = $('#inv-mod');
+  const modules = [...new Set(inv.map(r => r[0]))];
+  modules.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; modSel.appendChild(o); });
+  const active = new Set(Object.keys(STATUS));
+  const chips = $('#inv-chips');
+  Object.entries(STATUS).forEach(([k, v]) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.id = 'chip-' + k;
+    b.setAttribute('aria-pressed', 'true');
+    b.innerHTML = `<span class="pill ${k}">${v.label}</span><span class="n">${counts[k]}</span>`;
+    b.addEventListener('click', () => {
+      if (active.has(k)) active.delete(k); else active.add(k);
+      b.setAttribute('aria-pressed', active.has(k));
+      renderTable();
+    });
+    chips.appendChild(b);
+  });
+  function renderTable(){
+    const q = $('#inv-q').value.trim().toLowerCase();
+    const mod = modSel.value;
+    const onlyNprd = $('#inv-nprd').checked;
+    let html = '', shown = 0, last = null;
+    inv.forEach(r => {
+      if (!active.has(r[6])) return;
+      if (mod && r[0] !== mod) return;
+      if (onlyNprd && !r[9]) return;
+      if (q && !r.join(' ').toLowerCase().includes(q)) return;
+      if (r[0] !== last) { html += `<tr class="grp"><td colspan="8">${esc(r[0])}</td></tr>`; last = r[0]; }
+      shown++;
+      html += `<tr><td>${esc(r[0])}</td>
+        <td><b>${esc(r[1])}</b><span class="ref">${esc(r[2])}</span>${r[10] ? `<span class="why">${esc(r[10])}</span>` : ''}</td>
+        <td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td>
+        <td><span class="pill ${r[6]}">${STATUS[r[6]].label}</span>${r[9] ? '<br><span class="tag-nprd">Not in PRD</span>' : ''}</td>
+        <td>${esc(r[7])}</td><td>${esc(r[8])}</td></tr>`;
+    });
+    tbody.innerHTML = html || '<tr><td colspan="8" style="padding:24px;color:var(--muted)">No screens match these filters. Clear the search or turn a status back on.</td></tr>';
+    $('#inv-count').textContent = `Showing ${shown} of ${inv.length} screens`;
+  }
+  $('#inv-q').addEventListener('input', renderTable);
+  modSel.addEventListener('change', renderTable);
+  $('#inv-nprd').addEventListener('change', renderTable);
+  renderTable();
+
+  /* ── TOC active state ──────────────────────────── */
+  const links = $$('.toc a');
+  const secs = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting){
+          links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, {rootMargin: '-20% 0px -70% 0px'});
+    secs.forEach(s => io.observe(s));
+  }
+
+  /* ── Theme ─────────────────────────────────────── */
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  const theme = () => document.documentElement.getAttribute('data-theme') || (mq.matches ? 'dark' : 'light');
+
+  const MODULES = {
+    core:    {name:'Core navigation',          light:'#E6E9F2', dark:'#18233A'},
+    ident:   {name:'Identity & access',        light:'#E5E1FB', dark:'#241C4D'},
+    company: {name:'Companies & workspace',    light:'#DCE9FB', dark:'#0F2A4A'},
+    indiv:   {name:'Individual & profile',     light:'#D8F0EA', dark:'#0D3631'},
+    comm:    {name:'Community & content',      light:'#DDF0F8', dark:'#0E2F3E'},
+    events:  {name:'Events',                   light:'#EEE0FC', dark:'#2C1653'},
+    opps:    {name:'Opportunities',            light:'#FBE8CF', dark:'#3B260E'},
+    engage:  {name:'Points, levels & badges',  light:'#F5EBCB', dark:'#362B0C'},
+    vis:     {name:'Visibility score',         light:'#F3E1F5', dark:'#35183C'},
+    trust:   {name:'Verification & trust',     light:'#D6ECF1', dark:'#0B3340'},
+    member:  {name:'Membership & rewards',     light:'#FAE0E8', dark:'#3C1526'},
+    inst:    {name:'Institutional & reports',  light:'#DCF0E0', dark:'#10331E'},
+    notif:   {name:'Home & notifications',     light:'#ECEFF4', dark:'#1A2434'},
+    admin:   {name:'Admin back-office',        light:'#E2E4E9', dark:'#222A36'}
+  };
+  const STROKES = {
+    light:{impl:'#1F63C6', part:'#2F7FD8', plan:'#946000', miss:'#C23142', dec:'#7B45D6', ok:'#157A52', nprd:'#5F6B80'},
+    dark: {impl:'#6AA8FF', part:'#8CBBFF', plan:'#F2B84B', miss:'#FF6B7A', dec:'#B690FF', ok:'#3FCF90', nprd:'#9AA5B8'}
+  };
+  function classDefs(t){
+    const text = t === 'dark' ? '#EEF1F6' : '#0F1A33';
+    const s = STROKES[t];
+    const lines = Object.entries(MODULES).map(([k, v]) => `classDef ${k} fill:${v[t]},color:${text}`);
+    lines.push(
+      `classDef impl stroke:${s.impl},stroke-width:3px`,
+      `classDef part stroke:${s.part},stroke-width:2px,stroke-dasharray:8 4`,
+      `classDef plan stroke:${s.plan},stroke-width:1.5px,stroke-dasharray:5 4`,
+      `classDef miss stroke:${s.miss},stroke-width:2.5px,stroke-dasharray:9 4`,
+      `classDef dec stroke:${s.dec},stroke-width:2.5px,stroke-dasharray:2 3`,
+      `classDef ok stroke:${s.ok},stroke-width:2px`,
+      `classDef nprd stroke:${s.nprd},stroke-width:3px,stroke-dasharray:10 3 2 3`
+    );
+    return lines.join('\n');
+  }
+  const ZONES = {
+    light:{zoneA:'#F3F6FB', zoneAStroke:'#AEB8CB', zoneB:'#E7F6EE', zoneBStroke:'#157A52', zoneD:'#F6F0FE', zoneDStroke:'#7B45D6'},
+    dark: {zoneA:'#0E1928', zoneAStroke:'#3A4B66', zoneB:'#0B2A1F', zoneBStroke:'#3FCF90', zoneD:'#1B1330', zoneDStroke:'#B690FF'}
+  };
+
+  // Module legend
+  const ml = $('#mod-legend');
+  function renderModLegend(){
+    const t = theme();
+    ml.innerHTML = Object.values(MODULES).map(v =>
+      `<div class="lg-row"><span class="mod-sw" style="background:${v[t]}"></span><span>${v.name}</span></div>`).join('');
+  }
+  renderModLegend();
+
+  /* ── Diagrams ──────────────────────────────────── */
+  const figs = $$('figure.dia');
+  let seq = 0;
+
+  function mermaidInit(t){
+    const dark = t === 'dark';
+    mermaid.initialize({
+      startOnLoad:false,
+      securityLevel:'strict',
+      theme:'base',
+      fontFamily:'"Plus Jakarta Sans","IBM Plex Sans Arabic",system-ui,sans-serif',
+      flowchart:{htmlLabels:true, curve:'basis', nodeSpacing:28, rankSpacing:52, padding:10, diagramPadding:16},
+      themeVariables:{
+        fontFamily:'"Plus Jakarta Sans","IBM Plex Sans Arabic",system-ui,sans-serif',
+        fontSize:'14px',
+        primaryColor: dark ? '#101B29' : '#FFFFFF',
+        primaryTextColor: dark ? '#EEF1F6' : '#0F1A33',
+        primaryBorderColor: dark ? '#3A4B66' : '#AEB8CB',
+        lineColor: dark ? '#6B7A93' : '#8A94A6',
+        textColor: dark ? '#C9D0DC' : '#3C4659',
+        clusterBkg: dark ? '#0E1928' : '#F3F6FB',
+        clusterBorder: dark ? '#3A4B66' : '#AEB8CB',
+        edgeLabelBackground: dark ? '#0B1420' : '#FFFFFF',
+        titleColor: dark ? '#EEF1F6' : '#0F1A33'
+      }
+    });
+  }
+
+  function setupFigure(fig){
+    if (fig._ready) return;
+    fig._ready = true;
+    const bar = $('.dia-bar', fig);
+    const tools = document.createElement('div');
+    tools.className = 'tools';
+    tools.innerHTML = `<button type="button" data-act="out" aria-label="Zoom out">−</button>
+      <button type="button" data-act="in" aria-label="Zoom in">+</button>
+      <button type="button" data-act="fit">Fit</button>
+      <button type="button" data-act="expand" aria-expanded="false">Expand</button>`;
+    bar.appendChild(tools);
+    const stage = document.createElement('div');
+    stage.className = 'stage'; stage.tabIndex = 0;
+    stage.setAttribute('role', 'img');
+    stage.setAttribute('aria-label', $('figcaption', fig).textContent.trim() + ' diagram. Use plus, minus and arrow keys to zoom and pan; 0 to fit.');
+    stage.innerHTML = '<div class="canvas"></div><div class="loading">Rendering diagram…</div>';
+    fig.appendChild(stage);
+    const hint = document.createElement('div');
+    hint.className = 'dia-hint';
+    hint.innerHTML = '<span>Drag to pan · Ctrl/⌘ + scroll or pinch to zoom · double-click to fit</span><span class="zoom-read mono">100%</span>';
+    fig.appendChild(hint);
+
+    const canvas = $('.canvas', stage);
+    const st = fig._st = {s:1, x:0, y:0, w:0, h:0};
+    const apply = () => {
+      canvas.style.transform = `translate(${st.x}px,${st.y}px) scale(${st.s})`;
+      $('.zoom-read', fig).textContent = Math.round(st.s * 100) + '%';
+    };
+    const zoomAt = (f, cx, cy) => {
+      const ns = Math.min(4, Math.max(0.15, st.s * f));
+      st.x = cx - (cx - st.x) * (ns / st.s);
+      st.y = cy - (cy - st.y) * (ns / st.s);
+      st.s = ns; apply();
+    };
+    fig._fit = () => {
+      if (!st.w) return;
+      const sw = stage.clientWidth;
+      if (!fig.classList.contains('expanded')){
+        const natural = sw * st.h / st.w;
+        stage.style.height = Math.round(Math.min(Math.max(natural, 340), 720)) + 'px';
+      }
+      const sh = stage.clientHeight;
+      st.s = Math.min(sw / st.w, sh / st.h, 1.15) * 0.97;
+      st.x = (sw - st.w * st.s) / 2;
+      st.y = (sh - st.h * st.s) / 2;
+      apply();
+    };
+    tools.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      const cx = stage.clientWidth / 2, cy = stage.clientHeight / 2;
+      if (b.dataset.act === 'in') zoomAt(1.25, cx, cy);
+      if (b.dataset.act === 'out') zoomAt(0.8, cx, cy);
+      if (b.dataset.act === 'fit') fig._fit();
+      if (b.dataset.act === 'expand') toggleExpand(fig, b);
+    });
+    stage.addEventListener('wheel', e => {
+      if (!(e.ctrlKey || e.metaKey) && !fig.classList.contains('expanded')) return;
+      e.preventDefault();
+      const r = stage.getBoundingClientRect();
+      zoomAt(e.deltaY < 0 ? 1.1 : 0.9, e.clientX - r.left, e.clientY - r.top);
+    }, {passive:false});
+    const ptrs = new Map(); let last = null, pinch = null;
+    stage.addEventListener('pointerdown', e => {
+      stage.setPointerCapture(e.pointerId);
+      ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      stage.classList.add('grabbing');
+      last = {x:e.clientX, y:e.clientY};
+      if (ptrs.size === 2){ const [a, b] = [...ptrs.values()]; pinch = Math.hypot(a.x - b.x, a.y - b.y); }
+    });
+    stage.addEventListener('pointermove', e => {
+      if (!ptrs.has(e.pointerId)) return;
+      ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+      if (ptrs.size === 2 && pinch){
+        const [a, b] = [...ptrs.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        const r = stage.getBoundingClientRect();
+        zoomAt(d / pinch, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+        pinch = d; return;
+      }
+      if (last){ st.x += e.clientX - last.x; st.y += e.clientY - last.y; last = {x:e.clientX, y:e.clientY}; apply(); }
+    });
+    const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size){ last = null; stage.classList.remove('grabbing'); } };
+    stage.addEventListener('pointerup', up);
+    stage.addEventListener('pointercancel', up);
+    stage.addEventListener('dblclick', () => fig._fit());
+    stage.addEventListener('keydown', e => {
+      const cx = stage.clientWidth / 2, cy = stage.clientHeight / 2, k = e.key;
+      if (k === '+' || k === '=') zoomAt(1.2, cx, cy);
+      else if (k === '-') zoomAt(1 / 1.2, cx, cy);
+      else if (k === '0') fig._fit();
+      else if (k === 'ArrowLeft') { st.x += 40; apply(); }
+      else if (k === 'ArrowRight') { st.x -= 40; apply(); }
+      else if (k === 'ArrowUp') { st.y += 40; apply(); }
+      else if (k === 'ArrowDown') { st.y -= 40; apply(); }
+      else if (k === 'Escape' && fig.classList.contains('expanded')) toggleExpand(fig, $('[data-act="expand"]', fig));
+      else return;
+      e.preventDefault();
+    });
+  }
+
+  let scrim = null;
+  function toggleExpand(fig, btn){
+    const on = !fig.classList.contains('expanded');
+    fig.classList.toggle('expanded', on);
+    btn.textContent = on ? 'Close' : 'Expand';
+    btn.setAttribute('aria-expanded', on);
+    if (on){
+      scrim = document.createElement('div'); scrim.className = 'scrim';
+      scrim.addEventListener('click', () => toggleExpand(fig, btn));
+      document.body.appendChild(scrim);
+      $('.stage', fig).style.height = '';
+      $('.stage', fig).focus();
+    } else if (scrim){ scrim.remove(); scrim = null; }
+    requestAnimationFrame(() => fig._fit());
+  }
+
+  async function renderFigure(fig){
+    if (!window.mermaid) return;
+    if (!fig.getClientRects().length) { fig._stale = true; return; }
+    setupFigure(fig);
+    const t = theme();
+    const srcEl = document.getElementById(fig.dataset.src);
+    let src = srcEl.textContent;
+    Object.entries(ZONES[t]).forEach(([k, v]) => { src = src.split('{{' + k + '}}').join(v); });
+    src = src.trim() + '\n' + classDefs(t);
+    const stage = $('.stage', fig), canvas = $('.canvas', stage), loading = $('.loading', stage);
+    try {
+      const { svg } = await mermaid.render('mmd-' + fig.dataset.src + '-' + (seq++), src);
+      canvas.innerHTML = svg;
+      const el = $('svg', canvas);
+      const vb = el.viewBox && el.viewBox.baseVal;
+      const w = vb && vb.width ? vb.width : el.getBBox().width;
+      const h = vb && vb.height ? vb.height : el.getBBox().height;
+      el.removeAttribute('style');
+      el.setAttribute('width', w); el.setAttribute('height', h);
+      fig._st.w = w; fig._st.h = h;
+      if (loading) loading.remove();
+      fig._stale = false;
+      fig._fit();
+    } catch (err) {
+      if (loading) loading.remove();
+      canvas.innerHTML = '';
+      stage.insertAdjacentHTML('beforeend', `<div class="dia-err">This diagram failed to render.\n${esc(err && err.message || err)}</div>`);
+    }
+  }
+
+  async function renderAll(){
+    if (!window.mermaid){
+      figs.forEach(f => { setupFigure(f); const l = $('.loading', f); if (l) l.textContent = 'Mermaid could not load. Open this page with an internet connection to see the diagrams.'; });
+      return;
+    }
+    mermaidInit(theme());
+    for (const f of figs) await renderFigure(f);
+  }
+
+  // Roles tabs
+  const tabs = $$('[role="tab"]');
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+    const fig = $('figure.dia', document.getElementById(tab.getAttribute('aria-controls')));
+    if (fig && (fig._stale || !fig._st || !fig._st.w)) renderFigure(fig); else if (fig && fig._fit) fig._fit();
+  }));
+
+  // Re-render on theme change
+  let lastTheme = theme();
+  const onTheme = () => {
+    const t = theme();
+    if (t === lastTheme) return;
+    lastTheme = t;
+    renderModLegend();
+    if (window.mermaid){ mermaidInit(t); figs.forEach(f => { if (f.getClientRects().length) renderFigure(f); else f._stale = true; }); }
+  };
+  mq.addEventListener && mq.addEventListener('change', onTheme);
+  new MutationObserver(onTheme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  // Refit on resize
+  let rz;
+  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => figs.forEach(f => f._fit && f.getClientRects().length && f._fit()), 150); });
+
+  const start = () => (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(renderAll);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
+</script>

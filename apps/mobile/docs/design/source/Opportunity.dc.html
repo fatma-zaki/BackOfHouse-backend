@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Opportunity</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<span style="font-family: {{disp}}; font-size: 16px; font-weight: 700">{{s.header}}</span>
+<button type="button" aria-label="{{s.share}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M4 14v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"></path></svg></button>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 12px 20px 0; gap: 14px">
+<section style="display: flex; flex-direction: column; gap: 12px; padding: 16px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 22px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<img src="/_blob/959bcd8bd2cfb6539f98a4500b4be775" alt="{{s.org}}" style="width: 52px; height: 52px; display: block; object-fit: cover; border-radius: 14px; flex-shrink: 0">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700">{{s.org}}<svg width="15" height="15" viewBox="0 0 24 24" fill="#6437fa" aria-label="{{s.verified}}"><path d="M12 2l2.4 2.2 3.2-.4.9 3.1 2.9 1.5-1 3.1 1 3.1-2.9 1.5-.9 3.1-3.2-.4L12 22l-2.4-2.2-3.2.4-.9-3.1-2.9-1.5 1-3.1-1-3.1 2.9-1.5.9-3.1 3.2.4z"></path><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span style="font-size: 12px; color: {{c.muted}}">{{s.orgType}}</span>
+</div>
+</div>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{chips}}" as="ch" hint-placeholder-count="3">
+<span style="padding: 5px 10px; border-radius: 14px; background: {{c.soft}}; color: {{c.vt}}; font-size: 12px; font-weight: 700">{{ch}}</span>
+</sc-for>
+</div>
+<span style="font-size: 12px; color: {{c.muted}}">{{s.meta}}</span>
+</section>
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: {{c.okBg}}; color: {{c.okFg}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8 12l3 3 5-6"></path></svg>
+<span style="font-size: 13px; font-weight: 700">{{s.eligible}}</span>
+</div>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 18px; background: #6437fa; transform: skewX(-18deg)"></div><h2 style="margin: 0; font-family: {{disp}}; font-size: 16px; font-weight: 700">{{s.aboutH}}</h2></div>
+<p style="margin: 0; font-size: 13px; line-height: 20px; color: {{c.muted}}">{{s.about}}</p>
+</section>
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 18px; background: #6437fa; transform: skewX(-18deg)"></div><h2 style="margin: 0; font-family: {{disp}}; font-size: 16px; font-weight: 700">{{s.reqH}}</h2></div>
+<sc-for list="{{reqs}}" as="r" hint-placeholder-count="3">
+<div style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 20px; height: 20px; flex-shrink: 0; border-radius: 10px; background: {{c.soft}}; color: {{c.vt}}; display: flex; align-items: center; justify-content: center; margin-top: 1px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span><span style="font-size: 13px; line-height: 20px">{{r}}</span></div>
+</sc-for>
+</section>
+</main>
+<div style="flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 14px 20px 30px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}">
+<div style="display: flex; gap: 10px">
+<button type="button" aria-label="{{s.save}}" style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 26px; border: 1.5px solid #6437fa; background: transparent; color: {{c.vt}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+<button type="button" style="flex-grow: 1; height: 52px; border: 0; border-radius: 26px; background: #6437fa; color: #ffffff; font-family: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 26px rgba(100,55,250,0.4); cursor: pointer">{{s.apply}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+<span style="text-align: center; font-size: 11px; color: {{c.muted}}">{{s.share2}}</span>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', okBg: '#dcf4ea', okFg: '#0d6446', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', okBg: '#0c2e24', okFg: '#4ade80', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', share: 'Share', save: 'Save opportunity', header: 'Opportunity', verified: 'Verified company',
+        org: 'Saudi Events Group', orgType: 'Event Management & Production', title: 'Event Producer',
+        chips: ['Full-time', 'Riyadh', 'On-site'], meta: 'Posted 3 days ago · Closes Oct 20',
+        eligible: 'You’re eligible to apply',
+        aboutH: 'About the role', about: 'Lead the production of large-scale conferences and brand experiences, from planning and suppliers to show day.',
+        reqH: 'What we’re looking for', reqs: ['3+ years producing live events', 'Experience managing suppliers and budgets', 'Arabic and English'],
+        apply: 'Apply now', share2: 'You’ll share your experience, projects and a short message.'
+      },
+      ar: {
+        back: 'رجوع', share: 'مشاركة', save: 'حفظ الفرصة', header: 'الفرصة', verified: 'شركة موثّقة',
+        org: 'مجموعة الفعاليات السعودية', orgType: 'إدارة وإنتاج الفعاليات', title: 'منتج فعاليات',
+        chips: ['دوام كامل', 'الرياض', 'حضوري'], meta: 'نُشرت قبل 3 أيام · تُغلق 20 أكتوبر',
+        eligible: 'أنت مؤهل للتقديم',
+        aboutH: 'عن الدور', about: 'قيادة إنتاج المؤتمرات الكبرى وتجارب العلامات التجارية، من التخطيط والموردين حتى يوم الفعالية.',
+        reqH: 'ما نبحث عنه', reqs: ['خبرة 3 سنوات أو أكثر في إنتاج الفعاليات الحية', 'خبرة في إدارة الموردين والميزانيات', 'العربية والإنجليزية'],
+        apply: 'قدّم الآن', share2: 'ستشارك خبراتك ومشاريعك ورسالة قصيرة.'
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    return {
+      c, s, chips: s.chips, reqs: s.reqs,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

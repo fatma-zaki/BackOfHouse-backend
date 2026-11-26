@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Professionals</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; gap: 12px; padding-inline: 16px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<button type="button" aria-label="{{s.back}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; border: 1px solid {{c.line}}; background: {{c.card}}; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg></button>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 20px; font-weight: 700; letter-spacing: {{tt}}">{{s.title}}</h1>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 12px">
+<label style="height: 48px; box-sizing: border-box; padding: 0 16px; display: flex; align-items: center; gap: 10px; border-radius: 24px; background: {{c.card}}; border: 1px solid {{c.line}}; color: {{c.ink}}; flex-shrink: 0">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+<input type="search" placeholder="{{s.search}}" aria-label="{{s.search}}" style="flex-grow: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: inherit; font-size: 14px; color: {{c.ink}}">
+</label>
+<div style="display: flex; gap: 8px; overflow: hidden; flex-shrink: 0">
+<sc-for list="{{chips}}" as="k" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{k.sel}}" style="height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid {{k.border}}; background: {{k.bg}}; color: {{k.color}}; font-family: inherit; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; cursor: pointer">{{k.label}}</button>
+</sc-for>
+</div>
+<span style="font-size: 12px; color: {{c.muted}}; padding-inline: 4px">{{s.count}}</span>
+<sc-for list="{{people}}" as="p" hint-placeholder-count="4">
+<article style="display: flex; flex-direction: column; gap: 10px; padding: 14px; background: {{c.card}}; border: 1px solid {{p.border}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="position: relative; flex-shrink: 0">
+<span style="width: 50px; height: 50px; border-radius: 25px; background: {{p.av}}; color: #ffffff; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{p.ini}}</span>
+<sc-if value="{{p.verified}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; bottom: -2px; inset-inline-end: -2px; width: 18px; height: 18px; border-radius: 9px; background: #6437fa; border: 2px solid {{c.card}}; display: flex; align-items: center; justify-content: center" aria-label="{{s.verified}}"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span></sc-if>
+</span>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700">{{p.name}}<sc-if value="{{p.highlight}}" hint-placeholder-val="{{ false }}"><span style="padding: 1px 6px; border-radius: 6px; background: {{c.warnBg}}; color: {{c.warnFg}}; font-size: 9px; font-weight: 800; letter-spacing: {{tag}}">{{s.hl}}</span></sc-if></span>
+<span style="font-size: 12px; color: {{c.muted}}">{{p.head}}</span>
+</div>
+<button type="button" style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1.5px solid #6437fa; background: transparent; color: {{c.vt}}; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0">{{s.connect}}</button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{p.skills}}" as="sk" hint-placeholder-count="3"><span style="padding: 3px 9px; border-radius: 12px; background: {{c.soft}}; color: {{c.vt}}; font-size: 11px; font-weight: 700">{{sk}}</span></sc-for></div>
+</article>
+</sc-for>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', hlLine: '#f3dfb2', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', warnBg: '#fcefd6', warnFg: '#80520a', shadow: '0 8px 30px rgba(40,20,120,0.06)' },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', hlLine: '#4a3a12', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', warnBg: '#33260a', warnFg: '#fbbf24', shadow: '0 8px 30px rgba(0,0,0,0.35)' }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        back: 'Back', title: 'Professionals', search: 'Search by name, skill or city', verified: 'Verified', connect: 'Connect', hl: 'HIGHLIGHTED',
+        chips: ['All', 'Producers', 'Designers', 'Technical', 'Students'], count: 'Showing people in Riyadh and Jeddah',
+        people: [
+          ['OH', 'Omar Al-Harbi', 'Production Coordinator · Riyadh', ['Stage ops', 'Crew lead', 'Logistics'], true, true],
+          ['NA', 'Noura Al-Saud', 'Event Planner · Jeddah', ['Weddings', 'Guest experience'], true, false],
+          ['KM', 'Khalid Mansour', 'Lighting Designer · Riyadh', ['Lighting', 'Show control'], false, false],
+          ['LA', 'Lama Al-Otaibi', 'Student · Event Management', ['Volunteering', 'Social media'], false, false]
+        ]
+      },
+      ar: {
+        back: 'رجوع', title: 'المحترفون', search: 'ابحث بالاسم أو المهارة أو المدينة', verified: 'موثّق', connect: 'تواصل', hl: 'مُبرز',
+        chips: ['الكل', 'منتجون', 'مصممون', 'تقنيون', 'طلاب'], count: 'أشخاص في الرياض وجدة',
+        people: [
+          ['عح', 'عمر الحربي', 'منسق إنتاج · الرياض', ['تشغيل المسارح', 'قيادة الطاقم', 'اللوجستيات'], true, true],
+          ['نس', 'نورة آل سعود', 'مخططة فعاليات · جدة', ['حفلات الزفاف', 'تجربة الضيوف'], true, false],
+          ['خم', 'خالد منصور', 'مصمم إضاءة · الرياض', ['الإضاءة', 'التحكم بالعروض'], false, false],
+          ['لع', 'لمى العتيبي', 'طالبة · إدارة الفعاليات', ['التطوع', 'التواصل الاجتماعي'], false, false]
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const chips = s.chips.map((label, i) => ({ label, sel: i === 0 ? 'true' : 'false', bg: i === 0 ? c.ink : c.card, color: i === 0 ? c.bg : c.ink, border: i === 0 ? c.ink : c.line }));
+    const avs = ['#0d6446', '#1c4aab', '#80520a', '#6437fa'];
+    const people = s.people.map((p, i) => ({ ini: p[0], name: p[1], head: p[2], skills: p[3], verified: p[4], highlight: p[5], av: avs[i], border: p[5] ? c.hlLine : c.line }));
+    return {
+      c, s, chips, people,
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.5px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>

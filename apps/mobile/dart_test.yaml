@@ -1,0 +1,6 @@
+tags:
+  # Visual renders for design review. Skipped by default because font
+  # rasterisation differs per OS. Run with:
+  #   flutter test --tags golden --run-skipped --update-goldens
+  golden:
+    skip: "Design-review renders; run with --tags golden --run-skipped"

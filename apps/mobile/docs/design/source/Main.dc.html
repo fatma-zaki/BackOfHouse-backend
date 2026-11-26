@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div dir="{{dir}}" lang="{{lang}}" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{c.bg}}; color: {{c.ink}}; font-family: {{body}}; padding-top: 40px">
+<header style="display: flex; align-items: center; justify-content: space-between; padding-inline: 16px 8px; height: 56px; box-sizing: border-box; flex-shrink: 0">
+<div style="display: flex; align-items: center; gap: 10px">
+<img src="{{c.logo}}" alt="Back of House" style="height: 36px; width: auto; display: block">
+<div style="width: 1px; height: 26px; background: {{c.line}}"></div>
+<span style="font-size: 9px; line-height: 13px; font-weight: 700; letter-spacing: {{wide}}; color: {{c.muted}}; white-space: pre-line">{{s.tagline}}</span>
+</div>
+<div style="display: flex; align-items: center">
+<button type="button" aria-label="{{s.search}}" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></button>
+<button type="button" aria-label="{{s.notifications}}" style="position: relative; width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg><span style="position: absolute; top: 10px; inset-inline-end: 11px; width: 8px; height: 8px; border-radius: 4px; background: #6437fa; border: 2px solid {{c.bg}}"></span></button>
+<img src="/_blob/17c4ffa8b33f8d93c5fc6d4d6e5955ea" alt="{{s.name}}" style="width: 34px; height: 34px; display: block; object-fit: cover; border-radius: 17px; border: 2px solid {{c.bg}}; box-shadow: 0 0 0 2px #6437fa; margin-inline: 4px 6px">
+</div>
+</header>
+<main style="flex-grow: 1; overflow: hidden; display: flex; flex-direction: column; padding: 8px 16px 24px; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px">
+<span style="font-size: 13px; line-height: 18px; color: {{c.muted}}; font-weight: 500">{{s.date}}</span>
+<h1 style="margin: 0; font-family: {{disp}}; font-size: 24px; line-height: 30px; font-weight: 700; letter-spacing: {{tt}}">{{s.hello}} <span style="color: {{c.vt}}">{{s.first}}</span></h1>
+</div>
+<section style="display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<div style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 22px; background: #6437fa; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(100,55,250,0.35)"><svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"></path></svg></div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<div style="display: flex; align-items: baseline; gap: 6px"><span style="font-family: Poppins, sans-serif; font-size: 22px; line-height: 26px; font-weight: 700">1,250</span><span style="font-size: 13px; color: {{c.muted}}; font-weight: 600">{{s.points}}</span></div>
+<div style="height: 6px; border-radius: 3px; background: {{c.soft}}; position: relative; overflow: hidden"><div style="position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 72%; border-radius: 3px; background: #6437fa"></div></div>
+<span style="font-size: 12px; line-height: 16px; color: {{c.muted}}"><b style="color: {{c.ink}}; font-weight: 700">{{s.level}}</b> · {{s.toNext}}</span>
+</div>
+<a href="#" aria-label="{{s.rewards}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; border: 1px solid {{c.line}}; display: flex; align-items: center; justify-content: center; color: {{c.vt}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</section>
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding-inline: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><div style="width: 4px; height: 20px; background: #6437fa; transform: skewX(-18deg)"></div><h2 style="margin: 0; font-family: {{disp}}; font-size: 18px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.featured}}</h2></div>
+<a href="#" style="display: flex; align-items: center; gap: 6px; color: {{c.vt}}; text-decoration: none; font-size: 13px; font-weight: 700; min-height: 32px">{{s.viewAll}}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<article style="position: relative; height: 196px; overflow: hidden; background: {{c.card}}; border: 1.5px solid {{c.featBorder}}; border-radius: 20px; box-shadow: {{c.shadow}}">
+<img src="/_blob/fe99293a7d78b5eec8cf75c718f91260" alt="{{s.fTitle}}" style="position: absolute; top: 0; inset-inline-end: 0; width: 190px; height: 196px; display: block; object-fit: cover">
+<div style="position: absolute; top: 0; inset-inline-end: 110px; width: 100px; height: 196px; background: {{fade}}"></div>
+<div style="position: absolute; top: 14px; inset-inline-start: 16px; width: 200px; display: flex; flex-direction: column; gap: 6px">
+<span style="align-self: flex-start; padding: 3px 8px; border-radius: 6px; background: #6437fa; color: #ffffff; font-size: 10px; font-weight: 800; letter-spacing: {{tag}}">{{s.fBadge}}</span>
+<span style="font-family: {{disp}}; font-size: 17px; line-height: 22px; font-weight: 700; letter-spacing: {{tt}}">{{s.fTitle}}</span>
+<span style="font-size: 12px; color: {{c.vt}}; font-weight: 600">{{s.fTopics}}</span>
+<div style="display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: {{c.muted}}">
+<span style="display: flex; gap: 5px; align-items: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>{{s.fDate}}</span>
+<span style="display: flex; gap: 5px; align-items: center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{s.fPlace}}</span>
+</div>
+<a href="#" style="align-self: flex-start; margin-top: 2px; height: 32px; box-sizing: border-box; padding: 0 14px; border-radius: 16px; border: 1.5px solid #6437fa; color: {{c.vt}}; text-decoration: none; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px">{{s.register}}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+</article>
+</section>
+<section style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding-inline: 4px">
+<div style="display: flex; align-items: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6437fa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"></path></svg><h2 style="margin: 0; font-family: {{disp}}; font-size: 18px; line-height: 24px; font-weight: 700; letter-spacing: {{tt}}">{{s.opps}}</h2></div>
+<a href="#" style="display: flex; align-items: center; gap: 6px; color: {{c.vt}}; text-decoration: none; font-size: 13px; font-weight: 700; min-height: 32px">{{s.viewAll}}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: {{flip}}"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</div>
+<sc-for list="{{opps}}" as="o" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: {{c.card}}; border: 1px solid {{c.line}}; border-radius: 16px; box-shadow: {{c.shadow}}">
+<img src="{{o.img}}" alt="{{o.org}}" style="width: 52px; height: 52px; display: block; object-fit: cover; border-radius: 12px; flex-shrink: 0">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+<span style="align-self: flex-start; padding: 2px 7px; border-radius: 6px; background: {{o.tagBg}}; color: {{o.tagFg}}; font-size: 9.5px; font-weight: 800; letter-spacing: {{tag}}">{{o.type}}</span>
+<span style="font-size: 14px; line-height: 19px; font-weight: 700">{{o.title}}</span>
+<span style="font-size: 12px; line-height: 16px; color: {{c.muted}}">{{o.org}} · {{o.city}}</span>
+</div>
+<button type="button" aria-label="{{s.save}}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 20px; border: 1px solid {{c.line}}; background: transparent; color: {{c.vt}}; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg></button>
+</div>
+</sc-for>
+</section>
+</main>
+<nav aria-label="{{s.nav}}" style="flex-shrink: 0; height: 84px; box-sizing: border-box; padding: 8px 6px 22px; background: {{c.card}}; border-top: 1px solid {{c.line}}; border-radius: 24px 24px 0 0; box-shadow: {{c.navShadow}}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<button type="button" aria-current="{{t.current}}" style="border: 0; background: transparent; padding: 0; font-family: inherit; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 3px; color: {{t.color}}; font-size: 11px; line-height: 14px; font-weight: {{t.weight}}; cursor: pointer">
+<span style="width: 52px; height: 30px; border-radius: 15px; background: {{t.pill}}; color: {{t.icon}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{t.isHome}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg></sc-if>
+<sc-if value="{{t.isDiscover}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M15.5 8.5l-2 5-5 2 2-5z"></path></svg></sc-if>
+<sc-if value="{{t.isNews}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></sc-if>
+<sc-if value="{{t.isRewards}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"></rect><path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8M12 8v13M12 8c-1-3-3-5-5-4s0 4 5 4zM12 8c1-3 3-5 5-4s0 4-5 4z"></path></svg></sc-if>
+<sc-if value="{{t.isProfile}}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></sc-if>
+</span>
+<span>{{t.label}}</span>
+</button>
+</sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["light","dark"],"default":"light"},"locale":{"editor":"enum","options":["en","ar"],"default":"en"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.mode === 'dark';
+    const ar = this.props.locale === 'ar';
+    const P = {
+      light: { bg: '#f6f4fc', card: '#ffffff', line: '#e4dff3', featBorder: '#cbbdfb', ink: '#15122e', muted: '#5e5a78', vt: '#5424e0', soft: '#efeafe', shadow: '0 8px 30px rgba(40,20,120,0.06)', navShadow: '0 -10px 30px rgba(40,20,120,0.07)', fadeA: '#ffffff', fadeB: 'rgba(255,255,255,0)', logo: '/_blob/8a2f7555266c2b4d939a8907788882f5',
+        tags: { conf: ['#ece6ff', '#4a22c9'], work: ['#dcf4ea', '#0d6446'], net: ['#fcefd6', '#80520a'], exh: ['#e0ebff', '#1c4aab'] } },
+      dark: { bg: '#05050d', card: '#0b0c1d', line: '#1d1f3d', featBorder: '#3a2d8f', ink: '#f4f3ff', muted: '#a9a8c3', vt: '#a78bfa', soft: '#141233', shadow: '0 8px 30px rgba(0,0,0,0.35)', navShadow: '0 -10px 30px rgba(0,0,0,0.5)', fadeA: '#0b0c1d', fadeB: 'rgba(11,12,29,0)', logo: '/_blob/aed6800614143886079e141957cfdccd',
+        tags: { conf: ['#3a1fa8', '#ffffff'], work: ['#0f5a45', '#ffffff'], net: ['#6b4a12', '#ffffff'], exh: ['#123f8f', '#ffffff'] } }
+    };
+    const c = dark ? P.dark : P.light;
+    const S = {
+      en: {
+        tagline: 'SAUDI ARABIA’S\nEVENTS COMMUNITY', search: 'Search', notifications: 'Notifications', name: 'Fatma Zaki', nav: 'Main',
+        date: 'Sunday, 27 September', hello: 'Good evening,', first: 'Fatma',
+        points: 'points', level: 'Level 3', toNext: '250 pts to Level 4', rewards: 'Open rewards',
+        featured: 'Featured Event', viewAll: 'View All', fBadge: 'FEATURED', fTitle: 'Riyadh Tech Summit 2026',
+        fTopics: 'Innovation · Technology', fDate: 'Oct 15 – 17', fPlace: 'Riyadh Front', register: 'Register',
+        opps: 'Opportunities for you', save: 'Save',
+        tabs: ['Home', 'Discover', 'News', 'Rewards', 'Profile'],
+        opps_: [
+          { title: 'Event Producer', org: 'Saudi Events Group', city: 'Riyadh', type: 'FULL-TIME', tone: 'conf', img: '/_blob/959bcd8bd2cfb6539f98a4500b4be775' },
+          { title: 'Guest Experience Volunteer', org: 'Riyadh Season', city: 'Riyadh', type: 'VOLUNTEER', tone: 'work', img: '/_blob/f24ebc38adb28cb2e96a8856980b10e6' }
+        ]
+      },
+      ar: {
+        tagline: 'مجتمع الفعاليات\nفي السعودية', search: 'بحث', notifications: 'الإشعارات', name: 'فاطمة زكي', nav: 'التنقل الرئيسي',
+        date: 'الأحد، 27 سبتمبر', hello: 'مساء الخير،', first: 'فاطمة',
+        points: 'نقطة', level: 'المستوى 3', toNext: '250 نقطة للمستوى 4', rewards: 'فتح المكافآت',
+        featured: 'فعالية مميّزة', viewAll: 'عرض الكل', fBadge: 'مميّزة', fTitle: 'قمة الرياض للتقنية 2026',
+        fTopics: 'ابتكار · تقنية', fDate: '15 – 17 أكتوبر', fPlace: 'واجهة الرياض', register: 'سجّل الآن',
+        opps: 'فرص لك', save: 'حفظ',
+        tabs: ['الرئيسية', 'اكتشف', 'الأخبار', 'المكافآت', 'ملفي'],
+        opps_: [
+          { title: 'منتج فعاليات', org: 'مجموعة الفعاليات السعودية', city: 'الرياض', type: 'دوام كامل', tone: 'conf', img: '/_blob/959bcd8bd2cfb6539f98a4500b4be775' },
+          { title: 'متطوع تجربة الزوار', org: 'موسم الرياض', city: 'الرياض', type: 'تطوع', tone: 'work', img: '/_blob/f24ebc38adb28cb2e96a8856980b10e6' }
+        ]
+      }
+    };
+    const s = ar ? S.ar : S.en;
+    const active = 0;
+    const keys = ['isHome', 'isDiscover', 'isNews', 'isRewards', 'isProfile'];
+    const tabs = s.tabs.map((label, i) => {
+      const on = i === active;
+      const t = { label, color: on ? c.vt : c.muted, icon: on ? '#6437fa' : c.muted, pill: on ? c.soft : 'transparent', weight: on ? 800 : 600, current: on ? 'page' : 'false' };
+      keys.forEach((k, j) => { t[k] = i === j; });
+      if (on && dark) t.icon = '#a78bfa';
+      return t;
+    });
+    const opps = s.opps_.map((o) => ({ ...o, tagBg: c.tags[o.tone][0], tagFg: c.tags[o.tone][1] }));
+    return {
+      c, s, tabs, opps,
+      fade: 'linear-gradient(to ' + (ar ? 'left' : 'right') + ', ' + c.fadeA + ' 0%, ' + c.fadeB + ' 100%)',
+      dir: ar ? 'rtl' : 'ltr', lang: ar ? 'ar' : 'en',
+      disp: ar ? '"IBM Plex Sans Arabic", sans-serif' : 'Poppins, sans-serif',
+      body: ar ? '"IBM Plex Sans Arabic", Poppins, sans-serif' : 'Poppins, "IBM Plex Sans Arabic", sans-serif',
+      tt: ar ? '0' : '-0.4px', wide: ar ? '0' : '2px', tag: ar ? '0' : '1px', flip: ar ? 'scaleX(-1)' : 'none'
+    };
+  }
+}
+</script>
+</body>
+</html>
