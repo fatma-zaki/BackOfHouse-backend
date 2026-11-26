@@ -1,0 +1,135 @@
+---
+description: Permanent frontend architecture, shadcn/ui, and scope-control rules for the Back of House Admin Panel
+alwaysApply: true
+---
+
+# Frontend Architecture Contract
+
+This rule is mandatory for every Cursor task on this project. Audit-only and planning-only tasks must not modify application code. Implement only the approved phase, then stop and wait for review.
+
+## 1. Mandatory pre-implementation inspection
+
+Before coding:
+
+1. Read this architecture rule.
+2. Inspect the target route, page, feature, existing shared components, relevant shadcn primitives under `src/components/ui/`, providers, locales, and configuration.
+3. Search for existing functionality before creating files or components.
+4. Present blockers and scope conflicts before proceeding.
+
+Do not invent requirements, API contracts, permissions, or business rules to unblock yourself. Stop and ask.
+
+## 2. Approved architecture
+
+```text
+src/
+├── app/                    # App bootstrap, router, providers
+├── layouts/admin/          # Admin shell, sidebar, header, navigation
+├── pages/
+│   ├── auth/
+│   └── admin/              # Route-level page composition only
+├── features/<feature>/     # Feature UI, hooks, API, query keys, schemas, types, logic
+├── components/
+│   ├── ui/                 # shadcn/ui primitives only
+│   ├── shared/             # App-level compositions from shadcn (e.g. FilterBar, PageHeader)
+│   ├── data-table/         # Genuinely reusable table infrastructure
+│   ├── filters/            # Specialized shared filters; do NOT duplicate shared/FilterBar
+│   ├── charts/             # Shared charts only when used by multiple features
+│   └── forms/              # Reusable form infrastructure only when justified by real reuse
+├── lib/                    # Shared infrastructure (incl. HTTP client when approved)
+├── store/                  # Client/UI state only (Redux)
+├── mocks/                  # Explicitly identified mock data and handlers
+├── types/, constants/, config/  # Global definitions only
+├── locales/en/, locales/ar/     # All user-facing strings
+└── index.css               # Global CSS and design tokens (unless migration approved)
+```
+
+Rules:
+
+- Do not create files just because a directory exists.
+- Do not introduce additional layers or alternate folder conventions without explicit approval.
+- Keep feature-specific components inside `features/<feature>/` by default.
+- Promote to `components/shared/` (or specialized shared folders) only with genuine cross-feature reuse.
+
+Note: Vite entry may import `src/App.tsx` today. New bootstrap work belongs under `src/app/`. Do not relocate `App.tsx` unless the task explicitly authorizes it.
+
+## 3. File creation and modification control
+
+For each task:
+
+- Define exact scope before implementation.
+- List proposed files to create and modify.
+- Create only files required by the approved task.
+- Do not move, rename, delete, or duplicate files without explicit authorization.
+- Do not add speculative abstractions or placeholder files.
+- Do not change unrelated modules.
+- Stop if the work requires an unapproved architectural change.
+
+## 4. shadcn/ui policy
+
+- Reuse `src/components/ui/` and `src/components/shared/` before creating anything new.
+- Do not reimplement an existing shadcn primitive as a custom component.
+- Keep `src/components/ui/` limited to shadcn primitives and explicitly approved customizations.
+- Application compositions belong in `shared/` or the owning feature — never inflate `ui/`.
+- Native semantic HTML is acceptable when appropriate (e.g. landmarks, sr-only labels, overlay dismiss controls).
+- Do not import `radix-ui` / Radix primitives outside `src/components/ui/`.
+- Prefer `@/` path aliases. App code prefers `cn` from `@/lib/utils` (UI CLI files may import `"cn"`).
+- Do not regenerate, overwrite, or bulk-modify shadcn components without explicit scope approval.
+
+## 5. Dependency boundaries
+
+| From | May import | Must not import |
+|------|------------|-----------------|
+| `pages/` | Owning feature, shared/specialized components, `lib`, layouts (sparingly) | Other pages' internals |
+| `features/A` | `ui`, `shared`, specialized components, `lib`, `store`, own modules | `features/B`, unrelated features |
+| `components/ui/` | `lib` utilities, external UI deps | pages, features, layouts, shared |
+| `components/shared/` (and data-table/filters/charts/forms) | `ui`, `lib`, locales/i18n | features, pages |
+| `store/` | Pure client state | Axios/Query/API side effects in reducers |
+
+- Avoid circular dependencies.
+- Do not create duplicate HTTP clients, query clients, providers, or global utilities.
+
+## 6. State and data ownership
+
+- TanStack Query owns remote/server state.
+- Redux owns client/UI state only.
+- Axios is the standard HTTP client.
+- React Hook Form + Zod are preferred for forms where appropriate.
+- Do not invent API endpoints, payloads, response schemas, permissions, or business rules.
+- Use a real API only when its contract exists or is explicitly approved.
+- Mock data and mock auth must be clearly labeled; never present mocks as production security.
+- Never persist passwords or embed real secrets in frontend code.
+- Do not place API calls inside Redux reducers.
+- Keep query keys and API logic in the owning feature unless genuinely global.
+
+## 7. Localization and accessibility
+
+- Every new user-facing string must go through i18n (`src/locales/en` and `src/locales/ar`).
+- Preserve RTL/LTR support.
+- Prefer existing Label, Input, Button, Dialog, Select, and other suitable shadcn primitives.
+- Maintain semantic HTML, keyboard access, visible focus, and accessible form errors.
+
+## 8. Routing, providers, and global configuration
+
+Do not modify routing, providers, layouts, global CSS/design tokens, TypeScript aliases, Vite config, or dependencies during an unrelated feature task.
+
+Such changes require: (1) documented reason, (2) exact affected files, (3) impact analysis, (4) explicit approval or authorized task scope.
+
+## 9. Mandatory completion report
+
+After each implementation phase, report:
+
+- Files created / modified / renamed / deleted (renames/deletes only if authorized)
+- Existing components reused
+- Any deviation from the approved plan
+- Lint, type-check, and build results (name commands not run)
+- Static checks vs browser/runtime checks
+- Known limitations and remaining work
+
+Never claim browser verification unless it was actually performed.
+
+## 10. Stop conditions
+
+- Audit tasks remain audit-only; planning tasks remain planning-only.
+- Implement only the approved phase; do not auto-continue to the next phase.
+- If requirements conflict, stop and ask for clarification.
+- After the requested phase and verification, wait for review.

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="461" height="141" viewBox="0 0 461 141" role="img" aria-labelledby="logo-light-title">
+  <title id="logo-light-title">Back of House Admin</title>
+  <desc>Transparent Back of House logo for light backgrounds, with dark text and Admin badge.</desc>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="900">
+    <text x="14" y="67" font-size="54" letter-spacing="-2.7" fill="#0B0B12">BACK</text>
+    <text x="15" y="101" font-size="34" letter-spacing="-2.1" fill="#6437FA">OF</text>
+    <text x="58" y="117" font-size="54" letter-spacing="-2.7" fill="#0B0B12">HOUSE</text>
+  </g>
+  <rect x="206" y="28" width="41" height="40" fill="#6437FA"/>
+  <rect x="280" y="43" width="166" height="67" rx="16" fill="#6437FA"/>
+  <text x="363" y="86" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" letter-spacing="1.2" fill="#FFFFFF">ADMIN</text>
+</svg>

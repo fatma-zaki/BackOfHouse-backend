@@ -1,0 +1,167 @@
+/**
+ * ---------------------------------------------------------------------------
+ * DEMO / ILLUSTRATIVE DATA ONLY
+ * ---------------------------------------------------------------------------
+ * Local Events admin scaffolding aligned to the product reference.
+ * NOT production data and NOT backed by a real API.
+ * ---------------------------------------------------------------------------
+ */
+
+import type {
+  EventRow,
+  EventsDashboardData,
+  EventsKpiMetric,
+} from '@/features/events/types/events.types'
+
+/** Default selected row on the Past tab (Riyadh Tech Summit). */
+export const EVENTS_MOCK_DEFAULT_SELECTED_ID = 'riyadh-tech-summit' as const
+
+export const EVENTS_MOCK_KPIS: readonly EventsKpiMetric[] = [
+  { id: 'upcomingEvents', value: '18' },
+  {
+    id: 'registrationsSep',
+    value: '6,420',
+    footnote: {
+      kind: 'percentVsMonth',
+      value: 31,
+      monthKey: 'aug',
+      tone: 'up',
+    },
+  },
+  { id: 'attendanceVerified', value: '71%' },
+  { id: 'pointsAwardedSep', value: '128,400' },
+]
+
+const EVENTS_MOCK_ROWS: readonly EventRow[] = [
+  {
+    id: EVENTS_MOCK_DEFAULT_SELECTED_ID,
+    titleKey: 'riyadhTechSummit',
+    venueKey: 'riyadhFront',
+    cityId: 'riyadh',
+    datesKey: 'sep24to26',
+    detailMetaKey: 'riyadhTechSummitMeta',
+    lifecycleTab: 'past',
+    registered: 2000,
+    verifiedAttendance: 1420,
+    checkInPercent: 71,
+    pointsStatusId: 'awaitingCheckIns',
+    thumbGradient: 'violet',
+    coverGradient: 'violet',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 46,
+    pointsPerAttendee: 150,
+  },
+  {
+    id: 'jeddah-design-week',
+    titleKey: 'jeddahDesignWeek',
+    venueKey: 'jeddahSuperdome',
+    cityId: 'jeddah',
+    datesKey: 'aug29',
+    detailMetaKey: 'jeddahDesignWeekMeta',
+    lifecycleTab: 'past',
+    registered: 1150,
+    verifiedAttendance: 920,
+    checkInPercent: 80,
+    pointsStatusId: 'pointsAwarded',
+    thumbGradient: 'sky',
+    coverGradient: 'sky',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 12,
+    pointsPerAttendee: 150,
+  },
+  {
+    id: 'crew-meetup-rigging',
+    titleKey: 'crewMeetupRigging',
+    venueKey: 'industrialHub',
+    cityId: 'riyadh',
+    datesKey: 'aug22',
+    detailMetaKey: 'crewMeetupRiggingMeta',
+    lifecycleTab: 'past',
+    registered: 280,
+    verifiedAttendance: 210,
+    checkInPercent: 75,
+    pointsStatusId: 'partlyAwarded',
+    thumbGradient: 'amber',
+    coverGradient: 'amber',
+    checkInMethodKey: 'manualList',
+    unmatchedScans: 8,
+    pointsPerAttendee: 100,
+  },
+  {
+    id: 'alula-night-concert',
+    titleKey: 'alulaNightConcert',
+    venueKey: 'marayaHall',
+    cityId: 'alUla',
+    datesKey: 'sep12',
+    detailMetaKey: 'alulaNightConcertMeta',
+    lifecycleTab: 'past',
+    registered: 640,
+    verifiedAttendance: 580,
+    checkInPercent: 91,
+    pointsStatusId: 'pointsAwarded',
+    thumbGradient: 'emerald',
+    coverGradient: 'emerald',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 3,
+    pointsPerAttendee: 150,
+  },
+  {
+    id: 'expo-build-weekend',
+    titleKey: 'expoBuildWeekend',
+    venueKey: 'riyadhExhibition',
+    cityId: 'riyadh',
+    datesKey: 'oct18to19',
+    detailMetaKey: 'expoBuildWeekendMeta',
+    lifecycleTab: 'upcoming',
+    registered: 420,
+    verifiedAttendance: 0,
+    checkInPercent: 0,
+    pointsStatusId: 'awaitingCheckIns',
+    thumbGradient: 'rose',
+    coverGradient: 'rose',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 0,
+    pointsPerAttendee: 150,
+  },
+  {
+    id: 'women-in-events-forum',
+    titleKey: 'womenInEventsForum',
+    venueKey: 'kafdConference',
+    cityId: 'riyadh',
+    datesKey: 'nov4',
+    detailMetaKey: 'womenInEventsForumMeta',
+    lifecycleTab: 'upcoming',
+    registered: 890,
+    verifiedAttendance: 0,
+    checkInPercent: 0,
+    pointsStatusId: 'awaitingCheckIns',
+    thumbGradient: 'slate',
+    coverGradient: 'violet',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 0,
+    pointsPerAttendee: 150,
+  },
+  {
+    id: 'draft-hospitality-summit',
+    titleKey: 'draftHospitalitySummit',
+    venueKey: 'draftVenueTbd',
+    cityId: 'jeddah',
+    datesKey: 'decTbd',
+    detailMetaKey: 'draftHospitalitySummitMeta',
+    lifecycleTab: 'drafts',
+    registered: 0,
+    verifiedAttendance: 0,
+    checkInPercent: 0,
+    pointsStatusId: 'awaitingCheckIns',
+    thumbGradient: 'sky',
+    coverGradient: 'sky',
+    checkInMethodKey: 'qrAtDoor',
+    unmatchedScans: 0,
+    pointsPerAttendee: 150,
+  },
+]
+
+export const EVENTS_MOCK_DASHBOARD: EventsDashboardData = {
+  kpis: EVENTS_MOCK_KPIS,
+  events: EVENTS_MOCK_ROWS,
+}

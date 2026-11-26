@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Back of House Admin Dashboard</title>
+    <!-- Apply persisted language dir/lang before paint (key: language). Independent of theme. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('language')
+          var lang = stored === 'ar' ? 'ar' : 'en'
+          var root = document.documentElement
+          root.lang = lang
+          root.dir = lang === 'ar' ? 'rtl' : 'ltr'
+        } catch (e) {}
+      })()
+    </script>
+    <!-- Apply persisted / system theme before paint (matches next-themes storageKey + class attribute). -->
+    <script>
+      (function () {
+        try {
+          var storageKey = 'theme'
+          var stored = localStorage.getItem(storageKey)
+          var theme = stored || 'system'
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          var resolved =
+            theme === 'dark' || (theme === 'system' && prefersDark) ? 'dark' : 'light'
+          var root = document.documentElement
+          root.classList.remove('light', 'dark')
+          root.classList.add(resolved)
+          root.style.colorScheme = resolved
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

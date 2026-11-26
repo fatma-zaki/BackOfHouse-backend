@@ -1,0 +1,3296 @@
+{
+  "appName": "باك أوف هاوس",
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "search": "بحث",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "retry": "إعادة المحاولة"
+  },
+  "states": {
+    "loading": "جاري التحميل…"
+  },
+  "breadcrumbs": {
+    "navLabel": "مسار التنقل"
+  },
+  "dateRange": {
+    "label": "الفترة",
+    "placeholder": "اختر نطاق التاريخ",
+    "clear": "مسح"
+  },
+  "pagination": {
+    "navLabel": "التنقل بين الصفحات",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "صفحة {{page}}",
+    "pageSize": "عدد الصفوف",
+    "summary": "{{from}}–{{to}} من {{total}}"
+  },
+  "filters": {
+    "label": "المرشحات",
+    "clear": "مسح عوامل التصفية"
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "en": "الإنجليزية",
+    "ar": "العربية"
+  },
+  "nav": {
+    "sections": {
+      "myWork": "عملي",
+      "main": "الرئيسية",
+      "marketplace": "السوق",
+      "people": "الأشخاص",
+      "content": "المحتوى",
+      "trustSupport": "الثقة والدعم",
+      "system": "النظام"
+    },
+    "items": {
+      "myQueue": "قائمتي",
+      "myDesk": "مكتبي",
+      "myTickets": "تذاكري",
+      "analystHome": "الرئيسية",
+      "overview": "نظرة عامة",
+      "analytics": "التحليلات",
+      "reports": "التقارير والتصدير",
+      "listings": "مراجعة الفرص",
+      "applications": "الطلبات",
+      "supplierRequests": "طلبات التوريد",
+      "users": "المستخدمون",
+      "companies": "الشركات",
+      "verification": "التوثيق",
+      "claimsImports": "المطالبات والاستيراد",
+      "events": "الفعاليات",
+      "news": "الأخبار",
+      "rewards": "المكافآت والنقاط",
+      "moderation": "البلاغات والإشراف",
+      "support": "صندوق الدعم",
+      "broadcasts": "الرسائل الجماعية",
+      "team": "الفريق والصلاحيات",
+      "audit": "سجل التدقيق",
+      "settings": "الإعدادات"
+    }
+  },
+  "shell": {
+    "closeNavigation": "إغلاق القائمة",
+    "adminNavigation": "تنقل لوحة الإدارة",
+    "primaryNav": "أساسي",
+    "demoCount": "عدد تجريبي",
+    "languageLabel": "اللغة"
+  },
+  "theme": {
+    "label": "مظهر الألوان",
+    "system": "النظام",
+    "light": "فاتح",
+    "dark": "داكن"
+  },
+  "header": {
+    "openMenu": "فتح القائمة",
+    "searchPlaceholder": "ابحث عن مستخدمين أو شركات أو فرص…",
+    "noSearchResults": "لا نتائج لـ «{{q}}»",
+    "searchGroupPages": "صفحات",
+    "notifications": "الإشعارات",
+    "notificationsEmpty": "لا توجد إشعارات جديدة.",
+    "markAllAsRead": "تعيين الكل كمقروء",
+    "userMenu": "قائمة الحساب",
+    "userInitials": "نق",
+    "userName": "نورة القحطاني",
+    "userRole": "مشرف عام",
+    "switchRoleDemo": "تبديل الدور (تجريبي)",
+    "signOut": "تسجيل الخروج",
+    "notices": {
+      "listingReview": "أرسلت مجموعة الفعاليات السعودية «مدير المسرح» للمراجعة",
+      "listingReported": "تم الإبلاغ عن فرصة «مروجون بدخل سريع» كرسائل مزعجة",
+      "pointsMissing": "نقاط قمة الرياض التقنية لم تصل",
+      "verificationRequests": "طلبات التوثيق",
+      "monthlyOverview": "النظرة الشهرية · أغسطس",
+      "times": {
+        "twelveMinutes": "12 د",
+        "sixHours": "6س",
+        "threeHours": "3س",
+        "oneDay": "يوم",
+        "twoDays": "يومان"
+      }
+    }
+  },
+  "overview": {
+    "description": "إليك ما يحدث في باك أوف هاوس هذا الشهر.",
+    "greeting": {
+      "morning": "صباح الخير، {{name}}",
+      "afternoon": "طاب يومك، {{name}}",
+      "evening": "مساء الخير، {{name}}",
+      "night": "مرحبًا، {{name}}"
+    },
+    "actions": {
+      "exportReport": "تصدير التقرير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير."
+    },
+    "kpis": {
+      "sectionLabel": "المؤشرات الرئيسية",
+      "totalUsers": "إجمالي المستخدمين",
+      "companies": "الشركات",
+      "liveListings": "فرص منشورة",
+      "applications": "الطلبات",
+      "supplierRequests": "طلبات التوريد",
+      "secondary": {
+        "percentVsPreviousMonth": "+{{value}}٪ مقابل {{month}}",
+        "verifiedCount": "{{count}} موثّق",
+        "deltaThisMonth": "+{{value}} هذا الشهر"
+      }
+    },
+    "signups": {
+      "title": "التسجيلات الجديدة · يوميًا",
+      "openAnalytics": "فتح التحليلات",
+      "summary": "{{total}} تسجيل جديد هذا الشهر · الذروة {{peak}} في {{date}}",
+      "summaryTotalOnly": "{{total}} تسجيل جديد في هذه الفترة",
+      "tooltipCount": "{{count}} تسجيل",
+      "seriesName": "التسجيلات",
+      "empty": "لا توجد بيانات تسجيل للنطاق المحدد.",
+      "emptyDescription": "لا توجد بيانات تسجيل متاحة."
+    },
+    "attention": {
+      "title": "بانتظار إجراء منك",
+      "empty": "لا يوجد ما يحتاج إلى انتباه الآن.",
+      "items": {
+        "listingsAwaitingReview": {
+          "title": "فرص بانتظار المراجعة",
+          "detail": "أقدم انتظار {{oldestWaitingHours}}س · اتفاقية مستوى الخدمة {{slaHours}}س"
+        },
+        "verificationRequests": {
+          "title": "طلبات التوثيق",
+          "detail": "{{individuals}} أفراد · {{companies}} شركات"
+        },
+        "reportedContent": {
+          "title": "المحتوى",
+          "detail": "{{highPriority}} أولوية عالية"
+        },
+        "openSupportTickets": {
+          "title": "تذاكر دعم مفتوحة",
+          "detail": "{{unassigned}} غير معيّنة"
+        }
+      }
+    },
+    "funnel": {
+      "title": "مسار الفرص · آخر 28 يومًا",
+      "conversion": "{{rate}}٪ من مشاهدات القوائم أصبحت طلبًا مُقدَّمًا.",
+      "emptyTitle": "لا توجد بيانات للقمع",
+      "emptyDescription": "ستظهر مراحل القمع هنا عند توفر البيانات.",
+      "stages": {
+        "listingViews": "مشاهدات الفرص",
+        "applicationsStarted": "طلبات بدأت",
+        "submitted": "أُرسلت",
+        "shortlisted": "مختصر",
+        "selected": "تم الاختيار"
+      }
+    },
+    "activity": {
+      "title": "آخر النشاطات",
+      "viewAll": "عرض الكل",
+      "viewAllDisabledHint": "عرض النشاط الكامل غير متاح بعد.",
+      "emptyTitle": "لا يوجد نشاط حديث",
+      "emptyDescription": "سيظهر النشاط ضمن النطاق المحدد هنا.",
+      "toneLabel": "التصنيف: {{tone}}",
+      "tones": {
+        "primary": "تحديث",
+        "info": "معلومة",
+        "success": "نجاح",
+        "warning": "تحذير",
+        "destructive": "تنبيه"
+      },
+      "relative": {
+        "minutes": "{{count}}د",
+        "hours": "{{count}}س",
+        "days": "{{count}}ي",
+        "unknown": "—"
+      },
+      "entities": {
+        "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+        "fatmaZaki": "فاطمة زكي",
+        "riyadhFrontEvents": "فعاليات واجهة الرياض",
+        "listing": "الفرصة",
+        "stageManager": "مدير المسرح",
+        "eventProducer": "منتج فعاليات",
+        "stageAndLighting": "مسرح وإضاءة",
+        "quickCashPromoters": "مروجون بدخل سريع"
+      },
+      "items": {
+        "act1": "{{actor}} قدّم “{{target}}” للمراجعة",
+        "act2": "{{actor}} تقدّم إلى {{target}}",
+        "act3": "{{actor}} فتح طلب مورد: {{target}}",
+        "act4": "{{actor}} “{{target}}” أُبلِغ عنها كرسائل مزعجة",
+        "fallback": "{{actor}}"
+      }
+    },
+    "states": {
+      "loading": "جاري تحميل النظرة العامة…",
+      "errorTitle": "تعذّر تحميل النظرة العامة",
+      "errorDescription": "حدث خطأ أثناء تحميل النظرة العامة. يُرجى المحاولة مرة أخرى.",
+      "ready": "تم تحميل بيانات النظرة العامة."
+    }
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "description": "أداء المجتمع والسوق والفعاليات والمكافآت.",
+    "actions": {
+      "exportReport": "تصدير التقرير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "downloadCsv": "تنزيل CSV"
+    },
+    "tabs": {
+      "label": "أقسام التحليلات",
+      "overview": "نظرة عامة",
+      "users": "المستخدمون",
+      "marketplace": "السوق",
+      "events": "الفعاليات",
+      "rewards": "المكافآت"
+    },
+    "kpis": {
+      "sectionLabel": "المؤشرات الرئيسية",
+      "activeUsers": "النشطون · 30 يومًا",
+      "applicationsPerListing": "طلبات لكل فرصة",
+      "eventAttendance": "الحضور المؤكد للفعاليات",
+      "medianReviewTime": "متوسط وقت المراجعة",
+      "pointsAwarded": "النقاط الممنوحة · سبتمبر",
+      "pointsRedeemed": "النقاط المستبدلة · سبتمبر",
+      "redemptions": "عمليات الاستبدال",
+      "waitingFulfillment": "بانتظار التسليم",
+      "months": {
+        "aug": "أغسطس"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}٪ مقابل {{month}}",
+        "pointsVsMonth": "{{sign}}{{value}} مقابل {{month}}",
+        "ptsVsMonth": "{{sign}}{{value}} نقطة مقابل {{month}}",
+        "targetUnderHours": "الهدف أقل من {{hours}} ساعة",
+        "oldestDays": "الأقدم {{days}} أيام"
+      }
+    },
+    "weeklyActive": {
+      "title": "المستخدمون النشطون أسبوعيًا",
+      "subtitle": "ارتفع من 6,940 إلى 9,812 خلال 12 أسبوعًا، وجاءت الذروة بعد تسجيلات موسم الرياض.",
+      "seriesName": "المستخدمون النشطون",
+      "weekLabel": "الأسبوع {{week}}",
+      "tooltip": "{{count}} مستخدم نشط",
+      "xTicks": {
+        "w1": "7 يوليو",
+        "w4": "28 يوليو",
+        "w7": "18 أغسطس",
+        "w10": "8 سبتمبر",
+        "w12": "22 سبتمبر"
+      }
+    },
+    "membersByCity": {
+      "title": "الأعضاء حسب المدينة",
+      "subtitle": "الرياض تضم قرابة نصف الأعضاء."
+    },
+    "applicationsByType": {
+      "title": "الطلبات حسب نوع الفرصة",
+      "subtitle": "الوظائف تحصد أكثر الطلبات، وطلبات التوريد تتلقى عروضًا لا طلبات."
+    },
+    "topListings": {
+      "title": "أعلى الفرص هذا الشهر",
+      "allListings": "كل الفرص",
+      "conversionLabel": "{{value}}٪",
+      "columns": {
+        "listing": "الفرصة",
+        "views": "المشاهدات",
+        "applications": "الطلبات",
+        "conversion": "نسبة التقديم"
+      },
+      "items": {
+        "eventCoordinator": {
+          "title": "منسق فعاليات",
+          "company": "موسم الرياض"
+        },
+        "summerCoop": {
+          "title": "برنامج التدريب الصيفي",
+          "company": "مجموعة الفعاليات السعودية"
+        },
+        "expoCrew": {
+          "title": "متطوعو فريق المعرض",
+          "company": "شركة المعرض الإبداعي"
+        }
+      }
+    },
+    "eventAttendance": {
+      "title": "الحضور الموثّق حسب الفعالية",
+      "subtitle": "نسبة الأعضاء المسجلين الذين تم التحقق من حضورهم."
+    },
+    "redemptionsByReward": {
+      "title": "عمليات الاستبدال حسب المكافأة",
+      "subtitle": "هذا الشهر، جميع الأعضاء."
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alula": "العلا",
+      "other": "أخرى"
+    },
+    "listingTypes": {
+      "jobs": "وظائف",
+      "coop": "تدريب تعاوني",
+      "volunteering": "تطوع",
+      "projects": "مشاريع"
+    },
+    "events": {
+      "riyadhTechSummit": "قمة الرياض التقنية",
+      "jeddahDesignWeek": "أسبوع جدة للتصميم",
+      "crewMeetupRigging": "لقاء الطواقم: أساسيات التعليق",
+      "alulaNightConcert": "طاقم حفل العلا الليلي",
+      "expoBuildWeekend": "عطلة تجهيز المعرض",
+      "womenInEventsForum": "منتدى المرأة في الفعاليات"
+    },
+    "rewards": {
+      "profileHighlight": "إبراز الملف · 7 أيام",
+      "vipPass": "تذكرة VIP · موسم الرياض",
+      "riggingCourse": "دورة سلامة التعليق",
+      "crewJacket": "جاكيت الطاقم",
+      "coffeeOnUs": "قهوتك علينا"
+    },
+    "states": {
+      "loading": "جاري تحميل التحليلات…",
+      "errorTitle": "تعذّر تحميل التحليلات",
+      "errorDescription": "حدث خطأ أثناء تحميل التحليلات. يُرجى المحاولة مرة أخرى.",
+      "emptyChart": "لا توجد بيانات للرسم في النطاق المحدد.",
+      "emptyMeters": "لا تتوفر بيانات التوزيع.",
+      "emptyTable": "لا توجد قوائم لعرضها."
+    }
+  },
+  "reports": {
+    "title": "التقارير والتصدير",
+    "description": "نزّل أي جزء من المنصة بصيغة CSV أو Excel أو PDF، أو جدوله ليصلك بالبريد.",
+    "actions": {
+      "scheduledExports": "التصديرات المجدولة · {{count}}"
+    },
+    "scheduled": {
+      "empty": "لا توجد تصديرات مجدولة بعد."
+    },
+    "modules": {
+      "all": "الكل",
+      "allTrigger": "كل الأقسام",
+      "people": "الأشخاص",
+      "marketplace": "السوق",
+      "content": "المحتوى",
+      "trustSupport": "الثقة والدعم",
+      "system": "النظام"
+    },
+    "formatLabels": {
+      "CSV": "CSV",
+      "Excel": "Excel",
+      "PDF": "PDF"
+    },
+    "formats": {
+      "csv": "CSV",
+      "xlsx": "Excel (.xlsx)",
+      "pdf": "PDF"
+    },
+    "catalog": {
+      "title": "دليل التقارير",
+      "subtitle": "يستخدم كل تقرير الفترة والمرشحات التي تختارها.",
+      "moduleFilter": "تصفية حسب الوحدة",
+      "moduleActive": "الوحدة: {{value}}",
+      "empty": "لا توجد تقارير تطابق هذه الوحدة.",
+      "columns": {
+        "report": "التقرير",
+        "rows": "السجلات",
+        "download": "تنزيل"
+      },
+      "items": {
+        "usersMembers": {
+          "title": "المستخدمون والأعضاء",
+          "description": "التسجيلات ونوع الحساب والمدينة والتوثيق والنقاط"
+        },
+        "companies": {
+          "title": "الشركات",
+          "description": "الملفات والتوثيق والفرص ونسب الاستجابة"
+        },
+        "listings": {
+          "title": "الفرص",
+          "description": "الوظائف والتدريب والمشاريع والتطوع؛ نتائج المراجعة"
+        },
+        "applications": {
+          "title": "الطلبات",
+          "description": "كل طلب وسجل حالاته"
+        },
+        "supplierRequests": {
+          "title": "طلبات التوريد",
+          "description": "الطلبات والعروض والموردون المختارون"
+        },
+        "eventsAttendance": {
+          "title": "الفعاليات والحضور",
+          "description": "التسجيلات والحضور المؤكد والغياب"
+        },
+        "pointsLedger": {
+          "title": "سجل النقاط",
+          "description": "النقاط المكتسبة والمستبدلة والمعدلة مع الأسباب"
+        },
+        "verificationDecisions": {
+          "title": "قرارات التوثيق",
+          "description": "الطلبات والمراجع والقرار ومدة البت"
+        },
+        "moderationReports": {
+          "title": "البلاغات والإشراف",
+          "description": "المحتوى المبلّغ عنه والإجراءات والنتائج"
+        },
+        "supportTickets": {
+          "title": "تذاكر الدعم",
+          "description": "التذاكر وتصنيفاتها ووقت الرد الأول"
+        },
+        "auditLog": {
+          "title": "سجل التدقيق",
+          "description": "كل إجراءات المشرفين بما فيها التصدير"
+        }
+      }
+    },
+    "builder": {
+      "title": "تصدير مخصص",
+      "columnsLabel": "الأعمدة",
+      "formatLabel": "الصيغة",
+      "locked": "مقفل",
+      "generate": "إنشاء الملف",
+      "schedule": "جدولة",
+      "fields": {
+        "dataSet": "مجموعة البيانات",
+        "dateRange": "الفترة",
+        "city": "المدينة",
+        "listingType": "نوع الفرصة"
+      },
+      "options": {
+        "dataSet": {
+          "applications": "الطلبات",
+          "usersMembers": "المستخدمون والأعضاء",
+          "companies": "الشركات",
+          "listings": "الفرص"
+        },
+        "dateRange": {
+          "sep2026": "1 – 28 سبتمبر 2026"
+        },
+        "city": {
+          "all": "كل المدن",
+          "riyadh": "الرياض",
+          "jeddah": "جدة",
+          "dammam": "الدمام",
+          "alula": "العلا"
+        },
+        "listingType": {
+          "jobsCoop": "وظائف، تدريب"
+        }
+      },
+      "columns": {
+        "applicant": "المتقدم",
+        "listing": "الفرصة",
+        "company": "الشركة",
+        "status": "الحالة",
+        "appliedOn": "تاريخ التقديم",
+        "city": "المدينة",
+        "email": "البريد",
+        "phone": "الهاتف"
+      },
+      "callout": {
+        "superAdmin": "أعمدة البريد والهاتف متاحة للمشرف العام فقط، وكل عملية تصدير تُسجَّل في سجل التدقيق.",
+        "restricted": "لا يتيح دورك تصدير البريد أو أرقام الهواتف، اطلبها من المشرف العام عند الحاجة. تُسجَّل كل عملية تصدير في سجل التدقيق."
+      }
+    },
+    "schedules": {
+      "everyDay": "يوميًا الساعة 8:00",
+      "sundays": "الأحد 8:00",
+      "firstOfMonth": "أول كل شهر"
+    },
+    "recent": {
+      "title": "الأخيرة والمجدولة",
+      "actions": {
+        "download": "تنزيل",
+        "edit": "تعديل",
+        "stop": "إيقاف الجدولة"
+      },
+      "titles": {
+        "applicationsSep": "الطلبات · 1–28 سبتمبر",
+        "monthlyOverview": "النظرة الشهرية · أغسطس",
+        "pointsWeekly": "سجل النقاط · أسبوعي",
+        "usersDaily": "المستخدمون والأعضاء · يومي",
+        "dynamicScheduled": "{{dataset}} · {{schedule}}",
+        "dynamicDownloaded": "{{dataset}}"
+      },
+      "meta": {
+        "youJustNow": "أنت · منذ دقيقتين · {{rows}} صف",
+        "everyFirst": "أول كل شهر · إلى 3 أشخاص",
+        "sundaysFinance": "الأحد 8:00 · إلى المالية",
+        "everyDayNora": "كل يوم 8:00 · إلى nora@",
+        "dynamicScheduleMeta": "{{schedule}}"
+      }
+    },
+    "exportReady": {
+      "title": "ملفك جاهز",
+      "subtitle": "{{title}} · {{range}} · {{format}}",
+      "rows": "السجلات",
+      "columns": "الأعمدة",
+      "filters": "المرشحات",
+      "allColumns": "كل الأعمدة",
+      "close": "إغلاق",
+      "download": "تنزيل",
+      "contactsOmitted": "استُبعد عمودا البريد والهاتف لدورك. يُسجَّل هذا التنزيل في سجل التدقيق وتنتهي صلاحية الرابط خلال 24 ساعة.",
+      "sampleCsvNote": "الملف التجريبي بصيغة CSV. ملفات Excel وPDF يولّدها الخادم."
+    },
+    "toasts": {
+      "pickColumn": "اختر عمودًا واحدًا على الأقل.",
+      "scheduled": "تمت الجدولة: {{title}}",
+      "scheduleUpdated": "تم تحديث الجدولة",
+      "scheduleRemoved": "أُزيل التصدير المجدول"
+    },
+    "states": {
+      "loading": "جاري تحميل التقارير…",
+      "errorTitle": "تعذّر تحميل التقارير",
+      "errorDescription": "حدث خطأ أثناء تحميل التقارير. يُرجى المحاولة مرة أخرى.",
+      "emptyRecent": "لا توجد عمليات تصدير حديثة أو مجدولة بعد."
+    }
+  },
+  "listings": {
+    "title": "مراجعة الفرص",
+    "description": "تُراجع كل وظيفة ومشروع وتدريب تعاوني وفرصة تطوع وطلب توريد قبل نشرها.",
+    "verified": "شركة موثّقة",
+    "submittedMeta": "قُدِّم {{when}}",
+    "defaultChangeMessage": "شكرًا على تحديث ساعات العمل. تبقّى أمران قبل النشر: • أضيفوا الأجر أو نطاقه، أو اختاروا «يُناقش في المقابلة». • تذكر الفرصة يومي راحة أسبوعيًا بينما التواريخ ثلاثة أيام متتالية، يرجى تأكيد الجدول.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "reject": "رفض",
+      "requestChanges": "طلب تعديلات",
+      "approve": "اعتماد ونشر"
+    },
+    "tabs": {
+      "label": "حالة القائمة",
+      "pending": "قيد المراجعة · {{count}}",
+      "changesRequested": "تعديلات مطلوبة · {{count}}",
+      "live": "منشورة · {{count}}",
+      "rejected": "مرفوضة · {{count}}",
+      "closed": "مغلقة"
+    },
+    "filters": {
+      "allTypes": "كل الأنواع",
+      "allCities": "كل المدن",
+      "company": "الشركة"
+    },
+    "sorts": {
+      "oldest": "الأقدم أولًا",
+      "newest": "الأحدث أولًا"
+    },
+    "columns": {
+      "listing": "الفرصة",
+      "type": "النوع",
+      "submitted": "أُرسلت",
+      "sla": "مهلة المراجعة",
+      "status": "الحالة"
+    },
+    "types": {
+      "job": "وظيفة",
+      "coop": "تعاوني",
+      "supplier": "طلب توريد",
+      "volunteer": "تطوع",
+      "project": "مشروع"
+    },
+    "statuses": {
+      "pending": "بانتظار المراجعة",
+      "resubmitted": "أُعيد الإرسال",
+      "autoFlagged": "رصد تلقائي",
+      "changesRequested": "طُلب تعديل",
+      "live": "منشورة",
+      "rejected": "مرفوضة",
+      "closed": "مغلقة"
+    },
+    "statusDetail": {
+      "pending": "بانتظار المراجعة",
+      "resubmitted": "أُعيد تقديمه · تم التعديل",
+      "autoFlagged": "رصد تلقائي",
+      "changesRequested": "طُلب تعديل",
+      "live": "منشورة",
+      "rejected": "مرفوضة",
+      "closed": "مغلقة"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alula": "العلا"
+    },
+    "companies": {
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "riyadhFrontEvents": "فعاليات واجهة الرياض",
+      "creativeExpo": "شركة المعرض الإبداعي",
+      "liveTech": "لايف تك للحلول",
+      "desertStage": "مسرح الصحراء",
+      "unverified": "حساب غير موثّق",
+      "riyadhSeason": "موسم الرياض"
+    },
+    "items": {
+      "stageManager": "مدير المسرح",
+      "summerCoop": "برنامج التدريب الصيفي",
+      "stageLighting": "مسرح وإضاءة لقمة 3 أيام",
+      "expoCrew": "متطوعو فريق المعرض",
+      "avTech": "فني صوتيات ومرئيات",
+      "brandActivation": "مشروع تفعيل علامة تجارية",
+      "quickCash": "مروجون بدخل سريع",
+      "weekendStageHand": "عامل مسرح لنهاية الأسبوع",
+      "eventProducer": "منتج فعاليات",
+      "eventCoordinator": "منسق فعاليات",
+      "promotersWanted": "مطلوب مروجون",
+      "registrationDesk": "فريق مكتب التسجيل"
+    },
+    "submitted": {
+      "h26": "قبل 26 س",
+      "h20": "قبل 20 س",
+      "h14": "قبل 14 س",
+      "h9": "قبل 9 س",
+      "h6": "قبل 6 س",
+      "h3": "قبل 3 س",
+      "h1": "قبل ساعة",
+      "d2": "قبل يومين",
+      "d5": "قبل 5 أيام",
+      "w1": "قبل أسبوع",
+      "yesterday": "أمس",
+      "m1": "قبل شهر"
+    },
+    "sla": {
+      "overdue2h": "متأخر ساعتين",
+      "left4h": "متبقٍ 4 س",
+      "left10h": "متبقٍ 10 س",
+      "left15h": "متبقٍ 15 س",
+      "left18h": "متبقٍ 18 س",
+      "left21h": "متبقٍ 21 س",
+      "left23h": "متبقٍ 23 س",
+      "done": "—"
+    },
+    "facts": {
+      "city": "المدينة",
+      "contract": "العقد",
+      "closes": "تُغلق",
+      "setup": "طبيعة العمل",
+      "eventDates": "تواريخ الفعالية",
+      "budgetShown": "الميزانية المعلنة"
+    },
+    "factValues": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alula": "العلا",
+      "months3": "3 أشهر",
+      "months6": "6 أشهر",
+      "weeks8": "8 أسابيع",
+      "weeks2": "أسبوعان",
+      "days4": "4 أيام",
+      "days2": "يومان",
+      "fullTime": "دوام كامل",
+      "flexible": "مرن",
+      "weekends": "عطلات الأسبوع",
+      "oct30": "30 أكتوبر",
+      "oct15": "15 أكتوبر",
+      "oct3": "3 أكتوبر",
+      "oct12": "12 أكتوبر",
+      "oct20": "20 أكتوبر",
+      "oct9": "9 أكتوبر",
+      "oct5": "5 أكتوبر",
+      "oct18": "18 أكتوبر",
+      "oct21to23": "21 – 23 أكتوبر",
+      "sar40to60": "40 – 60 ألف ريال",
+      "onsite": "حضوري",
+      "hybrid": "هجين",
+      "remote": "عن بُعد",
+      "dash": "—",
+      "closed": "مغلقة"
+    },
+    "descriptions": {
+      "stageManager": "إدارة عمليات المسرح لقمة تقنية مدتها ثلاثة أيام وتنسيق الطاقم والإشارات والموردين. ساعات العمل: 8 ص – 8 م في أيام العرض مع يومي راحة أسبوعيًا.",
+      "summerCoop": "تدريب تعاوني مدفوع لمدة ثمانية أسابيع لطلاب إدارة الفعاليات، يتنقلون فيه بين الإنتاج وتجربة الضيوف والتشغيل.",
+      "stageLighting": "نبحث عن مورّد لتوفير المسرح والهياكل والإضاءة لقمة مدتها ثلاثة أيام، مع طاقم للتركيب والفك.",
+      "expoCrew": "متطوعون لاستقبال الزوار وإرشادهم في معرض لمدة أربعة أيام. الوجبات والنقل متوفرة، وتُمنح النقاط لكل مناوبة مؤكدة.",
+      "avTech": "تجهيز وتشغيل الصوت والفيديو لفعاليات الشركات والحفلات في جدة. يُفضَّل خبرة سنتين في الصوتيات والمرئيات.",
+      "brandActivation": "فريق مستقل لتصميم وتنفيذ تفعيل علامة تجارية لمدة أسبوعين في مهرجان صحراوي، من الفكرة إلى البناء.",
+      "quickCash": "اربح 5,000 ريال أسبوعيًا بترويج الفعاليات! بدون خبرة. راسلنا على واتساب وادفع 200 ريال رسوم التدريب.",
+      "weekendStageHand": "طاقم لعطلة نهاية الأسبوع للمساعدة في بناء المسارح وفكها في الفعاليات الخارجية. أُزيل رقم الهاتف بعد المراجعة.",
+      "eventProducer": "قيادة الإنتاج للمؤتمرات وحفلات الإطلاق، من الميزانية والموردين إلى إدارة العرض يوم الفعالية.",
+      "eventCoordinator": "تنسيق الطواقم والجداول في مواقع موسم الرياض طوال الموسم.",
+      "promotersWanted": "أُزيلت: طلبت من المتقدمين دفع رسوم تسجيل.",
+      "registrationDesk": "متطوعون لإدارة مكتب التسجيل في مؤتمر لمدة يومين."
+    },
+    "checks": {
+      "title": "فحوصات تلقائية",
+      "items": {
+        "verifiedCompany": "الشركة موثّقة",
+        "unverifiedCompany": "الشركة غير موثقة",
+        "noContact": "لا أرقام هواتف أو بريد في الوصف",
+        "workingHoursAdded": "أُضيفت ساعات العمل (طُلبت في 25 سبتمبر)",
+        "workingHoursListed": "ساعات العمل مذكورة",
+        "payRangeListed": "نطاق الأجر مذكور",
+        "noSalaryOptional": "لا يوجد نطاق راتب — اختياري لكنه يرفع عدد الطلبات",
+        "budgetListed": "نطاق الميزانية مذكور",
+        "asksFee": "يطلب رسومًا من المتقدمين",
+        "offPlatformContact": "تواصل خارج المنصة في الوصف",
+        "phoneInDescription": "رقم هاتف في الوصف"
+      }
+    },
+    "note": {
+      "label": "ملاحظة للشركة (مطلوبة للتعديلات أو الرفض)",
+      "placeholder": "اشرح ما يجب تعديله…"
+    },
+    "changeReasons": {
+      "payNotClear": "الأجر غير واضح",
+      "scheduleMismatch": "الجدول غير متسق",
+      "contactInText": "بيانات تواصل في النص",
+      "wrongCategory": "تصنيف خاطئ",
+      "missingHours": "ساعات العمل ناقصة",
+      "other": "أخرى"
+    },
+    "dialogs": {
+      "close": "إغلاق",
+      "reject": {
+        "title": "رفض «{{title}}»؟",
+        "description": "ترى الشركة ملاحظتك ولن تُنشر الفرصة."
+      },
+      "requestChanges": {
+        "title": "طلب تعديلات",
+        "subtitle": "أرسل ملاحظات لـ «{{title}}».",
+        "reasons": "الأسباب",
+        "message": "الرسالة للشركة",
+        "confirm": "إرسال الطلب"
+      },
+      "approved": {
+        "title": "تم اعتماد القائمة",
+        "subtitle": "«{{title}}» أصبحت منشورة.",
+        "reviewNext": "مراجعة التالي"
+      }
+    },
+    "toasts": {
+      "noteRequired": "أضف ملاحظة للشركة قبل الرفض.",
+      "changesRequired": "اختر سببًا واحدًا على الأقل أو أضف رسالة قبل طلب التعديلات.",
+      "rejected": "رُفضت الفرصة",
+      "changesRequested": "طُلب تعديل"
+    },
+    "states": {
+      "loading": "جاري تحميل القوائم…",
+      "errorTitle": "تعذّر تحميل القوائم",
+      "errorDescription": "حدث خطأ أثناء تحميل القوائم. يُرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد فرص هنا.",
+      "pickListing": "اختر فرصة لمراجعتها."
+    }
+  },
+  "applications": {
+    "title": "الطلبات",
+    "description": "كل الطلبات على جميع الفرص مع سجل حالاتها.",
+    "infoBanner": "الشركات هي صاحبة قرار الاختيار. يطّلع المشرفون على الطلبات ويتدخلون عند البلاغات دون تغيير حالتها.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "view": "عرض"
+    },
+    "tabs": {
+      "label": "حالة الطلب",
+      "all": "الكل",
+      "applied": "مُقدَّم",
+      "inReview": "قيد المراجعة",
+      "shortlisted": "مختصر",
+      "decision": "القرار"
+    },
+    "filters": {
+      "listingType": "نوع الفرصة",
+      "company": "الشركة",
+      "city": "المدينة"
+    },
+    "columns": {
+      "applicant": "المتقدم",
+      "listing": "الفرصة",
+      "applied": "مُقدَّم",
+      "status": "الحالة",
+      "timeInStage": "المدة في المرحلة",
+      "actions": "إجراءات"
+    },
+    "kpis": {
+      "sectionLabel": "ملخص الطلبات",
+      "applications": "الطلبات",
+      "inReview": "قيد المراجعة",
+      "shortlisted": "مختصر",
+      "selected": "تم الاختيار",
+      "months": {
+        "aug": "أغسطس"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}% مقابل {{month}}",
+        "percentOfApplications": "{{value}}% من الطلبات"
+      }
+    },
+    "statuses": {
+      "applied": "مُقدَّم",
+      "inReview": "قيد المراجعة",
+      "shortlisted": "مختصر",
+      "selected": "تم الاختيار",
+      "notSelected": "لم يتم الاختيار"
+    },
+    "listingTypes": {
+      "job": "وظيفة",
+      "coop": "تدريب تعاوني",
+      "volunteer": "متطوع",
+      "project": "مشروع",
+      "supplier": "طلب توريد"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام"
+    },
+    "personas": {
+      "student": "طالب",
+      "freelancer": "مستقل",
+      "professional": "محترف"
+    },
+    "companies": {
+      "riyadhSeason": "موسم الرياض",
+      "liveTech": "لايف تك للحلول",
+      "creativeExpo": "شركة المعرض الإبداعي",
+      "desertStage": "مسرح الصحراء",
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "riyadhFrontEvents": "فعاليات واجهة الرياض"
+    },
+    "applicants": {
+      "reemAlharbi": "ريم الحربي",
+      "faisalAlmutairi": "فيصل المطيري",
+      "nouraAlqahtani": "نورة القحطاني",
+      "khalidAlotaibi": "خالد العتيبي",
+      "saraAlshehri": "سارة الشهري",
+      "omarAlenezi": "عمر العنزي",
+      "linaAlzahrani": "لينا الزهراني",
+      "hudaAlshahrani": "هدى الشهراني",
+      "yousefAlamri": "يوسف العمري",
+      "mahaAlfarsi": "مها الفارسي",
+      "tariqAlotaibi": "طارق العتيبي",
+      "danaAlharbi": "دانا الحربي",
+      "bassamAlghamdi": "بسام الغامدي",
+      "raniaAlqahtani": "رانيا القحطاني"
+    },
+    "listings": {
+      "eventCoordinator": "منسق فعاليات",
+      "avTechnician": "فني صوتيات ومرئيات",
+      "summerCoop": "برنامج التدريب الصيفي",
+      "eventProducer": "منتج فعاليات",
+      "stageManager": "مدير المسرح",
+      "expoCrew": "متطوعو طاقم المعرض",
+      "brandActivation": "مشروع تفعيل علامة",
+      "registrationDesk": "طاقم مكتب التسجيل",
+      "weekendStageHand": "عامل مسرح في عطلة الأسبوع",
+      "stageLighting": "مسرح وإضاءة، قمة لثلاثة أيام",
+      "promotersWanted": "مطلوب مروّجون"
+    },
+    "applied": {
+      "sep27": "27 سبتمبر",
+      "sep26": "26 سبتمبر",
+      "sep25": "25 سبتمبر",
+      "sep24": "24 سبتمبر",
+      "sep23": "23 سبتمبر",
+      "sep22": "22 سبتمبر",
+      "sep21": "21 سبتمبر",
+      "sep20": "20 سبتمبر",
+      "sep19": "19 سبتمبر",
+      "sep18": "18 سبتمبر",
+      "sep17": "17 سبتمبر",
+      "sep16": "16 سبتمبر",
+      "sep15": "15",
+      "sep14": "14 سبتمبر"
+    },
+    "timeInStage": {
+      "d2": "يومان",
+      "d3": "3 أيام",
+      "d4": "4 أيام",
+      "d5": "5 أيام",
+      "d6": "6 أيام",
+      "d7": "7 أيام",
+      "d8": "8 أيام",
+      "d9": "9 أيام",
+      "d10": "10 أيام",
+      "d11": "11 يومًا",
+      "d12": "12 يومًا",
+      "d13": "13 يومًا",
+      "d14": "14 يومًا",
+      "d15": "15 يومًا"
+    },
+    "dialogs": {
+      "close": "إغلاق",
+      "view": {
+        "title": "تفاصيل الطلب",
+        "description": "عرض للقراءة فقط. قرارات التوظيف ملك الشركات؛ لا يمكن للمشرفين تغيير حالة الطلب."
+      }
+    },
+    "states": {
+      "loading": "جاري تحميل الطلبات…",
+      "errorTitle": "تعذّر تحميل الطلبات",
+      "errorDescription": "حدث خطأ أثناء تحميل الطلبات. يُرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد طلبات تطابق هذه الفلاتر."
+    }
+  },
+  "login": {
+    "title": "دخول المشرفين",
+    "subtitle": "الدخول متاح فقط لأعضاء فريق باك أوف هاوس المدعوين.",
+    "submit": "تسجيل الدخول",
+    "submitting": "جارٍ تسجيل الدخول…",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "forgotPasswordToast": "إذا كان {{email}} ضمن الفريق، فسيصل رابط إعادة التعيين قريبًا.",
+    "auditNote": "يتم تسجيل عمليات الدخول في سجل التدقيق. سيتم تسجيل خروجك بعد 30 دقيقة دون نشاط.",
+    "fields": {
+      "email": "البريد الإلكتروني للعمل",
+      "emailPlaceholder": "admin@backofhouse.sa",
+      "password": "كلمة المرور",
+      "otp": "رمز التحقق بخطوتين",
+      "otpHint": "من تطبيق المصادقة لديك.",
+      "otpDigit": "رقم رمز التحقق {{n}}"
+    },
+    "language": {
+      "label": "اللغة",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "branding": {
+      "regionLabel": "هوية Back of House",
+      "logoAlt": "Back of House Admin",
+      "headline": "لوحة الإدارة لمجتمع الفعاليات في السعودية.",
+      "supporting": "راجع الفرص ووثّق الشركات وحافظ على أمان المجتمع وصدّر الأرقام المهمة."
+    },
+    "errors": {
+      "emailRequired": "البريد الإلكتروني للعمل مطلوب.",
+      "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا للعمل.",
+      "emailDomain": "استخدم بريد العمل @backofhouse.sa.",
+      "passwordRequired": "كلمة المرور مطلوبة.",
+      "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+      "otpRequired": "أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.",
+      "otpInvalid": "أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.",
+      "mockDisabled": "تسجيل الدخول التجريبي غير مفعّل. عيّن VITE_MOCK_AUTH_ENABLED=true للتطوير المحلي فقط."
+    }
+  },
+  "supplierRequests": {
+    "title": "طلبات التوريد",
+    "description": "الطلبات التي تنشرها الشركات للموردين وكل العروض التي تصلها.",
+    "table": {
+      "label": "قائمة طلبات الموردين"
+    },
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "exportResponses": "تصدير العروض",
+      "reportIssue": "الإبلاغ عن مشكلة",
+      "openListing": "فتح الطلب"
+    },
+    "tabs": {
+      "label": "حالة الطلب",
+      "open": "مفتوح",
+      "awarded": "تم الاختيار",
+      "closed": "مغلقة"
+    },
+    "filters": {
+      "category": "التصنيف",
+      "city": "المدينة",
+      "allCategories": "كل الفئات",
+      "allCities": "كل المدن"
+    },
+    "columns": {
+      "request": "الطلب",
+      "closes": "تُغلق",
+      "responses": "العروض",
+      "status": "الحالة"
+    },
+    "kpis": {
+      "sectionLabel": "ملخص طلبات الموردين",
+      "openRequests": "طلبات مفتوحة",
+      "responsesThisMonth": "عروض هذا الشهر",
+      "responsesPerRequest": "عروض لكل طلب",
+      "noResponseAfter5Days": "بلا عروض بعد 5 أيام",
+      "months": {
+        "aug": "أغسطس"
+      },
+      "footnotes": {
+        "percentVsMonth": "+{{value}}% مقابل {{month}}",
+        "needsNudge": "تحتاج متابعة"
+      }
+    },
+    "statuses": {
+      "open": "مفتوح",
+      "noResponses": "بلا عروض",
+      "awarded": "تم الاختيار",
+      "closed": "مغلقة"
+    },
+    "categories": {
+      "stagingLighting": "مسارح وإضاءة",
+      "catering": "الإعاشة",
+      "brandActivation": "تفعيل علامة",
+      "venueAv": "صوت وصورة للموقع",
+      "ledScreens": "شاشات LED",
+      "security": "الأمن",
+      "transport": "النقل",
+      "merchandise": "هدايا ترويجية"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "alUla": "العلا"
+    },
+    "companies": {
+      "riyadhFrontEvents": "فعاليات واجهة الرياض",
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "creativeExpoCo": "شركة المعرض الإبداعي",
+      "riyadhSeason": "موسم الرياض",
+      "desertStage": "مسرح الصحراء",
+      "liveTechSolutions": "لايف تك للحلول"
+    },
+    "items": {
+      "stageLightingSummit": "مسرح وإضاءة لقمة 3 أيام",
+      "catering1200": "ضيافة لـ 1,200 ضيف",
+      "brandActivationKit": "حزمة تفعيل علامة",
+      "venueAvPackage": "حزمة صوت وصورة للموقع",
+      "ledScreensRental": "تأجير شاشات LED",
+      "eventSecurityStaff": "أفراد أمن للفعالية",
+      "shuttleBusesAlula": "حافلات نقل · العلا",
+      "brandedMerchandise": "منتجات تحمل العلامة",
+      "summitCateringClosed": "حزمة تموين للقمة",
+      "expoLightingClosed": "حزمة إضاءة للمعرض"
+    },
+    "dates": {
+      "closes": {
+        "oct3": "3 أكتوبر",
+        "oct5": "5 أكتوبر",
+        "oct8": "8 أكتوبر",
+        "oct12": "12 أكتوبر",
+        "oct1": "1 أكتوبر",
+        "sep30": "30 سبتمبر",
+        "sep20": "20 سبتمبر",
+        "sep15": "15",
+        "aug30": "30 أغسطس",
+        "aug25": "25 أغسطس"
+      },
+      "posted": {
+        "sep20": "20 سبتمبر",
+        "sep18": "18 سبتمبر",
+        "sep22": "22 سبتمبر",
+        "sep15": "15",
+        "sep12": "12 سبتمبر",
+        "sep10": "10 سبتمبر",
+        "aug28": "28 أغسطس",
+        "aug20": "20 أغسطس",
+        "aug5": "5 أغسطس",
+        "jul30": "30 يوليو"
+      },
+      "replied": {
+        "h3": "3 ساعات",
+        "d1": "يوم",
+        "d2": "يومان",
+        "d3": "3 أيام",
+        "d4": "4 أيام",
+        "d5": "5 أيام"
+      }
+    },
+    "facts": {
+      "category": "التصنيف",
+      "city": "المدينة",
+      "eventDates": "تواريخ الفعالية",
+      "budget": "الميزانية المعلنة"
+    },
+    "factValues": {
+      "stagingLighting": "مسارح وإضاءة",
+      "catering": "الإعاشة",
+      "brandActivation": "تفعيل علامة",
+      "venueAv": "صوت وصورة للموقع",
+      "ledScreens": "شاشات LED",
+      "security": "الأمن",
+      "transport": "النقل",
+      "merchandise": "هدايا ترويجية",
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "alUla": "العلا",
+      "oct21to23": "21 – 23 أكتوبر",
+      "oct10": "10 أكتوبر",
+      "nov2to4": "2 – 4 نوفمبر",
+      "oct28": "28 أكتوبر",
+      "oct15": "15 أكتوبر",
+      "oct5to7": "5 – 7 أكتوبر",
+      "sep25to27": "25 – 27 سبتمبر",
+      "oct1": "1 أكتوبر",
+      "sep8": "8 سبتمبر",
+      "sep12": "12 سبتمبر",
+      "sar40to60k": "40 – 60 ألف ريال",
+      "sar120kPlus": "أكثر من 120 ألف ر.س",
+      "sar25to35k": "25 – 35 ألف ريال",
+      "sar15to25k": "15–25 ألف ر.س",
+      "sar30to45k": "30–45 ألف ر.س",
+      "sar18to22k": "18–22 ألف ر.س",
+      "sar50to70k": "50–70 ألف ر.س",
+      "sar12to18k": "12–18 ألف ر.س",
+      "sar80k": "80 ألف ر.س",
+      "sar20to30k": "20–30 ألف ر.س"
+    },
+    "suppliers": {
+      "lumenStageCo": "لومن للمسارح",
+      "neonBeamAv": "Neon Beam AV",
+      "desertRigHire": "Desert Rig Hire",
+      "najdBackline": "نجد باكلاين",
+      "riggingProKsa": "ريغينغ برو",
+      "arabianLights": "الأضواء العربية",
+      "summitRigCo": "Summit Rig Co.",
+      "pulseAv": "Pulse AV",
+      "horizonStage": "Horizon Stage"
+    },
+    "responseStatuses": {
+      "shortlisted": "مختصر",
+      "new": "جديد",
+      "declined": "مرفوض"
+    },
+    "responses": {
+      "sectionTitle": "العروض",
+      "empty": "لا توجد ردود بعد.",
+      "verified": "موثّقة",
+      "replied": "رد خلال {{when}}"
+    },
+    "detail": {
+      "statusOpen": "مفتوح · {{count}} ردود",
+      "statusNoResponses": "بلا عروض",
+      "status": {
+        "awarded": "مُسنَد · {{count}} ردود",
+        "closed": "مغلق · {{count}} ردود"
+      },
+      "postedMeta": "{{company}} · نُشر {{posted}}"
+    },
+    "toasts": {
+      "exportResponses": "تصدير الردود غير متاح بعد.",
+      "reportIssue": "الإبلاغ عن مشكلة غير متاح بعد.",
+      "openListing": "فتح القائمة غير متاح بعد."
+    },
+    "states": {
+      "loading": "جاري تحميل طلبات الموردين…",
+      "errorTitle": "تعذّر تحميل طلبات الموردين",
+      "errorDescription": "حدث خطأ أثناء تحميل طلبات الموردين. يُرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد طلبات تطابق هذه الفلاتر.",
+      "pickRequest": "اختر طلبًا لمراجعته."
+    }
+  },
+  "users": {
+    "title": "المستخدمون",
+    "description": "كل أعضاء باك أوف هاوس: الأفراد والطلاب وحسابات الشركات.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "importUsers": "استيراد مستخدمين",
+      "importDisabledHint": "الاستيراد غير متاح حتى يتوفر عقد استيراد.",
+      "view": "عرض",
+      "exportUserData": "تصدير بيانات المستخدم",
+      "exportUserDisabledHint": "تصدير بيانات المستخدم غير متاح حتى يتوفر عقد تصدير.",
+      "sendMessage": "إرسال رسالة",
+      "downloadCsv": "تنزيل CSV",
+      "downloadCsvDisabledHint": "تنزيل CSV غير متاح حتى يتوفر عقد تصدير."
+    },
+    "tabs": {
+      "label": "نوع المستخدم",
+      "all": "الكل · {{count}}",
+      "individuals": "أفراد · {{count}}",
+      "companies": "شركات · {{count}}",
+      "suspended": "موقوفون · {{count}}"
+    },
+    "filters": {
+      "city": "المدينة",
+      "allCities": "كل المدن",
+      "verified": "موثّقة",
+      "verifiedYes": "موثّقة",
+      "verifiedNo": "غير موثّق",
+      "students": "الطلاب",
+      "studentsOnly": "طلاب فقط",
+      "nonStudents": "غير طلاب",
+      "joined": "تاريخ الانضمام",
+      "joinedLast30": "آخر 30 يومًا",
+      "joinedLast90": "آخر 90 يومًا",
+      "joinedLastYear": "السنة الماضية"
+    },
+    "columns": {
+      "user": "المستخدم",
+      "type": "النوع",
+      "city": "المدينة",
+      "points": "النقاط",
+      "verification": "التوثيق",
+      "joined": "تاريخ الانضمام",
+      "lastActive": "آخر نشاط",
+      "actions": "إجراءات"
+    },
+    "types": {
+      "individual": "فرد",
+      "company": "الشركة",
+      "student": "طالب"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alUla": "العلا"
+    },
+    "verification": {
+      "verified": "موثّقة",
+      "notVerified": "غير موثّق"
+    },
+    "people": {
+      "reemAlharbi": "ريم الحربي",
+      "faisalAlotaibi": "فيصل العتيبي",
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "nouraAlshehri": "نورة الشهري",
+      "omarAlghamdi": "عمر الغامدي",
+      "laylaHassan": "ليلى حسن",
+      "gulfProduceCo": "Gulf Produce Co.",
+      "yousefAlmalki": "يوسف المالكي",
+      "halaAlfarsi": "هالة الفارسي",
+      "redSeaEvents": "Red Sea Events",
+      "khalidSuspended": "خالد المطيري",
+      "saraAlzahrani": "سارة الزهراني",
+      "genericUser": "المستخدم"
+    },
+    "emails": {
+      "reemEmail": "reem.h@example.com",
+      "faisalEmail": "faisal.a@example.com",
+      "saudiEventsEmail": "ops@saudieventsgroup.example",
+      "nouraEmail": "noura.s@example.com",
+      "omarEmail": "omar.g@example.com",
+      "laylaEmail": "layla.h@example.com",
+      "gulfProduceEmail": "hello@gulfproduce.example",
+      "yousefEmail": "yousef.m@example.com",
+      "halaEmail": "hala.f@example.com",
+      "redSeaEmail": "team@redseaevents.example",
+      "khalidEmail": "khalid.m@example.com",
+      "saraEmail": "sara.z@example.com",
+      "genericEmail": "user@example.com"
+    },
+    "phones": {
+      "reemPhone": "+966 5·· ··· 4412",
+      "genericPhone": "+966 5·· ··· 0000"
+    },
+    "universities": {
+      "reemUniversity": "جامعة الملك سعود"
+    },
+    "joined": {
+      "mar2025": "12 مارس 2025",
+      "feb2025": "3 فبراير 2025",
+      "jan2025": "18 يناير 2025",
+      "sep2025": "1 سبتمبر 2025",
+      "aug2025": "14 أغسطس 2025",
+      "jul2025": "22 يوليو 2025",
+      "jun2025": "9 يونيو 2025",
+      "may2025": "2 مايو 2025",
+      "apr2025": "19 أبريل 2025",
+      "dec2024": "11 ديسمبر 2024"
+    },
+    "lastActive": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "d1": "قبل يوم",
+      "d2": "قبل يومين",
+      "d3": "قبل 3 أيام",
+      "d5": "قبل 5 أيام",
+      "d7": "منذ 7 أيام",
+      "w1": "قبل أسبوع",
+      "w2": "قبل أسبوعين",
+      "w3": "منذ 3 أسابيع",
+      "m1": "قبل شهر"
+    },
+    "selection": {
+      "count": "{{count}} محدّد",
+      "sendMessage": "إرسال رسالة",
+      "addTag": "إضافة وسم",
+      "exportSelected": "تصدير المحدد",
+      "suspend": "إيقاف",
+      "clear": "مسح"
+    },
+    "table": {
+      "selectAll": "تحديد كل المستخدمين في هذه الصفحة",
+      "selectRow": "تحديد {{name}}",
+      "pointsDash": "—"
+    },
+    "toasts": {
+      "sendMessage": "المراسلة غير متاحة بعد.",
+      "addTag": "الوسوم غير متاحة بعد.",
+      "exportSelected": "تصدير المحدّد غير متاح بعد.",
+      "suspendSelected": "إيقاف المحدّد غير متاح بعد (تجريبي).",
+      "suspendConfirmTitle": "إيقاف {{count}} من المستخدمين المحدّدين؟",
+      "suspendConfirmDescription": "سيفقدون الوصول حتى يعيد مشرف تفعيل الحسابات. هذا تأكيد تجريبي فقط.",
+      "admin": {
+        "adjustPoints": "تعديل النقاط غير متاح بعد.",
+        "resetPassword": "رابط إعادة كلمة المرور غير متاح بعد.",
+        "removeVerification": "أُزيل التوثيق (تجريبي).",
+        "dataRequest": "طلب البيانات غير متاح بعد.",
+        "suspendAccount": "تم إيقاف الحساب (تجريبي)."
+      }
+    },
+    "adminActions": {
+      "adjustPoints": "تعديل النقاط",
+      "resetPassword": "رابط إعادة كلمة المرور",
+      "removeVerification": "إزالة التوثيق",
+      "dataRequest": "طلب بيانات",
+      "suspendAccount": "إيقاف الحساب"
+    },
+    "dialogs": {
+      "suspend": {
+        "title": "إيقاف {{name}}؟",
+        "description": "سيفقدون الوصول حتى يعيد مشرف تفعيل الحساب."
+      },
+      "removeVerification": {
+        "title": "إزالة توثيق {{name}}؟",
+        "description": "ستُزال شارة التوثيق من حسابهم."
+      }
+    },
+    "admins": {
+      "faisalAdmin": "فيصل ع."
+    },
+    "detail": {
+      "backToUsers": "المستخدمون",
+      "memberSince": "عضو منذ {{date}}",
+      "adminActionsTitle": "إجراءات الإدارة",
+      "privacyNote": "البريد والهاتف خاصان. الشركات تراهما فقط إذا اختار {{name}} مشاركتهما.",
+      "fields": {
+        "email": "البريد",
+        "phone": "الهاتف",
+        "university": "الجامعة",
+        "verified": "موثّقة",
+        "lastActive": "آخر نشاط"
+      },
+      "reemVerifiedMeta": "4 يونيو 2026 · بواسطة فيصل ع.",
+      "reemLastActive": "اليوم 9:40",
+      "d3": "قبل 3 أيام",
+      "tabs": {
+        "label": "نشاط المستخدم",
+        "points": "النقاط",
+        "applications": "الطلبات",
+        "events": "الفعاليات",
+        "reports": "البلاغات",
+        "devices": "الأجهزة"
+      },
+      "tabPlaceholder": "سيظهر نشاط {{tab}} هنا عند توفره.",
+      "kpis": {
+        "pointsBalance": "رصيد النقاط",
+        "applications": "الطلبات",
+        "eventsAttended": "فعاليات حضرها",
+        "reportsAgainst": "بلاغات ضدها"
+      },
+      "pointsColumns": {
+        "date": "التاريخ",
+        "activity": "النشاط",
+        "source": "المصدر",
+        "points": "النقاط"
+      },
+      "emptyPoints": "لا يوجد نشاط نقاط بعد.",
+      "pointDates": {
+        "sep26": "26 سبتمبر",
+        "sep20": "20 سبتمبر",
+        "sep5": "5 سبتمبر",
+        "aug28": "28 أغسطس",
+        "aug14": "14 أغسطس"
+      },
+      "pointActivities": {
+        "attendedRiyadhTech": "حضور قمة الرياض التقنية",
+        "redeemedHighlight": "استبدال إبراز الملف · 7 أيام",
+        "manualSep5Event": "حضور أسبوع جدة للتصميم",
+        "profileComplete": "إكمال الملف الشخصي",
+        "companyReferral": "تأكيد نوبة تطوع · فريق المعرض"
+      },
+      "pointSources": {
+        "checkInScan": "مسح دخول",
+        "reward": "المكافأة",
+        "manualFaisal": "يدوي · فيصل أ.",
+        "system": "النظام",
+        "company": "الشركة"
+      },
+      "internalNotesTitle": "ملاحظات داخلية",
+      "internalNotesHint": "تظهر للمشرفين فقط",
+      "addNotePlaceholder": "أضف ملاحظة…",
+      "addNote": "إضافة",
+      "noteDates": {
+        "sep12": "12 سبتمبر"
+      },
+      "noteBodies": {
+        "reemNoteSep12": "إضافة يدوية +200 لأسبوع جدة للتصميم — تأكيد الحضور خارج المنصة."
+      }
+    },
+    "states": {
+      "loading": "جاري تحميل المستخدمين…",
+      "loadingDetail": "جاري تحميل المستخدم…",
+      "errorTitle": "تعذّر تحميل المستخدمين",
+      "errorDescription": "حدث خطأ أثناء تحميل المستخدمين. يُرجى المحاولة مرة أخرى.",
+      "emptyList": "لا يوجد مستخدمون يطابقون هذه الفلاتر.",
+      "notFoundTitle": "المستخدم غير موجود",
+      "notFoundDescription": "هذا المستخدم غير موجود في الدليل، أو الرابط غير صالح.",
+      "missingIdTitle": "معرّف المستخدم مفقود",
+      "missingIdDescription": "افتح مستخدماً من الدليل لعرض ملفه."
+    }
+  },
+  "companies": {
+    "title": "الشركات",
+    "description": "حسابات الشركات وفرصها ومدى استجابتها للمتقدمين.",
+    "verifiedBadge": "شركة موثّقة",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "import": "استيراد شركات",
+      "importDisabledHint": "الاستيراد غير متاح حتى يتوفر عقد استيراد.",
+      "view": "عرض"
+    },
+    "tabs": {
+      "label": "حالة التوثيق",
+      "all": "الكل",
+      "verified": "موثّقة",
+      "pendingVerification": "بانتظار التوثيق · {{count}}",
+      "notVerified": "غير موثّق",
+      "suspended": "موقوفة"
+    },
+    "filters": {
+      "city": "المدينة",
+      "industry": "القطاع",
+      "sort": "الأكثر نشاطًا"
+    },
+    "sorts": {
+      "mostActive": "الأكثر نشاطًا",
+      "leastActive": "الأقل نشاطًا",
+      "name": "الاسم"
+    },
+    "columns": {
+      "company": "الشركة",
+      "city": "المدينة",
+      "liveListings": "فرص منشورة",
+      "applications": "الطلبات",
+      "respondsToApplicants": "نسبة الرد على المتقدمين",
+      "verification": "التوثيق",
+      "actions": "إجراءات"
+    },
+    "kpis": {
+      "sectionLabel": "ملخص الشركات",
+      "accounts": "حسابات الشركات",
+      "verified": "موثّقة",
+      "postingThisMonth": "نشرت هذا الشهر",
+      "avgResponse": "متوسط الرد على المتقدمين",
+      "months": {
+        "aug": "أغسطس"
+      },
+      "deltas": {
+        "countThisMonth": "{{sign}}{{value}} هذا الشهر",
+        "percentOfAccounts": "{{value}}%",
+        "slowerThanMonth": "أبطأ من {{month}}"
+      }
+    },
+    "verification": {
+      "verified": "موثّقة",
+      "pending": "بانتظار المراجعة",
+      "notVerified": "غير موثّق",
+      "suspended": "موقوفة"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alula": "العلا"
+    },
+    "industries": {
+      "eventProduction": "إنتاج الفعاليات",
+      "entertainment": "الترفيه",
+      "avTechnical": "الصوتيات والتقنية",
+      "exhibitions": "المعارض",
+      "experiential": "التجارب",
+      "venues": "القاعات",
+      "staffing": "التوظيف"
+    },
+    "names": {
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "riyadhSeason": "موسم الرياض",
+      "liveTech": "لايف تك للحلول",
+      "creativeExpo": "شركة المعرض الإبداعي",
+      "desertStage": "مسرح الصحراء",
+      "riyadhFrontEvents": "فعاليات واجهة الرياض",
+      "quickCrewKsa": "كويك كرو",
+      "gulfExperienceCo": "Gulf Experience Co.",
+      "redSeaProductions": "Red Sea Productions",
+      "easternProvinceEvents": "Eastern Province Events",
+      "alulaCultural": "AlUla Cultural",
+      "stagecraftKsa": "Stagecraft KSA",
+      "nomadStaffing": "Nomad Staffing",
+      "heritageExpo": "Heritage Expo"
+    },
+    "dialogs": {
+      "close": "إغلاق",
+      "view": {
+        "title": "تفاصيل الشركة",
+        "description": "عرض للقراءة فقط لحساب هذه الشركة."
+      }
+    },
+    "states": {
+      "loading": "جاري تحميل الشركات…",
+      "errorTitle": "تعذّر تحميل الشركات",
+      "errorDescription": "حدث خطأ أثناء تحميل الشركات. يُرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد شركات تطابق هذه الفلاتر."
+    }
+  },
+  "rewards": {
+    "title": "المكافآت والنقاط",
+    "description": "إدارة قائمة المكافآت والاستبدالات والتعديلات اليدوية على نقاط الأعضاء.",
+    "tabs": {
+      "label": "أقسام المكافآت",
+      "catalog": "الدليل",
+      "redemptions": "الاستبدالات · {{count}}",
+      "ledger": "سجل النقاط"
+    },
+    "actions": {
+      "addReward": "إضافة مكافأة",
+      "exportLedger": "تصدير سجل النقاط",
+      "exportLedgerDisabledHint": "التصدير غير متاح حتى يتوفر عقد التصدير."
+    },
+    "states": {
+      "loading": "جاري تحميل المكافآت…",
+      "errorTitle": "تعذّر تحميل المكافآت",
+      "errorDescription": "حدث خطأ أثناء تحميل المكافآت. يرجى المحاولة مرة أخرى.",
+      "redemptionsPlaceholder": "ستظهر قائمة الاستبدالات هنا عند الربط.",
+      "ledgerPlaceholder": "سيظهر سجل النقاط هنا عند الربط.",
+      "emptyCatalog": "لا مكافآت في الفهرس بعد."
+    },
+    "kpis": {
+      "sectionLabel": "ملخص المكافآت",
+      "pointsAwarded": "النقاط الممنوحة · {{month}}",
+      "pointsRedeemed": "النقاط المستبدلة · {{month}}",
+      "redemptions": "عمليات الاستبدال",
+      "waitingFulfillment": "بانتظار التنفيذ",
+      "months": {
+        "aug": "أغسطس",
+        "sep": "سبتمبر"
+      },
+      "deltas": {
+        "percentVsMonth": "{{sign}}{{value}}% مقارنة بـ {{month}}",
+        "oldestDays": "الأقدم {{count}} أيام"
+      }
+    },
+    "columns": {
+      "reward": "المكافأة",
+      "cost": "التكلفة",
+      "left": "المتبقي",
+      "redeemed": "استُبدلت",
+      "live": "منشورة"
+    },
+    "catalog": {
+      "stockUnlimited": "غير محدود",
+      "stockLimited": "{{left}} / {{total}}",
+      "costPoints": "{{count}} نقطة",
+      "toggleLive": "تبديل الحالة المباشرة لـ {{name}}"
+    },
+    "items": {
+      "profileHighlight": "إبراز الملف · 7 أيام",
+      "profileHighlightSub": "زيادة الظهور في ملفات الأعضاء",
+      "vipPass": "تذكرة VIP · موسم الرياض",
+      "vipPassSub": "دخول لمواقع مختارة في الموسم",
+      "riggingCourse": "دورة سلامة التعليق",
+      "riggingCourseSub": "ورشة نصف يوم معتمدة",
+      "crewJacket": "جاكيت الطاقم",
+      "crewJacketSub": "سترة بعلامة تجارية · مقاسات محدودة",
+      "coffeeOnUs": "قهوتك علينا",
+      "coffeeOnUsSub": "قسيمة في مقاهٍ شريكة",
+      "eventTicket": "رصيد تذاكر فعاليات",
+      "eventTicketSub": "استبدال في فعاليات شريكة"
+    },
+    "earnRules": {
+      "title": "كيف يكسب الأعضاء النقاط",
+      "editRules": "تعديل القواعد",
+      "pointsPositive": "+{{count}} نقطة",
+      "pointsZero": "0 نقطة",
+      "items": {
+        "eventRegister": "التسجيل في فعالية",
+        "verifiedAttendance": "حضور فعالية مؤكد",
+        "volunteerShift": "إكمال وردية تطوع",
+        "profileComplete": "إكمال الملف 100%",
+        "friendReferral": "إحالة صديق ينضم"
+      }
+    },
+    "manualAdjustment": {
+      "title": "تعديل يدوي",
+      "memberLabel": "العضو",
+      "pointsLabel": "النقاط (+/−)",
+      "reasonLabel": "السبب (داخلي)",
+      "helper": "تُسجَّل التعديلات ويراها المشرفون فقط.",
+      "apply": "تطبيق التعديل",
+      "memberOption": "{{name}} · {{points}} نقطة",
+      "reasons": {
+        "scannerOffline": "الماسح offline عند تسجيل الحضور — رصيد حسن نية"
+      }
+    },
+    "members": {
+      "reemAlharbi": "ريم الحربي",
+      "faisalAlmutairi": "فيصل المطيري",
+      "nouraAlqahtani": "نورة القحطاني"
+    },
+    "toasts": {
+      "adjustmentApplied": "تم تطبيق تعديل النقاط.",
+      "editRules": "محرر قواعد الكسب غير متصل بعد.",
+      "addReward": "إضافة مكافأة غير متصلة بعد."
+    }
+  },
+  "news": {
+    "title": "الأخبار",
+    "description": "قصص تحريرية يكتبها فريق باك أوف هاوس، ولا ينشر الأعضاء أخبارًا.",
+    "listLabel": "القصص",
+    "tabs": {
+      "label": "حالة القصة",
+      "all": "الكل",
+      "published": "منشورة",
+      "scheduled": "مجدولة",
+      "drafts": "مسودات"
+    },
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد التصدير.",
+      "newStory": "قصة جديدة",
+      "preview": "معاينة",
+      "schedule": "جدولة",
+      "publish": "نشر"
+    },
+    "states": {
+      "loading": "جاري تحميل القصص…",
+      "errorTitle": "تعذّر تحميل الأخبار",
+      "errorDescription": "حدث خطأ أثناء تحميل الأخبار. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد قصص في هذا التبويب.",
+      "pickStory": "اختر قصة للتحرير."
+    },
+    "stories": {
+      "riyadhSeason2026": "موسم الرياض 2026 يفتح 1,200 وظيفة للطواقم",
+      "jeddahDesignWeek": "أسبوع جدة للتصميم يختتم بـ 4,200 تسجيل حضور",
+      "volunteerSpotlight": "متطوعة الشهر: نورة الشهري",
+      "safetyBriefing": "إحاطة السلامة: التركيب الليلي",
+      "supplierSpotlight": "تسليط الضوء على مورد: Desert Stage AV",
+      "untitledStory": "قصة بلا عنوان"
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "published": "منشورة",
+      "scheduled": "مجدولة"
+    },
+    "meta": {
+      "authorNora": "نورة ق.",
+      "publishedSep22Reads": "22 سبتمبر · 3,410 قراءة",
+      "publishedSep18Reads": "18 سبتمبر · 890 قراءة",
+      "scheduledOct3": "3 أكتوبر · 09:00",
+      "authorKhalid": "خالد أ.",
+      "authorYou": "أنت"
+    },
+    "editor": {
+      "languageLabel": "لغة المحرر",
+      "locales": {
+        "en": "English",
+        "ar": "العربية"
+      },
+      "savedAgo": "حُفظت المسودة قبل دقيقتين",
+      "coverAlt": "غلاف القصة",
+      "changeCover": "تغيير الغلاف",
+      "headline": "العنوان",
+      "category": "التصنيف",
+      "linkTo": "رابط إلى",
+      "notify": "إشعار",
+      "story": "النص",
+      "toolbarLabel": "التنسيق",
+      "body": "المحتوى",
+      "publishHint": "يلزم إكمال النسختين العربية والإنجليزية قبل النشر.",
+      "tools": {
+        "bold": "عريض",
+        "italic": "مائل",
+        "heading": "عنوان",
+        "quote": "اقتباس",
+        "list": "قائمة",
+        "link": "رابط"
+      }
+    },
+    "categories": {
+      "opportunities": "الفرص",
+      "culture": "ثقافة",
+      "safety": "سلامة",
+      "community": "مجتمع"
+    },
+    "linkTo": {
+      "eventCoordinatorListing": "فرصة منسق فعاليات",
+      "designWeekHub": "مركز أسبوع التصميم",
+      "safetyTraining": "تدريب السلامة",
+      "volunteerProgram": "برنامج التطوع",
+      "supplierPortal": "بوابة الموردين",
+      "arenaTour": "جولة الساحة",
+      "none": "لا شيء"
+    },
+    "notify": {
+      "pushRiyadhMembers": "إشعار لأعضاء الرياض",
+      "pushAllMembers": "إشعار لكل الأعضاء",
+      "none": "دون إشعار"
+    },
+    "toasts": {
+      "newDraft": "تم إنشاء مسودة جديدة.",
+      "changeCover": "رفع الغلاف غير متصل بعد.",
+      "preview": "المعاينة غير متصلة بعد.",
+      "schedule": "الجدولة غير متصلة بعد.",
+      "publish": "النشر غير متصل بعد."
+    }
+  },
+  "broadcasts": {
+    "title": "الرسائل الجماعية",
+    "description": "أرسل إشعارات أو بريدًا أو رسائل داخل التطبيق لمجموعة من الأعضاء.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "sendTest": "إرسال تجربة",
+      "schedule": "جدولة"
+    },
+    "newBroadcast": {
+      "title": "رسالة جديدة",
+      "audienceLabel": "الجمهور",
+      "channelsLabel": "القنوات",
+      "messageLabel": "الرسالة",
+      "scheduleHint": "تُرسل 1 أكتوبر 10:00. لا تُرسل الإشعارات بين 11 م و8 ص."
+    },
+    "audience": {
+      "and": "و",
+      "addRule": "+ إضافة شرط",
+      "removeRule": "إزالة الشرط",
+      "matchBannerRest": "عضوًا مطابقًا. يُستبعد من أوقف الرسائل التسويقية.",
+      "fields": {
+        "city": "المدينة",
+        "account": "الحساب",
+        "interestedIn": "مهتم بـ"
+      },
+      "operators": {
+        "is": "هي",
+        "anyOf": "أي من"
+      },
+      "values": {
+        "riyadh": "الرياض",
+        "individual": "فرد",
+        "stageAvHospitality": "المسرح، الصوتيات، الضيافة"
+      }
+    },
+    "channels": {
+      "push": "إشعار",
+      "email": "البريد",
+      "inApp": "داخل التطبيق"
+    },
+    "editor": {
+      "languageLabel": "لغة الرسالة",
+      "locales": {
+        "en": "EN",
+        "ar": "ع"
+      },
+      "title": "العنوان",
+      "body": "النص"
+    },
+    "sentScheduled": {
+      "title": "المرسلة والمجدولة",
+      "downloadCsv": "تنزيل CSV"
+    },
+    "columns": {
+      "broadcast": "الرسالة",
+      "sentTo": "المستلمون",
+      "opened": "فُتحت",
+      "status": "الحالة"
+    },
+    "table": {
+      "sentToEmpty": "—",
+      "openedEmpty": "—",
+      "openedAria": "{{percent}}٪ فُتح"
+    },
+    "statuses": {
+      "scheduled": "مجدولة",
+      "sent": "أُرسلت",
+      "draft": "مسودة"
+    },
+    "rows": {
+      "crewRolesOpened": "فُتحت 1,200 وظيفة للطواقم",
+      "jeddahDesignWeekLastCall": "أسبوع جدة للتصميم: الفرصة الأخيرة",
+      "rewardsCatalog": "جديد: دليل المكافآت",
+      "verifyCompany": "وثّق شركتك",
+      "crewMeetupDammam": "لقاء الطواقم في الدمام",
+      "profileHighlight": "وصل إبراز الملف"
+    },
+    "rowMeta": {
+      "pushEmailRiyadh": "إشعار · بريد · الرياض",
+      "pushJeddah": "إشعار · جدة",
+      "inAppEveryone": "داخل التطبيق · الجميع",
+      "emailUnverifiedCompanies": "بريد · شركات غير موثّقة",
+      "pushDammam": "إشعار · الدمام",
+      "emailPointsOver500": "بريد · نقاط أكثر من 500"
+    },
+    "states": {
+      "loading": "جاري تحميل البث…",
+      "errorTitle": "تعذّر تحميل البث",
+      "errorDescription": "حدث خطأ أثناء تحميل البث. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا بث مرسل أو مجدول بعد."
+    },
+    "toasts": {
+      "sendTest": "الإرسال التجريبي غير متصل بعد.",
+      "schedule": "الجدولة غير متصلة بعد.",
+      "downloadCsv": "تنزيل CSV غير متصل بعد.",
+      "addRule": "قواعد الجمهور غير متصلة بعد."
+    }
+  },
+  "events": {
+    "title": "الفعاليات",
+    "description": "تتبع التسجيلات والحضور الموثّق ومنح النقاط لكل فعالية.",
+    "tabs": {
+      "label": "دورة الفعالية",
+      "past": "سابقة · {{count}}",
+      "upcoming": "قادمة · {{count}}",
+      "drafts": "مسودات · {{count}}"
+    },
+    "filters": {
+      "city": "المدينة",
+      "allCities": "كل المدن"
+    },
+    "cities": {
+      "riyadh": "الرياض",
+      "jeddah": "جدة",
+      "dammam": "الدمام",
+      "alUla": "العلا"
+    },
+    "table": {
+      "label": "قائمة الفعاليات"
+    },
+    "columns": {
+      "event": "الفعالية",
+      "dates": "التواريخ",
+      "registered": "المسجلون",
+      "checkedIn": "الحضور",
+      "points": "النقاط"
+    },
+    "kpis": {
+      "sectionLabel": "ملخص الفعاليات",
+      "upcomingEvents": "فعاليات قادمة",
+      "registrationsSep": "التسجيلات · سبتمبر",
+      "attendanceVerified": "نسبة الحضور المؤكد",
+      "pointsAwardedSep": "النقاط الممنوحة · سبتمبر",
+      "months": {
+        "aug": "أغسطس"
+      },
+      "footnotes": {
+        "percentVsMonth": "{{sign}}{{value}}% مقارنة بـ {{month}}"
+      }
+    },
+    "items": {
+      "riyadhTechSummit": "قمة الرياض التقنية",
+      "jeddahDesignWeek": "أسبوع جدة للتصميم",
+      "crewMeetupRigging": "لقاء الطواقم: أساسيات التعليق",
+      "alulaNightConcert": "طاقم حفل العلا الليلي",
+      "expoBuildWeekend": "عطلة تجهيز المعرض",
+      "womenInEventsForum": "منتدى المرأة في الفعاليات",
+      "draftHospitalitySummit": "قمة الضيافة (مسودة)"
+    },
+    "venues": {
+      "riyadhFront": "واجهة الرياض",
+      "jeddahSuperdome": "جدة سوبردوم",
+      "industrialHub": "المركز الصناعي",
+      "marayaHall": "قاعة مرaya",
+      "riyadhExhibition": "مركز الرياض للمعارض",
+      "kafdConference": "مركز KAFD للمؤتمرات",
+      "draftVenueTbd": "الموقع لاحقاً"
+    },
+    "dates": {
+      "sep24to26": "24–26 سبتمبر",
+      "aug29": "29 أغسطس",
+      "aug22": "22 أغسطس",
+      "sep12": "12 سبتمبر",
+      "oct18to19": "18–19 أكتوبر",
+      "nov4": "4 نوفمبر",
+      "decTbd": "ديسمبر · لاحقاً"
+    },
+    "detailMeta": {
+      "riyadhTechSummitMeta": "واجهة الرياض · 24–26 سبتمبر · QR عند الباب",
+      "jeddahDesignWeekMeta": "سوبرdome جدة · 29 أغسطس · مُنحت النقاط",
+      "crewMeetupRiggingMeta": "المركز الصناعي · 22 أغسطس · قائمة يدوية",
+      "alulaNightConcertMeta": "قاعة مرaya · 12 سبتمبر · مُنحت النقاط",
+      "expoBuildWeekendMeta": "معرض الرياض · 18–19 أكتوبر",
+      "womenInEventsForumMeta": "KAFD · 4 نوفمبر",
+      "draftHospitalitySummitMeta": "جدة · مسودة · غير منشورة"
+    },
+    "pointsStatuses": {
+      "awaitingCheckIns": "بانتظار الحضور",
+      "pointsAwarded": "مُنحت النقاط",
+      "partlyAwarded": "مُنحت جزئيًا"
+    },
+    "checkInMethods": {
+      "qrAtDoor": "QR عند الباب",
+      "manualList": "قائمة يدوية"
+    },
+    "detail": {
+      "attendanceSection": "الحضور",
+      "verifiedAttendance": "الحضور المؤكد",
+      "verifiedOfRegistered": "{{verified}} من {{registered}} مسجّل",
+      "registeredLabel": "المسجلون",
+      "checkInMethodLabel": "طريقة التحقق",
+      "notYetMatchedLabel": "لم تُطابق بعد",
+      "unmatchedScans": "{{count}} مسح",
+      "pointsCallout": "امنح النقاط بعد توثيق الحضور فقط. المسوحات غير المطابقة تحتاج مراجعة قبل منح النقاط."
+    },
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد التصدير.",
+      "newEvent": "فعالية جديدة",
+      "importCheckIns": "استيراد الحضور",
+      "awardPoints": "منح {{count}} × {{points}} نقطة"
+    },
+    "toasts": {
+      "importCheckIns": "استيراد الحضور غير متصل بعد.",
+      "newEvent": "إنشاء فعالية غير متصل بعد.",
+      "awardPoints": "سيُمنح {{count}} عضو {{points}} نقطة لكل منهم."
+    },
+    "states": {
+      "loading": "جاري تحميل الفعاليات…",
+      "errorTitle": "تعذّر تحميل الفعاليات",
+      "errorDescription": "حدث خطأ أثناء تحميل الفعاليات. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد فعاليات تطابق هذه الفلاتر.",
+      "pickEvent": "اختر فعالية لعرض الحضور والنقاط."
+    }
+  },
+  "claimsImports": {
+    "title": "المطالبات والاستيراد",
+    "description": "مطالبات الشركات بالصفحات المضافة لها، واستيراد البيانات بالجملة.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد التصدير.",
+      "review": "مراجعة",
+      "view": "عرض"
+    },
+    "pageClaims": {
+      "title": "مطالبات الصفحات",
+      "description": "شخص يفيد بأنه يدير صفحة شركة أنشأناها من ملف استيراد.",
+      "importMeta": "استُورد {{month}} · {{count}} إعلان",
+      "tabs": {
+        "label": "حالة المطالبة",
+        "open": "مفتوحة - {{count}}",
+        "decided": "تم البت"
+      },
+      "guidance": {
+        "checkEmail": {
+          "title": "تحقق من البريد",
+          "description": "البريد الوظيفي على نفس نطاق الشركة دليل قوي."
+        },
+        "askDocuments": {
+          "title": "اطلب المستندات",
+          "description": "مستخرج من السجل التجاري أو خطاب تفويض على ورق الشركة."
+        },
+        "handOver": {
+          "title": "سلّم الصفحة",
+          "description": "المطالبون المعتمدون يصبحون مشرفين؛ المرفوضون يبقون محظورين."
+        }
+      }
+    },
+    "columns": {
+      "companyPage": "صفحة الشركة",
+      "claimedBy": "المطالِب",
+      "evidence": "الإثبات",
+      "submitted": "أُرسلت",
+      "actions": "إجراءات"
+    },
+    "importData": {
+      "title": "استيراد البيانات",
+      "dropzoneTitle": "أفلت ملف CSV أو Excel هنا",
+      "dropzoneHint": "حتى 5,000 سجل. ستظهر معاينة قبل حفظ أي شيء.",
+      "templatesLabel": "نزّل قالبًا",
+      "templates": {
+        "companies": "الشركات",
+        "events": "الفعاليات",
+        "users": "المستخدمون",
+        "attendance": "الحضور"
+      }
+    },
+    "recentImports": {
+      "title": "آخر عمليات الاستيراد",
+      "downloadErrorReport": "تنزيل تقرير الأخطاء"
+    },
+    "states": {
+      "errorTitle": "تعذّر تحميل المطالبات والاستيراد",
+      "errorDescription": "حدث خطأ أثناء التحميل. يرجى المحاولة مرة أخرى.",
+      "loadingImports": "جاري تحميل الاستيراد…",
+      "loadingClaims": "جاري تحميل المطالبات…",
+      "emptyClaims": "لا مطالبات في هذا التبويب.",
+      "emptyImports": "لا عمليات استيراد حديثة بعد."
+    },
+    "companies": {
+      "arabianVenues": "القاعات العربية",
+      "jeddahSoundHire": "جدة لتأجير الصوتيات",
+      "najdProductions": "نجد للإنتاج",
+      "eventlinkKsa": "إيفنت لينك"
+    },
+    "claimants": {
+      "mahaAlsubaie": "مها السبيعي",
+      "omarAlharbi": "عمر الحربي",
+      "nouraAlqahtani": "نورة القحطاني",
+      "faisalAlotaibi": "فيصل العتيبي"
+    },
+    "emails": {
+      "mahaAlsubaieEmail": "maha@arabianvenues.sa",
+      "omarAlharbiEmail": "omar@jeddahsound.sa",
+      "nouraAlqahtaniEmail": "noura@najdproductions.sa",
+      "faisalAlotaibiEmail": "faisal@eventlink.sa"
+    },
+    "evidence": {
+      "domainMatches": "النطاق مطابق",
+      "needsDocuments": "تحتاج مستندات",
+      "approved": "مقبولة",
+      "rejected": "مرفوضة"
+    },
+    "dates": {
+      "sep27": "27 سبتمبر",
+      "sep26": "26 سبتمبر",
+      "sep20": "20 سبتمبر",
+      "sep18": "18 سبتمبر"
+    },
+    "importMonths": {
+      "aug14": "14 أغسطس",
+      "jul22": "22 يوليو",
+      "aug2": "2 أغسطس"
+    },
+    "files": {
+      "riyadhTechSummit": "Riyadh Tech Summit - attendance.csv",
+      "venuesDirectoryAug": "Venues directory - Aug.xlsx",
+      "jeddahDesignWeek": "Jeddah Design Week - attendance.csv"
+    },
+    "importStatus": {
+      "processing": "قيد المعالجة",
+      "doneWithErrors": "اكتمل مع أخطاء",
+      "done": "اكتمل"
+    },
+    "importDetails": {
+      "riyadhTechSummitDetail": "1,280 من 2,000",
+      "venuesDirectoryAugDetail": "أُضيف 240 · تُخطي 3",
+      "jeddahDesignWeekDetail": "880 حضور · نقاط مُرسلة"
+    },
+    "dialogs": {
+      "close": "إغلاق",
+      "review": {
+        "title": "مراجعة المطالبة",
+        "description": "أكد الدليل قبل تسليم صفحة الشركة."
+      },
+      "view": {
+        "title": "قرار المطالبة",
+        "description": "ملخص للقرار المتخذ."
+      }
+    },
+    "toasts": {
+      "dropzone": "رفع الملفات غير متصل بعد.",
+      "fileReceived": "تم استلام «{{filename}}» (تجريبي فقط — الاستيراد غير متصل).",
+      "template": {
+        "companies": "تنزيل قالب الشركات غير متصل بعد.",
+        "events": "تنزيل قالب الفعاليات غير متصل بعد.",
+        "users": "تنزيل قالب المستخدمين غير متصل بعد.",
+        "attendance": "تنزيل قالب الحضور غير متصل بعد."
+      },
+      "errorReport": "تنزيل تقرير الأخطاء غير متصل بعد."
+    }
+  },
+  "verification": {
+    "title": "التوثيق",
+    "description": "مراجعة طلبات توثيق الشركات والمحترفين والطلاب قبل منح شارة التوثيق.",
+    "infoBanner": "تُسجَّل القرارات. المعتمدون يحصلون على شارة توثيق؛ المرفوضون يمكنهم إعادة التقديم بعد 30 يوماً.",
+    "tabs": {
+      "label": "طابور التحقق",
+      "waiting": "بانتظار · {{count}}",
+      "moreInfo": "معلومات إضافية · {{count}}",
+      "decided": "مُبتَ فيها · {{count}}"
+    },
+    "list": {
+      "label": "طلبات التوثيق",
+      "roleDocuments": "{{role}} · {{count}} مستندات",
+      "documentsCity": "{{count}} مستندات · {{city}}"
+    },
+    "listSubtitles": {
+      "lightingDesigner": "مصمم إضاءة",
+      "studentIdDoc": "هوية طالب",
+      "stageManager": "مدير مسرح",
+      "avTechnician": "فني صوت وصورة"
+    },
+    "types": {
+      "company": "الشركة",
+      "pro": "محترف",
+      "student": "طالب"
+    },
+    "applicantLabels": {
+      "company": "الشركة",
+      "pro": "محترف",
+      "student": "طالب"
+    },
+    "actions": {
+      "exportDecisions": "تصدير القرارات",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد التصدير.",
+      "reject": "رفض",
+      "askMoreInfo": "طلب معلومات إضافية",
+      "approve": "اعتماد"
+    },
+    "detail": {
+      "requestedMeta": "تحقق {{type}} · طلب من {{requester}}{{role}} · أُرسل {{submitted}}"
+    },
+    "checks": {
+      "title": "فحوصات آلية",
+      "items": {
+        "crValid": "السجل التجاري ساري",
+        "requesterEmailDomain": "بريد مقدم الطلب يطابق نطاق الشركة",
+        "noOpenReports": "لا بلاغات مفتوحة",
+        "authorizationNotStamped": "خطاب التفويض غير مختوم",
+        "idMatchesName": "اسم الهوية يطابق مقدم الطلب",
+        "portfolioLinked": "رابط معرض الأعمال موثّق",
+        "addressPending": "العنوان الوطني بانتظار التأكيد",
+        "studentIdValid": "هوية الطالب سارية",
+        "enrollmentConfirmed": "التسجيل مؤكد للفصل الحالي",
+        "experienceLetterMissing": "خطاب خبرة مفقود",
+        "nationalAddressMismatch": "عدم تطابق العنوان الوطني",
+        "idExpired": "الهوية منتهية",
+        "documentsIllegible": "مستندات غير واضحة"
+      }
+    },
+    "documents": {
+      "sectionTitle": "المستندات",
+      "previewPlaceholder": "معاينة المستند تجريبية — لا تُحمَّل الملفات في هذا العرض.",
+      "files": {
+        "commercialRegistrationPdf": "commercial_registration.pdf",
+        "nationalAddressPdf": "national_address.pdf",
+        "authorizationLetterJpg": "authorization_letter.jpg",
+        "nationalIdPdf": "national_id.pdf",
+        "portfolioPdf": "portfolio.pdf",
+        "studentIdPdf": "student_id.pdf"
+      },
+      "sizes": {
+        "kb420": "420 ك.ب",
+        "kb180": "180 ك.ب",
+        "mb11": "1.1 م.ب",
+        "kb240": "240 ك.ب",
+        "mb2": "2.0 م.ب",
+        "kb390": "390 ك.ب",
+        "kb160": "160 ك.ب",
+        "kb310": "310 ك.ب",
+        "kb220": "220 ك.ب",
+        "kb400": "400 ك.ب",
+        "mb09": "0.9 م.ب",
+        "kb410": "410 ك.ب",
+        "kb175": "175 ك.ب",
+        "mb10": "1.0 م.ب",
+        "kb430": "430 ك.ب",
+        "kb200": "200 ك.ب"
+      },
+      "captions": {
+        "commercialRegistrationPage1": "السجل التجاري · صفحة 1",
+        "nationalAddressPage1": "العنوان الوطني · صفحة 1",
+        "authorizationLetterPage1": "خطاب التفويض · صفحة 1",
+        "nationalIdPage1": "الهوية الوطنية · صفحة 1",
+        "portfolioPage1": "معرض الأعمال · صفحة 1",
+        "studentIdPage1": "هوية الطالب · صفحة 1"
+      }
+    },
+    "names": {
+      "creativeExpo": "شركة المعرض الإبداعي",
+      "hassanAlmalki": "حسن المالكي",
+      "desertStage": "مسرح الصحراء",
+      "nouraAlshehri": "نورة الشهري",
+      "majedAlbishi": "ماجد البيشي",
+      "gulfExperienceCo": "Gulf Experience Co.",
+      "redSeaEvents": "Red Sea Events",
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "yousefAlmalki": "يوسف المالكي"
+    },
+    "people": {
+      "hindAlzahrani": "Hind Alzahrani",
+      "hassanAlmalki": "حسن المالكي",
+      "omarAlghamdi": "عمر الغامدي",
+      "nouraAlshehri": "نورة الشهري",
+      "majedAlbishi": "ماجد البيشي",
+      "laylaHassan": "Layla Hassan",
+      "halaAlfarsi": "Hala Alfarsi",
+      "faisalAlotaibi": "فيصل العتيبي",
+      "yousefAlmalki": "يوسف المالكي"
+    },
+    "requesterRoles": {
+      "operationsLead": "قائد العمليات",
+      "founder": "المؤسس",
+      "financeLead": "قائد المالية"
+    },
+    "facts": {
+      "commercialRegistration": "رقم السجل",
+      "legalName": "الاسم القانوني",
+      "city": "المدينة",
+      "accountCreated": "إنشاء الحساب",
+      "listingsPosted": "فرص منشورة",
+      "profession": "المهنة",
+      "university": "الجامعة"
+    },
+    "factValues": {
+      "creativeExpoCr": "1010987654",
+      "creativeExpoLegal": "شركة المعرض الإبداعي",
+      "dammam": "الدمام",
+      "feb22025": "22 فبراير 2025",
+      "nine": "9",
+      "lightingDesigner": "مصمم إضاءة",
+      "riyadh": "الرياض",
+      "jan182025": "18 يناير 2025",
+      "four": "4",
+      "desertStageCr": "1010456123",
+      "desertStageLegal": "Desert Stage LLC",
+      "alUla": "العلا",
+      "aug142025": "14 أغسطس 2025",
+      "three": "3",
+      "ksu": "جامعة الملك سعود",
+      "sep12025": "1 سبتمبر 2025",
+      "zero": "0",
+      "stageManager": "مدير مسرح",
+      "jeddah": "جدة",
+      "jul222025": "22 يوليو 2025",
+      "two": "2",
+      "gulfExperienceCr": "1010112233",
+      "gulfExperienceLegal": "Gulf Experience Co.",
+      "may22025": "2 مايو 2025",
+      "six": "6",
+      "redSeaCr": "1010778899",
+      "redSeaLegal": "Red Sea Events",
+      "apr192025": "19 أبريل 2025",
+      "eleven": "11",
+      "saudiEventsCr": "1010334455",
+      "saudiEventsLegal": "مجموعة الفعاليات السعودية",
+      "dec112024": "11 ديسمبر 2024",
+      "twentyFour": "24",
+      "avTechnician": "فني صوت وصورة",
+      "jun92025": "9 يونيو 2025",
+      "one": "1"
+    },
+    "cities": {
+      "dammam": "الدمام",
+      "riyadh": "الرياض",
+      "alUla": "العلا",
+      "jeddah": "جدة"
+    },
+    "sla": {
+      "d1Left": "يوم متبقٍ",
+      "d2Left": "يومان متبقيان",
+      "d3Left": "3 أيام متبقية",
+      "d4Left": "4 أيام متبقية",
+      "waitingOnApplicant": "بانتظار مقدم الطلب",
+      "decidedApproved": "مقبولة",
+      "decidedRejected": "مرفوضة"
+    },
+    "decided": {
+      "approved": "تمت الموافقة على هذا الطلب.",
+      "rejected": "تم رفض هذا الطلب.",
+      "moreInfo": "بانتظار معلومات إضافية من مقدم الطلب."
+    },
+    "dialogs": {
+      "reject": {
+        "title": "رفض {{name}}؟",
+        "description": "لن يحصل على شارة توثيق ويمكنه إعادة التقديم بعد 30 يوماً."
+      },
+      "moreInfo": {
+        "title": "طلب معلومات من {{name}}؟",
+        "description": "سيصله بريد يوضح ما يجب رفعه أو تصحيحه."
+      },
+      "approve": {
+        "title": "الموافقة على {{name}}؟",
+        "description": "سيحصل على شارة توثيق فوراً."
+      }
+    },
+    "toasts": {
+      "rejected": "تم رفض التحقق.",
+      "moreInfoRequested": "تم طلب معلومات إضافية.",
+      "approved": "تمت الموافقة على التحقق."
+    },
+    "states": {
+      "loading": "جاري تحميل طابور التحقق…",
+      "errorTitle": "تعذّر تحميل التحقق",
+      "errorDescription": "حدث خطأ أثناء تحميل التحقق. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا طلبات في هذا التبويب.",
+      "pickRequest": "اختر طلباً لمراجعة المستندات واتخاذ قرار."
+    },
+    "dates": {
+      "submitted": {
+        "sep26": "26 سبتمبر",
+        "sep25": "25 سبتمبر",
+        "sep24": "24 سبتمبر",
+        "sep23": "23 سبتمبر",
+        "sep22": "22 سبتمبر",
+        "sep18": "18 سبتمبر",
+        "sep15": "15",
+        "sep10": "10 سبتمبر",
+        "sep8": "8 سبتمبر"
+      }
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "description": "قواعد المنصة والتصنيفات وإعدادات المراجعة.",
+    "descriptionDirty": "لديك تغييرات غير محفوظة.",
+    "actions": {
+      "saveChanges": "حفظ التغييرات"
+    },
+    "nav": {
+      "label": "الإعدادات",
+      "sections": {
+        "general": "عام",
+        "pointsRules": "قواعد النقاط",
+        "categoriesCities": "التصنيفات والمدن",
+        "reviewSafety": "المراجعة والأمان",
+        "notifications": "الإشعارات",
+        "legalPrivacy": "القانوني والخصوصية",
+        "languages": "اللغات"
+      }
+    },
+    "placeholder": {
+      "description": "هذا القسم غير متصل بعد.",
+      "body": "ستظهر إعدادات هذا القسم عند جاهزية عقد الخادم."
+    },
+    "general": {
+      "title": "عام",
+      "description": "كيف يظهر باك أوف هاوس للأعضاء.",
+      "fields": {
+        "platformName": "اسم المنصة",
+        "supportEmail": "بريد الدعم",
+        "timezone": "المنطقة الزمنية"
+      },
+      "timezones": {
+        "riyadh": "الرياض (GMT+3)"
+      }
+    },
+    "pointsRules": {
+      "title": "قواعد النقاط",
+      "description": "التسجيل في فعالية مثبت على 0 نقطة ولا يمكن تغييره.",
+      "columns": {
+        "activity": "النشاط",
+        "points": "النقاط",
+        "limit": "الحد",
+        "on": "مفعّل"
+      },
+      "activities": {
+        "registerEvent": "التسجيل في فعالية",
+        "verifiedAttendance": "حضور فعالية مؤكد",
+        "volunteerShift": "نوبة تطوع مؤكدة",
+        "completeProfile": "إكمال الملف",
+        "friendJoins": "انضمام صديق وحضوره"
+      },
+      "limits": {
+        "locked": "مقفل",
+        "perEvent": "لكل فعالية",
+        "confirmedByCompany": "تؤكدها الشركة",
+        "once": "مرة واحدة",
+        "maxTenPerMonth": "حد 10 شهريًا"
+      },
+      "toggleActivity": "تبديل {{activity}}",
+      "pointsFor": "النقاط: {{activity}}"
+    },
+    "categories": {
+      "title": "التصنيفات والمدن",
+      "add": "+ إضافة",
+      "addSubmit": "إضافة",
+      "removeItem": "إزالة {{item}}",
+      "groups": {
+        "listingTypes": "أنواع الفرص",
+        "crafts": "التخصصات",
+        "cities": "المدن"
+      },
+      "items": {
+        "listingTypes": {
+          "job": "وظيفة",
+          "coOp": "تدريب تعاوني",
+          "project": "مشروع",
+          "volunteering": "تطوع",
+          "supplierRequest": "طلب توريد"
+        },
+        "crafts": {
+          "stage": "المسرح",
+          "lighting": "الإضاءة",
+          "av": "الصوتيات",
+          "rigging": "التعليق",
+          "hospitality": "الضيافة",
+          "production": "الإنتاج"
+        },
+        "cities": {
+          "riyadh": "الرياض",
+          "jeddah": "جدة",
+          "dammam": "الدمام",
+          "alUla": "العلا",
+          "abha": "أبها"
+        }
+      }
+    },
+    "reviewSafety": {
+      "title": "المراجعة والأمان",
+      "columns": {
+        "setting": "الإعداد",
+        "on": "مفعّل"
+      },
+      "items": {
+        "review-new-listing": {
+          "title": "مراجعة كل فرصة جديدة",
+          "description": "الهدف: خلال 24 ساعة"
+        },
+        "hide-contact": {
+          "title": "إخفاء الأرقام والبريد في الفرص",
+          "description": "تُعلَّم للمراجعة"
+        },
+        "auto-flag-fees": {
+          "title": "رصد الفرص التي تطلب رسومًا",
+          "description": "تُحال إلى الإشراف"
+        },
+        "verified-skip-review": {
+          "title": "إعفاء الشركات الموثّقة من المراجعة",
+          "description": "متوقف: تُراجع كل الفرص"
+        }
+      }
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "description": "ما يصل للأعضاء والمشرفين من تنبيهات، وكيف.",
+      "items": {
+        "new-listing-submitted": {
+          "title": "إرسال فرصة جديدة",
+          "description": "إرسال بريد للمراجعين عندما تتجاوز القائمة 10 فرص"
+        },
+        "verification-request": {
+          "title": "طلب توثيق",
+          "description": "إشعار المراجعين في التطبيق"
+        },
+        "ticket-waiting": {
+          "title": "تذكرة تنتظر أكثر من 4 ساعات",
+          "description": "إرسال بريد لقائد فريق الدعم"
+        },
+        "weekly-summary": {
+          "title": "الملخص الأسبوعي",
+          "description": "بريد يوم الأحد للمشرفين العامّين"
+        }
+      }
+    },
+    "legal": {
+      "title": "القانوني والخصوصية",
+      "description": "المستندات التي يوافق عليها الأعضاء عند التسجيل.",
+      "edit": "تعديل",
+      "docs": {
+        "termsOfUse": "شروط الاستخدام",
+        "privacyPolicy": "سياسة الخصوصية",
+        "communityGuidelines": "إرشادات المجتمع"
+      },
+      "updated": {
+        "updatedAug2026": "حُدّثت 1 أغسطس 2026"
+      }
+    },
+    "languages": {
+      "title": "اللغات",
+      "description": "كل نص يظهر للأعضاء يحتاج إلى الإنجليزية والعربية.",
+      "defaultLanguage": "اللغة الافتراضية للأعضاء الجدد",
+      "english": {
+        "title": "English",
+        "description": "مفعّلة دائمًا"
+      },
+      "arabic": {
+        "title": "العربية",
+        "description": "تخطيط من اليمين إلى اليسار"
+      },
+      "options": {
+        "english": "English",
+        "arabic": "العربية"
+      }
+    },
+    "states": {
+      "loading": "جاري تحميل الإعدادات…",
+      "errorTitle": "تعذّر تحميل الإعدادات",
+      "errorDescription": "حدث خطأ أثناء تحميل الإعدادات. يرجى المحاولة مرة أخرى."
+    },
+    "toasts": {
+      "saved": "حُفظت الإعدادات",
+      "editDocument": "جارٍ فتح المحرر لـ {{doc}}…"
+    }
+  },
+  "audit": {
+    "title": "سجل التدقيق",
+    "description": "كل إجراء إداري على Back of House، قابل للبحث والتصدير.",
+    "filters": {
+      "admin": "المشرف",
+      "action": "الإجراء"
+    },
+    "tabs": {
+      "label": "فئات التدقيق",
+      "all": "الكل",
+      "decisions": "القرارات",
+      "points": "النقاط",
+      "exports": "التصدير",
+      "access": "الدخول"
+    },
+    "columns": {
+      "when": "متى",
+      "admin": "المشرف",
+      "action": "الإجراء",
+      "target": "الهدف",
+      "details": "التفاصيل"
+    },
+    "states": {
+      "loading": "جاري تحميل سجل التدقيق…",
+      "errorTitle": "تعذّر تحميل سجل التدقيق",
+      "errorDescription": "حدث خطأ أثناء تحميل سجل التدقيق. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد سجلات تطابق هذه الفلاتر."
+    },
+    "admins": {
+      "noraAlQahtani": "نورة القحطاني",
+      "hessaAlmarri": "حصة المري",
+      "faisalAlanazi": "فيصل العنزي",
+      "yousefAlsaleh": "يوسف الصالح",
+      "turkiAlamri": "تركي العمري",
+      "danaAlkhaldi": "دانة الخالدي"
+    },
+    "actions": {
+      "exportLog": "تصدير السجل",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "exportedData": "تصدير بيانات",
+      "requestedChanges": "طلب تعديلات",
+      "adjustedPoints": "تعديل النقاط",
+      "approvedVerification": "اعتماد توثيق",
+      "suspendedAccount": "إيقاف حساب",
+      "publishedStory": "نشر قصة",
+      "changedRole": "تغيير دور",
+      "signedIn": "تسجيل دخول"
+    },
+    "targets": {
+      "applicationsSepExcel": "الطلبات · تصدير سبتمبر",
+      "listingSummerCoop": "إعلان · تدريب صيفي",
+      "userReemAlharbi": "مستخدم · ريم الحربي",
+      "companyRiyadhFrontEvents": "شركة · فعاليات واجهة الرياض",
+      "companyQuickCrewKsa": "شركة · كويك كرو",
+      "newsJeddahDesignWeek": "خبر · Jeddah Design Week",
+      "adminRanaAlbassam": "مشرف · رنا البسام",
+      "backOffice": "لوحة الإدارة"
+    },
+    "details": {
+      "rows4870": "4,870 سجلًا",
+      "addWorkingHours": "طلب إضافة ساعات عمل",
+      "plus150ScannerOffline": "+150 نقطة · ماسح غير متصل",
+      "documentsChecked3": "فُحصت 3 مستندات",
+      "reports7UnpaidCrew": "7 بلاغات · أجور غير مدفوعة",
+      "invitedAsAnalyst": "دُعيت كمحللة",
+      "riyadhChrome2Step": "الرياض · Chrome · بخطوتين"
+    },
+    "when": {
+      "sep28_1042": "28 سبتمبر · 10:42",
+      "sep28_1015": "28 سبتمبر · 10:15",
+      "sep28_0958": "28 سبتمبر · 09:58",
+      "sep28_0930": "28 سبتمبر · 09:30",
+      "sep28_0902": "28 سبتمبر · 09:02",
+      "sep27_1820": "27 سبتمبر · 18:20",
+      "sep27_1705": "27 سبتمبر · 17:05",
+      "sep27_1648": "27 سبتمبر · 16:48"
+    }
+  },
+  "team": {
+    "title": "الفريق والصلاحيات",
+    "description": "من يستخدم لوحة الإدارة، وما المسموح لكل دور.",
+    "actions": {
+      "inviteTeammate": "دعوة عضو",
+      "edit": "تعديل",
+      "previewInvite": "معاينة الدعوة"
+    },
+    "states": {
+      "loading": "جاري تحميل الفريق…",
+      "errorTitle": "تعذّر تحميل الفريق",
+      "errorDescription": "حدث خطأ أثناء تحميل بيانات الفريق. يرجى المحاولة مرة أخرى.",
+      "emptyAdmins": "لا يوجد مسؤولون بعد.",
+      "emptyPermissions": "لا صلاحيات لعرضها."
+    },
+    "toasts": {
+      "inviteTeammate": "مسار الدعوة غير متصل بعد.",
+      "editAdmin": "تعديل {{name}} غير متصل بعد.",
+      "previewInvite": "معاينة الدعوة غير متصلة بعد."
+    },
+    "roles": {
+      "superAdmin": "مشرف عام",
+      "reviewer": "مراجِعة",
+      "editor": "محررة",
+      "support": "الدعم",
+      "analyst": "محلل"
+    },
+    "admins": {
+      "title": "المسؤولون · {{count}}",
+      "tableLabel": "مسؤولو الفريق",
+      "columns": {
+        "admin": "المشرف",
+        "role": "الدور",
+        "lastActive": "آخر نشاط",
+        "actions": "إجراءات"
+      },
+      "inviteSent": "أُرسلت الدعوة {{date}}",
+      "names": {
+        "noraAlQahtani": "نورة القحطاني",
+        "faisalAlanazi": "فيصل العنزي",
+        "hessaAlmarri": "حصة المري",
+        "yousefAlsaleh": "يوسف الصالح",
+        "danaAlkhaldi": "دانة الخالدي",
+        "turkiAlamri": "تركي العمري",
+        "ranaAlbassam": "رنا البسام"
+      },
+      "emails": {
+        "noraEmail": "admin@backofhouse.sa",
+        "faisalEmail": "faisal@backofhouse.sa",
+        "hessaEmail": "hessa@backofhouse.sa",
+        "yousefEmail": "yousef@backofhouse.sa",
+        "danaEmail": "dana@backofhouse.sa",
+        "turkiEmail": "turki@backofhouse.sa",
+        "ranaEmail": "rana@backofhouse.sa"
+      },
+      "dates": {
+        "sep26": "26 سبتمبر"
+      },
+      "lastActive": {
+        "none": "—",
+        "now": "الآن",
+        "h1": "قبل ساعة",
+        "today": "اليوم",
+        "yesterday": "أمس"
+      }
+    },
+    "permissions": {
+      "title": "صلاحيات الأدوار",
+      "subtitle": "تُطبّق التغييرات عند تسجيل الدخول التالي.",
+      "tableLabel": "صلاحيات الأدوار",
+      "legend": "✓ مسموح · • عرض فقط. يسجّل الموظفون الدخول عبر Google Workspace؛ التحقق بخطوتين مطلوب.",
+      "columns": {
+        "permission": "الصلاحية"
+      },
+      "access": {
+        "none": "لا وصول",
+        "allowed": "مسموح",
+        "viewOnly": "عرض فقط"
+      },
+      "items": {
+        "reviewListings": "مراجعة الفرص",
+        "verificationDecisions": "قرارات التوثيق",
+        "moderationActions": "إجراءات الإشراف",
+        "publishNews": "نشر الأخبار",
+        "broadcasts": "الرسائل الجماعية",
+        "adjustPoints": "تعديل النقاط",
+        "replyToSupport": "الرد على الدعم",
+        "analyticsReports": "التحليلات والتقارير",
+        "exportPersonalData": "تصدير البيانات الشخصية",
+        "suspendAccounts": "إيقاف الحسابات",
+        "manageTeamSettings": "إدارة الفريق والإعدادات"
+      }
+    }
+  },
+  "support": {
+    "title": "صندوق الدعم",
+    "description": "الرد على الأعضاء وتعديل النقاط وإغلاق التذاكر من مكان واحد.",
+    "actions": {
+      "exportTickets": "تصدير التذاكر",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "assign": "إسناد",
+      "assignTo": "تعيين إلى {{name}}",
+      "close": "إغلاق التذكرة",
+      "send": "إرسال",
+      "sendAndSolve": "إرسال وإغلاق",
+      "openProfile": "فتح الملف",
+      "adjustPoints": "تعديل النقاط"
+    },
+    "tabs": {
+      "label": "قائمة التذاكر",
+      "open": "مفتوحة · {{count}}",
+      "mine": "تذاكري · {{count}}",
+      "closed": "مغلقة · {{count}}"
+    },
+    "categories": {
+      "points": "النقاط",
+      "company": "الشركة",
+      "verification": "التوثيق",
+      "account": "الحساب"
+    },
+    "states": {
+      "loading": "جاري تحميل التذاكر…",
+      "errorTitle": "تعذّر تحميل صندوق الدعم",
+      "errorDescription": "حدث خطأ أثناء تحميل التذاكر. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا توجد تذاكر في هذا التبويب.",
+      "pickTicket": "اختر تذكرة لقراءة المحادثة.",
+      "noMessages": "لا رسائل بعد.",
+      "closedTicket": "هذه التذكرة مغلقة."
+    },
+    "toasts": {
+      "replyRequired": "اكتب ردًا قبل الإرسال.",
+      "sent": "تم إرسال الرد (عرض توضيحي فقط).",
+      "sentAndSolved": "تم الإرسال ووُسمت التذكرة كمحلولة.",
+      "closed": "تم إغلاق التذكرة (عرض توضيحي فقط).",
+      "assigned": "تم تحديث المُعيَّن (عرض توضيحي فقط).",
+      "openProfile": "فتح الملف غير متصل بعد.",
+      "adjustPoints": "تعديل النقاط غير متصل بعد."
+    },
+    "meta": {
+      "opened": "#{{number}} · {{sender}} · فُتحت {{when}}"
+    },
+    "senders": {
+      "faisalAlotaibi": "فيصل العتيبي",
+      "saudiEventsGroup": "مجموعة الفعاليات السعودية",
+      "anonymousUser": "مستخدم مجهول",
+      "hananAlQahtani": "Hanan Al-Qahtani",
+      "gulfStagesLlc": "Gulf Stages LLC",
+      "omarAlHarbi": "Omar Alharbi",
+      "liveTechSolutions": "لايف تك للحلول",
+      "nouraAlDossary": "Noura Al-Dossary",
+      "riyadhFrontEvents": "فعاليات واجهة الرياض",
+      "yousefAlMutairi": "Yousef Al-Mutairi",
+      "desertStage": "مسرح الصحراء"
+    },
+    "subjects": {
+      "pointsMissingRiyadhTech": "نقاط ناقصة · Riyadh Tech Summit",
+      "verifyCompanyDocs": "توثيق مستندات الشركة",
+      "passwordResetLink": "انتهت صلاحية رابط إعادة التعيين",
+      "coopHoursProfile": "ساعات التدريب على الملف",
+      "wrongCompanyLogo": "شعار شركة خاطئ",
+      "verificationPending": "التوثيق ما زال معلقًا",
+      "duplicateCompanyPage": "صفحة شركة مكررة",
+      "eventPointsDelay": "تأخر نقاط الفعالية",
+      "supplierBadgeIssue": "مشكلة شارة المورد",
+      "accountLocked": "الحساب مقفل",
+      "listingVisibility": "الإعلان غير ظاهر",
+      "priorBadgeQuestion": "سؤال سابق عن الشارة",
+      "closedVerification": "سؤال توثيق (مغلق)"
+    },
+    "age": {
+      "h3": "قبل 3 س",
+      "h4": "منذ 4 س",
+      "d1": "منذ يوم",
+      "d2": "منذ يومين",
+      "d3": "منذ 3 أيام",
+      "d4": "منذ 4 أيام",
+      "d5": "منذ 5 أيام",
+      "d6": "منذ 6 أيام",
+      "closed": "مغلقة",
+      "aug3": "3 أغسطس",
+      "jul28": "28 يوليو"
+    },
+    "sla": {
+      "left1h": "متبقٍ ساعة",
+      "left2h": "ساعتان متبقيتان",
+      "overdue": "متأخرة"
+    },
+    "assignees": {
+      "nora": "نورة",
+      "sam": "Sam",
+      "unassigned": "غير مُسندة"
+    },
+    "authors": {
+      "faisal": "فيصل",
+      "nora": "نورة"
+    },
+    "times": {
+      "t912": "9:12 ص",
+      "t1040": "10:40 ص",
+      "t1042": "10:42 ص"
+    },
+    "messages": {
+      "faisalOpening": "مرحبًا — حضرت Riyadh Tech Summit لكن حصلت على 75 من 150 نقطة فقط. المسح يظهر في التطبيق.",
+      "noraReplyPoints": "شكرًا Faisal. أتحقق من استيراد الحضور الآن وسأعدّل إن تطابق المسح.",
+      "linkedCheckInImport": "مرتبط باستيراد حضور · riyadh_tech_summit_attendees.csv",
+      "quickPointsTimingBody": "عادةً تظهر النقاط خلال 24 ساعة بعد التحقق من الحضور. سأتابع إن بقيت ناقصة غدًا.",
+      "quickVerificationDocsBody": "ارفع السجل التجاري أو خطاب التفويض على ورق الشركة لتوثيق صفحتك.",
+      "quickResetPasswordBody": "أرسلت رابط إعادة تعيين جديد إلى بريدك. ينتهي خلال 30 دقيقة."
+    },
+    "quickReplies": {
+      "quickPointsTiming": "موعد النقاط",
+      "quickVerificationDocs": "مستندات التوثيق",
+      "quickResetPassword": "إعادة كلمة المرور"
+    },
+    "profileTypes": {
+      "individualJeddah": "فرد · جدة",
+      "companyRiyadh": "شركة · الرياض",
+      "individualUnknown": "فرد",
+      "individualRiyadh": "فرد · الرياض",
+      "companyDammam": "شركة · الدمام",
+      "individualDammam": "فرد · الدمام",
+      "companyAlUla": "شركة · العلا"
+    },
+    "sidebar": {
+      "points": "النقاط",
+      "eventsAttended": "فعاليات حضرها",
+      "pastTickets": "تذاكر سابقة",
+      "related": "مرتبط"
+    },
+    "related": {
+      "riyadhTechSummit": "قمة الرياض التقنية",
+      "scanFoundPartial": "مسح موجود · نقاط جزئية",
+      "ticket4410": "التذكرة #4410",
+      "closedAug3": "أُغلقت 3 أغسطس"
+    },
+    "reply": {
+      "placeholder": "اكتب ردًا…"
+    }
+  },
+  "moderation": {
+    "title": "البلاغات والإشراف",
+    "description": "مراجعة البلاغات والمحتوى المُعلَّم تلقائيًا قبل أن يضر بالثقة.",
+    "actions": {
+      "export": "تصدير",
+      "exportDisabledHint": "التصدير غير متاح حتى يتوفر عقد تصدير.",
+      "dismiss": "تجاهل",
+      "warn": "تنبيه",
+      "removeListing": "حذف الفرصة",
+      "suspend": "إيقاف الحساب"
+    },
+    "filters": {
+      "allContentTypes": "كل الأنواع",
+      "contentType": "النوع",
+      "allReasons": "كل الأسباب",
+      "reason": "السبب"
+    },
+    "tabs": {
+      "label": "قائمة الإشراف",
+      "open": "مفتوحة · {{count}}",
+      "autoFlagged": "تلقائي · {{count}}",
+      "resolved": "محسومة · {{count}}"
+    },
+    "columns": {
+      "reportedContent": "المحتوى",
+      "type": "النوع",
+      "reports": "البلاغات",
+      "when": "متى",
+      "status": "الحالة"
+    },
+    "contentTypes": {
+      "listing": "الفرصة",
+      "profile": "ملف",
+      "response": "رد",
+      "company": "الشركة"
+    },
+    "statuses": {
+      "open": "مفتوح",
+      "autoFlagged": "رصد تلقائي",
+      "resolvedWarned": "تحذير",
+      "resolvedDismissed": "مرفوض",
+      "resolvedRemoved": "مُزال",
+      "resolvedSuspended": "موقوفة"
+    },
+    "states": {
+      "loading": "جاري تحميل القائمة…",
+      "errorTitle": "تعذّر تحميل الإشراف",
+      "errorDescription": "حدث خطأ أثناء تحميل الإشراف. يرجى المحاولة مرة أخرى.",
+      "emptyList": "لا بلاغات مطابقة لهذه الفلاتر.",
+      "pickReport": "اختر بلاغًا لمراجعة التفاصيل واتخاذ إجراء."
+    },
+    "toasts": {
+      "dismiss": "تم رفض البلاغ (عرض توضيحي فقط).",
+      "warn": "تم إرسال تحذير (عرض توضيحي فقط).",
+      "remove": "تمت إزالة الإعلان (عرض توضيحي فقط).",
+      "suspend": "تم تعليق الحساب (عرض توضيحي فقط)."
+    },
+    "items": {
+      "quickCashPromoters": "Quick Cash Promoters KSA",
+      "majedBProfilePhoto": "Majed B. · صورة الملف",
+      "arabianLightsQuote": "Arabian Lights · رد عرض",
+      "quickCrewKsa": "كويك كرو",
+      "stageHandWeekend": "عامل مسرح · عطلة",
+      "omarGMessage": "Omar G. · رسالة"
+    },
+    "subtitles": {
+      "asksApplicantsFee": "يطلب رسومًا من المتقدمين",
+      "inappropriateImage": "صورة غير لائقة",
+      "contactInResponse": "رقم هاتف في الرد",
+      "companyDidntPay": "الشركة لم تدفع للطاقم",
+      "phoneInDescription": "هاتف في الوصف",
+      "harassment": "مضايقة"
+    },
+    "meta": {
+      "unverifiedSep28": "إعلان غير موثّق · 28 سبتمبر",
+      "profilePhotoMeta": "صورة ملف · بلاغان",
+      "responseMeta": "رد على طلب · تلقائي",
+      "companyReportMeta": "صفحة شركة · 7 بلاغات",
+      "autoFlaggedListingMeta": "إعلان · تمييز تلقائي للتواصل",
+      "messageMeta": "رسالة مباشرة · بلاغ واحد"
+    },
+    "quotes": {
+      "quickCashPromotersQuote": "ادفع 200 ر.س رسوم تدريب مقدمًا لتأمين مكانك. واتساب 05xxxxxxxx.",
+      "majedBQuote": "صورة الملف أُبلغ عنها كغير لائقة من عضوين.",
+      "arabianLightsQuoteBody": "اتصل بي على 05xxxxxxxx إن أردت الوردية — أسرع من المراسلة هنا.",
+      "quickCrewKsaQuote": "عملنا عطلة مهرجان جدة ولم نُدفع بعد.",
+      "stageHandWeekendQuote": "مطلوب عمال مسرح — راسل 05xxxxxxxx الليلة.",
+      "omarGQuote": "محتوى الرسالة مخفي · بلاغ تحرش."
+    },
+    "reasons": {
+      "scamOrFee": "احتيال أو رسوم مقدمة",
+      "misleadingPay": "أجر مضلل",
+      "offPlatformContact": "تواصل خارج المنصة",
+      "inappropriateImage": "صورة غير لائقة",
+      "unpaidWork": "عمل غير مدفوع",
+      "harassment": "مضايقة"
+    },
+    "reporterQuotes": {
+      "reporter1": "طلبوا مني الدفع قبل المقابلة.",
+      "reporter2": "نفس طلب الرسوم — يبدو احتيالًا.",
+      "majedReporter1": "هذه الصورة غير مناسبة لشبكة مهنية.",
+      "crewReporter1": "أنهينا العمل ولم نُدفع.",
+      "omarReporter1": "أرسل رسائل تهديد بعد أن رفضت الوردية."
+    },
+    "reporterAttribution": {
+      "applicantJeddah": "متقدم · جدة",
+      "applicantRiyadh": "متقدم · الرياض",
+      "memberRiyadh": "عضو · الرياض",
+      "crewMemberJeddah": "عضو طاقم · جدة",
+      "memberDammam": "عضو · الدمام"
+    },
+    "accountHistory": {
+      "quickCashAccountHistory": "حساب أُنشئ 27 سبتمبر · 0 توظيف موثّق · 5 بلاغات في 24 س",
+      "majedAccountHistory": "عضو منذ 2024 · تحذير سابق · ملف مكتمل",
+      "arabianLightsAccountHistory": "شركة موثّقة · 12 إعلانًا · لا بلاغات سابقة",
+      "quickCrewAccountHistory": "صفحة شركة · 7 بلاغات مفتوحة · نزاعات أجور",
+      "stageHandAccountHistory": "إعلان جديد · تمييز تلقائي لرقم هاتف",
+      "omarAccountHistory": "عضو منذ 2023 · بلاغ تحرش سابق · تحذير في مايو"
+    },
+    "when": {
+      "h1": "قبل ساعة",
+      "h5": "قبل 5 س",
+      "h9": "قبل 9 س",
+      "d1": "منذ يوم",
+      "d1b": "منذ يوم",
+      "d3": "منذ 3 أيام"
+    },
+    "detail": {
+      "reportsBadge": "{{count}} بلاغات",
+      "whyReported": "سبب البلاغ",
+      "fromReporters": "من المُبلّغين"
+    }
+  },
+  "myWork": {
+    "states": {
+      "errorTitle": "تعذّر تحميل هذه الصفحة",
+      "errorDescription": "حدث خطأ أثناء تحميل صفحة عملك. حاول مرة أخرى."
+    },
+    "queue": {
+      "title": "صباح الخير، {{name}}",
+      "description": "كل ما ينتظر مراجعة المراجع، الأقرب للموعد أولاً.",
+      "actions": {
+        "startReviewing": "ابدأ المراجعة",
+        "review": "مراجعة"
+      },
+      "tabs": {
+        "all": "الكل · 17",
+        "listings": "الفرص · 7",
+        "verification": "التوثيق · 5",
+        "reports": "البلاغات · 3"
+      },
+      "columns": {
+        "item": "العنصر",
+        "queue": "الطابور",
+        "deadline": "الموعد",
+        "open": "فتح"
+      },
+      "kpis": {
+        "waiting": "بانتظار المراجعة",
+        "dueToday": "مستحقة اليوم",
+        "reviewedWeek": "راجعت هذا الأسبوع",
+        "medianTime": "متوسط وقتك",
+        "values": {
+          "waiting": "17",
+          "dueToday": "4",
+          "reviewedWeek": "38",
+          "medianTime": "6.2 س"
+        },
+        "secondary": {
+          "oneOverdue": "1 متأخر",
+          "plusSixVsLastWeek": "+6 عن الأسبوع الماضي",
+          "targetUnder24h": "الهدف أقل من 24 س"
+        }
+      },
+      "upNext": {
+        "title": "التالي",
+        "description": "الفرص والتوثيق ومطالبات الصفحات والبلاغات في قائمة واحدة.",
+        "empty": "لا يوجد شيء في هذا الطابور."
+      },
+      "queues": {
+        "listing": "فرصة",
+        "report": "بلاغ",
+        "verification": "توثيق",
+        "claim": "مطالبة",
+        "supplierReq": "طلب مورد"
+      },
+      "sla": {
+        "twoHOverdue": "متأخرة ساعتان",
+        "oneHLeft": "ساعة متبقية",
+        "oneDayLeft": "يوم متبقٍ",
+        "fourHLeft": "4 س متبقية",
+        "twoDaysLeft": "يومان متبقيان",
+        "tenHLeft": "10 س متبقية"
+      },
+      "items": {
+        "stageManager": "مدير المسرح",
+        "stageManagerMeta": "مجموعة الفعاليات السعودية · أُعيد الإرسال",
+        "quickCash": "مروجون بدخل سريع",
+        "quickCashMeta": "5 بلاغات · يطلب رسومًا",
+        "creativeExpo": "Creative Expo Co.",
+        "creativeExpoMeta": "شركة · 3 مستندات",
+        "summerCoop": "برنامج التعاون الصيفي",
+        "summerCoopMeta": "مجموعة الفعاليات السعودية",
+        "arabianVenues": "Arabian Venues",
+        "arabianVenuesMeta": "مطالبة صفحة · النطاق متطابق",
+        "stageLighting": "إضاءة ومسرح، قمة لثلاثة أيام",
+        "stageLightingMeta": "Riyadh Front Events"
+      },
+      "guidelines": {
+        "title": "إرشادات المراجعة",
+        "checkCompany": "تحقق من الشركة.",
+        "checkCompanyBody": "الحسابات غير الموثّقة تحتاج تدقيقًا أدق.",
+        "noFees": "لا رسوم أبدًا.",
+        "noFeesBody": "ارفض الفرص التي تفرض رسومًا على المتقدمين.",
+        "contactInApp": "التواصل يبقى داخل التطبيق.",
+        "contactInAppBody": "أزل أرقام الهاتف والبريد من الوصف.",
+        "beSpecific": "كن محددًا.",
+        "beSpecificBody": "اذكر التعديل المطلوب بدقة لتصححه الشركة دفعة واحدة."
+      },
+      "decisions": {
+        "title": "قراراتك الأخيرة",
+        "outcomes": {
+          "approved": "موافقة",
+          "verified": "موثّق",
+          "changesRequested": "طُلبت تعديلات",
+          "rejected": "مرفوض"
+        },
+        "items": {
+          "avTechnician": "فني صوت وصورة",
+          "avTechnicianMeta": "LiveTech Solutions · قبل 25 د",
+          "riyadhFront": "Riyadh Front Events",
+          "riyadhFrontMeta": "توثيق · قبل ساعة",
+          "weekendStage": "مساعد مسرح لعطلة نهاية الأسبوع",
+          "weekendStageMeta": "Desert Stage · قبل ساعتين",
+          "promotersWanted": "مطلوب مروجون",
+          "promotersWantedMeta": "حساب غير موثّق · أمس"
+        }
+      }
+    },
+    "desk": {
+      "title": "مكتبي",
+      "description": "مسوداتك، جدول هذا الأسبوع، وأداء القصص.",
+      "actions": {
+        "newStory": "قصة جديدة",
+        "open": "فتح"
+      },
+      "columns": {
+        "story": "القصة",
+        "languages": "اللغات",
+        "edited": "آخر تعديل",
+        "open": "فتح"
+      },
+      "kpis": {
+        "drafts": "مسودات",
+        "scheduled": "مجدولة",
+        "publishedSep": "نُشرت · سبتمبر",
+        "avgReads": "متوسط القراءات",
+        "values": {
+          "drafts": "3",
+          "scheduled": "2",
+          "publishedSep": "14",
+          "avgReads": "3,210"
+        },
+        "secondary": {
+          "plusFourVsAug": "+4 عن أغسطس",
+          "plusEighteenVsAug": "+18% عن أغسطس"
+        }
+      },
+      "week": {
+        "title": "هذا الأسبوع",
+        "note": "تُنشر القصص الساعة 10:00 بتوقيت الرياض ما لم تختر وقتًا آخر.",
+        "days": {
+          "sun28": "أحد 28",
+          "mon29": "إثن 29",
+          "tue30": "ثلث 30",
+          "wed1": "أرب 1",
+          "thu2": "خمي 2",
+          "fri3": "جمع 3",
+          "sat4": "سبت 4"
+        },
+        "items": {
+          "riyadhSeasonDraft": "أدوار طاقم موسم الرياض · مسودة",
+          "safetyOfficers": "ضباط السلامة · 9:00",
+          "crewOfMonth": "طاقم الشهر · 10:00"
+        }
+      },
+      "drafts": {
+        "title": "تابع الكتابة",
+        "items": {
+          "riyadhSeason": "موسم الرياض 2026 يفتح 1,200 دور للطاقم",
+          "riggingCrew": "يوم مع طاقم التعليق",
+          "womenLeading": "نساء يقُدن إنتاج الفعاليات"
+        },
+        "categories": {
+          "opportunities": "فرص",
+          "crewStories": "قصص الطاقم",
+          "features": "تحقيقات"
+        },
+        "languages": {
+          "enArReady": "إنجليزي ✓ · عربي ✓",
+          "enReadyArMissing": "إنجليزي ✓ · عربي ناقص",
+          "arReadyEnMissing": "عربي ✓ · إنجليزي ناقص"
+        },
+        "readiness": {
+          "readyToSchedule": "جاهزة للجدولة",
+          "bothLanguagesNeeded": "يلزم اللغتان"
+        },
+        "edited": {
+          "twoMinAgo": "قبل دقيقتين",
+          "yesterday": "أمس",
+          "sep24": "24 سبتمبر"
+        }
+      },
+      "mostRead": {
+        "title": "الأكثر قراءة هذا الشهر",
+        "description": "قراءات التطبيق، الإنجليزية والعربية معًا.",
+        "items": {
+          "alula": "حفلات العلا الليلية",
+          "jeddah": "بناء أسبوع جدة للتصميم",
+          "fiveRigging": "خمس مهارات تعليق",
+          "crewMeetup": "ملخص لقاء الطاقم"
+        }
+      }
+    },
+    "tickets": {
+      "title": "تذاكري",
+      "description": "التذاكر المعيّنة لك والطابور المشترك. هدف أول رد: 4 ساعات عمل.",
+      "actions": {
+        "openNext": "افتح التذكرة التالية",
+        "open": "فتح"
+      },
+      "tabs": {
+        "mine": "لي · 4",
+        "shared": "مشترك · 7",
+        "waiting": "بانتظار العضو"
+      },
+      "columns": {
+        "from": "من",
+        "topic": "الموضوع",
+        "deadline": "الموعد",
+        "open": "فتح"
+      },
+      "list": {
+        "title": "تذاكري",
+        "sorted": "الأقرب للموعد أولاً",
+        "empty": "لا تذاكر هنا."
+      },
+      "kpis": {
+        "assigned": "معيّنة لي",
+        "shared": "الطابور المشترك",
+        "closeDeadline": "قريبة من الموعد",
+        "firstReply": "أول رد لك",
+        "values": {
+          "assigned": "4",
+          "shared": "7",
+          "closeDeadline": "2",
+          "firstReply": "2.1 س"
+        },
+        "secondary": {
+          "oneOverdue": "1 متأخر",
+          "targetFourH": "الهدف 4 س"
+        }
+      },
+      "topics": {
+        "company": "شركة",
+        "points": "نقاط",
+        "verification": "توثيق"
+      },
+      "sla": {
+        "overdue20": "متأخرة 20 د",
+        "oneHLeft": "ساعة متبقية",
+        "threeHLeft": "3 س متبقية",
+        "waitingMember": "بانتظار العضو"
+      },
+      "from": {
+        "saudiEvents": "مجموعة الفعاليات السعودية",
+        "faisal": "فيصل العتيبي",
+        "noura": "نورة الشهري",
+        "lama": "لمى البقمي"
+      },
+      "items": {
+        "secondRecruiter": "كيف نضيف مسؤول توظيف ثاني؟",
+        "pointsMissing": "نقاط قمة الرياض التقنية لم تصل",
+        "studentId": "رُفضت بطاقتي الجامعية",
+        "redeemedCode": "رمز الاستبدال لا يعمل"
+      },
+      "capabilities": {
+        "title": "ما يمكن للدعم فعله",
+        "items": {
+          "reply": "الرد على الأعضاء والشركات",
+          "adjustPoints": "إضافة حتى 500 نقطة لكل عضو شهريًا مع سبب",
+          "resendEmails": "إعادة إرسال رسائل التوثيق وكلمة المرور",
+          "suspend": "تعليق الحسابات أو منح التوثيق: اطلب من مراجع أو مشرف عام",
+          "exportPii": "تصدير البيانات الشخصية"
+        }
+      },
+      "byTopic": {
+        "title": "هذا الأسبوع حسب الموضوع",
+        "description": "أسئلة النقاط ارتفعت بعد قمة الرياض التقنية.",
+        "items": {
+          "points": "نقاط",
+          "account": "حساب",
+          "verification": "توثيق",
+          "company": "شركة",
+          "other": "أخرى"
+        }
+      }
+    },
+    "analyst": {
+      "title": "مرحبًا بعودتك، {{name}}",
+      "description": "تقاريرك المحفوظة، المجدول، وأبرز أرقام هذا الشهر.",
+      "actions": {
+        "newReport": "تقرير جديد"
+      },
+      "columns": {
+        "report": "التقرير",
+        "schedule": "الجدول",
+        "lastRun": "آخر تشغيل",
+        "formats": "الصيغ"
+      },
+      "kpis": {
+        "activeUsers": "مستخدمون نشطون · 30 يومًا",
+        "applicationsSep": "طلبات · سبتمبر",
+        "attendance": "حضور موثّق",
+        "pointsRedeemed": "نقاط مستبدلة",
+        "values": {
+          "activeUsers": "9,812",
+          "applicationsSep": "4,870",
+          "attendance": "71%",
+          "pointsRedeemed": "41,200"
+        },
+        "secondary": {
+          "plusTwelve": "+12%",
+          "plusEighteen": "+18%",
+          "minusThreePts": "−3 نقاط"
+        }
+      },
+      "reports": {
+        "title": "التقارير المحفوظة",
+        "all": "كل التقارير",
+        "items": {
+          "monthlyOverview": "النظرة الشهرية",
+          "leadership": "لفريق القيادة",
+          "applicationsFunnel": "قمع الطلبات",
+          "byTypeCity": "حسب نوع الفرصة والمدينة",
+          "eventAttendance": "حضور الفعاليات",
+          "registeredVsVerified": "مسجّل مقابل موثّق",
+          "pointsEconomy": "اقتصاد النقاط",
+          "earnedRedeemed": "مكتسبة، مستبدلة، الرصيد",
+          "companyResponse": "أوقات رد الشركات",
+          "timeToFirstReply": "وقت أول رد على المتقدمين"
+        },
+        "schedules": {
+          "firstOfMonth": "أول الشهر",
+          "weeklySun": "أسبوعي · أحد",
+          "afterEachEvent": "بعد كل فعالية",
+          "monthly": "شهري",
+          "notScheduled": "غير مجدول"
+        },
+        "lastRuns": {
+          "sep1": "1 سبتمبر",
+          "today": "اليوم",
+          "sep27": "27 سبتمبر",
+          "sep14": "14 سبتمبر"
+        }
+      },
+      "chart": {
+        "title": "الطلبات أسبوعيًا",
+        "description": "1,420 الأسبوع الماضي، الأعلى منذ الإطلاق.",
+        "axis": "21 يوليو → 21 سبتمبر"
+      },
+      "access": {
+        "title": "وصولك إلى البيانات",
+        "items": {
+          "allDashboards": "كل لوحات المعلومات والتقارير",
+          "exportsNoContact": "تصدير بدون بيانات التواصل",
+          "piiWithSuperAdmin": "البريد وأرقام الهاتف تبقى لدى المشرف العام"
+        }
+      }
+    }
+  }
+}
