@@ -62,7 +62,12 @@ export class InMemoryMemberAuthProvider implements MemberAuthProvider {
     return this.issue(credential.userId, randomUUID());
   }
 
-  async createSession({ userId }: { userId: string; email: string }): Promise<AuthTokens> {
+  async createSession({ userId, email }: { userId: string; email: string }): Promise<AuthTokens> {
+    // Same rule as Supabase: only an existing credential with this id and email gets a session.
+    const credential = this.credentials.get(userId);
+    if (credential?.email.toLowerCase() !== email.toLowerCase()) {
+      throw new Error(`Account ${userId} has no matching credential; refusing to mint a session`);
+    }
     return this.issue(userId, randomUUID());
   }
 

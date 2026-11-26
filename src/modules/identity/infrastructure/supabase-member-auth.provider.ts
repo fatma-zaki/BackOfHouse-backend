@@ -71,16 +71,39 @@ export class SupabaseMemberAuthProvider implements MemberAuthProvider {
     return this.tokens(data.session);
   }
 
-  /** Mints a session through a one-time magic-link token that never leaves the server. */
-  async createSession({ email }: { userId: string; email: string }): Promise<AuthTokens> {
+  /**
+   * Mints a session through a one-time magic-link token that never leaves the server.
+   *
+   * The auth user must already exist with this id and email: generateLink creates a new
+   * auth user for an unknown email, which would sign the caller in under a different id
+   * than their account. So the user is looked up first, and every step's user id is
+   * checked against the account's.
+   */
+  async createSession({ userId, email }: { userId: string; email: string }): Promise<AuthTokens> {
+    const { data: found, error: lookupError } = await this.admin.auth.admin.getUserById(userId);
+    if (lookupError?.status === 404 || (!lookupError && !found.user)) {
+      throw new Error(`Account ${userId} has no Supabase Auth user; it was not created through Supabase`);
+    }
+    if (lookupError) throw new Error(`Supabase getUserById failed: ${lookupError.code ?? lookupError.status}`);
+    if (found.user?.email?.toLowerCase() !== email.toLowerCase()) {
+      throw new Error(`Account ${userId} has a different email in Supabase Auth; refusing to mint a session`);
+    }
+
     const { data: link, error } = await this.admin.auth.admin.generateLink({ type: 'magiclink', email });
     const tokenHash = link?.properties?.hashed_token;
     if (error || !tokenHash) throw new Error(`Supabase generateLink failed: ${error?.code ?? 'no token'}`);
+    if (link.user?.id !== userId) {
+      throw new Error(`Supabase generateLink returned another user than account ${userId}; refusing to mint a session`);
+    }
     const { data, error: verifyError } = await this.client().auth.verifyOtp({
       token_hash: tokenHash,
       type: 'magiclink',
     });
     if (verifyError || !data.session) throw new Error(`Supabase verifyOtp failed: ${verifyError?.code ?? 'none'}`);
+    if (data.session.user.id !== userId) {
+      await this.admin.auth.admin.signOut(data.session.access_token, 'local');
+      throw new Error(`Supabase session belongs to another user than account ${userId}; signed it out`);
+    }
     return this.tokens(data.session);
   }
 

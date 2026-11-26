@@ -26,7 +26,10 @@ export interface MemberAuthProvider {
   deleteUser(userId: string): Promise<void>;
   /** Null for a wrong email or password. */
   signInWithPassword(email: string, password: string): Promise<AuthTokens | null>;
-  /** A new session for an account the API has already authenticated (phone code). */
+  /**
+   * A new session for an account the API has already authenticated (phone code).
+   * Throws when the provider has no credential with this id and email; never creates one.
+   */
   createSession(user: { userId: string; email: string }): Promise<AuthTokens>;
   /** Null for an unknown, used or revoked refresh token. */
   refresh(refreshToken: string): Promise<AuthTokens | null>;
