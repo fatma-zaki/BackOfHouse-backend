@@ -384,6 +384,48 @@ export const NOTIFICATION_CATALOG: readonly CatalogEntry[] = [
     },
   },
   {
+    // Fed by `event.reminder` (events job): once, within 24 hours of the start.
+    type: 'event.reminder',
+    category: 'EVENTS',
+    channels: ['PUSH'],
+    mandatory: false,
+    respectsQuietHours: true,
+    variables: ['title', 'venue'],
+    templates: {
+      en: { title: '{{title}} is tomorrow', body: 'See you at {{venue}}. Have your pass ready at the door.' },
+      ar: { title: '{{title}} غدًا', body: 'نراك في {{venue}}. جهّز تذكرتك عند الدخول.' },
+    },
+  },
+  {
+    // Fed by `event.cancelled`: Back of House cancelled an event the member registered for.
+    type: 'event.cancelled',
+    category: 'EVENTS',
+    channels: ['PUSH', 'EMAIL'],
+    mandatory: true,
+    respectsQuietHours: false,
+    variables: ['title', 'venue'],
+    templates: {
+      en: {
+        title: '{{title}} is cancelled',
+        body: 'The event at {{venue}} will not take place. Your registration is closed.',
+        emailSubject: '{{title}} is cancelled',
+        emailText:
+          'Hello {{full_name}},\n\n' +
+          'The event {{title}} at {{venue}} has been cancelled, so your registration is closed.\n\n' +
+          'The Back of House team',
+      },
+      ar: {
+        title: 'تم إلغاء {{title}}',
+        body: 'لن تقام الفعالية في {{venue}}. تم إغلاق تسجيلك.',
+        emailSubject: 'تم إلغاء {{title}}',
+        emailText:
+          'مرحبًا {{full_name}}،\n\n' +
+          'تم إلغاء فعالية {{title}} في {{venue}}، لذلك تم إغلاق تسجيلك.\n\n' +
+          'فريق Back of House',
+      },
+    },
+  },
+  {
     // Fed by `points.credited` (engagement): points in, e.g. verified attendance or a
     // correction. `/me/notifications` sends the amount as `points_delta`.
     type: 'points.earned',

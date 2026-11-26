@@ -961,7 +961,9 @@ paths:
       security:
         - adminSession: []
           csrfToken: []
-      description: Deletes the server-side session and clears the cookie.
+      description: >-
+        Deletes the server-side session and clears both cookies (`__Host-boh_admin`, `__Host-boh_csrf`). Needs the
+        `X-CSRF-Token` header. Audited as `admin.sign_out`.
   /auth/oidc/callback:
     get:
       tags:
@@ -971,8 +973,10 @@ paths:
       description: >-
         Exchanges the code, verifies the ID token (issuer, audience, nonce, expiry), then requires BOTH the `hd` claim
         and the verified email domain to equal the Workspace domain. Activates an `INVITED` staff account on first
-        sign-in. Sets the `__Host-boh_admin` session cookie (30-min idle, 12 h absolute) and redirects to the admin web
-        app. Audited as `admin.sign_in`.
+        sign-in. Sets two cookies and redirects to the admin web app: the httpOnly `__Host-boh_admin` session cookie
+        (30-min idle by default, 12 h absolute) and the readable `__Host-boh_csrf` cookie, whose value the web app sends
+        as `X-CSRF-Token` on POST, PUT, PATCH and DELETE. Both are Secure and SameSite=Strict. Missing `code` or
+        `state`, or a used or expired `state`, answers 401. 20 requests a minute per IP. Audited as `admin.sign_in`.
       x-phase: '2'
       security: []
       parameters:
@@ -1001,6 +1005,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '429':
+          description: RATE_LIMITED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /auth/oidc/start:
     get:
       tags:
@@ -1009,14 +1019,18 @@ paths:
       operationId: getAdminAuthOidcStart
       description: >-
         Redirects to Google with an OIDC authorization request (code flow + PKCE, `hd` set to the Workspace domain).
-        Stores `state`, `nonce` and the PKCE verifier in a short-lived httpOnly cookie.
+        Stores a hash of `state`, the `nonce` and the PKCE verifier server-side; they expire after 10 minutes and
+        work once. Open it in a browser, not Postman: the flow ends with a redirect that sets cookies. 20 requests a
+        minute per IP.
       x-phase: '2'
       security: []
       parameters:
         - name: return_to
           in: query
           required: false
-          description: Admin web path to open after sign-in
+          description: >-
+            Admin web path to open after sign-in. Must start with a single `/` (no `//`, no whitespace, at most 512
+            characters); anything else falls back to `/`.
           schema:
             type: string
       responses:
@@ -1024,6 +1038,12 @@ paths:
           description: Redirect to Google
         '429':
           description: RATE_LIMITED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: '`SERVICE_UNAVAILABLE`: staff sign-in is not configured (STAFF_GOOGLE_WORKSPACE_DOMAIN unset)'
           content:
             application/json:
               schema:
@@ -6949,6 +6969,8 @@ components:
           properties:
             title_i18n:
               $ref: '#/components/schemas/LocalizedText'
+            description_i18n:
+              $ref: '#/components/schemas/LocalizedText'
             status:
               type: string
               enum:
@@ -6983,6 +7005,13 @@ components:
       properties:
         title:
           $ref: '#/components/schemas/LocalizedText'
+        status:
+          type: string
+          description: DRAFT (default on create), PUBLISHED or CANCELLED. A published event never goes back to DRAFT; COMPLETED is set after the end.
+          enum:
+            - DRAFT
+            - PUBLISHED
+            - CANCELLED
         description:
           $ref: '#/components/schemas/LocalizedText'
         type:

@@ -14,6 +14,7 @@ import { CompaniesModule } from './modules/companies';
 import { ProfilesModule } from './modules/profiles';
 import { ContentModule } from './modules/content';
 import { EngagementModule } from './modules/engagement';
+import { EventsModule } from './modules/events';
 import { OpportunitiesModule } from './modules/opportunities';
 
 /**
@@ -42,6 +43,7 @@ import { OpportunitiesModule } from './modules/opportunities';
     ContentModule,
     OpportunitiesModule,
     EngagementModule,
+    EventsModule,
   ],
 })
 export class WorkerModule {}

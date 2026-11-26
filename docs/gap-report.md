@@ -7,7 +7,7 @@
 
 An operation is **implemented** when the spec generated from code (`npm run contract:generate`) contains it.
 
-### App surface (`/api/app/v1`): 81 of 89 implemented
+### App surface (`/api/app/v1`): 86 of 89 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -17,10 +17,10 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 3a | 24 | 24 | — |
 | 3b | 6 | 6 | — |
 | 5 | 27 | 27 | — |
-| 6 | 10 | 2 | `GET /discover/counts`, `GET /events`, `GET /events/{id}`, `PUT /events/{id}/registration`, `DELETE /events/{id}/registration`, `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
+| 6 | 10 | 7 | `GET /rewards`, `GET /rewards/{id}`, `POST /rewards/{id}/redeem` |
 | 7 | 10 | 10 | — |
 
-### Admin surface (`/api/admin/v1`): 65 of 117 implemented
+### Admin surface (`/api/admin/v1`): 73 of 117 implemented
 
 | Phase | Operations | Implemented | Missing |
 |---|---|---|---|
@@ -30,7 +30,7 @@ An operation is **implemented** when the spec generated from code (`npm run cont
 | 3b | 1 | 1 | — |
 | 4 | 26 | 26 | — |
 | 5 | 11 | 11 | — |
-| 6 | 18 | 5 | 13 operations |
+| 6 | 18 | 13 | `GET /redemptions`, `POST /redemptions/{id}/fulfil`, `GET /rewards`, `POST /rewards`, `PATCH /rewards/{id}` |
 | 7 | 24 | 8 | 16 operations |
 | 8 | 23 | 0 | 23 operations |
 
@@ -148,9 +148,9 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `ListingReview` | `opportunity_reviews` | built | Decisions on a listing or its revision; automated checks on the row |
 | `Application` | `applications` | built | Applicant, listing and picks snapshotted on apply; one non-withdrawn application per member and listing |
 | `SupplierResponse` | `supplier_responses` | built | One per responding company and request; price shown to buyer and responder only |
-| `Event` | `events` | designed |  |
-| `EventRegistration` | `event_registrations` | designed |  |
-| `CheckInScan` | — | missing | Door scans, idempotent per pass per day |
+| `Event` | `events` | built | Bilingual; DRAFT, PUBLISHED, CANCELLED, COMPLETED |
+| `EventRegistration` | `event_registrations` | built | QR pass, no points on registering |
+| `CheckInScan` | `event_check_ins`, `event_unmatched_scans` | built | Door scans, idempotent per pass per day |
 | `PointsTransaction` | `point_ledger` | built | Append-only; one entry per idempotency key; spending allowed (BQ-76) |
 | `EarningRule` | `earning_rules` | built | Seeded at the design scale (BQ-77); a change applies from then on |
 | `Reward` | `rewards` | differs | Needs price, stock and level (BQ-76) |
@@ -177,7 +177,7 @@ Repo entity names stay (D7). **built** = table exists in a migration; **designed
 | `TaxonomyItem` | `categories`, `services`, `locations`, `industries`, `skills` | differs | One table per kind in the repo design |
 | `IdempotencyRecord` | `idempotency_records` | designed | Phase 1 |
 
-Totals: designed 14 · missing 15 · differs 5 · built 8 (of 42).
+Totals: designed 12 · missing 14 · differs 5 · built 11 (of 42).
 
 ## 4. Differences to resolve before the phase that needs them
 

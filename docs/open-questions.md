@@ -24,6 +24,7 @@ Legend
 | ID | Decision |
 |---|---|
 | **BQ-81** | **PROJECT is a listing type** (decided 2026-11-20). A company posts it and individuals apply, as for the other individual-facing types; it is unrelated to a company's portfolio projects (`company_projects`), and opportunities are the only way individuals apply. Reverses BQ-62 for the listing type. Unverified companies may submit it (BQ-80) |
+| **Event types** | **The app knows every event type** (decided 2026-11-21). `contracts/app` `EventType` gains CONCERT, FESTIVAL and MEETUP; the back office's EXHIBITION is shown as EXPO. The Flutter app must handle the new values |
 | **Points activity** | **Adjustments show as `ADJUSTMENT`** (decided 2026-11-21). `contracts/app` `PointsActivity` gains `ADJUSTMENT` for manual corrections and top-ups from Back of House, reversals and referrals; `detail` says which. The Flutter app must handle the new value |
 | **Profile completed** | **What a complete profile is** (decided 2026-11-21): headline, city, about, at least one experience item, one skill and one project. Earns the PROFILE_COMPLETED rule (+50) once |
 | **BQ-92 (b)** | **Followers hear of new listings** (decided 2026-11-21). When Back of House approves a new individual-facing listing, every active member following the company gets `opportunity.new_from_followed` ("New from {company}"; push, optional in preferences). Revisions and supplier requests do not notify followers. Pay, hours and the supplier brief (BQ-92 a) stay open |

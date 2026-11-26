@@ -1,0 +1,147 @@
+// Module: events (nest-module-map.md §4.20). Back of House publishes events; members register
+// for a QR pass (no points), staff check passes in at the door, and verified attendance earns
+// points through engagement (BQ-77).
+
+/// contracts/app `EventType` (CONCERT, FESTIVAL and MEETUP added 2026-11-21). The admin's
+/// EXHIBITION is stored as EXPO.
+enum EventType {
+  CONFERENCE
+  WORKSHOP
+  NETWORKING
+  EXPO
+  CONCERT
+  FESTIVAL
+  MEETUP
+
+  @@map("event_type")
+  @@schema("app")
+}
+
+/// contracts/admin `EventAdmin.status`. COMPLETED is set by the `event.complete` job.
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+
+  @@map("event_status")
+  @@schema("app")
+}
+
+enum EventCheckInMethod {
+  QR_SCAN
+  IMPORT
+
+  @@map("event_check_in_method")
+  @@schema("app")
+}
+
+/// contracts/admin `Registration.status`. NO_SHOW is set when the event completes.
+enum EventRegistrationStatus {
+  REGISTERED
+  CANCELLED
+  ATTENDED
+  NO_SHOW
+
+  @@map("event_registration_status")
+  @@schema("app")
+}
+
+/// One event (contracts/admin `EventInput`). Titles and descriptions are bilingual; the app
+/// reads one language. `agenda` and `speakers` are kept as entered (contracts/admin shapes).
+model Event {
+  id                  String               @id @default(uuid(7)) @db.Uuid
+  status              EventStatus          @default(DRAFT)
+  type                EventType            @default(CONFERENCE)
+  titleEn             String               @map("title_en")
+  titleAr             String               @default("") @map("title_ar")
+  descriptionEn       String               @default("") @map("description_en")
+  descriptionAr       String               @default("") @map("description_ar")
+  topics              String[]             @default([])
+  startsAt            DateTime             @map("starts_at") @db.Timestamptz(6)
+  endsAt              DateTime             @map("ends_at") @db.Timestamptz(6)
+  venue               String
+  city                String
+  mapUrl              String?              @map("map_url")
+  organizerCompanyId  String?              @map("organizer_company_id") @db.Uuid
+  /// Null = unlimited.
+  capacity            Int?
+  /// Editorial pick for Home (app `flagship`; never "Featured" in the app).
+  featured            Boolean              @default(false)
+  pointsForAttendance Int                  @map("points_for_attendance")
+  checkInMethod       EventCheckInMethod   @default(QR_SCAN) @map("check_in_method")
+  /// contracts/admin `EventInput.agenda` items.
+  agenda              Json                 @default("[]") @db.JsonB
+  /// contracts/admin `EventInput.speakers` items.
+  speakers            Json                 @default("[]") @db.JsonB
+  /// When the 24-hour reminder went out (once).
+  remindedAt          DateTime?            @map("reminded_at") @db.Timestamptz(6)
+  publishedAt         DateTime?            @map("published_at") @db.Timestamptz(6)
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime             @updatedAt @map("updated_at") @db.Timestamptz(6)
+  organizer           Company?             @relation(fields: [organizerCompanyId], references: [id], onDelete: SetNull, onUpdate: Restrict, map: "fk_events__organizer_company_id")
+  registrations       EventRegistration[]
+  unmatchedScans      EventUnmatchedScan[]
+
+  @@index([status, startsAt], map: "ix_events__status_starts_at")
+  @@map("events")
+  @@schema("app")
+}
+
+/// A member's registration and QR pass. Registering earns no points (BQ-77); attendance is
+/// verified by the first check-in. One row per member and event; cancelling keeps the row.
+model EventRegistration {
+  id                   String                  @id @default(uuid(7)) @db.Uuid
+  eventId              String                  @map("event_id") @db.Uuid
+  userId               String                  @map("user_id") @db.Uuid
+  status               EventRegistrationStatus @default(REGISTERED)
+  /// Opaque token shown as a QR code at the door.
+  passCode             String                  @map("pass_code")
+  registeredAt         DateTime                @map("registered_at") @db.Timestamptz(6)
+  cancelledAt          DateTime?               @map("cancelled_at") @db.Timestamptz(6)
+  attendanceVerifiedAt DateTime?               @map("attendance_verified_at") @db.Timestamptz(6)
+  /// Points the attendance earned (0 until awarded).
+  pointsAwarded        Int                     @default(0) @map("points_awarded")
+  createdAt            DateTime                @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime                @updatedAt @map("updated_at") @db.Timestamptz(6)
+  event                Event                   @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_event_registrations__event_id")
+  user                 User                    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_event_registrations__user_id")
+  checkIns             EventCheckIn[]
+
+  @@unique([eventId, userId], map: "uq_event_registrations__event_user")
+  @@unique([passCode], map: "uq_event_registrations__pass_code")
+  @@index([userId, registeredAt(sort: Desc)], map: "ix_event_registrations__user_registered_at")
+  @@map("event_registrations")
+  @@schema("app")
+}
+
+/// A pass scanned at the door: one per registration per Riyadh day (scans repeat the first).
+model EventCheckIn {
+  id             String            @id @default(uuid(7)) @db.Uuid
+  registrationId String            @map("registration_id") @db.Uuid
+  /// The Riyadh calendar day of the scan.
+  day            DateTime          @db.Date
+  scannedAt      DateTime          @map("scanned_at") @db.Timestamptz(6)
+  gate           String?
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  registration   EventRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_event_check_ins__registration_id")
+
+  @@unique([registrationId, day], map: "uq_event_check_ins__registration_day")
+  @@map("event_check_ins")
+  @@schema("app")
+}
+
+/// A scanned code that matched no active registration for the event (kept for staff).
+model EventUnmatchedScan {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  eventId   String   @map("event_id") @db.Uuid
+  passCode  String   @map("pass_code")
+  scannedAt DateTime @map("scanned_at") @db.Timestamptz(6)
+  gate      String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_event_unmatched_scans__event_id")
+
+  @@unique([eventId, passCode, scannedAt], map: "uq_event_unmatched_scans__event_code_time")
+  @@map("event_unmatched_scans")
+  @@schema("app")
+}

@@ -5,6 +5,7 @@ import { CompaniesModule } from '../../modules/companies';
 import { ContentModule } from '../../modules/content';
 import { ModerationModule } from '../../modules/moderation';
 import { EngagementModule } from '../../modules/engagement';
+import { EventsModule } from '../../modules/events';
 import { OpportunitiesModule } from '../../modules/opportunities';
 import { IdentityModule } from '../../modules/identity';
 import { VerificationModule } from '../../modules/verification';
@@ -35,6 +36,7 @@ import {
   AdminPointsController,
   AdminUserPointsController,
 } from './points/admin-points.controller';
+import { AdminEventsController, AdminUserEventsController } from './events/admin-events.controller';
 import { AdminNotesController } from './users/admin-notes.controller';
 import { AdminUsersController } from './users/admin-users.controller';
 import { AdminVerificationController } from './verification/admin-verification.controller';
@@ -59,6 +61,7 @@ import { AdminVerificationController } from './verification/admin-verification.c
     ContentModule,
     OpportunitiesModule,
     EngagementModule,
+    EventsModule,
   ],
   controllers: [
     AdminMetaController,
@@ -82,6 +85,8 @@ import { AdminVerificationController } from './verification/admin-verification.c
     AdminPointsController,
     AdminEarningRulesController,
     AdminUserPointsController,
+    AdminEventsController,
+    AdminUserEventsController,
   ],
 })
 export class AdminSurfaceModule {}

@@ -58,4 +58,6 @@ export enum ErrorCode {
   MONTHLY_CAP_REACHED = 'MONTHLY_CAP_REACHED',
   INSUFFICIENT_POINTS = 'INSUFFICIENT_POINTS',
   RULE_LOCKED = 'RULE_LOCKED',
+  // Events (contracts/app /events/{id}/registration, Phase 6B)
+  EVENT_FULL = 'EVENT_FULL',
 }

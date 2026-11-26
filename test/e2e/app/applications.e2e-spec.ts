@@ -182,7 +182,7 @@ describe('Applications (e2e)', () => {
     expectApp(mine, 'get', '/me/applications', 200);
     expect(mine.body.data).toMatchObject([{ id, status: 'ACCEPTED', opportunity_title: 'Rigging lead' }]);
 
-    await dispatcher.dispatchOnce();
+    while ((await dispatcher.dispatchOnce()).claimed > 0);
     expect(await notificationsOf(member.userId)).toEqual(
       ['SUBMITTED', 'REVIEWED', 'SHORTLISTED', 'CONTACT', 'ACCEPTED'].map((status) => ({
         type: 'application.status_changed',
@@ -299,7 +299,7 @@ describe('Applications (e2e)', () => {
       409,
     );
 
-    await dispatcher.dispatchOnce();
+    while ((await dispatcher.dispatchOnce()).claimed > 0);
     expect((await notificationsOf(member.userId)).map((n) => n.status)).toEqual([
       'SUBMITTED',
       'WITHDRAWN',

@@ -184,6 +184,13 @@ export class VerificationReviewService {
     return new Set([...statuses].filter(([, s]) => s === 'VERIFIED').map(([id]) => id));
   }
 
+  /** Verified individuals with an active account (contracts/app `DiscoverCounts.professionals`). */
+  async verifiedMemberCount(): Promise<number> {
+    return this.prisma.verificationRequest.count({
+      where: { status: 'APPROVED', user: { status: 'ACTIVE', accountType: 'INDIVIDUAL' } },
+    });
+  }
+
   /** When and by whom a member was verified, or null. */
   async verifiedInfo(userId: string): Promise<{ verifiedAt: Date; verifiedBy: string | null } | null> {
     const request = await this.prisma.verificationRequest.findUnique({

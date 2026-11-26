@@ -145,7 +145,7 @@ describe('Users and notes in the back office (e2e)', () => {
       expect(accepted.body.data).toEqual({ job_id: expect.any(String), status: 'QUEUED' });
       expect((await staff('get', '/users?status=SUSPENDED')).body.data).toEqual([]);
 
-      await dispatcher.dispatchOnce();
+      while ((await dispatcher.dispatchOnce()).claimed > 0);
       const after = (await staff('get', '/users?status=SUSPENDED&sort=full_name')).body.data;
       expect(after.map((r: { id: string }) => r.id).sort()).toEqual([sara.userId, nora.userId].sort());
 

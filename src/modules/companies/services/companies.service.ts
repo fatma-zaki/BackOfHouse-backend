@@ -166,6 +166,11 @@ export class CompaniesService {
     return valid.map((id) => byId.get(id)).filter((p): p is CompanyProjectView => p !== undefined);
   }
 
+  /** Verified companies with an active Company Account (contracts/app `DiscoverCounts.companies`). */
+  async verifiedCount(): Promise<number> {
+    return this.prisma.company.count({ where: { verifiedAt: { not: null }, accountUser: { status: 'ACTIVE' } } });
+  }
+
   /** Members following the company whose accounts are active (for "new listing" alerts). */
   async followerIds(companyId: string): Promise<string[]> {
     const rows = await this.prisma.companyFollow.findMany({

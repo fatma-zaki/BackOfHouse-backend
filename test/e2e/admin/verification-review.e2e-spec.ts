@@ -127,7 +127,7 @@ describe('Verification review (e2e)', () => {
     });
     expect((await appRequest(app, 'get', '/me/verification', sara)).body.data.status).toBe('DRAFT');
 
-    await dispatcher.dispatchOnce();
+    while ((await dispatcher.dispatchOnce()).claimed > 0);
     const feed = await appRequest(app, 'get', '/me/notifications', sara);
     expect(feed.body.data[0]).toMatchObject({
       title: 'More information needed',
@@ -177,7 +177,7 @@ describe('Verification review (e2e)', () => {
       message: 'The certificate is not readable.',
     });
     expect(rejected.body.data.status).toBe('REJECTED');
-    await dispatcher.dispatchOnce();
+    while ((await dispatcher.dispatchOnce()).claimed > 0);
     const feed = await appRequest(app, 'get', '/me/notifications', omar, 'ar');
     expect(feed.body.data[0]).toMatchObject({ title: 'لم تتم الموافقة على التوثيق' });
 

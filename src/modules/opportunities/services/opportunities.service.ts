@@ -137,6 +137,11 @@ export class OpportunitiesService {
     return this.views(rows, false, userId);
   }
 
+  /** Open listings individuals can see in Discover (contracts/app `DiscoverCounts.opportunities`). */
+  async discoverableCount(): Promise<number> {
+    return this.prisma.opportunity.count({ where: this.discoverable() });
+  }
+
   /** How many live listings each company has (contracts/app `Company.open_opportunities`). */
   async liveCounts(companyIds: string[]): Promise<Map<string, number>> {
     if (companyIds.length === 0) return new Map();

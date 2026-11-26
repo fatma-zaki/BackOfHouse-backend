@@ -291,7 +291,7 @@ export interface paths {
         put?: never;
         /**
          * Sign out
-         * @description Deletes the server-side session and clears the cookie.
+         * @description Deletes the server-side session and clears both cookies (`__Host-boh_admin`, `__Host-boh_csrf`). Needs the `X-CSRF-Token` header. Audited as `admin.sign_out`.
          */
         post: operations["postAdminAuthLogout"];
         delete?: never;
@@ -309,7 +309,7 @@ export interface paths {
         };
         /**
          * Google Workspace sign-in callback
-         * @description Exchanges the code, verifies the ID token (issuer, audience, nonce, expiry), then requires BOTH the `hd` claim and the verified email domain to equal the Workspace domain. Activates an `INVITED` staff account on first sign-in. Sets the `__Host-boh_admin` session cookie (30-min idle, 12 h absolute) and redirects to the admin web app. Audited as `admin.sign_in`.
+         * @description Exchanges the code, verifies the ID token (issuer, audience, nonce, expiry), then requires BOTH the `hd` claim and the verified email domain to equal the Workspace domain. Activates an `INVITED` staff account on first sign-in. Sets two cookies and redirects to the admin web app: the httpOnly `__Host-boh_admin` session cookie (30-min idle by default, 12 h absolute) and the readable `__Host-boh_csrf` cookie, whose value the web app sends as `X-CSRF-Token` on POST, PUT, PATCH and DELETE. Both are Secure and SameSite=Strict. Missing `code` or `state`, or a used or expired `state`, answers 401. 20 requests a minute per IP. Audited as `admin.sign_in`.
          */
         get: operations["getAdminAuthOidcCallback"];
         put?: never;
@@ -329,7 +329,7 @@ export interface paths {
         };
         /**
          * Start Google Workspace sign-in
-         * @description Redirects to Google with an OIDC authorization request (code flow + PKCE, `hd` set to the Workspace domain). Stores `state`, `nonce` and the PKCE verifier in a short-lived httpOnly cookie.
+         * @description Redirects to Google with an OIDC authorization request (code flow + PKCE, `hd` set to the Workspace domain). Stores a hash of `state`, the `nonce` and the PKCE verifier server-side; they expire after 10 minutes and work once. Open it in a browser, not Postman: the flow ends with a redirect that sets cookies. 20 requests a minute per IP.
          */
         get: operations["getAdminAuthOidcStart"];
         put?: never;
@@ -2521,6 +2521,7 @@ export interface components {
         };
         EventAdmin: components["schemas"]["Event"] & {
             title_i18n?: components["schemas"]["LocalizedText"];
+            description_i18n?: components["schemas"]["LocalizedText"];
             /** @enum {string} */
             status?: "DRAFT" | "PUBLISHED" | "CANCELLED" | "COMPLETED";
             capacity?: number | null;
@@ -2534,6 +2535,11 @@ export interface components {
         };
         EventInput: {
             title: components["schemas"]["LocalizedText"];
+            /**
+             * @description DRAFT (default on create), PUBLISHED or CANCELLED. A published event never goes back to DRAFT; COMPLETED is set after the end.
+             * @enum {string}
+             */
+            status?: "DRAFT" | "PUBLISHED" | "CANCELLED";
             description?: components["schemas"]["LocalizedText"];
             type?: string;
             topics?: string[];
@@ -3918,12 +3924,21 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            /** @description RATE_LIMITED */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
         };
     };
     getAdminAuthOidcStart: {
         parameters: {
             query?: {
-                /** @description Admin web path to open after sign-in */
+                /** @description Admin web path to open after sign-in. Must start with a single `/` (no `//`, no whitespace, at most 512 characters); anything else falls back to `/`. */
                 return_to?: string;
             };
             header?: never;
@@ -3941,6 +3956,15 @@ export interface operations {
             };
             /** @description RATE_LIMITED */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `SERVICE_UNAVAILABLE`: staff sign-in is not configured (STAFF_GOOGLE_WORKSPACE_DOMAIN unset) */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };

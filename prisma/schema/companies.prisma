@@ -71,6 +71,7 @@ model Company {
   opportunities     Opportunity[]
   verifiedBy        StaffAccount?      @relation("CompanyVerifiedBy", fields: [verifiedByStaffId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "fk_companies__verified_by_staff_id")
   supplierResponses SupplierResponse[]
+  organizedEvents   Event[]
 
   @@unique([accountUserId], map: "uq_companies__account_user_id")
   @@unique([slug], map: "uq_companies__slug")

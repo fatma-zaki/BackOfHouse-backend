@@ -120,24 +120,65 @@ paths:
       summary: Create an individual or company account
       description: |
         Signs the new account in at once. The email is not confirmed by a code first
-        (open question BQ-82). `phone` is normalised to E.164; local numbers without a
-        country code are refused. 10 requests a minute per IP.
+        (open question BQ-82). `email` is trimmed and lowercased. `phone` is normalised
+        to E.164 (spaces, dashes and brackets removed, `00` read as `+`, Arabic digits
+        converted); local numbers without a country code are refused.
+
+        Unknown fields are refused (422). `company` is required for `COMPANY` and refused
+        for `INDIVIDUAL`; `profile_status` is refused for `COMPANY`.
+
+        409 `EMAIL_TAKEN` or `PHONE_TAKEN` when the email or phone already has an
+        account. 10 requests a minute per IP.
       security: []
       requestBody:
         required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/RegisterRequest' }
+            examples:
+              individual:
+                summary: Individual
+                value:
+                  full_name: Sara Ahmed
+                  email: sara@example.com
+                  phone: '+966501234567'
+                  password: Password123
+                  account_type: INDIVIDUAL
+                  profile_status: PROFESSIONAL
+              company:
+                summary: Company (the caller becomes its OWNER)
+                value:
+                  full_name: Omar Khalid
+                  email: omar@stagepro.example
+                  phone: '+966551234567'
+                  password: Password123
+                  account_type: COMPANY
+                  company:
+                    name: StagePro
+                    company_type: PRODUCTION
       responses:
         '201': { $ref: '#/components/responses/Session' }
-        '409': { $ref: '#/components/responses/Conflict' }
+        '409':
+          description: The email or phone already has an account (`EMAIL_TAKEN`, `PHONE_TAKEN`)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                code: EMAIL_TAKEN
+                message: This email already has an account
         '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
 
   /auth/login:
     post:
       x-phase: '2'
       tags: [Auth]
       summary: Sign in with email and password
+      description: |
+        `email` is trimmed and lowercased. A wrong email or password, and an account
+        that is not `ACTIVE` (suspended, banned, deleted), all answer 401
+        `INVALID_CREDENTIALS`, so the response never reveals which one it was.
+        10 requests a minute per IP.
       security: []
       requestBody:
         required: true
@@ -147,16 +188,26 @@ paths:
               type: object
               required: [email, password]
               properties:
-                email: { type: string, format: email }
-                password: { type: string }
-                remember_me: { type: boolean, default: false, description: 'Longer-lived refresh token when true' }
+                email: { type: string, format: email, maxLength: 254 }
+                password: { type: string, minLength: 1, maxLength: 200 }
+                remember_me:
+                  type: boolean
+                  default: false
+                  description: 'Longer-lived refresh token when true. Accepted but not applied yet: every session gets the provider default.'
+            example:
+              email: sara@example.com
+              password: Password123
       responses:
         '200': { $ref: '#/components/responses/Session' }
         '401':
-          description: Wrong email or password (`INVALID_CREDENTIALS`)
+          description: Wrong email or password, or the account is not active (`INVALID_CREDENTIALS`)
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
+              example:
+                code: INVALID_CREDENTIALS
+                message: Wrong email or password
+        '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/RateLimited' }
 
   /auth/phone/code:
@@ -166,7 +217,8 @@ paths:
       summary: Send a one-time sign-in code by SMS
       description: |
         Always answers 204 for a well-formed number, whether or not an account exists
-        (an SMS is sent only to an account's number). Limits (BQ-78), 429 `RATE_LIMITED`
+        (an SMS is sent only to an active account's number). A number that is not E.164
+        after normalisation answers 422. Limits (BQ-78), 429 `RATE_LIMITED`
         with `Retry-After`: one code a minute and 5 an hour per phone number, 20 an hour
         per IP, and 10 requests a minute per IP. The code is 6 digits and expires after
         5 minutes; sending a new code invalidates the previous one.
@@ -191,9 +243,12 @@ paths:
       tags: [Auth]
       summary: Sign in with the SMS code
       description: |
-        Wrong or expired code → 422 `INVALID_CODE`. A code allows 5 wrong tries; the
-        fifth burns it, and the next verify answers 429 `RATE_LIMITED` until a new
-        code is requested. A code works once. Also 10 requests a minute per IP (BQ-78).
+        Wrong or expired code → 422 `INVALID_CODE`; so is a number with no active
+        account. A missing field, or a `code` that is not 6 digits, → 422
+        `VALIDATION_FAILED`. A code allows 5 wrong tries; the fifth burns it, and the
+        next verify answers 429 `RATE_LIMITED` until a new code is requested. A code
+        works once, and only the latest code for a number is checked. A successful
+        verify marks the phone as verified. Also 10 requests a minute per IP (BQ-78).
       security: []
       requestBody:
         required: true
@@ -204,14 +259,17 @@ paths:
               required: [phone, code]
               properties:
                 phone: { type: string, example: '+966501234567' }
-                code: { type: string, pattern: '^[0-9]{6}$' }
+                code: { type: string, pattern: '^[0-9]{6}$', example: '123456' }
       responses:
         '200': { $ref: '#/components/responses/Session' }
         '422':
-          description: Wrong or expired code (`INVALID_CODE`)
+          description: Wrong or expired code (`INVALID_CODE`), or a malformed body (`VALIDATION_FAILED`)
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
+              example:
+                code: INVALID_CODE
+                message: Wrong or expired code
         '429': { $ref: '#/components/responses/RateLimited' }
 
   /auth/refresh:
@@ -219,6 +277,10 @@ paths:
       x-phase: '2'
       tags: [Auth]
       summary: Exchange a refresh token for a new session
+      description: |
+        Returns a new access token and refresh token; use the new refresh token next time.
+        401 when the refresh token is invalid or expired, or the account is no longer
+        `ACTIVE`. 30 requests a minute per IP.
       security: []
       requestBody:
         required: true
@@ -228,25 +290,35 @@ paths:
               type: object
               required: [refresh_token]
               properties:
-                refresh_token: { type: string }
+                refresh_token: { type: string, maxLength: 4096 }
       responses:
         '200': { $ref: '#/components/responses/Session' }
         '401': { $ref: '#/components/responses/Unauthenticated' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/RateLimited' }
 
   /auth/logout:
     post:
       x-phase: '2'
       tags: [Auth]
       summary: Revoke the current session
+      description: |
+        Ends the session behind the bearer token. That access token is refused (401) from
+        now on, even before it expires. Other sessions of the same account stay signed in.
+        No request body.
       responses:
         '204': { description: 'Signed out' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
 
   /auth/forgot-password:
     post:
       x-phase: '2'
       tags: [Auth]
       summary: Email a password reset link
-      description: Always 204, so the response never reveals whether the email has an account. The link opens the website, which calls `/auth/reset-password`.
+      description: |
+        Always 204 for a well-formed email, so the response never reveals whether the
+        email has an account (a link is sent only to an active account). The link opens
+        the website, which calls `/auth/reset-password`. 5 requests a minute per IP.
       security: []
       requestBody:
         required: true
@@ -256,9 +328,12 @@ paths:
               type: object
               required: [email]
               properties:
-                email: { type: string, format: email }
+                email: { type: string, format: email, maxLength: 254 }
+            example:
+              email: sara@example.com
       responses:
         '204': { description: 'Accepted' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/RateLimited' }
 
   /auth/reset-password:
@@ -266,6 +341,10 @@ paths:
       x-phase: '2'
       tags: [Auth]
       summary: Set a new password from a reset link (used by the website)
+      description: |
+        Signs the account out everywhere: every access token issued before the reset is
+        refused (401). The member gets a security alert. An invalid or expired `token`
+        → 422 `VALIDATION_FAILED` with `errors.token`. 10 requests a minute per IP.
       security: []
       requestBody:
         required: true
@@ -275,11 +354,21 @@ paths:
               type: object
               required: [token, password]
               properties:
-                token: { type: string }
-                password: { type: string, minLength: 8 }
+                token: { type: string, maxLength: 4096, description: 'From the emailed reset link' }
+                password: { type: string, minLength: 8, maxLength: 72 }
       responses:
         '204': { description: 'Password changed' }
-        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '422':
+          description: '`VALIDATION_FAILED`: a field is invalid, or the token is invalid or expired'
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example:
+                code: VALIDATION_FAILED
+                message: The given data was invalid.
+                errors:
+                  token: [is invalid or has expired]
+        '429': { $ref: '#/components/responses/RateLimited' }
 
   /me:
     get:
@@ -750,7 +839,9 @@ paths:
       x-phase: '6'
       tags: [Discover]
       summary: Register for an event
-      description: Idempotent. Issues `pass_code`. Registering earns no points; points come from verified attendance.
+      description: |
+        Idempotent. Issues `pass_code`. Registering earns no points; points come from verified attendance.
+        Refused with `EVENT_FULL` when no seat is left, and `INVALID_TRANSITION` when the event is not open.
       parameters: [{ $ref: '#/components/parameters/Id' }]
       responses:
         '200':
@@ -761,6 +852,8 @@ paths:
                 type: object
                 properties:
                   data: { $ref: '#/components/schemas/Event' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
     delete:
       x-phase: '6'
       tags: [Discover]
@@ -1711,7 +1804,7 @@ components:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
     Conflict:
-      description: The action conflicts with the resource's state (`INVALID_TRANSITION`, `NOT_EDITABLE`, `ALREADY_APPLIED`, `ALREADY_RESPONDED`, `REVISION_EXISTS`, `INSUFFICIENT_POINTS`, `REWARD_UNAVAILABLE`, `VERIFICATION_LOCKED`, `VERIFICATION_INCOMPLETE`, `EMAIL_TAKEN`, `PHONE_TAKEN`)
+      description: The action conflicts with the resource's state (`INVALID_TRANSITION`, `NOT_EDITABLE`, `ALREADY_APPLIED`, `ALREADY_RESPONDED`, `EVENT_FULL`, `REVISION_EXISTS`, `INSUFFICIENT_POINTS`, `REWARD_UNAVAILABLE`, `VERIFICATION_LOCKED`, `VERIFICATION_INCOMPLETE`, `EMAIL_TAKEN`, `PHONE_TAKEN`)
       content:
         application/json:
           schema: { $ref: '#/components/schemas/Error' }
@@ -1843,6 +1936,7 @@ components:
         - REVISION_EXISTS
         - ALREADY_APPLIED
         - ALREADY_RESPONDED
+        - EVENT_FULL
         - INSUFFICIENT_POINTS
         - REWARD_UNAVAILABLE
         - VERIFICATION_LOCKED
@@ -1912,7 +2006,8 @@ components:
       enum: [SUBMITTED, REVIEWED, SHORTLISTED, SELECTED, REJECTED]
     EventType:
       type: string
-      enum: [CONFERENCE, WORKSHOP, NETWORKING, EXPO]
+      description: CONCERT, FESTIVAL and MEETUP added 2026-11-21 (the back office's EXHIBITION is EXPO here).
+      enum: [CONFERENCE, WORKSHOP, NETWORKING, EXPO, CONCERT, FESTIVAL, MEETUP]
     NewsTopic:
       type: string
       enum: [TECHNICAL, REGULATORY, MARKET]
@@ -1954,28 +2049,30 @@ components:
     RegisterRequest:
       type: object
       required: [full_name, email, phone, password, account_type]
+      additionalProperties: false
       properties:
-        full_name: { type: string, minLength: 2 }
-        email: { type: string, format: email }
-        phone: { type: string, description: 'E.164' }
-        password: { type: string, minLength: 8 }
+        full_name: { type: string, minLength: 2, maxLength: 120, description: 'For a company, its representative' }
+        email: { type: string, format: email, maxLength: 254 }
+        phone: { type: string, description: 'E.164, e.g. +966501234567', example: '+966501234567' }
+        password: { type: string, minLength: 8, maxLength: 72 }
         account_type: { $ref: '#/components/schemas/AccountType' }
         profile_status:
           $ref: '#/components/schemas/ProfileStatus'
-          description: INDIVIDUAL only (default PROFESSIONAL)
+          description: INDIVIDUAL only (default PROFESSIONAL); refused for COMPANY
         company:
           type: object
-          description: COMPANY only. Creates the company with this account as its OWNER.
+          description: Required for COMPANY, refused for INDIVIDUAL. Creates the company with this account as its OWNER.
           required: [name, company_type]
+          additionalProperties: false
           properties:
-            name: { type: string }
+            name: { type: string, minLength: 1, maxLength: 200 }
             company_type: { $ref: '#/components/schemas/CompanyType' }
     Session:
       type: object
-      required: [access_token, user]
+      required: [access_token, refresh_token, expires_in, user]
       properties:
-        access_token: { type: string }
-        refresh_token: { type: string }
+        access_token: { type: string, description: 'Send as `Authorization: Bearer <access_token>`' }
+        refresh_token: { type: string, description: 'For `/auth/refresh`' }
         expires_in: { type: integer, description: 'Access token lifetime in seconds' }
         user: { $ref: '#/components/schemas/AppUser' }
     AppUser:
